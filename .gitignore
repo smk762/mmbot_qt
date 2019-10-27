@@ -1,3 +1,7 @@
+
+!/src/main/python/libs/
+!/src/main/python/libs/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
