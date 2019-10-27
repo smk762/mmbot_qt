@@ -103,6 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-!src/main/python/libs/
-!src/main/python/libs/*
+!src/main/python/lib/
+!src/main/python/lib/*
 
