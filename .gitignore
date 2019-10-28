@@ -10,13 +10,13 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
+!build/
 develop-eggs/
 dist/
 downloads/
 eggs/
 .eggs/
-lib/
+!lib/
 lib64/
 parts/
 sdist/
@@ -108,7 +108,7 @@ venv.bak/
 !src/main/python/lib/
 !src/main/python/lib/*
 !src/main/python/log/
-!src/main/python/log/
+!src/main/python/log/*
 src/main/python/log/mm2_output.log
 
 !src/build/settings/
