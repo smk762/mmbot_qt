@@ -107,4 +107,7 @@ venv.bak/
 
 !src/main/python/lib/
 !src/main/python/lib/*
-
+!src/main/python/log/
+!src/build/settings/
+!src/build/settings/*
+src/main/python/coins
