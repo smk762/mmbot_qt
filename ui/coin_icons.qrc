@@ -1,6 +1,9 @@
 <RCC>
   <qresource prefix="coins">
+    <file>kmd_128.png</file>
+    <file>LABS_wallet.png</file>
     <file>KMD_Labs_Logo_thick_outline_2_32.png</file>
+    <file>qr_300.png</file>
     <file>zec.png</file>
     <file>bch.png</file>
     <file>bat.svg</file>
