@@ -109,7 +109,7 @@ venv.bak/
 !src/main/python/lib/*
 !src/main/python/log/
 !src/main/python/log/*
-src/main/python/log/mm2_output.log
+!src/main/python/log/mm2_output.log
 
 !src/build/settings/
 !src/build/settings/*

@@ -1,0 +1,40 @@
+27 15:28:54, mm2:160] AtomicDEX MarketMaker 2.0.1438_mm2_5df6b0434_Linux
+27 15:28:54, lp_native_dex:1197] version: 2.0.1438_mm2_5df6b0434_Linux
+27 15:28:54, lp_native_dex:1255] lp_init] Trying to fetch the real IP from 'http://checkip.amazonaws.com/' ...
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:15175
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:51298
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:2859
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:65446
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:43764
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:62104
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:46327
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:17349
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 1.127.111.125:35879
+27 15:28:55, lp_native_dex:1293] IP 1.127.111.125 doesn't check: lp_native_dex:1167] http_fallback:300] error creating server listener: Cannot assign requested address (os error 99)
+27 15:28:55, lp_native_dex:1163] test_ip] Trying to listen on 0.0.0.0:15175
+27 15:28:55, lp_native_dex:1180] test_ip] Checking http://127.0.0.1:15175/test_ip
+😅 2019-10-27 23:28:55 +0800 [myipaddr] We couldn't bind on the external IP 1.127.111.125, so NAT is likely to be present. We'll be okay though.
+… 2019-10-27 23:28:55 +0800 [seed_connection 195.201.116.176:47772] Connecting…
+27 15:28:55, peers:1396] initialize] netid 9999 public key 47b09cea99637eb713fc4a82fe67283dc01f9080f6119089dddeb6d6b1f780f1 preferred port 47773 drill false
+27 15:28:55, rpc:387] >>>>>>>>>> DEX stats 127.0.0.1:7783 DEX stats API enabled at unixtime.1572190135 <<<<<<<<<
+⚡ 2019-10-27 23:28:56 +0800 [seed_connection 195.201.116.176:47772] Connected
+… 2019-10-27 23:28:56 +0800 [seed_connection 46.4.87.18:47772] Connecting…
+⚡ 2019-10-27 23:28:56 +0800 [seed_connection 46.4.87.18:47772] Connected
+… 2019-10-27 23:28:56 +0800 [seed_connection 46.4.78.11:47772] Connecting…
+⚡ 2019-10-27 23:28:56 +0800 [seed_connection 46.4.78.11:47772] Connected
+27 15:28:57, peers:1174] external_ip_alert: 1.127.111.125
+27 15:28:57, peers:1174] external_ip_alert: 1.127.111.125
+27 15:28:57, peers:1174] external_ip_alert: 1.127.111.125
+· 2019-10-27 23:28:58 +0800 [dht-boot] DHT bootstrap ... Done.
+27 16:22:02, peers:1174] external_ip_alert: 2001:8004:16c0:9e7:be45:7060:4073:9b6b
+27 16:22:02, peers:1174] external_ip_alert: 2001:8004:16c0:9e7:be45:7060:4073:9b6b
+27 16:22:02, peers:1174] external_ip_alert: 2001:8004:16c0:9e7:be45:7060:4073:9b6b
+27 16:25:07, peers:1174] external_ip_alert: 1.127.111.125
+27 16:25:07, peers:1174] external_ip_alert: 1.127.111.125
+27 16:25:07, peers:1174] external_ip_alert: 1.127.111.125
+28 09:45:56, peers:1174] external_ip_alert: 1.127.105.58
+28 09:45:56, peers:1174] external_ip_alert: 1.127.105.58
+28 10:36:41, peers:1174] external_ip_alert: 1.127.105.58
+28 10:36:41, peers:1174] external_ip_alert: 1.127.105.58
+28 10:44:56, peers:1174] external_ip_alert: 1.127.105.58
+28 10:44:56, peers:1174] external_ip_alert: 1.127.105.58
