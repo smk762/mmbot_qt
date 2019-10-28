@@ -20,6 +20,10 @@ conf_path = script_path+"/conf"
 log_path = script_path+"/log"
 home = expanduser("~")
 
+for x in [mm2_path, conf_path, log_path]:
+    if not os.path.exists(x):
+        os.makedirs(x)
+
 while True:
     tries = 0
     try:
