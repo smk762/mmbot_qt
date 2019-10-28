@@ -6,7 +6,7 @@ import time
 import requests
 import subprocess
 from os.path import expanduser
-from . import coinslib, tuilib, binance_api
+from . import coinslib, guilib, binance_api
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -57,15 +57,15 @@ def check_active_coins(node_ip, user_pass, cointag_list):
 
 def check_coins_status(node_ip, user_pass):
     if os.path.exists(script_path+"/coins") is False:
-        print(tuilib.colorize("\n'coins' file not found in "+script_path+"!",'red'))
-        print(tuilib.colorize("Use 'wget https://raw.githubusercontent.com/jl777/coins/master/coins' to download.", 'orange'))
-        print(tuilib.colorize("Exiting...\n", 'blue'))
+        print(guilib.colorize("\n'coins' file not found in "+script_path+"!",'red'))
+        print(guilib.colorize("Use 'wget https://raw.githubusercontent.com/jl777/coins/master/coins' to download.", 'orange'))
+        print(guilib.colorize("Exiting...\n", 'blue'))
         sys.exit()
     elif os.path.exists(script_path+"/api_keys.json") is False:
-        print(tuilib.colorize("\n'api_keys.json' file not found in "+script_path+"!",'red'))
-        print(tuilib.colorize("Use 'cp api_keys_example.json api_keys.json' to copy it.", 'orange'))
-        print(tuilib.colorize("You can leave the values blank, or input your own Binance API keys", 'orange'))
-        print(tuilib.colorize("Exiting...\n", 'blue'))
+        print(guilib.colorize("\n'api_keys.json' file not found in "+script_path+"!",'red'))
+        print(guilib.colorize("Use 'cp api_keys_example.json api_keys.json' to copy it.", 'orange'))
+        print(guilib.colorize("You can leave the values blank, or input your own Binance API keys", 'orange'))
+        print(guilib.colorize("Exiting...\n", 'blue'))
         sys.exit()     
     else:
         cointag_list = []
@@ -95,14 +95,14 @@ def get_status(node_ip, user_pass):
         except:
           ver = ''
           pass
-        mm2_msg = tuilib.colorize("[MM2 "+ver+" active]", 'green')
+        mm2_msg = guilib.colorize("[MM2 "+ver+" active]", 'green')
         coins_status = check_coins_status(node_ip, user_pass)
         my_current_orders = my_orders(node_ip, user_pass).json()['result']
         num_orders = len(my_current_orders['maker_orders']) + len(my_current_orders['taker_orders'])
-        coin_msg = tuilib.colorize("["+coins_status[0]+"]", coins_status[1])
+        coin_msg = guilib.colorize("["+coins_status[0]+"]", coins_status[1])
         status_msg = mm2_msg+"   "+coin_msg
     else:
-        mm2_msg = tuilib.colorize("[MM2 disabled]", 'red')
+        mm2_msg = guilib.colorize("[MM2 disabled]", 'red')
         num_orders = 0
         status_msg = ''
         coins_status = ['','','','']
@@ -249,15 +249,15 @@ def build_coins_data(node_ip, user_pass, cointag_list=''):
       coins_data = {}
       cointags = []
       gecko_ids = []
-      print(tuilib.colorize('Getting prices from Binance...', 'yellow'))
+      print(guilib.colorize('Getting prices from Binance...', 'yellow'))
       for coin in cointag_list:
           coins_data[coin] = {}
           cointags.append(coin)
-          coins_data[coin]['BTC_price'] = float(tuilib.get_btc_price(coin))
+          coins_data[coin]['BTC_price'] = float(guilib.get_btc_price(coin))
           coins_data[coin]['price_source'] = 'binance'
           time.sleep(0.05)
       # Get Coingecko API ids
-      print(tuilib.colorize('Getting prices from CoinGecko...', 'pink'))
+      print(guilib.colorize('Getting prices from CoinGecko...', 'pink'))
       gecko_coins_list = requests.get(url='https://api.coingecko.com/api/v3/coins/list').json()
       for gecko_coin in gecko_coins_list:
         try:
@@ -289,7 +289,7 @@ def build_coins_data(node_ip, user_pass, cointag_list=''):
               else:
                   coins_data[coin]['AUD_price'] = 0
                   coins_data[coin]['USD_price'] = 0
-      print(tuilib.colorize('Getting prices from mm2 orderbook...', 'cyan'))
+      print(guilib.colorize('Getting prices from mm2 orderbook...', 'cyan'))
       for coin in coins_data:
           if coins_data[coin]['BTC_price'] == 0:
               mm2_kmd_price = get_kmd_mm2_price(node_ip, user_pass, coin)

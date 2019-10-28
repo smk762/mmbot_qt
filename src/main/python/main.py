@@ -12,10 +12,6 @@ class makerbot_app(QMainWindow, ui_main.Ui_Dialog):
         super(makerbot_app, self).__init__(parent)
         self.setupUi(self)
 
-@pyqtSlot()
-def on_click(self):
-    print(self)
-    print('PyQt5 button click')
 
 def main():
     appcontext = ApplicationContext()       # 1. Instantiate ApplicationContext
