@@ -29,6 +29,50 @@ class Ui(QTabWidget):
             "LABS": {
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
+            },
+            "BCH": {
+                "checkbox": self.checkBox_bch, 
+                "combo": self.bch_combo,
+            },
+            "BAT": {
+                "checkbox": self.checkBox_bat, 
+                "combo": self.bat_combo,
+            },
+            "DOGE": {
+                "checkbox": self.checkBox_doge, 
+                "combo": self.doge_combo,
+            },
+            "DASH": {
+                "checkbox": self.checkBox_dash, 
+                "combo": self.dash_combo,
+            },
+            "LTC": {
+                "checkbox": self.checkBox_ltc, 
+                "combo": self.ltc_combo,
+            },
+            "ZEC": {
+                "checkbox": self.checkBox_zec, 
+                "combo": self.zec_combo,
+            },
+            "RICK": {
+                "checkbox": self.checkBox_rick, 
+                "combo": self.rick_combo,
+            },
+            "MORTY": {
+                "checkbox": self.checkBox_morty, 
+                "combo": self.morty_combo,
+            },
+            "DAI": {
+                "checkbox": self.checkBox_dai, 
+                "combo": self.dai_combo,
+            },
+            "RVN": {
+                "checkbox": self.checkBox_rvn, 
+                "combo": self.rvn_combo,
+            },
+            "BAT": {
+                "checkbox": self.checkBox_bat, 
+                "combo": self.bat_combo,
             }
         }
         for coin in coins:
