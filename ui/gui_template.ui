@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -1756,7 +1756,7 @@
      </widget>
     </item>
     <item row="1" column="0" colspan="5">
-     <widget class="QTableWidget" name="tableWidget">
+     <widget class="QTableWidget" name="table_balances">
       <property name="enabled">
        <bool>true</bool>
       </property>
@@ -2856,7 +2856,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>817</x>
-     <y>731</y>
+     <y>722</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -2865,26 +2865,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>btn_update_logs</sender>
-   <signal>clicked()</signal>
-   <receiver>MainTabs</receiver>
-   <slot>update_logs()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1130</x>
-     <y>737</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>660</x>
-     <y>417</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>MainTabs</sender>
    <signal>currentChanged(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_active()</slot>
+   <slot>prepare_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>660</x>
@@ -2902,5 +2886,6 @@
   <slot>update_logs()</slot>
   <slot>export_logs()</slot>
   <slot>show_active()</slot>
+  <slot>prepare_tab()</slot>
  </slots>
 </ui>
