@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -2367,7 +2367,7 @@
    <attribute name="title">
     <string>Wallet</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout_5">
+   <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0" rowspan="2">
      <widget class="QFrame" name="frame_7">
       <property name="minimumSize">
@@ -2397,17 +2397,32 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
+        <widget class="QComboBox" name="wallet_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="font">
           <font>
-           <pointsize>32</pointsize>
+           <pointsize>16</pointsize>
           </font>
          </property>
-         <property name="text">
-          <string>LABS</string>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
+         <property name="currentText">
+          <string/>
+         </property>
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="maxVisibleItems">
+          <number>4</number>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
          </property>
         </widget>
        </item>
@@ -2436,7 +2451,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label_39">
+        <widget class="QLabel" name="wallet_balance">
          <property name="font">
           <font>
            <pointsize>32</pointsize>
@@ -2451,7 +2466,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_43">
+        <widget class="QLabel" name="wallet_usd_value">
          <property name="font">
           <font>
            <italic>true</italic>
@@ -2469,18 +2484,12 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QLabel" name="label_40">
-      <property name="minimumSize">
-       <size>
-        <width>300</width>
-        <height>300</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>300</width>
-        <height>300</height>
-       </size>
+     <widget class="QLabel" name="wallet_qr_code">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
       <property name="text">
        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/qr_300.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -2488,7 +2497,7 @@
      </widget>
     </item>
     <item row="1" column="1" colspan="2">
-     <widget class="QLabel" name="label_35">
+     <widget class="QLabel" name="wallet_address">
       <property name="font">
        <font>
         <pointsize>12</pointsize>
@@ -2531,7 +2540,7 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="lineEdit_9">
+        <widget class="QLineEdit" name="Wallet_recipient">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -2575,7 +2584,7 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit_8">
+        <widget class="QLineEdit" name="wallet_amount">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
@@ -2597,7 +2606,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="wallet_send_btn">
          <property name="text">
           <string>Send</string>
          </property>
@@ -2865,6 +2874,38 @@
    </hints>
   </connection>
   <connection>
+   <sender>btn_update_logs</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_logs()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1130</x>
+     <y>737</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>660</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wallet_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_wallet()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>259</x>
+     <y>514</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>660</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>MainTabs</sender>
    <signal>currentChanged(int)</signal>
    <receiver>MainTabs</receiver>
@@ -2887,5 +2928,7 @@
   <slot>export_logs()</slot>
   <slot>show_active()</slot>
   <slot>prepare_tab()</slot>
+  <slot>send_funds()</slot>
+  <slot>show_wallet()</slot>
  </slots>
 </ui>

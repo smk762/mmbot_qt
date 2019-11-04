@@ -7,10 +7,38 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib
+import qrcode
 
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
+
+class QR_image(qrcode.image.base.BaseImage):
+    def __init__(self, border, width, box_size):
+        self.border = border
+        print(border)
+        self.width = width
+        print(width)
+        self.box_size = box_size
+        print(box_size)
+        size = (width + border * 2) * box_size
+        print(size)
+        self._image = QImage(size, size, QImage.Format_RGB16)
+        self._image.fill(Qt.white)
+
+    def pixmap(self):
+        return QPixmap.fromImage(self._image)
+
+    def drawrect(self, row, col):
+        painter = QPainter(self._image)
+        painter.fillRect(
+            (col + self.border) * self.box_size,
+            (row + self.border) * self.box_size,
+            self.box_size, self.box_size,
+            Qt.black)
+
+    def save(self, stream, kind=None):
+        pass
 
 class Ui(QTabWidget):
     def __init__(self):
@@ -18,13 +46,15 @@ class Ui(QTabWidget):
         uic.loadUi('ui/gui_template.ui', self) # Load the .ui file
         self.show() # Show the GUI
         global creds
+        global coins
         creds = guilib.get_creds()
         if creds[0] != '':
             guilib.stop_mm2(creds[0], creds[1])
             guilib.start_mm2()
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
-        global coins
+        creds = guilib.get_creds()
         coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
@@ -97,7 +127,6 @@ class Ui(QTabWidget):
                 "status": self.rvn_status,
             },
         }
-    creds = guilib.get_creds()
 
     def update_logs(self):
         print("update_logs")
@@ -138,14 +167,15 @@ class Ui(QTabWidget):
         self.show_active()
 
     def show_balances(self):
+        balance_info = {}
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         row = 0
         for coin in active_coins:
-            balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
-            addr = QTableWidgetItem(balance_info['address'])
+            balance_info[coin] = rpclib.my_balance(creds[0], creds[1], coin).json()
+            addr = QTableWidgetItem(balance_info[coin]['address'])
             cointag = QTableWidgetItem(coin)
-            balance = QTableWidgetItem(balance_info['balance'])
-            locked_by_swaps = QTableWidgetItem(balance_info['locked_by_swaps'])
+            balance = QTableWidgetItem(balance_info[coin]['balance'])
+            locked_by_swaps = QTableWidgetItem(balance_info[coin]['locked_by_swaps'])
             self.table_balances.setItem(row,0,cointag)
             self.table_balances.setItem(row,1,addr)
             self.table_balances.setItem(row,2,balance)
@@ -156,8 +186,26 @@ class Ui(QTabWidget):
         pass
     def show_orderbook(self):
         pass
+
     def show_wallet(self):
-        pass
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        existing_coins = []
+        for i in range(self.wallet_combo.count()):
+            existing_coin = self.wallet_combo.itemText(i)
+            existing_coins.append(existing_coin)
+        for coin in active_coins:
+            if coin not in existing_coins:
+                self.wallet_combo.addItem(coin)
+        index = self.wallet_combo.currentIndex()
+        coin = self.wallet_combo.itemText(index)
+        balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
+        addr_text = balance_info['address']
+        balance_text = balance_info['balance']
+        locked_text = balance_info['locked_by_swaps']
+        self.wallet_address.setText(addr_text)
+        self.wallet_balance.setText(balance_text)
+        self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+
     def show_config(self):
         pass
 
@@ -188,8 +236,6 @@ class Ui(QTabWidget):
         elif index == 7:
             # logs
             self.update_logs()
-        print(index)
-        print(self.tabText)
 
 app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
 window = Ui() # Create an instance of our class
