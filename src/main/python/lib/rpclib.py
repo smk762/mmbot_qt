@@ -25,6 +25,24 @@ def check_mm2_status(node_ip, user_pass):
     except Exception as e:
         return False
 
+def get_enabled_coins(node_ip, user_pass):
+    params = {'userpass': user_pass,
+              'method': 'get_enabled_coins'}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def check_active_coins(node_ip, user_pass):
+    active_cointags = []
+    active_coins = get_enabled_coins(node_ip, user_pass).json()['result']
+    for coin in active_coins:
+        active_cointags.append(coin['ticker'])
+    return active_cointags 
+
+def my_orders(node_ip, user_pass):
+    params = {'userpass': user_pass, 'method': 'my_orders',}
+    r = requests.post(node_ip, json=params)
+    return r
+    
 def my_orders(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'my_orders',}
     r = requests.post(node_ip, json=params)
@@ -41,19 +59,6 @@ def orderbook(node_ip, user_pass, base, rel):
               'base': base, 'rel': rel,}
     r = requests.post(node_ip, json=params)
     return r
-
-def check_active_coins(node_ip, user_pass, cointag_list):
-    active_cointags = []
-    for cointag in cointag_list:
-        try:
-            # Dirty way to detect activation (rel is checked first by mm2)
-            resp = orderbook(node_ip, user_pass, 'XXXX', cointag).json()
-            if resp['error'] == 'Base coin is not found or inactive':
-                active_cointags.append(cointag)
-        except Exception as e:
-            #print(e)
-            pass
-    return active_cointags 
 
 def check_coins_status(node_ip, user_pass):
     if os.path.exists(script_path+"/coins") is False:

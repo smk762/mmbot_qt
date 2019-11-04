@@ -94,7 +94,6 @@ def create_MM2_json():
     with open('MM2.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
     print(colorize("MM2.json file created!", 'green'))
-    wait_continue()
 
 
 ## MM2 management
@@ -151,10 +150,6 @@ def exit(node_ip, user_pass):
 
 def activate_selected_coins(node_ip, user_pass, coinslist):
     for coin in coinslist:
-        print(node_ip)
-        print(user_pass)
-        print(coinslist)
-        print(coin)
         r = rpclib.electrum(node_ip, user_pass, coin)
         print(colorize("Activating "+coin+" with electrum", 'cyan'))
 

@@ -38,19 +38,14 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>8</number>
+   <number>0</number>
   </property>
-  <widget class="QWidget" name="tab">
-   <attribute name="title">
-    <string>Page</string>
-   </attribute>
-  </widget>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
     <string>Activate</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
      <widget class="QLabel" name="title_activate">
       <property name="enabled">
        <bool>true</bool>
@@ -80,7 +75,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item>
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -94,7 +89,7 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QCheckBox" name="checkBox_btc">
          <property name="layoutDirection">
@@ -157,7 +152,51 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="3" rowspan="7">
+       <item row="0" column="3">
+        <widget class="QLabel" name="btc_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4" rowspan="7">
         <spacer name="vspacer_activate">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -170,7 +209,7 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="4">
+       <item row="0" column="5">
         <widget class="QCheckBox" name="checkBox_labs">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -180,7 +219,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="5">
+       <item row="0" column="6">
         <widget class="QLabel" name="icon_labs">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -196,7 +235,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="6">
+       <item row="0" column="7">
         <widget class="QComboBox" name="labs_combo">
          <property name="currentText">
           <string>View only</string>
@@ -227,6 +266,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="0" column="8">
+        <widget class="QLabel" name="labs_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="1" column="0">
@@ -291,7 +374,51 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="4">
+       <item row="1" column="3">
+        <widget class="QLabel" name="eth_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
         <widget class="QCheckBox" name="checkBox_zec">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -301,7 +428,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
+       <item row="1" column="6">
         <widget class="QLabel" name="icon_zec">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -317,7 +444,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="6">
+       <item row="1" column="7">
         <widget class="QComboBox" name="zec_combo">
          <property name="currentText">
           <string>View only</string>
@@ -348,6 +475,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="1" column="8">
+        <widget class="QLabel" name="zec_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
@@ -412,7 +583,51 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="4">
+       <item row="2" column="3">
+        <widget class="QLabel" name="kmd_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5">
         <widget class="QCheckBox" name="checkBox_rick">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -422,7 +637,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="5">
+       <item row="2" column="6">
         <widget class="QLabel" name="icon_Rick">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -438,7 +653,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="6">
+       <item row="2" column="7">
         <widget class="QComboBox" name="rick_combo">
          <property name="currentText">
           <string>View only</string>
@@ -469,6 +684,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="2" column="8">
+        <widget class="QLabel" name="rick_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="3" column="0">
@@ -530,7 +789,51 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="4">
+       <item row="3" column="3">
+        <widget class="QLabel" name="bch_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="5">
         <widget class="QCheckBox" name="checkBox_morty">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -540,7 +843,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="5">
+       <item row="3" column="6">
         <widget class="QLabel" name="icon_morty">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -556,7 +859,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="6">
+       <item row="3" column="7">
         <widget class="QComboBox" name="morty_combo">
          <property name="currentText">
           <string>View only</string>
@@ -587,6 +890,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="3" column="8">
+        <widget class="QLabel" name="morty_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="4" column="0">
@@ -648,7 +995,51 @@
          </item>
         </widget>
        </item>
-       <item row="4" column="4">
+       <item row="4" column="3">
+        <widget class="QLabel" name="doge_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
         <widget class="QCheckBox" name="checkBox_dai">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -658,7 +1049,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="5">
+       <item row="4" column="6">
         <widget class="QLabel" name="icon_dai">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -674,7 +1065,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="6">
+       <item row="4" column="7">
         <widget class="QComboBox" name="dai_combo">
          <property name="currentText">
           <string>View only</string>
@@ -705,6 +1096,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="4" column="8">
+        <widget class="QLabel" name="dai_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="5" column="0">
@@ -766,7 +1201,51 @@
          </item>
         </widget>
        </item>
-       <item row="5" column="4">
+       <item row="5" column="3">
+        <widget class="QLabel" name="dash_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="5">
         <widget class="QCheckBox" name="checkBox_rvn">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -776,7 +1255,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="5">
+       <item row="5" column="6">
         <widget class="QLabel" name="icon_rvn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -792,7 +1271,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="6">
+       <item row="5" column="7">
         <widget class="QComboBox" name="rvn_combo">
          <property name="currentText">
           <string>View only</string>
@@ -823,6 +1302,50 @@
            <string>Buy &amp; sell</string>
           </property>
          </item>
+        </widget>
+       </item>
+       <item row="5" column="8">
+        <widget class="QLabel" name="rvn_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
         </widget>
        </item>
        <item row="6" column="0">
@@ -884,7 +1407,51 @@
          </item>
         </widget>
        </item>
-       <item row="6" column="4">
+       <item row="6" column="3">
+        <widget class="QLabel" name="ltc_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="5">
         <widget class="QCheckBox" name="checkBox_bat">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -894,7 +1461,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="5">
+       <item row="6" column="6">
         <widget class="QLabel" name="icon_bat">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -910,7 +1477,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="6">
+       <item row="6" column="7">
         <widget class="QComboBox" name="bat_combo">
          <property name="currentText">
           <string>View only</string>
@@ -943,10 +1510,54 @@
          </item>
         </widget>
        </item>
+       <item row="6" column="8">
+        <widget class="QLabel" name="bat_status">
+         <property name="palette">
+          <palette>
+           <active>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </active>
+           <inactive>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>164</red>
+               <green>0</green>
+               <blue>0</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </inactive>
+           <disabled>
+            <colorrole role="WindowText">
+             <brush brushstyle="SolidPattern">
+              <color alpha="255">
+               <red>190</red>
+               <green>190</green>
+               <blue>190</blue>
+              </color>
+             </brush>
+            </colorrole>
+           </disabled>
+          </palette>
+         </property>
+         <property name="text">
+          <string>inactive</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item>
      <widget class="QPushButton" name="btn_activate">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2269,10 +2880,27 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainTabs</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_active()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>660</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>660</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
   <slot>update_logs()</slot>
   <slot>export_logs()</slot>
+  <slot>show_active()</slot>
  </slots>
 </ui>
