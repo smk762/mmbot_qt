@@ -6,8 +6,9 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from lib import guilib, rpclib, coinslib
+from lib import guilib, rpclib, coinslib, wordlist
 import qrcode
+import random
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -286,6 +287,17 @@ class Ui(QTabWidget):
                 else:
                     self.sell_combo.removeItem(coin)
         self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
+
+    def generate_seed(self):
+        seed_words_list = []
+        while len(seed_words_list) < 24:
+            word = random.choice(wordlist.wordlist)
+            if word not in seed_words_list:
+                seed_words_list.append(word)
+        print(seed_words_list)
+        seed_phrase = " ".join(seed_words_list)
+        print(seed_phrase)
+        self.seed_text_input.setText(seed_phrase)
 
     def prepare_tab(self):
         QCoreApplication.processEvents()

@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -1960,6 +1960,12 @@
       <property name="dragDropOverwriteMode">
        <bool>false</bool>
       </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
       <property name="rowCount">
        <number>16</number>
       </property>
@@ -2536,41 +2542,112 @@
       </property>
       <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
-        <widget class="QLabel" name="label_12">
-         <property name="text">
-          <string>Wallet Seed</string>
+        <widget class="QFrame" name="frame_12">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="lbl_seed">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Wallet Seed</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btn_generate_seed">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Generate</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QTextEdit" name="textEdit"/>
+        <widget class="QTextEdit" name="seed_text_input">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Verdana</family>
+           <pointsize>16</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_13">
+       <item row="2" column="0">
+        <widget class="QLabel" name="lbl_rpcpass">
          <property name="text">
           <string>RPC Password</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <widget class="QLineEdit" name="lineEdit"/>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="rpcpass_text_input">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_14">
+       <item row="3" column="0">
+        <widget class="QLabel" name="lbl_rpc_ip">
          <property name="text">
           <string>RPC IP address</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLineEdit" name="lineEdit_2">
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="rpc_ip_text_input">
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
          <property name="placeholderText">
           <string>127.0.0.1</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QCheckBox" name="checkBox">
+       <item row="4" column="1">
+        <widget class="QCheckBox" name="checkbox_local_only">
          <property name="font">
           <font>
            <pointsize>9</pointsize>
@@ -2588,49 +2665,52 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_19">
+       <item row="5" column="0">
+        <widget class="QLabel" name="lbl_binance_key">
          <property name="text">
           <string>Binance API key</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="lineEdit_5"/>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="binance_key_text_input"/>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_20">
+       <item row="6" column="0">
+        <widget class="QLabel" name="lbl_binance_secret">
          <property name="text">
           <string>Binance Secret key</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="lineEdit_6"/>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="binance_secret_text_input"/>
        </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_21">
+       <item row="7" column="0">
+        <widget class="QLabel" name="lbl_premium">
          <property name="text">
           <string>Trade Premium (%)</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="1">
-        <widget class="QSpinBox" name="spinBox_3">
+       <item row="7" column="1">
+        <widget class="QDoubleSpinBox" name="trade_premium_input">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="label_11">
+       <item row="8" column="0">
+        <widget class="QLabel" name="lbl_netid">
          <property name="text">
           <string>NetID</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QSpinBox" name="spinBox">
+       <item row="8" column="1">
+        <widget class="QSpinBox" name="netid_input">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -2638,14 +2718,42 @@
           </sizepolicy>
          </property>
          <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="value">
+          <number>9999</number>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
-        <widget class="QPushButton" name="pushButton">
+       <item row="9" column="1">
+        <widget class="QPushButton" name="btn_save_config">
          <property name="text">
-          <string>Save</string>
+          <string>Save Config</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLabel" name="label_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="text">
+          <string>If you lose your seed, you lose access to your funds. Make sure to keep an offline backup on paper!</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -2812,8 +2920,8 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1201</x>
-     <y>40</y>
+     <x>409</x>
+     <y>722</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -2828,8 +2936,24 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1531</x>
-     <y>40</y>
+     <x>179</x>
+     <y>722</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_generate_seed</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>generate_seed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>233</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -2847,5 +2971,6 @@
   <slot>send_funds()</slot>
   <slot>show_wallet()</slot>
   <slot>show_orderbook()</slot>
+  <slot>generate_seed()</slot>
  </slots>
 </ui>
