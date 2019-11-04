@@ -16,13 +16,9 @@ home = expanduser("~")
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
-        print(border)
         self.width = width
-        print(width)
         self.box_size = box_size
-        print(box_size)
         size = (width + border * 2) * box_size
-        print(size)
         self._image = QImage(size, size, QImage.Format_RGB16)
         self._image.fill(Qt.white)
 
@@ -46,7 +42,7 @@ class Ui(QTabWidget):
         uic.loadUi('ui/gui_template.ui', self) # Load the .ui file
         self.show() # Show the GUI
         global creds
-        global coins
+        global gui_coins
         creds = guilib.get_creds()
         if creds[0] != '':
             guilib.stop_mm2(creds[0], creds[1])
@@ -55,7 +51,7 @@ class Ui(QTabWidget):
         else:
             self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
         creds = guilib.get_creds()
-        coins = {
+        gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
                 "combo": self.btc_combo,
@@ -144,8 +140,8 @@ class Ui(QTabWidget):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
-        for coin in coins:
-            status = coins[coin]['status']
+        for coin in gui_coins:
+            status = gui_coins[coin]['status']
             if coin in active_coins:
                 status.setStyleSheet('color: green')
                 status.setText('active')
@@ -155,9 +151,9 @@ class Ui(QTabWidget):
 
     def activate_coins(self):
         activate_dict = {}
-        for coin in coins:
-            checkbox = coins[coin]['checkbox']
-            combo = coins[coin]['combo']
+        for coin in gui_coins:
+            checkbox = gui_coins[coin]['checkbox']
+            combo = gui_coins[coin]['combo']
             if checkbox.isChecked():
                 QCoreApplication.processEvents()
                 activate_dict.update({coin:combo.currentText()})
@@ -166,20 +162,6 @@ class Ui(QTabWidget):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         self.show_active()
 
-    def show_balances(self):
-        balance_info = {}
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        row = 0
-        for coin in active_coins:
-            balance_info[coin] = rpclib.my_balance(creds[0], creds[1], coin).json()
-            addr = QTableWidgetItem(balance_info[coin]['address'])
-            cointag = QTableWidgetItem(coin)
-            balance = QTableWidgetItem(balance_info[coin]['balance'])
-            locked_by_swaps = QTableWidgetItem(balance_info[coin]['locked_by_swaps'])
-            self.table_balances.setItem(row,0,cointag)
-            self.table_balances.setItem(row,1,addr)
-            self.table_balances.setItem(row,2,balance)
-            row += 1
     def show_orders(self):
         pass
     def show_trades(self):
@@ -199,14 +181,57 @@ class Ui(QTabWidget):
         index = self.wallet_combo.currentIndex()
         coin = self.wallet_combo.itemText(index)
         balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
-        addr_text = balance_info['address']
-        balance_text = balance_info['balance']
-        locked_text = balance_info['locked_by_swaps']
-        self.wallet_address.setText(addr_text)
-        self.wallet_balance.setText(balance_text)
-        self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+        if 'address' in balance_info:
+            addr_text = balance_info['address']
+            balance_text = balance_info['balance']
+            locked_text = balance_info['locked_by_swaps']
+            self.wallet_address.setText("Your address: "+addr_text)
+            self.wallet_balance.setText(balance_text)
+            self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
 
     def show_config(self):
+        pass
+
+    def send_funds(self):
+        index = self.wallet_combo.currentIndex()
+        cointag = self.wallet_combo.itemText(index)
+        recipient_addr = self.wallet_recipient.text()
+        amount = self.wallet_amount.text()
+        msg = ''
+        print(recipient_addr)
+        print(amount)
+        resp = rpclib.withdraw(creds[0], creds[1], cointag, recipient_addr, amount).json()
+        if 'error' in resp:
+            print(resp['error'])
+            if resp['error'].find("Invalid Address!") > -1:
+                msg += "Invalid Address"
+            elif resp['error'].find("Not sufficient balance!") > -1:
+                msg += "Insufficient balance"
+            elif resp['error'].find("less than dust amount") > -1:
+                msg += "Transaction value too small!"
+            else:
+                msg = str(resp['error'])
+            self.wallet_msg.setStyleSheet('color: red')
+        elif 'tx_hex' in resp:
+            raw_hex = resp['tx_hex']
+            resp = rpclib.send_raw_transaction(creds[0], creds[1], cointag, raw_hex).json()
+            print(resp)
+            if 'tx_hash' in resp:
+                txid = resp['tx_hash']
+                if recipient_addr.startswith('0x'):
+                    txid_str = '0x'+txid
+                else:
+                    txid_str = txid
+                msg = "Sent! TXID: ["+txid_str+"]"
+                try:
+                    msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
+                except:
+                    pass
+        else:
+            print(resp)
+            msg = str(resp)
+            self.wallet_msg.setStyleSheet('color: green')
+        self.wallet_msg.setText(msg)
         pass
 
     def prepare_tab(self):
@@ -216,27 +241,25 @@ class Ui(QTabWidget):
             # activate
             self.show_active()
         elif index == 1:
-            # balances
-            self.show_balances()
-        elif index == 2:
             # orders
             self.show_orders()
-        elif index == 3:
+        elif index == 2:
             # trades
             self.show_trades()
-        elif index == 4:
+        elif index == 3:
             # order book
             self.show_orderbook()
-        elif index == 5:
+        elif index == 4:
             # wallet
             self.show_wallet()
-        elif index == 6:
+        elif index == 5:
             # config
             self.show_config()
-        elif index == 7:
+        elif index == 6:
             # logs
             self.update_logs()
 
 app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
 window = Ui() # Create an instance of our class
 app.exec_() # Start the application
+guilib.stop_mm2(creds[0], creds[1])
