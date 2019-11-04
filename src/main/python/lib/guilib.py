@@ -35,6 +35,23 @@ home = expanduser("~")
 
 ignored_addresses = ['RDbAXLCmQ2EN7daEZZp7CC9xzkcN8DfAZd']
 
+def get_creds():
+    try:
+        with open(script_path+"/bin/MM2.json") as j:
+            mm2json = json.load(j)
+        gui = mm2json['gui']
+        netid = mm2json['netid']
+        passphrase = mm2json['passphrase']
+        userpass = mm2json['rpc_password']
+        rpc_password = mm2json['rpc_password']
+        local_ip = "http://127.0.0.1:7783"
+        MM2_json_exists = True
+    except:
+        input(colorize("Error in MM2.json file! See MM2_example.json for a valid example..."))
+        local_ip = ''
+        userpass = ''
+    return local_ip, userpass
+
 def colorize(string, color):
         colors = {
                 'black':'\033[30m',
@@ -82,17 +99,18 @@ def create_MM2_json():
 
 ## MM2 management
 def start_mm2(logfile='mm2_output.log'):
-        if os.path.isfile('mm2'):
-            mm2_output = open(logfile,'w+')
-            subprocess.Popen(["./mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
-            msg = "Marketmaker 2 starting. Use 'tail -f "+logfile+"' for mm2 console messages. "
-            time.sleep(1)
-            wait_continue(msg)
-        else:
-            print(colorize("\nmm2 binary not found in "+script_path+"!", 'red'))
-            print(colorize("See https://developers.komodoplatform.com/basic-docs/atomicdex/atomicdex-setup/get-started-atomicdex.html for install instructions.", 'orange'))
-            print(colorize("Exiting...\n", 'blue'))
-            sys.exit()        
+    if os.path.isfile(script_path+"/bin/mm2"):
+        mm2_output = open(script_path+"/bin/"+logfile,'w+')
+        subprocess.Popen([script_path+"/bin/mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
+        time.sleep(1)
+    else:
+        with open(script_path+"/bin/"+logfile,'w+') as f:
+            f.write("\nmm2 binary not found in "+script_path+"/bin!")
+            f.write("\nExiting...\n")
+        print(colorize("\nmm2 binary not found in "+script_path+"/bin!", 'red'))
+        print(colorize("See https://developers.komodoplatform.com/basic-docs/atomicdex/atomicdex-setup/get-started-atomicdex.html for install instructions.", 'orange'))
+        print(colorize("Exiting...\n", 'blue'))
+
 
 def stop_mm2(node_ip, user_pass):
         params = {'userpass': user_pass, 'method': 'stop'}
@@ -101,7 +119,6 @@ def stop_mm2(node_ip, user_pass):
             msg = "MM2 stopped. "
         except:
             msg = "MM2 was not running. "
-        wait_continue(msg)
 
 
 def exit(node_ip, user_pass):
@@ -132,14 +149,14 @@ def exit(node_ip, user_pass):
         print(colorize("Goodbye!", 'blue'))
         sys.exit()
 
-def activate_all(node_ip, user_pass):
-    for coin in coinslib.coins:
-        if coinslib.coins[coin]['activate_with'] == 'native':
-            r = rpclib.enable(node_ip, user_pass, coin)
-            print(colorize("Activating "+coin+" in native mode", 'cyan'))
-        else:
-            r = rpclib.electrum(node_ip, user_pass, coin)
-            print(colorize("Activating "+coin+" with electrum", 'cyan'))
+def activate_selected_coins(node_ip, user_pass, coinslist):
+    for coin in coinslist:
+        print(node_ip)
+        print(user_pass)
+        print(coinslist)
+        print(coin)
+        r = rpclib.electrum(node_ip, user_pass, coin)
+        print(colorize("Activating "+coin+" with electrum", 'cyan'))
 
 def validate_selection(interrogative, selection_list):
     while True:

@@ -1,16 +1,39 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-#from ui import ui_main, gui_template
+import os
 import sys
+from os.path import expanduser
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from lib import guilib, rpclib, coinslib
+
+cwd = os.getcwd()
+script_path = sys.path[0]
+home = expanduser("~")
 
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi('ui/gui_template.ui', self) # Load the .ui file
         self.show() # Show the GUI
+        creds = guilib.get_creds()
+        if creds[0] != '':
+            guilib.stop_mm2(creds[0], creds[1])
+            guilib.start_mm2()
+        else:
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+    def update_logs(self):
+        print("update_logs")
+        with open(script_path+"/bin/mm2_output.log", 'r') as f:
+            log_text = f.read()
+            lines = f.readlines()
+            self.scrollbar = self.console_logs.verticalScrollBar()
+            self.console_logs.setPlainText(log_text)
+            self.scrollbar.setValue(10000)
+        pass
+    def export_logs(self):
+        pass
     def activate_coins(self):
         activate_dict = {}
         coins = {
@@ -75,13 +98,15 @@ class Ui(QTabWidget):
                 "combo": self.bat_combo,
             }
         }
+        creds = guilib.get_creds()
         for coin in coins:
             checkbox = coins[coin]['checkbox']
             combo = coins[coin]['combo']
             if checkbox.isChecked():
                 activate_dict.update({coin:combo.currentText()})
-        print(activate_dict)
-            
+        print(list(activate_dict.keys()))
+        guilib.activate_selected_coins(creds[0], creds[1], list(activate_dict.keys()))
+
 app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
 window = Ui() # Create an instance of our class
 app.exec_() # Start the application
