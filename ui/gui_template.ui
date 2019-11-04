@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -1929,8 +1929,8 @@
    <attribute name="title">
     <string>Orderbook</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout_8">
-    <item row="0" column="0">
+   <layout class="QVBoxLayout" name="verticalLayout_4">
+    <item>
      <widget class="QLabel" name="label_45">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -1943,18 +1943,8 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QFrame" name="frame_11">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="3">
-     <widget class="QTableWidget" name="tableWidget_4">
+    <item>
+     <widget class="QTableWidget" name="orderbook_table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -1974,7 +1964,7 @@
        <number>16</number>
       </property>
       <property name="columnCount">
-       <number>6</number>
+       <number>5</number>
       </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>true</bool>
@@ -2023,17 +2013,12 @@
       </column>
       <column>
        <property name="text">
-        <string>Sell Vol</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
         <string>Buy Coin</string>
        </property>
       </column>
       <column>
        <property name="text">
-        <string>Buy Vol</string>
+        <string>Volume</string>
        </property>
       </column>
       <column>
@@ -2048,22 +2033,60 @@
       </column>
      </widget>
     </item>
-    <item row="2" column="2">
-     <widget class="QPushButton" name="pushButton_10">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item>
+     <widget class="QFrame" name="frame_11">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <property name="font">
-       <font>
-        <pointsize>9</pointsize>
-       </font>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
       </property>
-      <property name="text">
-       <string>Buy Selected</string>
-      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Sell:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="sell_combo"/>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Buy:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="buy_combo"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_10">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Buy Selected</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -2773,8 +2796,40 @@
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>991</x>
-     <y>719</y>
+     <x>1682</x>
+     <y>718</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buy_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_orderbook()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1201</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sell_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_orderbook()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1531</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -2791,5 +2846,6 @@
   <slot>prepare_tab()</slot>
   <slot>send_funds()</slot>
   <slot>show_wallet()</slot>
+  <slot>show_orderbook()</slot>
  </slots>
 </ui>

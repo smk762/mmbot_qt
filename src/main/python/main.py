@@ -166,8 +166,6 @@ class Ui(QTabWidget):
         pass
     def show_trades(self):
         pass
-    def show_orderbook(self):
-        pass
 
     def show_wallet(self):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
@@ -233,6 +231,61 @@ class Ui(QTabWidget):
             self.wallet_msg.setStyleSheet('color: green')
         self.wallet_msg.setText(msg)
         pass
+
+    def show_orderbook(self):
+        row = 0
+        index = self.buy_combo.currentIndex()
+        rel = self.buy_combo.itemText(index)
+        index = self.sell_combo.currentIndex()
+        base = self.sell_combo.itemText(index)
+        self.update_orderbook_combos(base, rel)
+        pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
+        if 'error' in pair_book:
+            pass
+        elif 'asks' in pair_book:
+            for item in pair_book['asks']:
+                base = QTableWidgetItem(pair_book['base'])
+                rel = QTableWidgetItem(pair_book['rel'])
+                price = QTableWidgetItem(item['price'])
+                volume = QTableWidgetItem(item['maxvolume'])
+                self.orderbook_table.setItem(row,0,base)
+                self.orderbook_table.setItem(row,1,rel)
+                self.orderbook_table.setItem(row,2,volume)
+                self.orderbook_table.setItem(row,3,price)
+                row += 1
+        row_count = self.orderbook_table.rowCount()
+        if row_count > row:
+            for i in range(row, row_count):
+                base = QTableWidgetItem('')
+                rel = QTableWidgetItem('')
+                price = QTableWidgetItem('')
+                volume = QTableWidgetItem('')
+                self.orderbook_table.setItem(i,0,base)
+                self.orderbook_table.setItem(i,1,rel)
+                self.orderbook_table.setItem(i,2,volume)
+                self.orderbook_table.setItem(i,3,price)
+
+    def update_orderbook_combos(self, base, rel):
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        existing_coins = []
+        for i in range(self.buy_combo.count()):
+            existing_coin = self.buy_combo.itemText(i)
+            existing_coins.append(existing_coin)
+        for coin in existing_coins:
+            if coin not in active_coins:
+                self.buy_combo.removeItem(coin)
+                self.sell_combo.removeItem(coin)
+        for coin in active_coins:
+            if coin not in existing_coins:
+                if coin != rel:
+                    self.buy_combo.addItem(coin)
+                else:
+                    self.buy_combo.removeItem(coin)
+                if coin != base:
+                    self.sell_combo.addItem(coin)
+                else:
+                    self.sell_combo.removeItem(coin)
+        self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
 
     def prepare_tab(self):
         QCoreApplication.processEvents()
