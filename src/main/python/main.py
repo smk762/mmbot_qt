@@ -399,17 +399,17 @@ class Ui(QTabWidget):
             rpc_ip = '127.0.0.1'
         ip_valid = guilib.validate_ip(rpc_ip)
         if not ip_valid:
-            msg += 'RPC IP is invalid! '
+            msg += 'RPC IP is invalid! \n'
         binanace_key = self.binance_key_text_input.text()
         binance_secret = self.binance_secret_text_input.text()
         margin = self.trade_premium_input.text()
         netid = self.netid_input.text()
         if passphrase == '':
-            msg += 'No seed phrase input! '
+            msg += 'No seed phrase input! \n'
         if rpc_password == '':
-            msg += 'No RPC password input! '
+            msg += 'No RPC password input! \n'
         if rpc_ip == '':
-            msg += 'No RPC IP input! '
+            msg += 'No RPC IP input! \n'
         if msg == '':
             overwrite = True
             if os.path.isfile(script_path+"/bin/MM2.json"):
@@ -432,7 +432,8 @@ class Ui(QTabWidget):
                 guilib.stop_mm2(creds[0], creds[1])
                 print("MM2.json file created!")
         else:
-            # show errors
+            QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
+            
             pass
 
     def prepare_tab(self):
