@@ -174,8 +174,31 @@ class Ui(QTabWidget):
     def show_orders(self):
         pass
 
-    def export_table(self, table):
+
+    def saveFileDialog(self):
+        filename = ''
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","All Files (*);;Text Files (*.csv)", options=options)
+        return fileName
+
+    def export_table(self):
         # get table data
+        table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
+        for i in range(self.trades_table.rowCount()):
+            row_list = []
+            for j in range(self.trades_table.columnCount()):
+                try:
+                    row_list.append(self.trades_table.item(i,j).text())
+                except:
+                    pass
+            table_csv += ','.join(row_list)+'\r\n'
+        now = datetime.datetime.now()
+        timestamp = timestamp = datetime.datetime.timestamp(now)
+        filename = self.saveFileDialog()
+        if filename != '':
+            with open(filename, 'w') as f:
+                f.write(table_csv)
         # popup for file to save as
         # write data to file
         # json, csv option?

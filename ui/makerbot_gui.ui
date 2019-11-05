@@ -1807,7 +1807,7 @@
      </widget>
     </item>
     <item row="0" column="2">
-     <widget class="QPushButton" name="pushButton_6">
+     <widget class="QPushButton" name="export_trade_table_btn">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
@@ -3008,6 +3008,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>export_trade_table_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>export_table()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1656</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -3021,5 +3037,6 @@
   <slot>generate_seed()</slot>
   <slot>save_config()</slot>
   <slot>orderbook_buy()</slot>
+  <slot>export_table()</slot>
  </slots>
 </ui>
