@@ -46,7 +46,7 @@ class QR_image(qrcode.image.base.BaseImage):
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi('ui/makerbot_gui.ui', self) # Load the .ui file
+        uic.loadUi(script_path+'/ui/makerbot_gui.ui', self) # Load the .ui file
         self.show() # Show the GUI
         global creds
         global gui_coins
