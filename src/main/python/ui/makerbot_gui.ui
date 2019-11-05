@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -121,6 +121,9 @@
        </item>
        <item row="0" column="2">
         <widget class="QComboBox" name="btc_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>Buy &amp; sell</string>
          </property>
@@ -237,6 +240,9 @@
        </item>
        <item row="0" column="7">
         <widget class="QComboBox" name="labs_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -343,6 +349,9 @@
        </item>
        <item row="1" column="2">
         <widget class="QComboBox" name="eth_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>Sell</string>
          </property>
@@ -446,6 +455,9 @@
        </item>
        <item row="1" column="7">
         <widget class="QComboBox" name="zec_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -552,6 +564,9 @@
        </item>
        <item row="2" column="2">
         <widget class="QComboBox" name="kmd_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>Buy</string>
          </property>
@@ -658,6 +673,9 @@
        </item>
        <item row="2" column="7">
         <widget class="QComboBox" name="rick_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -761,6 +779,9 @@
        </item>
        <item row="3" column="2">
         <widget class="QComboBox" name="bch_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -867,6 +888,9 @@
        </item>
        <item row="3" column="7">
         <widget class="QComboBox" name="morty_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -970,6 +994,9 @@
        </item>
        <item row="4" column="2">
         <widget class="QComboBox" name="doge_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1073,6 +1100,9 @@
        </item>
        <item row="4" column="7">
         <widget class="QComboBox" name="dai_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1176,6 +1206,9 @@
        </item>
        <item row="5" column="2">
         <widget class="QComboBox" name="dash_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1279,6 +1312,9 @@
        </item>
        <item row="5" column="7">
         <widget class="QComboBox" name="rvn_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1382,6 +1418,9 @@
        </item>
        <item row="6" column="2">
         <widget class="QComboBox" name="ltc_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1485,6 +1524,9 @@
        </item>
        <item row="6" column="7">
         <widget class="QComboBox" name="bat_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="currentText">
           <string>View only</string>
          </property>
@@ -1571,6 +1613,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(114, 159, 207)</string>
+      </property>
       <property name="text">
        <string>Update and activate</string>
       </property>
@@ -1618,6 +1663,9 @@
        <font>
         <pointsize>9</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(114, 159, 207)</string>
       </property>
       <property name="text">
        <string>Export</string>
@@ -1818,6 +1866,9 @@
        <font>
         <pointsize>9</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(114, 159, 207)</string>
       </property>
       <property name="text">
        <string>Export</string>
@@ -2071,7 +2122,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="sell_combo"/>
+        <widget class="QComboBox" name="sell_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_3">
@@ -2084,7 +2139,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="buy_combo"/>
+        <widget class="QComboBox" name="buy_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QPushButton" name="orderbook_buy_btn">
@@ -2098,6 +2157,9 @@
           <font>
            <pointsize>9</pointsize>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
          </property>
          <property name="text">
           <string>Buy Selected</string>
@@ -2175,6 +2237,9 @@
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
          </property>
          <property name="currentText">
           <string/>
@@ -2288,6 +2353,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
          </property>
          <property name="text">
           <string>Send</string>
@@ -2595,6 +2663,9 @@
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(114, 159, 207)</string>
+            </property>
             <property name="text">
              <string>Generate</string>
             </property>
@@ -2745,6 +2816,9 @@
        </item>
        <item row="9" column="1">
         <widget class="QPushButton" name="btn_save_config">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
          <property name="text">
           <string>Save Settings</string>
          </property>
@@ -2814,6 +2888,9 @@
     </item>
     <item row="2" column="1">
      <widget class="QPushButton" name="btn_update_logs">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(114, 159, 207)</string>
+      </property>
       <property name="text">
        <string>Update</string>
       </property>
@@ -2821,6 +2898,9 @@
     </item>
     <item row="2" column="2">
      <widget class="QPushButton" name="btn_export_logs">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(114, 159, 207)</string>
+      </property>
       <property name="text">
        <string>Export</string>
       </property>
