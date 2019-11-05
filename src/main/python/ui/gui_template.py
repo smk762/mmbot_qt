@@ -1177,4 +1177,4 @@ class Ui_MainTabs(object):
 ""))
         MainTabs.setTabText(MainTabs.indexOf(self.tab_log), _translate("MainTabs", "Logs"))
 
-zimport coin_icons_rc
+import coin_icons_rc

@@ -10,12 +10,15 @@ from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib, wordlist
 import qrcode
 import random
+from ui import coin_icons
+import datetime
 
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
 os.environ['MM_COINS_PATH'] = script_path+"/bin/coins"
 os.environ['MM_CONF_PATH'] = script_path+"/bin/MM2.json"
+
 
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
@@ -43,7 +46,7 @@ class QR_image(qrcode.image.base.BaseImage):
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi('ui/gui_template.ui', self) # Load the .ui file
+        uic.loadUi('ui/makerbot_gui.ui', self) # Load the .ui file
         self.show() # Show the GUI
         global creds
         global gui_coins
@@ -170,8 +173,45 @@ class Ui(QTabWidget):
 
     def show_orders(self):
         pass
+
+    def export_table(self, table):
+        # get table data
+        # popup for file to save as
+        # write data to file
+        # json, csv option?
+
     def show_trades(self):
-        pass
+        swaps_info = rpclib.my_recent_swaps(creds[0], creds[1], limit=9999, from_uuid='').json()
+        row = 0
+        for swap in swaps_info['result']['swaps']:
+            print()
+            status = ''
+            uuid = QTableWidgetItem(swap['uuid'])
+            my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
+            my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
+            other_amount = QTableWidgetItem(swap['my_info']['other_amount'])
+            other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
+            start_time = str(datetime.datetime.fromtimestamp(swap['my_info']['started_at']))
+            started_at = QTableWidgetItem(start_time)
+            sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
+            self.trades_table.setItem(row,0,started_at)
+            self.trades_table.setItem(row,2,my_coin)
+            self.trades_table.setItem(row,3,my_amount)
+            self.trades_table.setItem(row,4,other_coin)
+            self.trades_table.setItem(row,5,other_amount)
+            self.trades_table.setItem(row,6,sell_price)
+            self.trades_table.setItem(row,7,uuid)
+            for event in swap['events']:
+                event_type = event['event']['type']
+                print(swap['uuid'])
+                print(event_type)
+                print(rpclib.error_events)
+                if event_type in rpclib.error_events:
+                    event_type = 'Failed'
+                    break
+            status = QTableWidgetItem(event_type)
+            self.trades_table.setItem(row,1,status)
+            row += 1
 
     def show_wallet(self):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
@@ -241,6 +281,24 @@ class Ui(QTabWidget):
         self.wallet_msg.setText(msg)
         pass
 
+
+
+    def orderbook_buy(self):
+        row = 0
+        index = self.buy_combo.currentIndex()
+        rel = self.buy_combo.itemText(index)
+        index = self.sell_combo.currentIndex()
+        base = self.sell_combo.itemText(index)
+        selected_row = self.orderbook_table.currentRow()
+        print(selected_row)
+        selected_price = self.orderbook_table.item(selected_row,3).text()
+        vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume to buy at '+selected_price+': ')
+        if ok:
+            print(vol)
+        resp = rpclib.buy(creds[0], creds[1], base, rel, vol, selected_price).json()
+        print(resp)
+        pass
+
     def show_orderbook(self):
         row = 0
         index = self.buy_combo.currentIndex()
@@ -257,8 +315,8 @@ class Ui(QTabWidget):
                 rel = QTableWidgetItem(pair_book['rel'])
                 price = QTableWidgetItem(item['price'])
                 volume = QTableWidgetItem(item['maxvolume'])
-                self.orderbook_table.setItem(row,0,base)
-                self.orderbook_table.setItem(row,1,rel)
+                self.orderbook_table.setItem(row,0,rel)
+                self.orderbook_table.setItem(row,1,base)
                 self.orderbook_table.setItem(row,2,volume)
                 self.orderbook_table.setItem(row,3,price)
                 row += 1
@@ -269,8 +327,8 @@ class Ui(QTabWidget):
                 rel = QTableWidgetItem('')
                 price = QTableWidgetItem('')
                 volume = QTableWidgetItem('')
-                self.orderbook_table.setItem(i,0,base)
-                self.orderbook_table.setItem(i,1,rel)
+                self.orderbook_table.setItem(i,0,rel)
+                self.orderbook_table.setItem(i,1,base)
                 self.orderbook_table.setItem(i,2,volume)
                 self.orderbook_table.setItem(i,3,price)
 

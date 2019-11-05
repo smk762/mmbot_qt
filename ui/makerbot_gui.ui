@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -99,7 +99,7 @@
           <string>Bitcoin</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -321,7 +321,7 @@
           <string>Ethereum</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -530,7 +530,7 @@
           <string>Komodo</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -634,6 +634,9 @@
          </property>
          <property name="text">
           <string>Rick</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -840,6 +843,9 @@
          </property>
          <property name="text">
           <string>Morty</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -1819,12 +1825,15 @@
      </widget>
     </item>
     <item row="1" column="0" colspan="3">
-     <widget class="QTableWidget" name="tableWidget_3">
+     <widget class="QTableWidget" name="trades_table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
       </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
@@ -1834,6 +1843,9 @@
       </property>
       <property name="dragDropOverwriteMode">
        <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
       <property name="rowCount">
        <number>16</number>
@@ -1888,6 +1900,11 @@
       </column>
       <column>
        <property name="text">
+        <string>Status</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>Sell Coin</string>
        </property>
       </column>
@@ -1913,12 +1930,7 @@
       </column>
       <column>
        <property name="text">
-        <string>Mkt Price</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Profit USD</string>
+        <string>UUID</string>
        </property>
       </column>
      </widget>
@@ -2075,7 +2087,7 @@
         <widget class="QComboBox" name="buy_combo"/>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_10">
+        <widget class="QPushButton" name="orderbook_buy_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -2980,6 +2992,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>orderbook_buy_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>orderbook_buy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1089</x>
+     <y>722</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -2992,5 +3020,6 @@
   <slot>show_orderbook()</slot>
   <slot>generate_seed()</slot>
   <slot>save_config()</slot>
+  <slot>orderbook_buy()</slot>
  </slots>
 </ui>

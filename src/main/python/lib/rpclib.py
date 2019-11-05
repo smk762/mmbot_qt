@@ -12,6 +12,20 @@ cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
 
+maker_success_events = ['Started', 'Negotiated', 'TakerFeeValidated', 'MakerPaymentSent', 'TakerPaymentReceived', 'TakerPaymentWaitConfirmStarted',
+                        'TakerPaymentValidatedAndConfirmed', 'TakerPaymentSpent', 'Finished']
+
+maker_errors_events = ['StartFailed', 'NegotiateFailed', 'TakerFeeValidateFailed', 'MakerPaymentTransactionFailed', 'MakerPaymentDataSendFailed',
+                      'TakerPaymentValidateFailed', 'TakerPaymentSpendFailed', 'MakerPaymentRefunded', 'MakerPaymentRefundFailed']
+
+taker_success_events = ['Started', 'Negotiated', 'TakerFeeSent', 'MakerPaymentReceived', 'MakerPaymentWaitConfirmStarted',
+                        'MakerPaymentValidatedAndConfirmed', 'TakerPaymentSent', 'TakerPaymentSpent', 'MakerPaymentSpent', 'Finished']
+
+taker_errors_events = ['StartFailed', 'NegotiateFailed', 'TakerFeeSendFailed', 'MakerPaymentValidateFailed', 'TakerPaymentTransactionFailed',
+                      'TakerPaymentDataSendFailed', 'TakerPaymentWaitForSpendFailed', 'MakerPaymentSpendFailed', 'TakerPaymentRefunded',
+                      'TakerPaymentRefundFailed']
+
+error_events = list(set(taker_errors_events + maker_errors_events))
 #TODO: change this to match python methods
 def help_mm2(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'help'}
@@ -41,11 +55,6 @@ def check_active_coins(node_ip, user_pass):
       return active_cointags 
     else:
       print(active_coins)
-
-def my_orders(node_ip, user_pass):
-    params = {'userpass': user_pass, 'method': 'my_orders',}
-    r = requests.post(node_ip, json=params)
-    return r
 
 def my_orders(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'my_orders',}
