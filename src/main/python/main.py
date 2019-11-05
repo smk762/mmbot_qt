@@ -336,8 +336,8 @@ class Ui(QTabWidget):
             for item in pair_book['asks']:
                 base = QTableWidgetItem(pair_book['base'])
                 rel = QTableWidgetItem(pair_book['rel'])
-                price = QTableWidgetItem(item['price'])
-                volume = QTableWidgetItem(item['maxvolume'])
+                price = QTableWidgetItem(str(round(float(item['price']), 8)))
+                volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
                 self.orderbook_table.setItem(row,0,rel)
                 self.orderbook_table.setItem(row,1,base)
                 self.orderbook_table.setItem(row,2,volume)
