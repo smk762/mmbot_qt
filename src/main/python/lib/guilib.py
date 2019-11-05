@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import re 
 import os
 import sys
 import json
@@ -36,20 +37,26 @@ home = expanduser("~")
 ignored_addresses = ['RDbAXLCmQ2EN7daEZZp7CC9xzkcN8DfAZd']
 
 def get_creds():
+    local_ip = ''
+    userpass = ''
     try:
         with open(script_path+"/bin/MM2.json") as j:
-            mm2json = json.load(j)
-        gui = mm2json['gui']
-        netid = mm2json['netid']
-        passphrase = mm2json['passphrase']
-        userpass = mm2json['rpc_password']
-        rpc_password = mm2json['rpc_password']
-        local_ip = "http://127.0.0.1:7783"
-        MM2_json_exists = True
+            try:
+                mm2json = json.load(j)
+                gui = mm2json['gui']
+                netid = mm2json['netid']
+                passphrase = mm2json['passphrase']
+                userpass = mm2json['rpc_password']
+                rpc_password = mm2json['rpc_password']
+                local_ip = "http://127.0.0.1:7783"
+                MM2_json_exists = True
+            except:
+                mm2json = j.read()
+                print(mm2json)
     except:
-        input(colorize("Error in MM2.json file! See MM2_example.json for a valid example..."))
-        local_ip = ''
-        userpass = ''
+        pass
+    print(local_ip)
+    print(userpass)
     return local_ip, userpass
 
 def colorize(string, color):
@@ -100,6 +107,7 @@ def create_MM2_json():
 def start_mm2(logfile='mm2_output.log'):
     if os.path.isfile(script_path+"/bin/mm2"):
         mm2_output = open(script_path+"/bin/"+logfile,'w+')
+
         subprocess.Popen([script_path+"/bin/mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
         time.sleep(1)
     else:
@@ -1246,3 +1254,13 @@ def submit_bot_trades(node_ip, user_pass, coins_data):
                 else:
                     print(colorize("Unable to get price for "+rel+", skipping...", 'cyan'))
     # TODO: Detect swaps in progress, and make sure to not cancel with new swap.
+
+def validate_ip(ip):
+    ip_regex = '''^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+                    25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+                    25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
+                    25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)'''
+    if(re.search(ip_regex, ip)):  
+        return True
+    else:  
+        return False

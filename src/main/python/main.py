@@ -1,6 +1,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
+import json
 from os.path import expanduser
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -13,6 +14,8 @@ import random
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
+os.environ['MM_COINS_PATH'] = script_path+"/bin/coins"
+os.environ['MM_CONF_PATH'] = script_path+"/bin/MM2.json"
 
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
@@ -51,6 +54,8 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+            QMessageBox.information(self, 'MM2.json not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
+
         creds = guilib.get_creds()
         gui_coins = {
             "BTC": {
@@ -221,11 +226,14 @@ class Ui(QTabWidget):
                     txid_str = '0x'+txid
                 else:
                     txid_str = txid
-                msg = "Sent! TXID: ["+txid_str+"]"
                 try:
                     msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
                 except:
-                    pass
+                    msg = "Sent! TXID: ["+txid_str+"]"
+                balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
+                if 'address' in balance_info:
+                    balance_text = balance_info['balance']
+                    self.wallet_balance.setText(balance_text)
         else:
             print(resp)
             msg = str(resp)
@@ -298,6 +306,53 @@ class Ui(QTabWidget):
         seed_phrase = " ".join(seed_words_list)
         print(seed_phrase)
         self.seed_text_input.setText(seed_phrase)
+
+    def save_config(self):
+        msg = ''
+        gui = 'Makerbot v0.0.1'
+        passphrase = self.seed_text_input.toPlainText()
+        rpc_password = self.rpcpass_text_input.text()
+        rpc_ip = self.rpc_ip_text_input.text()
+        local_only = self.checkbox_local_only.isChecked()
+        if local_only:
+            rpc_ip = '127.0.0.1'
+        ip_valid = guilib.validate_ip(rpc_ip)
+        if not ip_valid:
+            msg += 'RPC IP is invalid! '
+        binanace_key = self.binance_key_text_input.text()
+        binance_secret = self.binance_secret_text_input.text()
+        margin = self.trade_premium_input.text()
+        netid = self.netid_input.text()
+        if passphrase == '':
+            msg += 'No seed phrase input! '
+        if rpc_password == '':
+            msg += 'No RPC password input! '
+        if rpc_ip == '':
+            msg += 'No RPC IP input! '
+        if msg == '':
+            overwrite = True
+            if os.path.isfile(script_path+"/bin/MM2.json"):
+                confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing MM2.json detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if not confirm == QMessageBox.Yes:
+                    overwrite = False
+            if overwrite:
+                data = {}
+                data.update({"gui":gui})
+                data.update({"rpc_password":rpc_password})
+                data.update({"netid":int(netid)})
+                data.update({"passphrase":passphrase})
+                data.update({"userhome":home})
+                data.update({"rpc_local_only":local_only})
+                data.update({"rpc_allow_ip":rpc_ip})
+                print(data)
+                with open(script_path+"/bin/MM2.json", 'w', encoding='utf-8') as f:
+                    json.dump(data, f, ensure_ascii=False, indent=4)
+                QMessageBox.information(self, 'New MM2.json created', "Settings updated. Please restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
+                guilib.stop_mm2(creds[0], creds[1])
+                print("MM2.json file created!")
+        else:
+            # show errors
+            pass
 
     def prepare_tab(self):
         QCoreApplication.processEvents()

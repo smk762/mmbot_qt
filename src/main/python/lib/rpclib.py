@@ -33,16 +33,20 @@ def get_enabled_coins(node_ip, user_pass):
 
 def check_active_coins(node_ip, user_pass):
     active_cointags = []
-    active_coins = get_enabled_coins(node_ip, user_pass).json()['result']
-    for coin in active_coins:
-        active_cointags.append(coin['ticker'])
-    return active_cointags 
+    active_coins = get_enabled_coins(node_ip, user_pass).json()
+    if 'result' in active_coins:
+      active_coins = active_coins['result']
+      for coin in active_coins:
+          active_cointags.append(coin['ticker'])
+      return active_cointags 
+    else:
+      print(active_coins)
 
 def my_orders(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'my_orders',}
     r = requests.post(node_ip, json=params)
     return r
-    
+
 def my_orders(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'my_orders',}
     r = requests.post(node_ip, json=params)
