@@ -218,6 +218,25 @@ class Ui(QTabWidget):
                 self.orders_table.setItem(row,5,margin)
                 self.orders_table.setItem(row,7,uuid)
                 row += 1
+            row_count = self.orders_table.rowCount()
+            while row_count > row:
+                available = QTableWidgetItem('')
+                base = QTableWidgetItem('')
+                rel = QTableWidgetItem('')
+                price = QTableWidgetItem('')
+                created_at = QTableWidgetItem('')
+                market_price = QTableWidgetItem('')
+                margin = QTableWidgetItem('')
+                uuid = QTableWidgetItem('')
+                self.orders_table.setItem(row,0,created_at)
+                self.orders_table.setItem(row,1,base)
+                self.orders_table.setItem(row,2,available)
+                self.orders_table.setItem(row,3,rel)
+                self.orders_table.setItem(row,4,price)
+                self.orders_table.setItem(row,5,market_price)
+                self.orders_table.setItem(row,5,margin)
+                self.orders_table.setItem(row,7,uuid)
+                row += 1
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
@@ -237,6 +256,7 @@ class Ui(QTabWidget):
         else:
             msg = resp
         QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+        self.show_orders()
 
     def cancel_all_orders(self):
         resp = rpclib.cancel_all(creds[0], creds[1]).json()
@@ -251,6 +271,7 @@ class Ui(QTabWidget):
             msg = resp
         msg = "All your orders have been cancelled"
         QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+        self.show_orders()
    
     ## SHOW TRADES
 
@@ -331,10 +352,10 @@ class Ui(QTabWidget):
                 rel = QTableWidgetItem('')
                 price = QTableWidgetItem('')
                 volume = QTableWidgetItem('')
-                self.orderbook_table.setItem(i,0,base)
-                self.orderbook_table.setItem(i,1,rel)
-                self.orderbook_table.setItem(i,2,volume)
-                self.orderbook_table.setItem(i,3,price)
+                self.orderbook_table.setItem(row,0,base)
+                self.orderbook_table.setItem(row,1,rel)
+                self.orderbook_table.setItem(row,2,volume)
+                self.orderbook_table.setItem(row,3,price)
                 row += 1
 
     def update_orderbook_combos(self, base, rel, active_coins, trigger=''):
