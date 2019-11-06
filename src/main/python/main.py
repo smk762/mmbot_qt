@@ -450,14 +450,15 @@ class Ui(QTabWidget):
                 if coin != rel:
                     self.buy_combo.addItem(coin)
         # eliminate selection duplication
-        if self.buy_combo.count() == self.sell_combo.count():
-            self.buy_combo.removeItem(0)
+        for i in range(self.buy_combo.count()):
+            if self.buy_combo.itemText(i) == rel:
+                self.buy_combo.removeItem(i)
         # set values if empty
         if base == '':
             self.buy_combo.setCurrentIndex(0)
             base = self.buy_combo.itemText(self.buy_combo.currentIndex())
         if rel == '':
-            self.sell_combo.setCurrentIndex(0)
+            self.sell_combo.setCurrentIndex(1)
             rel = self.sell_combo.itemText(self.sell_combo.currentIndex())
         self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
         return base, rel
@@ -560,8 +561,9 @@ class Ui(QTabWidget):
             if coin not in existing_buy_coins:
                 self.create_sell_combo.addItem(coin)
         # eliminate selection duplication
-        if self.create_sell_combo.count() == self.create_buy_combo.count():
-            self.create_buy_combo.removeItem(0)
+        for i in range(self.buy_combo.count()):
+            if self.buy_combo.itemText(i) == rel:
+                self.buy_combo.removeItem(i)
         # set values if empty
         if base == '':
             self.create_sell_combo.setCurrentIndex(0)
