@@ -170,6 +170,24 @@ class Ui(QTabWidget):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
+        search_txt = self.search_activate.text().lower()
+        print(search_txt)
+        if search_txt != '':
+            if 'gui_coins' in globals():
+                for coin in gui_coins:
+                    if coin.lower().find(search_txt) == -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) == -1:
+                        gui_coins[coin]['checkbox'].hide()
+                        gui_coins[coin]['combo'].hide()
+                        gui_coins[coin]['status'].hide()
+                    else:
+                        gui_coins[coin]['checkbox'].show()
+                        gui_coins[coin]['combo'].show()
+                        gui_coins[coin]['status'].show()
+        elif 'gui_coins' in globals():
+            for coin in gui_coins:
+                gui_coins[coin]['checkbox'].show()
+                gui_coins[coin]['combo'].show()
+                gui_coins[coin]['status'].show()
         if 'gui_coins' in globals():
             for coin in gui_coins:
                 status = gui_coins[coin]['status']
@@ -181,13 +199,11 @@ class Ui(QTabWidget):
                     status.setText('inactive')
 
     def activate_coins(self):
-        activate_dict = {}
         for coin in gui_coins:
             checkbox = gui_coins[coin]['checkbox']
             combo = gui_coins[coin]['combo']
             if checkbox.isChecked():
                 QCoreApplication.processEvents()
-                activate_dict.update({coin:combo.currentText()})
                 r = rpclib.electrum(creds[0], creds[1], coin)
                 print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
@@ -585,9 +601,9 @@ class Ui(QTabWidget):
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
             if 'icon' in gui_coins[coin]:
-                self.wallet_coin_img.setText("<html><head/><body><p><img src=\""+gui_coins[coin]['icon']+"\"/></p></body></html>")
+                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
             else:
-                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/coins/LABS_wallet.png\"/></p></body></html>")
+                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/labs.png\"/></p></body></html>")
             balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
             if 'address' in balance_info:
                 addr_text = balance_info['address']

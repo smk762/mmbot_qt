@@ -1,19 +1,21 @@
 <RCC>
-  <qresource prefix="coins">
-    <file>kmd_400.png</file>
-    <file>kmd_128.png</file>
-    <file>LABS_wallet.png</file>
-    <file>KMD_Labs_Logo_thick_outline_2_32.png</file>
-    <file>zec.png</file>
-    <file>bch.png</file>
-    <file>bat.svg</file>
-    <file>btc.svg</file>
-    <file>dai.svg</file>
-    <file>doge.svg</file>
-    <file>eth.svg</file>
-    <file>ltc.svg</file>
-    <file>dash.png</file>
-    <file>kmd.png</file>
-    <file>rvn.svg</file>
+  <qresource prefix="lrg">
+    <file>img/400/kmd.png</file>
+    <file>img/400/labs.png</file>
+  </qresource>
+  <qresource prefix="sml">
+    <file>img/32/color/eth.png</file>
+    <file>img/32/color/kmd.png</file>
+    <file>img/32/color/rvn.png</file>
+    <file>img/32/color/bat.png</file>
+    <file>img/32/color/bch.png</file>
+    <file>img/32/color/btc.png</file>
+    <file>img/32/color/dai.png</file>
+    <file>img/32/color/dash.png</file>
+    <file>img/32/color/dgb.png</file>
+    <file>img/32/color/doge.png</file>
+    <file>img/32/color/labs.png</file>
+    <file>img/32/color/ltc.png</file>
+    <file>img/32/color/zec.png</file>
   </qresource>
 </RCC>

@@ -38,14 +38,14 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
     <string>Activate</string>
    </attribute>
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout_13">
+    <item row="0" column="0">
      <widget class="QLabel" name="title_activate">
       <property name="enabled">
        <bool>true</bool>
@@ -71,11 +71,24 @@
        <string>Select coins for activation</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
       </property>
      </widget>
     </item>
-    <item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="search_activate">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="placeholderText">
+       <string>Search...</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" colspan="2">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -92,11 +105,18 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QCheckBox" name="checkBox_btc">
+         <property name="accessibleName">
+          <string/>
+         </property>
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
          </property>
          <property name="text">
           <string>Bitcoin</string>
+         </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/btc.png</normaloff>:/sml/img/32/color/btc.png</iconset>
          </property>
          <property name="checked">
           <bool>false</bool>
@@ -104,22 +124,6 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLabel" name="icon_btc">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/btc.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
         <widget class="QComboBox" name="btc_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -155,7 +159,7 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="3">
+       <item row="0" column="2">
         <widget class="QLabel" name="btc_status">
          <property name="palette">
           <palette>
@@ -199,7 +203,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="4" rowspan="7">
+       <item row="0" column="3" rowspan="7">
         <spacer name="vspacer_activate">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -212,7 +216,7 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="5">
+       <item row="0" column="4">
         <widget class="QCheckBox" name="checkBox_labs">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -220,25 +224,13 @@
          <property name="text">
           <string>Labs</string>
          </property>
-        </widget>
-       </item>
-       <item row="0" column="6">
-        <widget class="QLabel" name="icon_labs">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/KMD_Labs_Logo_thick_outline_2_32.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="0" column="7">
+       <item row="0" column="5">
         <widget class="QComboBox" name="labs_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -274,7 +266,7 @@
          </item>
         </widget>
        </item>
-       <item row="0" column="8">
+       <item row="0" column="6">
         <widget class="QLabel" name="labs_status">
          <property name="palette">
           <palette>
@@ -320,11 +312,18 @@
        </item>
        <item row="1" column="0">
         <widget class="QCheckBox" name="checkBox_eth">
+         <property name="accessibleName">
+          <string/>
+         </property>
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
          </property>
          <property name="text">
           <string>Ethereum</string>
+         </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
          </property>
          <property name="checked">
           <bool>false</bool>
@@ -332,22 +331,6 @@
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLabel" name="icon_eth">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/eth.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
         <widget class="QComboBox" name="eth_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -383,7 +366,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item row="1" column="2">
         <widget class="QLabel" name="eth_status">
          <property name="palette">
           <palette>
@@ -427,7 +410,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
+       <item row="1" column="4">
         <widget class="QCheckBox" name="checkBox_zec">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -435,25 +418,13 @@
          <property name="text">
           <string>Zcash</string>
          </property>
-        </widget>
-       </item>
-       <item row="1" column="6">
-        <widget class="QLabel" name="icon_zec">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/zec.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/zec.png</normaloff>:/sml/img/32/color/zec.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="1" column="7">
+       <item row="1" column="5">
         <widget class="QComboBox" name="zec_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -489,7 +460,7 @@
          </item>
         </widget>
        </item>
-       <item row="1" column="8">
+       <item row="1" column="6">
         <widget class="QLabel" name="zec_status">
          <property name="palette">
           <palette>
@@ -541,28 +512,16 @@
          <property name="text">
           <string>Komodo</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
+         </property>
          <property name="checked">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QLabel" name="icon_kmd">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
         <widget class="QComboBox" name="kmd_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -598,7 +557,7 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="3">
+       <item row="2" column="2">
         <widget class="QLabel" name="kmd_status">
          <property name="palette">
           <palette>
@@ -642,7 +601,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="5">
+       <item row="2" column="4">
         <widget class="QCheckBox" name="checkBox_rick">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -650,28 +609,16 @@
          <property name="text">
           <string>Rick</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
+         </property>
          <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="2" column="6">
-        <widget class="QLabel" name="icon_Rick">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="7">
+       <item row="2" column="5">
         <widget class="QComboBox" name="rick_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -707,7 +654,7 @@
          </item>
         </widget>
        </item>
-       <item row="2" column="8">
+       <item row="2" column="6">
         <widget class="QLabel" name="rick_status">
          <property name="palette">
           <palette>
@@ -759,25 +706,13 @@
          <property name="text">
           <string>Bitcoin Cash</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/bch.png</normaloff>:/sml/img/32/color/bch.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QLabel" name="icon_bch">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/bch.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="2">
         <widget class="QComboBox" name="bch_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -813,7 +748,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="3">
+       <item row="3" column="2">
         <widget class="QLabel" name="bch_status">
          <property name="palette">
           <palette>
@@ -857,7 +792,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="5">
+       <item row="3" column="4">
         <widget class="QCheckBox" name="checkBox_morty">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -865,28 +800,16 @@
          <property name="text">
           <string>Morty</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
+         </property>
          <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
        </item>
-       <item row="3" column="6">
-        <widget class="QLabel" name="icon_morty">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="7">
+       <item row="3" column="5">
         <widget class="QComboBox" name="morty_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -922,7 +845,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="8">
+       <item row="3" column="6">
         <widget class="QLabel" name="morty_status">
          <property name="palette">
           <palette>
@@ -974,25 +897,13 @@
          <property name="text">
           <string>Dogecoin</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/doge.png</normaloff>:/sml/img/32/color/doge.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QLabel" name="icon_doge">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/doge.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="2">
         <widget class="QComboBox" name="doge_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1028,7 +939,7 @@
          </item>
         </widget>
        </item>
-       <item row="4" column="3">
+       <item row="4" column="2">
         <widget class="QLabel" name="doge_status">
          <property name="palette">
           <palette>
@@ -1072,7 +983,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="5">
+       <item row="4" column="4">
         <widget class="QCheckBox" name="checkBox_dai">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -1080,25 +991,13 @@
          <property name="text">
           <string>DAI</string>
          </property>
-        </widget>
-       </item>
-       <item row="4" column="6">
-        <widget class="QLabel" name="icon_dai">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/dai.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/dai.png</normaloff>:/sml/img/32/color/dai.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="4" column="7">
+       <item row="4" column="5">
         <widget class="QComboBox" name="dai_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1134,7 +1033,7 @@
          </item>
         </widget>
        </item>
-       <item row="4" column="8">
+       <item row="4" column="6">
         <widget class="QLabel" name="dai_status">
          <property name="palette">
           <palette>
@@ -1186,25 +1085,13 @@
          <property name="text">
           <string>Dash</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/dash.png</normaloff>:/sml/img/32/color/dash.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="5" column="1">
-        <widget class="QLabel" name="icon_dash">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/dash.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="2">
         <widget class="QComboBox" name="dash_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1240,7 +1127,7 @@
          </item>
         </widget>
        </item>
-       <item row="5" column="3">
+       <item row="5" column="2">
         <widget class="QLabel" name="dash_status">
          <property name="palette">
           <palette>
@@ -1284,7 +1171,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="5">
+       <item row="5" column="4">
         <widget class="QCheckBox" name="checkBox_rvn">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -1292,25 +1179,13 @@
          <property name="text">
           <string>Raven</string>
          </property>
-        </widget>
-       </item>
-       <item row="5" column="6">
-        <widget class="QLabel" name="icon_rvn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/rvn.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/rvn.png</normaloff>:/sml/img/32/color/rvn.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="5" column="7">
+       <item row="5" column="5">
         <widget class="QComboBox" name="rvn_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1346,7 +1221,7 @@
          </item>
         </widget>
        </item>
-       <item row="5" column="8">
+       <item row="5" column="6">
         <widget class="QLabel" name="rvn_status">
          <property name="palette">
           <palette>
@@ -1398,25 +1273,13 @@
          <property name="text">
           <string>Litecoin</string>
          </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/ltc.png</normaloff>:/sml/img/32/color/ltc.png</iconset>
+         </property>
         </widget>
        </item>
        <item row="6" column="1">
-        <widget class="QLabel" name="icon_ltc">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/ltc.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="2">
         <widget class="QComboBox" name="ltc_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1452,7 +1315,7 @@
          </item>
         </widget>
        </item>
-       <item row="6" column="3">
+       <item row="6" column="2">
         <widget class="QLabel" name="ltc_status">
          <property name="palette">
           <palette>
@@ -1496,7 +1359,7 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="5">
+       <item row="6" column="4">
         <widget class="QCheckBox" name="checkBox_bat">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
@@ -1504,25 +1367,13 @@
          <property name="text">
           <string>BAT</string>
          </property>
-        </widget>
-       </item>
-       <item row="6" column="6">
-        <widget class="QLabel" name="icon_bat">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/coins/bat.svg&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/sml/img/32/color/bat.png</normaloff>:/sml/img/32/color/bat.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="6" column="7">
+       <item row="6" column="5">
         <widget class="QComboBox" name="bat_combo">
          <property name="styleSheet">
           <string notr="true">background-color: rgb(114, 159, 207)</string>
@@ -1558,7 +1409,7 @@
          </item>
         </widget>
        </item>
-       <item row="6" column="8">
+       <item row="6" column="6">
         <widget class="QLabel" name="bat_status">
          <property name="palette">
           <palette>
@@ -1605,10 +1456,10 @@
       </layout>
      </widget>
     </item>
-    <item>
+    <item row="2" column="0" colspan="2">
      <widget class="QPushButton" name="btn_activate">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -2896,7 +2747,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
+          <string notr="true">background-color: rgb(114, 159, 207);padding-left:25px;</string>
          </property>
          <property name="currentText">
           <string/>
@@ -3414,7 +3265,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../../../../ui/coin_icons.qrc"/>
+  <include location="coin_icons.qrc"/>
  </resources>
  <connections>
   <connection>
@@ -3746,6 +3597,22 @@
     <hint type="sourcelabel">
      <x>1010</x>
      <y>715</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>search_activate</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_active()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1570</x>
+     <y>44</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
