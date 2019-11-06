@@ -245,33 +245,40 @@ class Ui(QTabWidget):
 
     def cancel_order_uuid(self):
         selected_row = self.orders_table.currentRow()
-        order_uuid = self.orders_table.item(selected_row,7).text()
-        resp = rpclib.cancel_uuid(creds[0], creds[1], order_uuid).json()
-        print(resp)
-        msg = ''
-        if 'result' in resp:
-            if resp['result'] == 'success':
-                msg = "Order "+order_uuid+" cancelled"
+        if self.orders_table.item(selected_row,7) is not None:
+            order_uuid = self.orders_table.item(selected_row,7).text()
+            resp = rpclib.cancel_uuid(creds[0], creds[1], order_uuid).json()
+            print(resp)
+            msg = ''
+            if 'result' in resp:
+                if resp['result'] == 'success':
+                    msg = "Order "+order_uuid+" cancelled"
+                else:
+                    msg = resp
             else:
                 msg = resp
+            QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            msg = resp
-        QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)
+           
         self.show_orders()
 
     def cancel_all_orders(self):
-        resp = rpclib.cancel_all(creds[0], creds[1]).json()
-        print(resp)
-        msg = ''
-        if 'result' in resp:
-            if resp['result'] == 'success':
-                msg = "Order "+order_uuid+" cancelled"
+        if self.orders_table.item(0,0).text() != '':
+            resp = rpclib.cancel_all(creds[0], creds[1]).json()
+            print(resp)
+            msg = ''
+            if 'result' in resp:
+                if resp['result'] == 'success':
+                    msg = "Order "+order_uuid+" cancelled"
+                else:
+                    msg = resp
             else:
                 msg = resp
+            msg = "All your orders have been cancelled"
+            QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            msg = resp
-        msg = "All your orders have been cancelled"
-        QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
         self.show_orders()
    
     ## SHOW TRADES
