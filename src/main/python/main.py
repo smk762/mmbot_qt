@@ -2,7 +2,6 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
 import json
-import time
 from os.path import expanduser
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -134,6 +133,7 @@ class Ui(QTabWidget):
                 "status": self.rvn_status,
             },
         }
+
     ## COMMON
 
     def saveFileDialog(self):
@@ -170,8 +170,8 @@ class Ui(QTabWidget):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
-        for coin in self.gui_coins:
-            status = self.gui_coins[coin]['status']
+        for coin in gui_coins:
+            status = gui_coins[coin]['status']
             if coin in active_coins:
                 status.setStyleSheet('color: green')
                 status.setText('active')
@@ -181,9 +181,9 @@ class Ui(QTabWidget):
 
     def activate_coins(self):
         activate_dict = {}
-        for coin in self.gui_coins:
-            checkbox = self.gui_coins[coin]['checkbox']
-            combo = self.gui_coins[coin]['combo']
+        for coin in gui_coins:
+            checkbox = gui_coins[coin]['checkbox']
+            combo = gui_coins[coin]['combo']
             if checkbox.isChecked():
                 QCoreApplication.processEvents()
                 activate_dict.update({coin:combo.currentText()})
@@ -583,8 +583,8 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
-            if 'icon' in self.gui_coins[coin]:
-                self.wallet_coin_img.setText("<html><head/><body><p><img src=\""+self.gui_coins[coin]['icon']+"\"/></p></body></html>")
+            if 'icon' in gui_coins[coin]:
+                self.wallet_coin_img.setText("<html><head/><body><p><img src=\""+gui_coins[coin]['icon']+"\"/></p></body></html>")
             else:
                 self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/coins/LABS_wallet.png\"/></p></body></html>")
             balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
