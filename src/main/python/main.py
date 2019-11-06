@@ -61,73 +61,87 @@ class Ui(QTabWidget):
         creds = guilib.get_creds()
         gui_coins = {
             "BTC": {
+                "type":"utxo",
                 "checkbox": self.checkBox_btc, 
                 "combo": self.btc_combo,
                 "status": self.btc_status,
             },
             "ETH": {
+                "type":"erc20",
                 "checkbox": self.checkBox_eth, 
                 "combo": self.eth_combo,
                 "status": self.eth_status,
             },
             "KMD": {
+                "type":"smartchain",
                 "checkbox": self.checkBox_kmd, 
                 "combo": self.kmd_combo,
                 "status": self.kmd_status,
                 "icon":":/coins/kmd_400.png"
             },
             "LABS": {
+                "type":"smartchain",
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
                 "status": self.labs_status,
                 "icon":":/coins/KMD_Labs_Logo_thick_outline_2_32.png"
             },
             "BCH": {
+                "type":"utxo",
                 "checkbox": self.checkBox_bch, 
                 "combo": self.bch_combo,
                 "status": self.bch_status,
             },
             "BAT": {
+                "type":"erc20",
                 "checkbox": self.checkBox_bat, 
                 "combo": self.bat_combo,
                 "status": self.bat_status,
             },
             "DOGE": {
+                "type":"utxo",
                 "checkbox": self.checkBox_doge, 
                 "combo": self.doge_combo,
                 "status": self.doge_status,
             },
             "DASH": {
+                "type":"utxo",
                 "checkbox": self.checkBox_dash, 
                 "combo": self.dash_combo,
                 "status": self.dash_status,
             },
             "LTC": {
+                "type":"utxo",
                 "checkbox": self.checkBox_ltc, 
                 "combo": self.ltc_combo,
                 "status": self.ltc_status,
             },
             "ZEC": {
+                "type":"utxo",
                 "checkbox": self.checkBox_zec, 
                 "combo": self.zec_combo,
                 "status": self.zec_status,
             },
             "RICK": {
+                "type":"smartchain",
                 "checkbox": self.checkBox_rick, 
                 "combo": self.rick_combo,
                 "status": self.rick_status,
             },
             "MORTY": {
+                "type":"smartchain",
                 "checkbox": self.checkBox_morty, 
                 "combo": self.morty_combo,
                 "status": self.morty_status,
             },
             "DAI": {
+                "type":"erc20",
                 "checkbox": self.checkBox_dai, 
                 "combo": self.dai_combo,
                 "status": self.dai_status,
             },
             "RVN": {
+                "type":"utxo",
                 "checkbox": self.checkBox_rvn, 
                 "combo": self.rvn_combo,
                 "status": self.rvn_status,
@@ -179,31 +193,53 @@ class Ui(QTabWidget):
                 gui_coins[coin]['status'].show()
                 status = gui_coins[coin]['status']
                 if coin in active_coins:
-                    status.setStyleSheet('color: green')
-                    status.setText('active')
+                    status.setText('<html><head/><body><p><img src=":/other/img/other/active.png"/></p></body></html>')
                 else:
-                    status.setStyleSheet('color: red')
-                    status.setText('inactive')
+                    status.setText('<html><head/><body><p><img src=":/other/img/other/inactive.png"/></p></body></html>')
         search_txt = self.search_activate.text().lower()
-        if search_txt != '':
-            display_coins = []
-            if 'gui_coins' in globals():
-                for coin in gui_coins:
-                    gui_coins[coin]['checkbox'].hide()
-                    gui_coins[coin]['combo'].hide()
-                    gui_coins[coin]['status'].hide()
-                    if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
-                        display_coins.append(coin)
+        display_coins_erc20 = []
+        display_coins_utxo = []
+        display_coins_smartchain = []
+        if 'gui_coins' in globals():
+            for coin in gui_coins:
+                gui_coins[coin]['checkbox'].hide()
+                gui_coins[coin]['combo'].hide()
+                gui_coins[coin]['status'].hide()
+                if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
+                    if gui_coins[coin]['type'] == 'utxo':
+                        display_coins_utxo.append(coin)
+                    elif gui_coins[coin]['type'] == 'erc20':
+                        display_coins_erc20.append(coin)
+                    elif gui_coins[coin]['type'] == 'smartchain':
+                        display_coins_smartchain.append(coin)
 
         if 'gui_coins' in globals():
             row = 0
-            for coin in display_coins:
+            for coin in display_coins_smartchain:
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
                 gui_coins[coin]['status'].show()
-                self.gridLayout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
-                self.gridLayout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                self.gridLayout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                self.smartchains_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
+                self.smartchains_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+                self.smartchains_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                row += 1
+            row = 0
+            for coin in display_coins_erc20:
+                gui_coins[coin]['checkbox'].show()
+                gui_coins[coin]['combo'].show()
+                gui_coins[coin]['status'].show()
+                self.erc20_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
+                self.erc20_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+                self.erc20_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                row += 1
+            row = 0
+            for coin in display_coins_utxo:
+                gui_coins[coin]['checkbox'].show()
+                gui_coins[coin]['combo'].show()
+                gui_coins[coin]['status'].show()
+                self.utxo_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
+                self.utxo_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+                self.utxo_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
                 row += 1
 
 
