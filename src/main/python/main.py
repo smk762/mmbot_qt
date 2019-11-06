@@ -260,13 +260,20 @@ class Ui(QTabWidget):
         for swap in swaps_info['result']['swaps']:
             status = ''
             uuid = QTableWidgetItem(swap['uuid'])
+            uuid.setTextAlignment(Qt.AlignHCenter)
             my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
+            my_amount.setTextAlignment(Qt.AlignHCenter)
             my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
+            my_coin.setTextAlignment(Qt.AlignHCenter)
             other_amount = QTableWidgetItem(swap['my_info']['other_amount'])
+            other_amount.setTextAlignment(Qt.AlignHCenter)
             other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
+            other_coin.setTextAlignment(Qt.AlignHCenter)
             start_time = str(datetime.datetime.fromtimestamp(swap['my_info']['started_at']))
             started_at = QTableWidgetItem(start_time)
+            started_at.setTextAlignment(Qt.AlignHCenter)
             sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
+            sell_price.setTextAlignment(Qt.AlignHCenter)
             self.trades_table.setItem(row,0,started_at)
             self.trades_table.setItem(row,2,other_coin)
             self.trades_table.setItem(row,3,other_amount)
@@ -306,25 +313,29 @@ class Ui(QTabWidget):
             elif 'bids' in pair_book:
                 for item in pair_book['asks']:
                     base = QTableWidgetItem(pair_book['base'])
+                    base.setTextAlignment(Qt.AlignHCenter)
                     rel = QTableWidgetItem(pair_book['rel'])
+                    rel.setTextAlignment(Qt.AlignHCenter)
                     price = QTableWidgetItem(str(round(float(item['price']), 8)))
+                    price.setTextAlignment(Qt.AlignHCenter)
                     volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
+                    volume.setTextAlignment(Qt.AlignHCenter)
                     self.orderbook_table.setItem(row,0,base)
                     self.orderbook_table.setItem(row,1,rel)
                     self.orderbook_table.setItem(row,2,volume)
                     self.orderbook_table.setItem(row,3,price)
                     row += 1
             row_count = self.orderbook_table.rowCount()
-            if row_count > row:
-                for i in range(row, row_count):
-                    base = QTableWidgetItem('')
-                    rel = QTableWidgetItem('')
-                    price = QTableWidgetItem('')
-                    volume = QTableWidgetItem('')
-                    self.orderbook_table.setItem(i,0,base)
-                    self.orderbook_table.setItem(i,1,rel)
-                    self.orderbook_table.setItem(i,2,volume)
-                    self.orderbook_table.setItem(i,3,price)
+            while row_count > row:
+                base = QTableWidgetItem('')
+                rel = QTableWidgetItem('')
+                price = QTableWidgetItem('')
+                volume = QTableWidgetItem('')
+                self.orderbook_table.setItem(i,0,base)
+                self.orderbook_table.setItem(i,1,rel)
+                self.orderbook_table.setItem(i,2,volume)
+                self.orderbook_table.setItem(i,3,price)
+                row += 1
 
     def update_orderbook_combos(self, base, rel, active_coins, trigger=''):
         # check current coins in combobox
@@ -391,7 +402,7 @@ class Ui(QTabWidget):
             msg = resp
         QMessageBox.information(self, 'Buy From Orderbook', msg, QMessageBox.Ok, QMessageBox.Ok)
    
-    ## CREATE ORDER
+    ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
 
     def show_create_orders(self):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
@@ -407,14 +418,40 @@ class Ui(QTabWidget):
             rel = self.create_sell_combo.itemText(index)
             pair = self.update_create_order_combos(base, rel, active_coins)
             base = pair[0]
-            rel = pair[1]
+            rel = pair[1]            
+            self.create_buy_depth_baserel_lbl.setText(base+"/"+rel)
+            self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Amount '+rel, 'Value '+rel])
+            pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
+            if 'error' in pair_book:
+                pass
+            elif 'asks' in pair_book:
+                for item in pair_book['asks']:
+                    price = QTableWidgetItem(str(round(float(item['price']), 8)))
+                    price.setTextAlignment(Qt.AlignHCenter)
+                    volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
+                    volume.setTextAlignment(Qt.AlignHCenter)
+                    val = float(item['price'])*float(item['maxvolume'])
+                    value = QTableWidgetItem(str(round(val, 8)))
+                    value.setTextAlignment(Qt.AlignHCenter)
+                    self.depth_table.setItem(row,0,price)
+                    self.depth_table.setItem(row,1,volume)
+                    self.depth_table.setItem(row,2,value)
+                    row += 1
+            row_count = self.depth_table.rowCount()
+            while row_count > row:
+                price = QTableWidgetItem('')
+                volume = QTableWidgetItem('')
+                value = QTableWidgetItem('')
+                self.depth_table.setItem(row,0,price)
+                self.depth_table.setItem(row,1,volume)
+                self.depth_table.setItem(row,2,value)
+                row += 1
+
   
     def update_create_order_combos(self, base, rel, active_coins):
         # check current coins in combobox
         if base == rel:
             base = ''
-        print(base)
-        print(rel)
         existing_buy_coins = []
         for i in range(self.create_buy_combo.count()):
             existing_buy_coin = self.create_buy_combo.itemText(i)
@@ -440,8 +477,65 @@ class Ui(QTabWidget):
         if rel == '':
             self.create_sell_combo.setCurrentIndex(0)
             rel = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
+        balance_info = rpclib.my_balance(creds[0], creds[1], base).json()
+        if 'address' in balance_info:
+            balance = round(float(balance_info['balance']),8)
+            locked = round(float(balance_info['locked_by_swaps']),8)
+            available_balance = balance - locked
+            self.create_order_balance_lbl.setText("Available funds: "+str(available_balance)+" "+base)
         return base, rel
- 
+
+    def populate_create_order_vals(self):
+        selected_row = self.depth_table.currentRow()
+        selected_price = float(self.depth_table.item(selected_row,0).text())
+        print(selected_price)
+        self.create_buy_price.setValue(selected_price)
+
+    def buy_25pct(self):
+        self.buy_pct(25)
+
+    def buy_50pct(self):
+        self.buy_pct(50)
+
+    def buy_75pct(self):
+        self.buy_pct(75)
+
+    def buy_100pct(self):
+        self.buy_pct(100)
+
+    def buy_pct(self, pct):
+        if self.create_buy_price.value() == 0:
+            price = self.depth_table.item(0,0).text()
+        else:
+            price = self.create_buy_price.value()
+        bal_txt = self.create_order_balance_lbl.text()
+        max_vol = float(bal_txt.split()[2])
+        val = max_vol*pct/100
+        self.create_buy_amount.setValue(val)
+    
+    def create_setprice(self):
+        index = self.create_buy_combo.currentIndex()
+        base = self.create_buy_combo.itemText(index)
+        index = self.create_sell_combo.currentIndex()
+        rel = self.create_sell_combo.itemText(index)
+        basevolume = self.create_buy_amount.value()
+        relprice = self.create_buy_price.value()
+        resp = rpclib.setprice(creds[0], creds[1], base, rel, basevolume, relprice).json()
+        print(resp)
+        if 'error' in resp:
+            if resp['error'].find("larger than available") > -1:
+                msg = "Insufficient funds to complete order."
+            else:
+                msg = resp
+        elif 'result' in resp:
+            trade_val = round(float(relprice)*float(basevolume),8)
+            msg = "Order Submitted.\n"
+            msg += str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+        else:
+            msg = resp
+        QMessageBox.information(self, 'Created Setprice Order', msg, QMessageBox.Ok, QMessageBox.Ok)
+
+
     ## WALLET
 
     def show_wallet(self):

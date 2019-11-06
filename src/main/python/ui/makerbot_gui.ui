@@ -2195,14 +2195,20 @@
    <attribute name="title">
     <string>Create Order</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout_10">
-    <item row="0" column="0">
+   <layout class="QGridLayout" name="gridLayout_12">
+    <item row="0" column="0" colspan="2">
      <widget class="QFrame" name="frame_4">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>1050</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -2224,7 +2230,320 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="1" rowspan="2">
+    <item row="2" column="2">
+     <widget class="QLabel" name="create_order_balance_lbl">
+      <property name="text">
+       <string>Balance: </string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0" rowspan="2">
+     <widget class="QFrame" name="frame_3">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_price_lbl">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>125</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Price</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_buy_price</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="create_buy_price">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <double>999999999.990000009536743</double>
+         </property>
+         <property name="singleStep">
+          <double>0.000001000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="create_amount_lbl">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>125</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Amount</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_buy_amount</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="create_buy_amount">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="decimals">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <double>9999999999.989999771118164</double>
+         </property>
+         <property name="singleStep">
+          <double>0.000001000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QFrame" name="frame_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="create_buy_100pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>100%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_75pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>75%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_50pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>50%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_25pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>25%</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="1" rowspan="2">
+     <widget class="QFrame" name="frame_5">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_sell_lbl">
+         <property name="text">
+          <string>Sell:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_sell_combo</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="create_sell_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="creat_buy_lbl">
+         <property name="text">
+          <string>Buy:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_buy_combo</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="create_buy_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="create_buy_btn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Sell</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2" rowspan="2">
      <widget class="QFrame" name="frame_13">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
@@ -2234,8 +2553,8 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>460</width>
-        <height>750</height>
+        <width>550</width>
+        <height>650</height>
        </size>
       </property>
       <property name="frameShape">
@@ -2244,23 +2563,45 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_7">
-       <item>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
         <widget class="QLabel" name="create_buy_depth_lbl">
          <property name="text">
           <string>Buy / Sell Depth</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="create_buy_depth_baserel_lbl">
+         <property name="text">
+          <string>BASE/REL</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
         <widget class="QTableWidget" name="depth_table">
          <property name="font">
           <font>
-           <pointsize>9</pointsize>
+           <pointsize>8</pointsize>
           </font>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideMiddle</enum>
          </property>
          <property name="sortingEnabled">
           <bool>true</bool>
@@ -2269,7 +2610,7 @@
           <number>24</number>
          </property>
          <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>125</number>
+          <number>160</number>
          </attribute>
          <attribute name="horizontalHeaderMinimumSectionSize">
           <number>125</number>
@@ -2314,164 +2655,26 @@
           <property name="text">
            <string>Price</string>
           </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
          </column>
          <column>
           <property name="text">
            <string>Amount</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
           </property>
          </column>
          <column>
           <property name="text">
            <string>Value</string>
           </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
          </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QFrame" name="frame_14">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>1200</width>
-        <height>150</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="0">
-        <widget class="QLabel" name="create_price_lbl">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Price</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QDoubleSpinBox" name="create_buy_price">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>8</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QLabel" name="create_sell_lbl">
-         <property name="text">
-          <string>Sell:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QComboBox" name="create_sell_combo">
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4" rowspan="2">
-        <widget class="QPushButton" name="create_buy_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>180</width>
-           <height>100</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Buy</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="create_amount_lbl">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>250</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>Amount</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="create_buy_amount">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals">
-          <number>8</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <widget class="QLabel" name="creat_buy_lbl">
-         <property name="text">
-          <string>Buy:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="3">
-        <widget class="QComboBox" name="create_buy_combo">
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
         </widget>
        </item>
       </layout>
@@ -3429,8 +3632,8 @@
    <slot>show_create_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>934</x>
-     <y>717</y>
+     <x>1045</x>
+     <y>655</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -3445,8 +3648,104 @@
    <slot>show_create_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>934</x>
-     <y>655</y>
+     <x>1045</x>
+     <y>598</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>depth_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>populate_create_order_vals()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1425</x>
+     <y>417</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_25pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_25pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>253</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_50pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_50pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>420</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_100pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_100pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>755</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_75pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_75pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>588</x>
+     <y>719</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>create_setprice()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1010</x>
+     <y>715</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -3471,5 +3770,11 @@
   <slot>cancel_all_orders()</slot>
   <slot>cancel_order_uuid()</slot>
   <slot>show_create_orders()</slot>
+  <slot>populate_create_order_vals()</slot>
+  <slot>buy_25pct()</slot>
+  <slot>buy_50pct()</slot>
+  <slot>buy_75pct()</slot>
+  <slot>buy_100pct()</slot>
+  <slot>create_setprice()</slot>
  </slots>
 </ui>
