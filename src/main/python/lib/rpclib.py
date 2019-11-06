@@ -173,11 +173,17 @@ def my_balance(node_ip, user_pass, cointag):
     r = requests.post(node_ip, json=params)
     return r
 
-
 def cancel_all(node_ip, user_pass):
     params = {'userpass': user_pass,
               'method': 'cancel_all_orders',
               'cancel_by': {"type":"All"},}
+    r = requests.post(node_ip,json=params)
+    return r
+
+def cancel_uuid(node_ip, user_pass, order_uuid):
+    params = {'userpass': user_pass,
+              'method': 'cancel_order',
+              'uuid': order_uuid,}
     r = requests.post(node_ip,json=params)
     return r
 

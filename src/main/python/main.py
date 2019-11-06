@@ -133,47 +133,7 @@ class Ui(QTabWidget):
             },
         }
 
-    def update_logs(self):
-        print("update_logs")
-        with open(script_path+"/bin/mm2_output.log", 'r') as f:
-            log_text = f.read()
-            lines = f.readlines()
-            self.scrollbar = self.console_logs.verticalScrollBar()
-            self.console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(10000)
-        pass
-    def export_logs(self):
-        pass
-
-    def show_active(self):
-        print("show_active")
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        print(active_coins)
-        for coin in gui_coins:
-            status = gui_coins[coin]['status']
-            if coin in active_coins:
-                status.setStyleSheet('color: green')
-                status.setText('active')
-            else:
-                status.setStyleSheet('color: red')
-                status.setText('inactive')
-
-    def activate_coins(self):
-        activate_dict = {}
-        for coin in gui_coins:
-            checkbox = gui_coins[coin]['checkbox']
-            combo = gui_coins[coin]['combo']
-            if checkbox.isChecked():
-                QCoreApplication.processEvents()
-                activate_dict.update({coin:combo.currentText()})
-                r = rpclib.electrum(creds[0], creds[1], coin)
-                print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        self.show_active()
-
-    def show_orders(self):
-        pass
-
+    ## COMMON
 
     def saveFileDialog(self):
         filename = ''
@@ -203,11 +163,101 @@ class Ui(QTabWidget):
         # write data to file
         # json, csv option?
 
+    ## ACTIVATE
+
+    def show_active(self):
+        print("show_active")
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        print(active_coins)
+        for coin in gui_coins:
+            status = gui_coins[coin]['status']
+            if coin in active_coins:
+                status.setStyleSheet('color: green')
+                status.setText('active')
+            else:
+                status.setStyleSheet('color: red')
+                status.setText('inactive')
+
+    def activate_coins(self):
+        activate_dict = {}
+        for coin in gui_coins:
+            checkbox = gui_coins[coin]['checkbox']
+            combo = gui_coins[coin]['combo']
+            if checkbox.isChecked():
+                QCoreApplication.processEvents()
+                activate_dict.update({coin:combo.currentText()})
+                r = rpclib.electrum(creds[0], creds[1], coin)
+                print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        self.show_active()
+
+    ## SHOW ORDERS
+
+    def show_orders(self):
+        orders = rpclib.my_orders(creds[0], creds[1]).json()
+        row = 0
+        print(orders)
+        if 'maker_orders' in orders['result']:
+            maker_orders = orders['result']['maker_orders']
+            for item in maker_orders:
+                available = QTableWidgetItem(maker_orders[item]['available_amount'])
+                base = QTableWidgetItem(maker_orders[item]['base'])
+                rel = QTableWidgetItem(maker_orders[item]['rel'])
+                price = QTableWidgetItem(maker_orders[item]['price'])
+                timestamp = int(maker_orders[item]['created_at'])/1000
+                created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
+                market_price = QTableWidgetItem('')
+                margin = QTableWidgetItem('')
+                uuid = QTableWidgetItem(item)
+                self.orders_table.setItem(row,0,created_at)
+                self.orders_table.setItem(row,1,base)
+                self.orders_table.setItem(row,2,available)
+                self.orders_table.setItem(row,3,rel)
+                self.orders_table.setItem(row,4,price)
+                self.orders_table.setItem(row,5,market_price)
+                self.orders_table.setItem(row,5,margin)
+                self.orders_table.setItem(row,7,uuid)
+                row += 1
+        if 'taker_orders' in orders['result']:
+            taker_orders = orders['result']['taker_orders']
+            for item in taker_orders:
+                print(taker_orders[item])
+
+    def cancel_order_uuid(self):
+        selected_row = self.orders_table.currentRow()
+        order_uuid = self.orders_table.item(selected_row,7).text()
+        resp = rpclib.cancel_uuid(creds[0], creds[1], order_uuid).json()
+        print(resp)
+        msg = ''
+        if 'result' in resp:
+            if resp['result'] == 'success':
+                msg = "Order "+order_uuid+" cancelled"
+            else:
+                msg = resp
+        else:
+            msg = resp
+        QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+
+    def cancel_all_orders(self):
+        resp = rpclib.cancel_all(creds[0], creds[1]).json()
+        print(resp)
+        msg = ''
+        if 'result' in resp:
+            if resp['result'] == 'success':
+                msg = "Order "+order_uuid+" cancelled"
+            else:
+                msg = resp
+        else:
+            msg = resp
+        msg = "All your orders have been cancelled"
+        QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+   
+    ## SHOW TRADES
+
     def show_trades(self):
         swaps_info = rpclib.my_recent_swaps(creds[0], creds[1], limit=9999, from_uuid='').json()
         row = 0
         for swap in swaps_info['result']['swaps']:
-            print()
             status = ''
             uuid = QTableWidgetItem(swap['uuid'])
             my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
@@ -218,17 +268,14 @@ class Ui(QTabWidget):
             started_at = QTableWidgetItem(start_time)
             sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
             self.trades_table.setItem(row,0,started_at)
-            self.trades_table.setItem(row,2,my_coin)
-            self.trades_table.setItem(row,3,my_amount)
-            self.trades_table.setItem(row,4,other_coin)
-            self.trades_table.setItem(row,5,other_amount)
+            self.trades_table.setItem(row,2,other_coin)
+            self.trades_table.setItem(row,3,other_amount)
+            self.trades_table.setItem(row,4,my_coin)
+            self.trades_table.setItem(row,5,my_amount)
             self.trades_table.setItem(row,6,sell_price)
             self.trades_table.setItem(row,7,uuid)
             for event in swap['events']:
                 event_type = event['event']['type']
-                print(swap['uuid'])
-                print(event_type)
-                print(rpclib.error_events)
                 if event_type in rpclib.error_events:
                     event_type = 'Failed'
                     break
@@ -236,28 +283,192 @@ class Ui(QTabWidget):
             self.trades_table.setItem(row,1,status)
             row += 1
 
-    def show_wallet(self):
+    ## SHOW ORDERBOOK
+
+    def show_orderbook(self):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        existing_coins = []
-        for i in range(self.wallet_combo.count()):
-            existing_coin = self.wallet_combo.itemText(i)
-            existing_coins.append(existing_coin)
+        if len(active_coins) < 2:
+            msg = 'Please activate at least two coins. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            row = 0
+            index = self.buy_combo.currentIndex()
+            base = self.buy_combo.itemText(index)
+            index = self.sell_combo.currentIndex()
+            rel = self.sell_combo.itemText(index)
+            pair = self.update_orderbook_combos(base, rel, active_coins)
+            base = pair[0]
+            rel = pair[1]
+            pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
+            if 'error' in pair_book:
+                pass
+            elif 'bids' in pair_book:
+                for item in pair_book['asks']:
+                    base = QTableWidgetItem(pair_book['base'])
+                    rel = QTableWidgetItem(pair_book['rel'])
+                    price = QTableWidgetItem(str(round(float(item['price']), 8)))
+                    volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
+                    self.orderbook_table.setItem(row,0,base)
+                    self.orderbook_table.setItem(row,1,rel)
+                    self.orderbook_table.setItem(row,2,volume)
+                    self.orderbook_table.setItem(row,3,price)
+                    row += 1
+            row_count = self.orderbook_table.rowCount()
+            if row_count > row:
+                for i in range(row, row_count):
+                    base = QTableWidgetItem('')
+                    rel = QTableWidgetItem('')
+                    price = QTableWidgetItem('')
+                    volume = QTableWidgetItem('')
+                    self.orderbook_table.setItem(i,0,base)
+                    self.orderbook_table.setItem(i,1,rel)
+                    self.orderbook_table.setItem(i,2,volume)
+                    self.orderbook_table.setItem(i,3,price)
+
+    def update_orderbook_combos(self, base, rel, active_coins, trigger=''):
+        # check current coins in combobox
+        if base == rel:
+            base = ''
+        existing_buy_coins = []
+        for i in range(self.buy_combo.count()):
+            existing_buy_coin = self.buy_combo.itemText(i)
+            existing_buy_coins.append(existing_buy_coin)
+        existing_sell_coins = []
+        for i in range(self.sell_combo.count()):
+            existing_sell_coin = self.sell_combo.itemText(i)
+            existing_sell_coins.append(existing_sell_coin)
+        # add activated if not in combobox if not already there.
         for coin in active_coins:
-            if coin not in existing_coins:
-                self.wallet_combo.addItem(coin)
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
-        balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
+            if coin not in existing_sell_coins:
+                self.sell_combo.addItem(coin)
+            if coin not in existing_buy_coins:
+                if coin != rel:
+                    self.buy_combo.addItem(coin)
+        # eliminate selection duplication
+        if self.buy_combo.count() == self.sell_combo.count():
+            self.buy_combo.removeItem(0)
+        # set values if empty
+        if base == '':
+            self.buy_combo.setCurrentIndex(0)
+            base = self.buy_combo.itemText(self.buy_combo.currentIndex())
+        if rel == '':
+            self.sell_combo.setCurrentIndex(0)
+            rel = self.sell_combo.itemText(self.sell_combo.currentIndex())
+        self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
+        return base, rel
+
+    def orderbook_buy(self):
+        row = 0
+        index = self.buy_combo.currentIndex()
+        rel = self.buy_combo.itemText(index)
+        index = self.sell_combo.currentIndex()
+        base = self.sell_combo.itemText(index)
+        selected_row = self.orderbook_table.currentRow()
+        print(selected_row)
+        selected_price = self.orderbook_table.item(selected_row,3).text()
+        balance_info = rpclib.my_balance(creds[0], creds[1], rel).json()
         if 'address' in balance_info:
-            addr_text = balance_info['address']
             balance_text = balance_info['balance']
             locked_text = balance_info['locked_by_swaps']
-            self.wallet_address.setText("Your address: "+addr_text)
-            self.wallet_balance.setText(balance_text)
-            self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+            available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
+            max_vol = available_balance/float(selected_price)*0.99
+        vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ')
+        if ok:
+            print(vol)
+        resp = rpclib.buy(creds[0], creds[1], base, rel, vol, selected_price).json()
+        print(resp)
+        if 'error' in resp:
+            if resp['error'].find("larger than available") > -1:
+                msg = "Insufficient funds to complete order."
+            else:
+                msg = resp
+        elif 'result' in resp:
+            trade_val = round(float(selected_price)*float(vol),8)
+            msg = "Order Submitted.\n"
+            msg += str(vol)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+        else:
+            msg = resp
+        QMessageBox.information(self, 'Buy From Orderbook', msg, QMessageBox.Ok, QMessageBox.Ok)
+   
+    ## CREATE ORDER
 
-    def show_config(self):
-        pass
+    def show_create_orders(self):
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        index = self.create_buy_combo.currentIndex()
+        rel = self.create_buy_combo.itemText(index)
+        index = self.create_sell_combo.currentIndex()
+        base = self.create_sell_combo.itemText(index)
+        pair = self.update_orderbook_combos(base, rel, active_coins)
+        base = pair[0]
+        rel = pair[1]
+        if base == '':
+            print("no base")
+        if len(active_coins) < 2:
+            msg = 'Please activate at least two coins. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            self.update_create_order_combos(base, rel, active_coins)
+  
+    def update_create_order_combos(self, base, rel, active_coins):
+        # check current coins in combobox
+        if base == rel:
+            rel = ''
+        existing_buy_coins = []
+        for i in range(self.create_buy_combo.count()):
+            existing_buy_coin = self.create_buy_combo.itemText(i)
+            existing_buy_coins.append(existing_buy_coin)
+        existing_sell_coins = []
+        for i in range(self.create_sell_combo.count()):
+            existing_sell_coin = self.create_sell_combo.itemText(i)
+            existing_sell_coins.append(existing_sell_coin)
+        # add activated if not in combobox if not already there.
+        for coin in active_coins:
+            if coin not in existing_sell_coins:
+                self.create_sell_combo.addItem(coin)
+            if coin not in existing_buy_coins:
+                if coin != base:
+                    self.create_buy_combo.addItem(coin)
+        # eliminate selection duplication
+        if self.create_buy_combo.count() == self.create_sell_combo.count():
+            self.create_buy_combo.removeItem(0)
+        # set values if empty
+        if base == '':
+            self.create_sell_combo.setCurrentIndex(0)
+            base = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
+        if rel == '':
+            self.create_buy_combo.setCurrentIndex(0)
+            rel = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
+        return base, rel
+ 
+    ## WALLET
+
+    def show_wallet(self):
+        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        if len(active_coins) < 1:
+            msg = 'Please activate at least one coin. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            existing_coins = []
+            for i in range(self.wallet_combo.count()):
+                existing_coin = self.wallet_combo.itemText(i)
+                existing_coins.append(existing_coin)
+            for coin in active_coins:
+                if coin not in existing_coins:
+                    self.wallet_combo.addItem(coin)
+            index = self.wallet_combo.currentIndex()
+            coin = self.wallet_combo.itemText(index)
+            balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
+            if 'address' in balance_info:
+                addr_text = balance_info['address']
+                balance_text = round(float(balance_info['balance']))
+                locked_text = round(float(balance_info['locked_by_swaps']),8)
+                self.wallet_address.setText("Your address: "+addr_text)
+                self.wallet_balance.setText(str(balance_text))
+                self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked_text))
+                self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -278,7 +489,6 @@ class Ui(QTabWidget):
                 msg += "Transaction value too small!"
             else:
                 msg = str(resp['error'])
-            self.wallet_msg.setStyleSheet('color: red')
         elif 'tx_hex' in resp:
             raw_hex = resp['tx_hex']
             resp = rpclib.send_raw_transaction(creds[0], creds[1], cointag, raw_hex).json()
@@ -300,93 +510,13 @@ class Ui(QTabWidget):
         else:
             print(resp)
             msg = str(resp)
-            self.wallet_msg.setStyleSheet('color: green')
-        self.wallet_msg.setText(msg)
+        QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
         pass
 
+    ## CONFIG
 
-
-    def orderbook_buy(self):
-        row = 0
-        index = self.buy_combo.currentIndex()
-        rel = self.buy_combo.itemText(index)
-        index = self.sell_combo.currentIndex()
-        base = self.sell_combo.itemText(index)
-        selected_row = self.orderbook_table.currentRow()
-        print(selected_row)
-        selected_price = self.orderbook_table.item(selected_row,3).text()
-        vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume to buy at '+selected_price+': ')
-        if ok:
-            print(vol)
-        resp = rpclib.buy(creds[0], creds[1], base, rel, vol, selected_price).json()
-        print(resp)
+    def show_config(self):
         pass
-
-    def show_orderbook(self):
-        row = 0
-        index = self.buy_combo.currentIndex()
-        rel = self.buy_combo.itemText(index)
-        index = self.sell_combo.currentIndex()
-        base = self.sell_combo.itemText(index)
-        self.update_orderbook_combos(base, rel)
-        pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
-        if 'error' in pair_book:
-            pass
-        elif 'asks' in pair_book:
-            for item in pair_book['asks']:
-                base = QTableWidgetItem(pair_book['base'])
-                rel = QTableWidgetItem(pair_book['rel'])
-                price = QTableWidgetItem(str(round(float(item['price']), 8)))
-                volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
-                self.orderbook_table.setItem(row,0,rel)
-                self.orderbook_table.setItem(row,1,base)
-                self.orderbook_table.setItem(row,2,volume)
-                self.orderbook_table.setItem(row,3,price)
-                row += 1
-        row_count = self.orderbook_table.rowCount()
-        if row_count > row:
-            for i in range(row, row_count):
-                base = QTableWidgetItem('')
-                rel = QTableWidgetItem('')
-                price = QTableWidgetItem('')
-                volume = QTableWidgetItem('')
-                self.orderbook_table.setItem(i,0,rel)
-                self.orderbook_table.setItem(i,1,base)
-                self.orderbook_table.setItem(i,2,volume)
-                self.orderbook_table.setItem(i,3,price)
-
-    def update_orderbook_combos(self, base, rel):
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        existing_coins = []
-        for i in range(self.buy_combo.count()):
-            existing_coin = self.buy_combo.itemText(i)
-            existing_coins.append(existing_coin)
-        for coin in existing_coins:
-            if coin not in active_coins:
-                self.buy_combo.removeItem(coin)
-                self.sell_combo.removeItem(coin)
-        for coin in active_coins:
-            if coin not in existing_coins:
-                if coin != rel:
-                    self.buy_combo.addItem(coin)
-                else:
-                    self.buy_combo.removeItem(coin)
-                if coin != base:
-                    self.sell_combo.addItem(coin)
-                else:
-                    self.sell_combo.removeItem(coin)
-        self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
-
-    def generate_seed(self):
-        seed_words_list = []
-        while len(seed_words_list) < 24:
-            word = random.choice(wordlist.wordlist)
-            if word not in seed_words_list:
-                seed_words_list.append(word)
-        print(seed_words_list)
-        seed_phrase = " ".join(seed_words_list)
-        print(seed_phrase)
-        self.seed_text_input.setText(seed_phrase)
 
     def save_config(self):
         msg = ''
@@ -433,32 +563,70 @@ class Ui(QTabWidget):
                 print("MM2.json file created!")
         else:
             QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
-            
             pass
+    
+    def generate_seed(self):
+        seed_words_list = []
+        while len(seed_words_list) < 24:
+            word = random.choice(wordlist.wordlist)
+            if word not in seed_words_list:
+                seed_words_list.append(word)
+        print(seed_words_list)
+        seed_phrase = " ".join(seed_words_list)
+        print(seed_phrase)
+        self.seed_text_input.setText(seed_phrase)
+
+    ## LOGS
+
+    def export_logs(self):
+        pass
+
+    def update_logs(self):
+        print("update_logs")
+        with open(script_path+"/bin/mm2_output.log", 'r') as f:
+            log_text = f.read()
+            lines = f.readlines()
+            self.scrollbar = self.console_logs.verticalScrollBar()
+            self.console_logs.setPlainText(log_text)
+            self.scrollbar.setValue(10000)
+        pass
+
+    ## TABS
 
     def prepare_tab(self):
         QCoreApplication.processEvents()
         index = self.currentIndex()
         if index == 0:
             # activate
+            print('show_active')
             self.show_active()
         elif index == 1:
             # orders
+            print('show_orders')
             self.show_orders()
         elif index == 2:
             # trades
+            print('show_trades')
             self.show_trades()
         elif index == 3:
             # order book
+            print('show_orderbook')
             self.show_orderbook()
         elif index == 4:
-            # wallet
-            self.show_wallet()
+            # create order
+            print('show_create_orders')
+            self.show_create_orders()
         elif index == 5:
-            # config
-            self.show_config()
+            # wallet
+            print('show_wallet')
+            self.show_wallet()
         elif index == 6:
+            # config
+            print('show_config')
+            self.show_config()
+        elif index == 7:
             # logs
+            print('update_logs')
             self.update_logs()
 
 app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
