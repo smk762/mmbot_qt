@@ -171,18 +171,17 @@ class Ui(QTabWidget):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
         search_txt = self.search_activate.text().lower()
-        print(search_txt)
         if search_txt != '':
             if 'gui_coins' in globals():
                 for coin in gui_coins:
-                    if coin.lower().find(search_txt) == -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) == -1:
-                        gui_coins[coin]['checkbox'].hide()
-                        gui_coins[coin]['combo'].hide()
-                        gui_coins[coin]['status'].hide()
-                    else:
+                    if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
                         gui_coins[coin]['checkbox'].show()
                         gui_coins[coin]['combo'].show()
                         gui_coins[coin]['status'].show()
+                    else:
+                        gui_coins[coin]['checkbox'].hide()
+                        gui_coins[coin]['combo'].hide()
+                        gui_coins[coin]['status'].hide()
         elif 'gui_coins' in globals():
             for coin in gui_coins:
                 gui_coins[coin]['checkbox'].show()
