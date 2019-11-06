@@ -451,7 +451,7 @@ class Ui(QTabWidget):
             pair = self.update_create_order_combos(base, rel, active_coins)
             base = pair[0]
             rel = pair[1]            
-            self.create_buy_depth_baserel_lbl.setText(base+"/"+rel)
+            self.create_buy_depth_baserel_lbl.setText(rel+"/"+base)
             self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Amount '+rel, 'Value '+rel])
             pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
             if 'error' in pair_book:
@@ -482,7 +482,7 @@ class Ui(QTabWidget):
     def update_create_order_combos(self, base, rel, active_coins):
         # check current coins in combobox
         if base == rel:
-            base = ''
+            rel = ''
         existing_buy_coins = []
         for i in range(self.create_sell_combo.count()):
             existing_buy_coin = self.create_sell_combo.itemText(i)
@@ -494,13 +494,13 @@ class Ui(QTabWidget):
         # add activated if not in combobox if not already there.
         for coin in active_coins:
             if coin not in existing_sell_coins:
-                self.create_buy_combo.addItem(coin)
+                if coin != base:
+                    self.create_buy_combo.addItem(coin)
             if coin not in existing_buy_coins:
-                if coin != rel:
-                    self.create_sell_combo.addItem(coin)
+                self.create_sell_combo.addItem(coin)
         # eliminate selection duplication
         if self.create_sell_combo.count() == self.create_buy_combo.count():
-            self.create_sell_combo.removeItem(0)
+            self.create_buy_combo.removeItem(0)
         # set values if empty
         if base == '':
             self.create_sell_combo.setCurrentIndex(0)
