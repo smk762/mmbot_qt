@@ -160,6 +160,12 @@
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Smart Chains</string>
          </property>
@@ -167,6 +173,9 @@
           <set>Qt::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_19">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -185,14 +194,14 @@
           <item row="0" column="0">
            <widget class="QScrollArea" name="activate_ac_scroll">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>545</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -207,7 +216,7 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>545</width>
+               <width>528</width>
                <height>451</height>
               </rect>
              </property>
@@ -215,7 +224,22 @@
               <item row="0" column="0">
                <layout class="QGridLayout" name="smartchains_layout">
                 <property name="sizeConstraint">
-                 <enum>QLayout::SetFixedSize</enum>
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="leftMargin">
+                 <number>10</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>10</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>10</number>
+                </property>
+                <property name="spacing">
+                 <number>10</number>
                 </property>
                 <item row="2" column="1">
                  <widget class="QComboBox" name="kmd_combo">
@@ -773,6 +797,12 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBox_3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>UTXO</string>
          </property>
@@ -780,6 +810,12 @@
           <set>Qt::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_17">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
           <property name="topMargin">
            <number>0</number>
           </property>
@@ -795,14 +831,14 @@
           <item row="0" column="0">
            <widget class="QScrollArea" name="activate_utxo_scroll">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>545</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -817,15 +853,30 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>545</width>
+               <width>528</width>
                <height>451</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <layout class="QGridLayout" name="utxo_layout">
                 <property name="sizeConstraint">
-                 <enum>QLayout::SetNoConstraint</enum>
+                 <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="leftMargin">
+                 <number>10</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>10</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>10</number>
+                </property>
+                <property name="spacing">
+                 <number>10</number>
                 </property>
                 <item row="5" column="1">
                  <widget class="QComboBox" name="rvn_combo">
@@ -1721,28 +1772,13 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
+        <widget class="QGroupBox" name="groupBox_2">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>ETH/ERC20</string>
          </property>
@@ -1750,6 +1786,9 @@
           <set>Qt::AlignCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_18">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetNoConstraint</enum>
+          </property>
           <property name="leftMargin">
            <number>0</number>
           </property>
@@ -1768,14 +1807,14 @@
           <item row="0" column="0">
            <widget class="QScrollArea" name="activate_erc20_scroll">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>545</width>
+              <width>0</width>
               <height>0</height>
              </size>
             </property>
@@ -1799,6 +1838,21 @@
                <layout class="QGridLayout" name="erc20_layout">
                 <property name="sizeConstraint">
                  <enum>QLayout::SetDefaultConstraint</enum>
+                </property>
+                <property name="leftMargin">
+                 <number>10</number>
+                </property>
+                <property name="topMargin">
+                 <number>10</number>
+                </property>
+                <property name="rightMargin">
+                 <number>10</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>10</number>
+                </property>
+                <property name="spacing">
+                 <number>10</number>
                 </property>
                 <item row="0" column="1">
                  <widget class="QComboBox" name="eth_combo">
