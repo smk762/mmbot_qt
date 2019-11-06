@@ -102,7 +102,6 @@ def create_MM2_json():
         json.dump(data, f, ensure_ascii=False, indent=4)
     print(colorize("MM2.json file created!", 'green'))
 
-
 ## MM2 management
 def start_mm2(logfile='mm2_output.log'):
     if os.path.isfile(script_path+"/bin/mm2"):
@@ -117,7 +116,6 @@ def start_mm2(logfile='mm2_output.log'):
         print(colorize("\nmm2 binary not found in "+script_path+"/bin!", 'red'))
         print(colorize("See https://developers.komodoplatform.com/basic-docs/atomicdex/atomicdex-setup/get-started-atomicdex.html for install instructions.", 'orange'))
         print(colorize("Exiting...\n", 'blue'))
-
 
 def stop_mm2(node_ip, user_pass):
         params = {'userpass': user_pass, 'method': 'stop'}
