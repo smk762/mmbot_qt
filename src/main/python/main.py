@@ -19,7 +19,6 @@ home = expanduser("~")
 os.environ['MM_COINS_PATH'] = script_path+"/bin/coins"
 os.environ['MM_CONF_PATH'] = script_path+"/bin/MM2.json"
 
-
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
@@ -75,11 +74,13 @@ class Ui(QTabWidget):
                 "checkbox": self.checkBox_kmd, 
                 "combo": self.kmd_combo,
                 "status": self.kmd_status,
+                "icon":":/coins/kmd_400.png"
             },
             "LABS": {
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
                 "status": self.labs_status,
+                "icon":":/coins/KMD_Labs_Logo_thick_outline_2_32.png"
             },
             "BCH": {
                 "checkbox": self.checkBox_bch, 
@@ -433,10 +434,10 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             row = 0
-            index = self.create_buy_combo.currentIndex()
-            base = self.create_buy_combo.itemText(index)
             index = self.create_sell_combo.currentIndex()
-            rel = self.create_sell_combo.itemText(index)
+            base = self.create_sell_combo.itemText(index)
+            index = self.create_buy_combo.currentIndex()
+            rel = self.create_buy_combo.itemText(index)
             pair = self.update_create_order_combos(base, rel, active_coins)
             base = pair[0]
             rel = pair[1]            
@@ -468,36 +469,35 @@ class Ui(QTabWidget):
                 self.depth_table.setItem(row,2,value)
                 row += 1
 
-  
     def update_create_order_combos(self, base, rel, active_coins):
         # check current coins in combobox
         if base == rel:
             base = ''
         existing_buy_coins = []
-        for i in range(self.create_buy_combo.count()):
-            existing_buy_coin = self.create_buy_combo.itemText(i)
+        for i in range(self.create_sell_combo.count()):
+            existing_buy_coin = self.create_sell_combo.itemText(i)
             existing_buy_coins.append(existing_buy_coin)
         existing_sell_coins = []
-        for i in range(self.create_sell_combo.count()):
-            existing_sell_coin = self.create_sell_combo.itemText(i)
+        for i in range(self.create_buy_combo.count()):
+            existing_sell_coin = self.create_buy_combo.itemText(i)
             existing_sell_coins.append(existing_sell_coin)
         # add activated if not in combobox if not already there.
         for coin in active_coins:
             if coin not in existing_sell_coins:
-                self.create_sell_combo.addItem(coin)
+                self.create_buy_combo.addItem(coin)
             if coin not in existing_buy_coins:
                 if coin != rel:
-                    self.create_buy_combo.addItem(coin)
+                    self.create_sell_combo.addItem(coin)
         # eliminate selection duplication
-        if self.create_buy_combo.count() == self.create_sell_combo.count():
-            self.create_buy_combo.removeItem(0)
+        if self.create_sell_combo.count() == self.create_buy_combo.count():
+            self.create_sell_combo.removeItem(0)
         # set values if empty
         if base == '':
-            self.create_buy_combo.setCurrentIndex(0)
-            base = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
-        if rel == '':
             self.create_sell_combo.setCurrentIndex(0)
-            rel = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
+            base = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
+        if rel == '':
+            self.create_buy_combo.setCurrentIndex(0)
+            rel = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
         balance_info = rpclib.my_balance(creds[0], creds[1], base).json()
         if 'address' in balance_info:
             balance = round(float(balance_info['balance']),8)
@@ -535,10 +535,10 @@ class Ui(QTabWidget):
         self.create_buy_amount.setValue(val)
     
     def create_setprice(self):
-        index = self.create_buy_combo.currentIndex()
-        base = self.create_buy_combo.itemText(index)
         index = self.create_sell_combo.currentIndex()
-        rel = self.create_sell_combo.itemText(index)
+        base = self.create_sell_combo.itemText(index)
+        index = self.create_buy_combo.currentIndex()
+        rel = self.create_buy_combo.itemText(index)
         basevolume = self.create_buy_amount.value()
         relprice = self.create_buy_price.value()
         resp = rpclib.setprice(creds[0], creds[1], base, rel, basevolume, relprice).json()
@@ -551,11 +551,10 @@ class Ui(QTabWidget):
         elif 'result' in resp:
             trade_val = round(float(relprice)*float(basevolume),8)
             msg = "Order Submitted.\n"
-            msg += str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+            msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
         else:
             msg = resp
         QMessageBox.information(self, 'Created Setprice Order', msg, QMessageBox.Ok, QMessageBox.Ok)
-
 
     ## WALLET
 
@@ -575,6 +574,10 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
+            if 'icon' in gui_coins[coin]:
+                self.wallet_coin_img.setText("<html><head/><body><p><img src=\""+gui_coins[coin]['icon']+"\"/></p></body></html>")
+            else:
+                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/coins/LABS_wallet.png\"/></p></body></html>")
             balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
             if 'address' in balance_info:
                 addr_text = balance_info['address']
