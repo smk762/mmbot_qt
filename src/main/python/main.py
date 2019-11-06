@@ -395,26 +395,26 @@ class Ui(QTabWidget):
 
     def show_create_orders(self):
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        index = self.create_buy_combo.currentIndex()
-        rel = self.create_buy_combo.itemText(index)
-        index = self.create_sell_combo.currentIndex()
-        base = self.create_sell_combo.itemText(index)
-        pair = self.update_orderbook_combos(base, rel, active_coins)
-        base = pair[0]
-        rel = pair[1]
-        if base == '':
-            print("no base")
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            self.update_create_order_combos(base, rel, active_coins)
+            row = 0
+            index = self.create_buy_combo.currentIndex()
+            base = self.create_buy_combo.itemText(index)
+            index = self.create_sell_combo.currentIndex()
+            rel = self.create_sell_combo.itemText(index)
+            pair = self.update_create_order_combos(base, rel, active_coins)
+            base = pair[0]
+            rel = pair[1]
   
     def update_create_order_combos(self, base, rel, active_coins):
         # check current coins in combobox
         if base == rel:
-            rel = ''
+            base = ''
+        print(base)
+        print(rel)
         existing_buy_coins = []
         for i in range(self.create_buy_combo.count()):
             existing_buy_coin = self.create_buy_combo.itemText(i)
@@ -428,18 +428,18 @@ class Ui(QTabWidget):
             if coin not in existing_sell_coins:
                 self.create_sell_combo.addItem(coin)
             if coin not in existing_buy_coins:
-                if coin != base:
+                if coin != rel:
                     self.create_buy_combo.addItem(coin)
         # eliminate selection duplication
         if self.create_buy_combo.count() == self.create_sell_combo.count():
             self.create_buy_combo.removeItem(0)
         # set values if empty
         if base == '':
-            self.create_sell_combo.setCurrentIndex(0)
-            base = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
-        if rel == '':
             self.create_buy_combo.setCurrentIndex(0)
-            rel = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
+            base = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
+        if rel == '':
+            self.create_sell_combo.setCurrentIndex(0)
+            rel = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
         return base, rel
  
     ## WALLET

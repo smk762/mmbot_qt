@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>5</number>
+   <number>4</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -2387,7 +2387,7 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QLabel" name="label_5">
+        <widget class="QLabel" name="create_sell_lbl">
          <property name="text">
           <string>Sell:</string>
          </property>
@@ -2458,7 +2458,7 @@
         </widget>
        </item>
        <item row="1" column="2">
-        <widget class="QLabel" name="label_6">
+        <widget class="QLabel" name="creat_buy_lbl">
          <property name="text">
           <string>Buy:</string>
          </property>
@@ -3414,10 +3414,42 @@
    <hints>
     <hint type="sourcelabel">
      <x>259</x>
-     <y>514</y>
+     <y>48</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_create_orders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>934</x>
+     <y>717</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_sell_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_create_orders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>934</x>
+     <y>655</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
      <y>417</y>
     </hint>
    </hints>
@@ -3438,5 +3470,6 @@
   <slot>export_table()</slot>
   <slot>cancel_all_orders()</slot>
   <slot>cancel_order_uuid()</slot>
+  <slot>show_create_orders()</slot>
  </slots>
 </ui>
