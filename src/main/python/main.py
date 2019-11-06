@@ -170,14 +170,15 @@ class Ui(QTabWidget):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
-        for coin in gui_coins:
-            status = gui_coins[coin]['status']
-            if coin in active_coins:
-                status.setStyleSheet('color: green')
-                status.setText('active')
-            else:
-                status.setStyleSheet('color: red')
-                status.setText('inactive')
+        if 'gui_coins' in globals():
+            for coin in gui_coins:
+                status = gui_coins[coin]['status']
+                if coin in active_coins:
+                    status.setStyleSheet('color: green')
+                    status.setText('active')
+                else:
+                    status.setStyleSheet('color: red')
+                    status.setText('inactive')
 
     def activate_coins(self):
         activate_dict = {}
