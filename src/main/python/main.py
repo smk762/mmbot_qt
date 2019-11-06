@@ -255,7 +255,10 @@ class Ui(QTabWidget):
                 msg = resp
         else:
             msg = resp
-        QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+        try:
+           QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+        except TypeError:
+           QMessageBox.information(self, 'Order Cancelled', 'no orders selected', QMessageBox.Ok, QMessageBox.Ok)
         self.show_orders()
 
     def cancel_all_orders(self):
