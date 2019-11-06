@@ -170,25 +170,13 @@ class Ui(QTabWidget):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
         print(active_coins)
-        search_txt = self.search_activate.text().lower()
-        if search_txt != '':
-            if 'gui_coins' in globals():
-                for coin in gui_coins:
-                    if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
-                        gui_coins[coin]['checkbox'].show()
-                        gui_coins[coin]['combo'].show()
-                        gui_coins[coin]['status'].show()
-                    else:
-                        gui_coins[coin]['checkbox'].hide()
-                        gui_coins[coin]['combo'].hide()
-                        gui_coins[coin]['status'].hide()
-        elif 'gui_coins' in globals():
+        display_coins = []
+        if 'gui_coins' in globals():
             for coin in gui_coins:
+                display_coins.append(coin)
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
                 gui_coins[coin]['status'].show()
-        if 'gui_coins' in globals():
-            for coin in gui_coins:
                 status = gui_coins[coin]['status']
                 if coin in active_coins:
                     status.setStyleSheet('color: green')
@@ -196,6 +184,28 @@ class Ui(QTabWidget):
                 else:
                     status.setStyleSheet('color: red')
                     status.setText('inactive')
+        search_txt = self.search_activate.text().lower()
+        if search_txt != '':
+            display_coins = []
+            if 'gui_coins' in globals():
+                for coin in gui_coins:
+                    gui_coins[coin]['checkbox'].hide()
+                    gui_coins[coin]['combo'].hide()
+                    gui_coins[coin]['status'].hide()
+                    if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
+                        display_coins.append(coin)
+
+        if 'gui_coins' in globals():
+            row = 0
+            for coin in display_coins:
+                gui_coins[coin]['checkbox'].show()
+                gui_coins[coin]['combo'].show()
+                gui_coins[coin]['status'].show()
+                self.gridLayout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
+                self.gridLayout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+                self.gridLayout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                row += 1
+
 
     def activate_coins(self):
         for coin in gui_coins:
