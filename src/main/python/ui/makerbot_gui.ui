@@ -48,12 +48,27 @@
     <item row="0" column="0">
      <widget class="QFrame" name="activate_head_frame">
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QHBoxLayout" name="activation_header_layout">
+       <property name="spacing">
+        <number>18</number>
+       </property>
+       <property name="leftMargin">
+        <number>18</number>
+       </property>
+       <property name="topMargin">
+        <number>18</number>
+       </property>
+       <property name="rightMargin">
+        <number>18</number>
+       </property>
+       <property name="bottomMargin">
+        <number>18</number>
+       </property>
        <item>
         <widget class="QLabel" name="title_activate">
          <property name="enabled">
@@ -81,6 +96,9 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="margin">
+          <number>12</number>
          </property>
         </widget>
        </item>
@@ -112,12 +130,27 @@
        <enum>Qt::RightToLeft</enum>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_15">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>18</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QPushButton" name="btn_activate">
          <property name="sizePolicy">
@@ -152,12 +185,30 @@
        </sizepolicy>
       </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>6</number>
+       </property>
+       <property name="leftMargin">
+        <number>12</number>
+       </property>
+       <property name="topMargin">
+        <number>6</number>
+       </property>
+       <property name="rightMargin">
+        <number>12</number>
+       </property>
+       <property name="bottomMargin">
+        <number>6</number>
+       </property>
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="sizePolicy">
@@ -166,8 +217,13 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="title">
-          <string>Smart Chains</string>
+          <string>SMART CHAINS</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -208,6 +264,9 @@
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -216,8 +275,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>528</width>
-               <height>451</height>
+               <width>541</width>
+               <height>467</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
@@ -227,19 +286,19 @@
                  <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
                 <property name="leftMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="topMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="rightMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="bottomMargin">
                  <number>10</number>
                 </property>
                 <property name="spacing">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <item row="2" column="1">
                  <widget class="QComboBox" name="kmd_combo">
@@ -251,13 +310,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -363,13 +422,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -422,13 +481,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -559,13 +618,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -803,6 +862,11 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>UTXO</string>
          </property>
@@ -845,6 +909,9 @@
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -853,8 +920,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>528</width>
-               <height>451</height>
+               <width>541</width>
+               <height>467</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
@@ -864,19 +931,19 @@
                  <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
                 <property name="leftMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="topMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="rightMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="bottomMargin">
                  <number>10</number>
                 </property>
                 <property name="spacing">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <item row="5" column="1">
                  <widget class="QComboBox" name="rvn_combo">
@@ -888,13 +955,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -966,13 +1033,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1025,13 +1092,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1084,13 +1151,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1313,13 +1380,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1397,13 +1464,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1456,13 +1523,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -1779,6 +1846,11 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="title">
           <string>ETH/ERC20</string>
          </property>
@@ -1821,6 +1893,9 @@
             <property name="frameShape">
              <enum>QFrame::NoFrame</enum>
             </property>
+            <property name="lineWidth">
+             <number>0</number>
+            </property>
             <property name="widgetResizable">
              <bool>true</bool>
             </property>
@@ -1830,7 +1905,7 @@
                <x>0</x>
                <y>0</y>
                <width>545</width>
-               <height>451</height>
+               <height>467</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout">
@@ -1840,19 +1915,19 @@
                  <enum>QLayout::SetDefaultConstraint</enum>
                 </property>
                 <property name="leftMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="topMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="rightMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <property name="spacing">
-                 <number>10</number>
+                 <number>12</number>
                 </property>
                 <item row="0" column="1">
                  <widget class="QComboBox" name="eth_combo">
@@ -1864,13 +1939,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -2030,13 +2105,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
@@ -2089,13 +2164,13 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>125</width>
                     <height>40</height>
                    </size>
                   </property>
                   <property name="maximumSize">
                    <size>
-                    <width>16777215</width>
+                    <width>150</width>
                     <height>40</height>
                    </size>
                   </property>
