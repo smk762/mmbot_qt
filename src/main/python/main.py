@@ -12,6 +12,7 @@ import qrcode
 import random
 from ui import coin_icons
 import datetime
+import time
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -51,8 +52,14 @@ class Ui(QTabWidget):
         global gui_coins
         creds = guilib.get_creds()
         if creds[0] != '':
-            guilib.stop_mm2(creds[0], creds[1])
+            try:
+                guilib.stop_mm2(creds[0], creds[1])
+            except:
+                pass
             guilib.start_mm2()
+            time.sleep(0.3)
+            version = rpclib.version(creds[0], creds[1]).json()['result']
+            self.mm2_version_lbl.setText("MarketMaker version: "+version)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
