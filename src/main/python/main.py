@@ -7,12 +7,13 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from lib import guilib, rpclib, coinslib, wordlist
+from lib import guilib, rpclib, coinslib, wordlist, enc
 import qrcode
 import random
 from ui import coin_icons
 import datetime
 import time
+
 
 cwd = os.getcwd()
 script_path = sys.path[0]
