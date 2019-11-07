@@ -236,6 +236,7 @@ class Ui(QTabWidget):
         self.setWindowTitle('Icon')
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))   
     ## COMMON
+
     def login(self):
         print("logging in...")
         username = self.username_input.text()
@@ -249,8 +250,15 @@ class Ui(QTabWidget):
             version = resp['result']
             self.mm2_version_lbl.setText("MarketMaker version: "+version)
             self.stacked_login.setCurrentIndex(1)
+
+        #else:
+        #    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
         else:
-            QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+            resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if resp == QMessageBox.No:
+                QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, 'Code not found', "I haven't implemented this yet... just use blank username and pass ;)", QMessageBox.Ok, QMessageBox.Ok)
 
     def saveFileDialog(self):
         filename = ''
