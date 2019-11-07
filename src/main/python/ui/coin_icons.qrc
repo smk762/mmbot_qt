@@ -8,6 +8,16 @@
     <file>img/other/inactive.png</file>
   </qresource>
   <qresource prefix="sml">
+    <file>img/32/color/0xbtc.png</file>
+    <file>img/32/color/dgb.png</file>
+    <file>img/32/color/hush.png</file>
+    <file>img/32/color/oot.png</file>
+    <file>img/32/color/pax.png</file>
+    <file>img/32/color/qtum.png</file>
+    <file>img/32/color/usdc.png</file>
+    <file>img/32/color/usdt.png</file>
+    <file>img/32/color/vrc.png</file>
+    <file>img/32/color/zilla.png</file>
     <file>img/32/color/eth.png</file>
     <file>img/32/color/kmd.png</file>
     <file>img/32/color/rvn.png</file>
