@@ -20,6 +20,8 @@ home = expanduser("~")
 os.environ['MM_COINS_PATH'] = script_path+"/bin/coins"
 os.environ['MM_CONF_PATH'] = script_path+"/bin/MM2.json"
 
+# TODO: username/password - encrypts file "username_MM2.json" using password as key.
+
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
@@ -50,21 +52,25 @@ class Ui(QTabWidget):
         self.show() # Show the GUI
         global creds
         global gui_coins
+        global authenticated
+        self.authenticated = False
         creds = guilib.get_creds()
-        if creds[0] != '':
-            try:
-                guilib.stop_mm2(creds[0], creds[1])
-            except:
-                pass
-            guilib.start_mm2()
-            time.sleep(0.3)
-            version = rpclib.version(creds[0], creds[1]).json()['result']
-            self.mm2_version_lbl.setText("MarketMaker version: "+version)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        if self.authenticated:
+            if creds[0] != '':
+                try:
+                    guilib.stop_mm2(creds[0], creds[1])
+                except:
+                    pass
+                guilib.start_mm2()
+                time.sleep(0.3)
+                version = rpclib.version(creds[0], creds[1]).json()['result']
+                self.mm2_version_lbl.setText("MarketMaker version: "+version)
+                self.show_active()
+            else:
+                self.show_config()
+                QMessageBox.information(self, 'MM2.json not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
         else:
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
-            QMessageBox.information(self, 'MM2.json not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
-        creds = guilib.get_creds()
+            self.show_login()
         gui_coins = {
             "BTC": {
                 "type":"utxo",
@@ -110,6 +116,12 @@ class Ui(QTabWidget):
                 "combo": self.doge_combo,
                 "status": self.doge_status,
             },
+            "DGB": {
+                "type":"utxo",
+                "checkbox": self.checkBox_dgb, 
+                "combo": self.dgb_combo,
+                "status": self.dgb_status,
+            },
             "DASH": {
                 "type":"utxo",
                 "checkbox": self.checkBox_dash, 
@@ -127,6 +139,72 @@ class Ui(QTabWidget):
                 "checkbox": self.checkBox_zec, 
                 "combo": self.zec_combo,
                 "status": self.zec_status,
+            },
+            "QTUM": {
+                "type":"utxo",
+                "checkbox": self.checkBox_qtum, 
+                "combo": self.qtum_combo,
+                "status": self.qtum_status,
+            },
+            "AXE": {
+                "type":"utxo",
+                "checkbox": self.checkBox_axe, 
+                "combo": self.axe_combo,
+                "status": self.axe_status,
+            },
+            "VRSC": {
+                "type":"smartchain",
+                "checkbox": self.checkBox_vrsc, 
+                "combo": self.vrsc_combo,
+                "status": self.vrsc_status,
+            },
+            "RFOX": {
+                "type":"smartchain",
+                "checkbox": self.checkBox_rfox, 
+                "combo": self.rfox_combo,
+                "status": self.rfox_status,
+            },
+            "ZILLA": {
+                "type":"smartchain",
+                "checkbox": self.checkBox_zilla, 
+                "combo": self.zilla_combo,
+                "status": self.zilla_status,
+            },
+            "HUSH": {
+                "type":"smartchain",
+                "checkbox": self.checkBox_hush, 
+                "combo": self.hush_combo,
+                "status": self.hush_status,
+            },
+            "OOT": {
+                "type":"smartchain",
+                "checkbox": self.checkBox_oot, 
+                "combo": self.oot_combo,
+                "status": self.oot_status,
+            },
+            "USDC": {
+                "type":"erc20",
+                "checkbox": self.checkBox_usdc, 
+                "combo": self.usdc_combo,
+                "status": self.usdc_status,
+            },
+            "AWC": {
+                "type":"erc20",
+                "checkbox": self.checkBox_awc, 
+                "combo": self.awc_combo,
+                "status": self.awc_status,
+            },
+            "TUSD": {
+                "type":"erc20",
+                "checkbox": self.checkBox_tusd, 
+                "combo": self.tusd_combo,
+                "status": self.tusd_status,
+            },
+            "PAX": {
+                "type":"erc20",
+                "checkbox": self.checkBox_pax, 
+                "combo": self.pax_combo,
+                "status": self.pax_status,
             },
             "RICK": {
                 "type":"smartchain",
@@ -157,6 +235,21 @@ class Ui(QTabWidget):
         self.setWindowTitle('Icon')
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))   
     ## COMMON
+    def login(self):
+        print("logging in...")
+        username = self.username_input.text()
+        password = self.password_input.text()
+        if username == '' and password == '':
+            self.authenticated = True
+            guilib.start_mm2()
+            time.sleep(0.3)
+            resp = rpclib.version(creds[0], creds[1]).json()
+            print(resp)
+            version = resp['result']
+            self.mm2_version_lbl.setText("MarketMaker version: "+version)
+            self.stacked_login.setCurrentIndex(1)
+        else:
+            QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     def saveFileDialog(self):
         filename = ''
@@ -188,22 +281,14 @@ class Ui(QTabWidget):
 
     ## ACTIVATE
 
+    def show_login(self):
+        self.stacked_login.setCurrentIndex(0)
+        self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        print("show_login")
+
     def show_active(self):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
-        print(active_coins)
-        display_coins = []
-        if 'gui_coins' in globals():
-            for coin in gui_coins:
-                display_coins.append(coin)
-                gui_coins[coin]['checkbox'].show()
-                gui_coins[coin]['combo'].show()
-                gui_coins[coin]['status'].show()
-                status = gui_coins[coin]['status']
-                if coin in active_coins:
-                    status.setText('<html><head/><body><p><img src=":/other/img/other/active.png"/></p></body></html>')
-                else:
-                    status.setText('<html><head/><body><p><img src=":/other/img/other/inactive.png"/></p></body></html>')
         search_txt = self.search_activate.text().lower()
         display_coins_erc20 = []
         display_coins_utxo = []
@@ -213,15 +298,17 @@ class Ui(QTabWidget):
                 gui_coins[coin]['checkbox'].hide()
                 gui_coins[coin]['combo'].hide()
                 gui_coins[coin]['status'].hide()
-                if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1:
+                if coin in active_coins:
+                    gui_coins[coin]['status'].setText('<html><head/><body><p><img src=":/other/img/other/active.png"/></p></body></html>')
+                else:
+                    gui_coins[coin]['status'].setText('<html><head/><body><p><img src=":/other/img/other/inactive.png"/></p></body></html>')
+                if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
                     if gui_coins[coin]['type'] == 'utxo':
                         display_coins_utxo.append(coin)
                     elif gui_coins[coin]['type'] == 'erc20':
                         display_coins_erc20.append(coin)
                     elif gui_coins[coin]['type'] == 'smartchain':
                         display_coins_smartchain.append(coin)
-
-        if 'gui_coins' in globals():
             row = 0
             for coin in display_coins_smartchain:
                 gui_coins[coin]['checkbox'].show()
@@ -230,6 +317,10 @@ class Ui(QTabWidget):
                 self.smartchains_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.smartchains_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
                 self.smartchains_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                icon = QIcon()
+                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
+                gui_coins[coin]['checkbox'].setIcon(icon)
+
                 row += 1
             row = 0
             for coin in display_coins_erc20:
@@ -239,6 +330,9 @@ class Ui(QTabWidget):
                 self.erc20_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.erc20_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
                 self.erc20_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                icon = QIcon()
+                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
+                gui_coins[coin]['checkbox'].setIcon(icon)
                 row += 1
             row = 0
             for coin in display_coins_utxo:
@@ -248,6 +342,9 @@ class Ui(QTabWidget):
                 self.utxo_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.utxo_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
                 self.utxo_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
+                icon = QIcon()
+                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
+                gui_coins[coin]['checkbox'].setIcon(icon)
                 row += 1
 
 
@@ -879,39 +976,47 @@ class Ui(QTabWidget):
 
     def prepare_tab(self):
         QCoreApplication.processEvents()
-        index = self.currentIndex()
-        if index == 0:
-            # activate
-            print('show_active')
-            self.show_active()
-        elif index == 1:
-            # orders
-            print('show_orders')
-            self.show_orders()
-        elif index == 2:
-            # trades
-            print('show_trades')
-            self.show_trades()
-        elif index == 3:
-            # order book
-            print('show_orderbook')
-            self.show_orderbook()
-        elif index == 4:
-            # create order
-            print('show_create_orders')
-            self.show_create_orders()
-        elif index == 5:
-            # wallet
-            print('show_wallet')
-            self.show_wallet()
-        elif index == 6:
-            # config
-            print('show_config')
-            self.show_config()
-        elif index == 7:
-            # logs
-            print('update_logs')
-            self.update_logs()
+        if self.authenticated:
+            index = self.currentIndex()
+            if index == 0:
+                # activate
+                print('show_active')
+                self.show_active()
+            elif index == 1:
+                # orders
+                print('show_orders')
+                self.show_orders()
+            elif index == 2:
+                # trades
+                print('show_trades')
+                self.show_trades()
+            elif index == 3:
+                # order book
+                print('show_orderbook')
+                self.show_orderbook()
+            elif index == 4:
+                # create order
+                print('show_create_orders')
+                self.show_create_orders()
+            elif index == 5:
+                # wallet
+                print('show_wallet')
+                self.show_wallet()
+            elif index == 6:
+                # config
+                print('show_config')
+                self.show_config()
+            elif index == 7:
+                # logs
+                print('update_logs')
+                self.update_logs()
+        else:
+            print('show_active - login')
+            index = self.currentIndex()
+            if index != 0:
+                QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
+            self.show_login()
+
 
 
 if __name__ == '__main__':
