@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -2563,92 +2563,7 @@
     <string>My Trades</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_20">
-    <item row="0" column="0">
-     <widget class="QFrame" name="frame_9">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>1677777</width>
-        <height>62</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_7">
-       <property name="leftMargin">
-        <number>18</number>
-       </property>
-       <property name="topMargin">
-        <number>12</number>
-       </property>
-       <property name="rightMargin">
-        <number>18</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="export_trade_table_btn">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
-         <property name="text">
-          <string>Export</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="label_44">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>50</height>
-          </size>
-         </property>
-         <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Trade History&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="1" column="0">
+    <item row="2" column="0">
      <widget class="QTableWidget" name="trades_table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -2762,6 +2677,91 @@
       </column>
      </widget>
     </item>
+    <item row="1" column="0">
+     <widget class="QFrame" name="frame_9">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>1677777</width>
+        <height>62</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <property name="leftMargin">
+        <number>18</number>
+       </property>
+       <property name="topMargin">
+        <number>12</number>
+       </property>
+       <property name="rightMargin">
+        <number>18</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="export_trade_table_btn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+         <property name="text">
+          <string>Export</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="label_44">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Trade History&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="tab_orderbook">
@@ -2791,13 +2791,13 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_21">
        <property name="leftMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="topMargin">
         <number>12</number>
        </property>
        <property name="rightMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -3967,7 +3967,7 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>50</height>
+        <height>62</height>
        </size>
       </property>
       <property name="frameShape">
@@ -3978,13 +3978,13 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_22">
        <property name="leftMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>12</number>
        </property>
        <property name="rightMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -4294,6 +4294,12 @@
    <layout class="QGridLayout" name="gridLayout_25">
     <item row="0" column="0">
      <widget class="QFrame" name="frame_8">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>62</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -4308,16 +4314,19 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_9">
        <property name="leftMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="topMargin">
         <number>12</number>
        </property>
        <property name="rightMargin">
-        <number>12</number>
+        <number>18</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>18</number>
        </property>
        <item row="0" column="0">
         <widget class="QLabel" name="lbl_logs">
@@ -4333,7 +4342,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>50</height>
+           <height>62</height>
           </size>
          </property>
          <property name="font">
