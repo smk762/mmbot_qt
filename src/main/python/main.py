@@ -57,7 +57,6 @@ class Ui(QTabWidget):
         else:
             self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
             QMessageBox.information(self, 'MM2.json not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
-
         creds = guilib.get_creds()
         gui_coins = {
             "BTC": {
@@ -148,6 +147,8 @@ class Ui(QTabWidget):
             },
         }
 
+        self.setWindowTitle('Icon')
+        self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))   
     ## COMMON
 
     def saveFileDialog(self):
@@ -905,7 +906,10 @@ class Ui(QTabWidget):
             print('update_logs')
             self.update_logs()
 
-app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
-window = Ui() # Create an instance of our class
-app.exec_() # Start the application
-guilib.stop_mm2(creds[0], creds[1])
+
+if __name__ == '__main__':
+    
+    app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
+    window = Ui() # Create an instance of our class
+    app.exec_() # Start the application
+    guilib.stop_mm2(creds[0], creds[1])
