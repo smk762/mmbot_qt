@@ -34,14 +34,12 @@ def decrypt(enc, password):
 def genPass(stringLength=16):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(stringLength))
 
-def decrypt_mm2_json(encrypted_mm2_json_file):
-    with open(encrypted_mm2_json_file) as f:
-    mm2_json = decrypt(f.read(), password)
+def decrypt_mm2_json(encrypted_mm2_json_data, password):
+    mm2_json = decrypt(encrypted_mm2_json_data, password)
     print(mm2_json)
     return mm2_json
 
-def encrypt_mm2_json(mm2_json_file):
-    with open(mm2_json_file) as f:
-    mm2_json = encrypt(f.read(), password)
+def encrypt_mm2_json(mm2_json_data, password):    
+    mm2_json = encrypt(mm2_json_data, password)
     print(mm2_json)
     return mm2_json

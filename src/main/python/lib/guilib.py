@@ -39,10 +39,13 @@ ignored_addresses = ['RDbAXLCmQ2EN7daEZZp7CC9xzkcN8DfAZd']
 def get_creds(mm2_json_file):
     local_ip = ''
     userpass = ''
+    print("getting creds")
     try:
         with open(mm2_json_file) as j:
             try:
                 mm2json = json.load(j)
+                print("MMJSON")
+                print(mm2json)
                 gui = mm2json['gui']
                 netid = mm2json['netid']
                 passphrase = mm2json['passphrase']
@@ -51,9 +54,11 @@ def get_creds(mm2_json_file):
                 local_ip = "http://127.0.0.1:7783"
                 MM2_json_exists = True
             except:
+                print("assigning creds failed")
                 mm2json = j.read()
                 print(mm2json)
     except:
+        print("MM2json didnt open")
         pass
     print(local_ip)
     print(userpass)

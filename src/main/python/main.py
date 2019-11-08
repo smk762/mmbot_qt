@@ -75,10 +75,7 @@ class Ui(QTabWidget):
         self.show() # Show the GUI
         self.setWindowTitle('Icon')
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
-        global creds
         global gui_coins
-        global authenticated
-        global username
         self.authenticated = False
         gui_coins = {
             "BTC": {
@@ -282,57 +279,80 @@ class Ui(QTabWidget):
         print("logging in...")
         self.username = self.username_input.text()
         self.password = self.password_input.text()
-        with open(config_path+username"_MM2.json", 'w'):
-            f.write(decrypt_mm2_json(config_path+username"_MM2.enc", self.password))
-        creds = guilib.get_creds(config_path+username"_MM2.json")
-        if username in settings.value('users'):
-            #check password etc
-            self.username_input.setText('')
-            self.password_input.setText('')
-            self.authenticated = True
-            if creds[0] != '':
-                try:
-                    guilib.stop_mm2(creds[0], creds[1])
-                except:
-                    pass
-                os.environ['MM_CONF_PATH'] = config_path+username"_MM2.json"
-                guilib.start_mm2()
-                time.sleep(0.3)
-                with open(config_path+username"_MM2.json", 'w'):
-                    f.write('')
-                version = rpclib.version(creds[0], creds[1]).json()['result']
-                self.mm2_version_lbl.setText("MarketMaker version: "+version)
-                self.show_active()
-            else:
-                self.show_config()
-        else:
-            resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if resp == QMessageBox.Yes:
-                settings.setValue('users', settings.value('users')+[username])
-                self.authenticated = True
-                self.show_config()        
-            elif resp == QMessageBox.No:
-                QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
-
-        if username == '' and password == '':
+        if self.username == '' and self.password == '':
             self.authenticated = True
             guilib.start_mm2()
             time.sleep(0.3)
-            resp = rpclib.version(creds[0], creds[1]).json()
+            resp = rpclib.version(self.creds[0], self.creds[1]).json()
             print(resp)
             version = resp['result']
             self.mm2_version_lbl.setText("MarketMaker version: "+version)
             self.stacked_login.setCurrentIndex(1)
+        else:
+            if not os.path.isfile(config_path+self.username+"_MM2.enc"):
+                print("creating blank .enc")
+                with open(config_path+self.username+"_MM2.enc", 'w') as f:
+                    f.write('')
+            else:
+                with open(config_path+self.username+"_MM2.enc", 'r') as f:
+                    print(f)
+                    encrypted_mm2_json = f.read()
+                print("encrypted: "+ encrypted_mm2_json)
+                if encrypted_mm2_json != '':
+                    mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
+                    try:
+                        print("decrypted: "+mm2_json_decrypted.decode())
+                        with open(config_path+self.username+"_MM2.json", 'w') as j:
+                            print("decrypting .enc")
+                            j.write(mm2_json_decrypted.decode())
+                        self.authenticated = True
+                    except:
+                        # did not decode, bad password
+                        pass
+            if self.authenticated:
+                self.creds = guilib.get_creds(config_path+self.username+"_MM2.json")
+                print("CREDS")
+                print(self.creds)
+                if self.username in settings.value('users'):
+                    #check password etc
+                    self.username_input.setText('')
+                    self.password_input.setText('')
+                    self.authenticated = True
+                    self.stacked_login.setCurrentIndex(1)
 
-        #else:
-        #    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+                    if self.creds[0] != '':
+                        try:
+                            guilib.stop_mm2(self.creds[0], self.creds[1])
+                        except:
+                            pass
+                        os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
+                        guilib.start_mm2()
+                        time.sleep(0.3)
+                        with open(config_path+self.username+"_MM2.json", 'w') as j:
+                            j.write('')
+                        version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                        self.mm2_version_lbl.setText("MarketMaker version: "+version)
+                        self.show_active()
+                    else:
+                        self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+                else:
+                    resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                    if resp == QMessageBox.Yes:
+                        settings.setValue('users', settings.value('users')+[self.username])
+                        self.authenticated = True
+                        self.show_config()
+                    elif resp == QMessageBox.No:
+                        QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
 
-        
+            else:
+                QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+
+            
 
     # ACTIVATE
     def show_active(self):
         print("show_active")
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         search_txt = self.search_activate.text().lower()
         display_coins_erc20 = []
         display_coins_utxo = []
@@ -397,15 +417,15 @@ class Ui(QTabWidget):
             combo = gui_coins[coin]['combo']
             if checkbox.isChecked():
                 QCoreApplication.processEvents()
-                r = rpclib.electrum(creds[0], creds[1], coin)
+                r = rpclib.electrum(self.creds[0], self.creds[1], coin)
                 print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         self.show_active()
 
     ## SHOW ORDERS
 
     def show_orders(self):
-        orders = rpclib.my_orders(creds[0], creds[1]).json()
+        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         print(orders)
         row = 0
         row_count = self.orders_table.rowCount()
@@ -482,7 +502,7 @@ class Ui(QTabWidget):
         if self.orders_table.item(selected_row,7) is not None:
             if self.orders_table.item(selected_row,7).text() != '':
                 order_uuid = self.orders_table.item(selected_row,7).text()
-                resp = rpclib.cancel_uuid(creds[0], creds[1], order_uuid).json()
+                resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 print(resp)
                 msg = ''
                 if 'result' in resp:
@@ -501,7 +521,7 @@ class Ui(QTabWidget):
 
     def cancel_all_orders(self):
         if self.orders_table.item(0,0).text() != '':
-            resp = rpclib.cancel_all(creds[0], creds[1]).json()
+            resp = rpclib.cancel_all(self.creds[0], self.creds[1]).json()
             print(resp)
             msg = ''
             if 'result' in resp:
@@ -520,7 +540,7 @@ class Ui(QTabWidget):
     ## SHOW TRADES
 
     def show_trades(self):
-        swaps_info = rpclib.my_recent_swaps(creds[0], creds[1], limit=9999, from_uuid='').json()
+        swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
         row = 0
         for swap in swaps_info['result']['swaps']:
             status = ''
@@ -558,7 +578,7 @@ class Ui(QTabWidget):
     ## SHOW ORDERBOOK
 
     def show_orderbook(self):
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -572,7 +592,7 @@ class Ui(QTabWidget):
             print(pair)
             base = pair[0]
             rel = pair[1]
-            pair_book = rpclib.orderbook(creds[0], creds[1], base, rel).json()
+            pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
             row = 0
             self.orderbook_table.setSortingEnabled(False)
             row_count = self.orderbook_table.rowCount()
@@ -649,16 +669,16 @@ class Ui(QTabWidget):
         if selected_row != -1:
             selected_price = self.orderbook_table.item(selected_row,3).text()
             if selected_price != '':
-                balance_info = rpclib.my_balance(creds[0], creds[1], rel).json()
+                balance_info = rpclib.my_balance(self.creds[0], self.creds[1], rel).json()
                 if 'address' in balance_info:
                     balance_text = balance_info['balance']
                     locked_text = balance_info['locked_by_swaps']
                     available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
                     max_vol = available_balance/float(selected_price)*0.99
-                vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ')
+                vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ', QLineEdit.Password)
                 if ok:
                     print(vol)
-                    resp = rpclib.buy(creds[0], creds[1], base, rel, vol, selected_price).json()
+                    resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, vol, selected_price).json()
                     print(resp)
                     if 'error' in resp:
                         if resp['error'].find("larger than available") > -1:
@@ -682,7 +702,7 @@ class Ui(QTabWidget):
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
 
     def show_create_orders(self):
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -698,7 +718,7 @@ class Ui(QTabWidget):
             print(pair)
             self.create_buy_depth_baserel_lbl.setText(rel+"/"+base)
             self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+rel])
-            pair_book = rpclib.orderbook(creds[0], creds[1], rel, base).json()
+            pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
             row = 0
             row_count = self.depth_table.rowCount()
             # todo - investigate wierd tables after sorting then changing pair.
@@ -762,7 +782,7 @@ class Ui(QTabWidget):
         # Update labels
         self.create_amount_lbl.setText("Amount ("+rel+")")
         self.create_price_lbl.setText("Price ("+base+")")
-        balance_info = rpclib.my_balance(creds[0], creds[1], rel).json()
+        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], rel).json()
         if 'address' in balance_info:
             balance = round(float(balance_info['balance']),8)
             locked = round(float(balance_info['locked_by_swaps']),8)
@@ -813,7 +833,7 @@ class Ui(QTabWidget):
         # detect previous
         cancel_previous = True
         cancel_trade = False
-        orders = rpclib.my_orders(creds[0], creds[1]).json()
+        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         for order in orders:
             if 'maker_orders' in orders['result']:
                 maker_orders = orders['result']['maker_orders']
@@ -843,7 +863,7 @@ class Ui(QTabWidget):
         else:
             trade_max = False
         if not cancel_trade:
-            resp = rpclib.setprice(creds[0], creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
+            resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
             print(resp)
             if 'error' in resp:
                 if resp['error'].find("larger than available") > -1:
@@ -861,7 +881,7 @@ class Ui(QTabWidget):
     ## WALLET
 
     def show_wallet(self):
-        active_coins = rpclib.check_active_coins(creds[0], creds[1])
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -880,7 +900,7 @@ class Ui(QTabWidget):
                 self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
             else:
                 self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/labs.png\"/></p></body></html>")
-            balance_info = rpclib.my_balance(creds[0], creds[1], coin).json()
+            balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
             if 'address' in balance_info:
                 addr_text = balance_info['address']
                 balance_text = round(float(balance_info['balance']))
@@ -902,7 +922,7 @@ class Ui(QTabWidget):
         msg = ''
         print(recipient_addr)
         print(amount)
-        resp = rpclib.withdraw(creds[0], creds[1], cointag, recipient_addr, amount).json()
+        resp = rpclib.withdraw(self.creds[0], self.creds[1], cointag, recipient_addr, amount).json()
         if 'error' in resp:
             print(resp['error'])
             if resp['error'].find("Invalid Address!") > -1:
@@ -915,7 +935,7 @@ class Ui(QTabWidget):
                 msg = str(resp['error'])
         elif 'tx_hex' in resp:
             raw_hex = resp['tx_hex']
-            resp = rpclib.send_raw_transaction(creds[0], creds[1], cointag, raw_hex).json()
+            resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], cointag, raw_hex).json()
             print(resp)
             if 'tx_hash' in resp:
                 txid = resp['tx_hash']
@@ -927,7 +947,7 @@ class Ui(QTabWidget):
                     msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
                 except:
                     msg = "Sent! TXID: ["+txid_str+"]"
-                balance_info = rpclib.my_balance(creds[0], creds[1], cointag).json()
+                balance_info = rpclib.my_balance(self.creds[0], self.creds[1], cointag).json()
                 if 'address' in balance_info:
                     balance_text = balance_info['balance']
                     self.wallet_balance.setText(balance_text)
@@ -967,7 +987,7 @@ class Ui(QTabWidget):
             msg += 'No RPC IP input! \n'
         if msg == '':
             overwrite = True
-            if os.path.isfile(config_path+username"_MM2.json"):
+            if os.path.isfile(config_path+self.username+"_MM2.json"):
                 confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing settings detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if not confirm == QMessageBox.Yes:
                     overwrite = False
@@ -983,12 +1003,15 @@ class Ui(QTabWidget):
                     data.update({"rpc_local_only":local_only})
                     data.update({"rpc_allow_ip":rpc_ip})
                     print(data)
-                    with open(config_path+username"_MM2.json", 'w') as f:
-                        f.write(encrypt_mm2_json(json.dumps(data)), password)
+                    enc_data = enc.encrypt_mm2_json(json.dumps(data), password)
+                    print(bytes.decode(enc_data))
+                    with open(config_path+self.username+"_MM2.enc", 'w') as j:
+                        j.write(bytes.decode(enc_data))
+
                     QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
-                    if creds[0] != '':
-                        guilib.stop_mm2(creds[0], creds[1])
-                    authenticated = False
+                    if self.creds[0] != '':
+                        guilib.stop_mm2(self.creds[0], self.creds[1])
+                    self.authenticated = False
                     self.show_login()
         else:
             QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1025,10 +1048,12 @@ class Ui(QTabWidget):
     def prepare_tab(self):
         QCoreApplication.processEvents()
         if self.authenticated:
+            print("authenticated")
             self.stacked_login.setCurrentIndex(1)
             index = self.currentIndex()
-            if creds[0] != '':
-                QMessageBox.information(self, 'Settings for user "'+current_user+'" not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
+            print(self.creds)
+            if self.creds[0] == '':
+                QMessageBox.information(self, 'Settings for user "'+self.username+'" not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
                 self.stacked_login.setCurrentIndex(6)                
             elif index == 0:
                 # activate
@@ -1064,6 +1089,7 @@ class Ui(QTabWidget):
                 self.update_logs()
         else:
             print('show_active - login')
+            self.stacked_login.setCurrentIndex(0)
             index = self.currentIndex()
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
@@ -1076,4 +1102,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
     window = Ui() # Create an instance of our class
     app.exec_() # Start the application
-    guilib.stop_mm2(creds[0], creds[1])
+    guilib.stop_mm2(window.creds[0], window.creds[1])
