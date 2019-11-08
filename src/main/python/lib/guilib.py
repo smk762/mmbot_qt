@@ -36,11 +36,11 @@ home = expanduser("~")
 
 ignored_addresses = ['RDbAXLCmQ2EN7daEZZp7CC9xzkcN8DfAZd']
 
-def get_creds():
+def get_creds(mm2_json_file):
     local_ip = ''
     userpass = ''
     try:
-        with open(script_path+"/bin/MM2.json") as j:
+        with open(mm2_json_file) as j:
             try:
                 mm2json = json.load(j)
                 gui = mm2json['gui']

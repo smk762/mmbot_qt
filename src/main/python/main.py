@@ -2,6 +2,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
 import json
+import requests
 from os.path import expanduser
 from PyQt5 import uic
 from PyQt5.QtWidgets import *
@@ -18,11 +19,32 @@ import time
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
-os.environ['MM_COINS_PATH'] = script_path+"/bin/coins"
-os.environ['MM_CONF_PATH'] = script_path+"/bin/MM2.json"
+
+# Setup local settings ini.
+# Need to test this on alternative Operating systems.
+QSettings.setDefaultFormat(QSettings.IniFormat)
+QCoreApplication.setOrganizationName("KomodoPlatform")
+QCoreApplication.setApplicationName("AntaraMakerbot")
+settings = QSettings()
+ini_file = settings.fileName()
+config_path = settings.fileName().replace("AntaraMakerbot.ini", "")
+
+if settings.value('users') is None:
+    settings.setValue("users", [])
+print("Existing users: " +str(settings.value('users')))
+
+# Update coins file. TODO: more efficient way if doesnt need to be updated?
+print("Downloading latest coins file")
+with open(config_path+"coins", 'w') as f:
+    r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
+    if r.status_code == 200:
+        f.write(json.dumps(r.json()))
+    else:
+        print("coins update failed: "+str(r.status_code))
+
+os.environ['MM_COINS_PATH'] = config_path+"coins"
 
 # TODO: username/password - encrypts file "username_MM2.json" using password as key.
-
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
@@ -51,27 +73,13 @@ class Ui(QTabWidget):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi(script_path+'/ui/makerbot_gui.ui', self) # Load the .ui file
         self.show() # Show the GUI
+        self.setWindowTitle('Icon')
+        self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
         global creds
         global gui_coins
         global authenticated
+        global username
         self.authenticated = False
-        creds = guilib.get_creds()
-        if self.authenticated:
-            if creds[0] != '':
-                try:
-                    guilib.stop_mm2(creds[0], creds[1])
-                except:
-                    pass
-                guilib.start_mm2()
-                time.sleep(0.3)
-                version = rpclib.version(creds[0], creds[1]).json()['result']
-                self.mm2_version_lbl.setText("MarketMaker version: "+version)
-                self.show_active()
-            else:
-                self.show_config()
-                QMessageBox.information(self, 'MM2.json not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
-        else:
-            self.show_login()
         gui_coins = {
             "BTC": {
                 "type":"utxo",
@@ -231,35 +239,10 @@ class Ui(QTabWidget):
                 "combo": self.rvn_combo,
                 "status": self.rvn_status,
             },
-        }
+        }               
+        self.show_login()
 
-        self.setWindowTitle('Icon')
-        self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))   
     ## COMMON
-
-    def login(self):
-        print("logging in...")
-        username = self.username_input.text()
-        password = self.password_input.text()
-        if username == '' and password == '':
-            self.authenticated = True
-            guilib.start_mm2()
-            time.sleep(0.3)
-            resp = rpclib.version(creds[0], creds[1]).json()
-            print(resp)
-            version = resp['result']
-            self.mm2_version_lbl.setText("MarketMaker version: "+version)
-            self.stacked_login.setCurrentIndex(1)
-
-        #else:
-        #    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
-        else:
-            resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if resp == QMessageBox.No:
-                QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
-            else:
-                QMessageBox.information(self, 'Code not found', "I haven't implemented this yet... just use blank username and pass ;)", QMessageBox.Ok, QMessageBox.Ok)
-
     def saveFileDialog(self):
         filename = ''
         options = QFileDialog.Options()
@@ -288,13 +271,65 @@ class Ui(QTabWidget):
         # write data to file
         # json, csv option?
 
-    ## ACTIVATE
+    ## LOGIN 
 
     def show_login(self):
         self.stacked_login.setCurrentIndex(0)
         self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         print("show_login")
 
+    def login(self):
+        print("logging in...")
+        self.username = self.username_input.text()
+        self.password = self.password_input.text()
+        with open(config_path+username"_MM2.json", 'w'):
+            f.write(decrypt_mm2_json(config_path+username"_MM2.enc", self.password))
+        creds = guilib.get_creds(config_path+username"_MM2.json")
+        if username in settings.value('users'):
+            #check password etc
+            self.username_input.setText('')
+            self.password_input.setText('')
+            self.authenticated = True
+            if creds[0] != '':
+                try:
+                    guilib.stop_mm2(creds[0], creds[1])
+                except:
+                    pass
+                os.environ['MM_CONF_PATH'] = config_path+username"_MM2.json"
+                guilib.start_mm2()
+                time.sleep(0.3)
+                with open(config_path+username"_MM2.json", 'w'):
+                    f.write('')
+                version = rpclib.version(creds[0], creds[1]).json()['result']
+                self.mm2_version_lbl.setText("MarketMaker version: "+version)
+                self.show_active()
+            else:
+                self.show_config()
+        else:
+            resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if resp == QMessageBox.Yes:
+                settings.setValue('users', settings.value('users')+[username])
+                self.authenticated = True
+                self.show_config()        
+            elif resp == QMessageBox.No:
+                QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
+
+        if username == '' and password == '':
+            self.authenticated = True
+            guilib.start_mm2()
+            time.sleep(0.3)
+            resp = rpclib.version(creds[0], creds[1]).json()
+            print(resp)
+            version = resp['result']
+            self.mm2_version_lbl.setText("MarketMaker version: "+version)
+            self.stacked_login.setCurrentIndex(1)
+
+        #else:
+        #    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+
+        
+
+    # ACTIVATE
     def show_active(self):
         print("show_active")
         active_coins = rpclib.check_active_coins(creds[0], creds[1])
@@ -355,7 +390,6 @@ class Ui(QTabWidget):
                 icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
                 gui_coins[coin]['checkbox'].setIcon(icon)
                 row += 1
-
 
     def activate_coins(self):
         for coin in gui_coins:
@@ -906,6 +940,7 @@ class Ui(QTabWidget):
     ## CONFIG
 
     def show_config(self):
+        
         pass
 
     def save_config(self):
@@ -932,25 +967,29 @@ class Ui(QTabWidget):
             msg += 'No RPC IP input! \n'
         if msg == '':
             overwrite = True
-            if os.path.isfile(script_path+"/bin/MM2.json"):
-                confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing MM2.json detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if os.path.isfile(config_path+username"_MM2.json"):
+                confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing settings detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if not confirm == QMessageBox.Yes:
                     overwrite = False
             if overwrite:
-                data = {}
-                data.update({"gui":gui})
-                data.update({"rpc_password":rpc_password})
-                data.update({"netid":int(netid)})
-                data.update({"passphrase":passphrase})
-                data.update({"userhome":home})
-                data.update({"rpc_local_only":local_only})
-                data.update({"rpc_allow_ip":rpc_ip})
-                print(data)
-                with open(script_path+"/bin/MM2.json", 'w', encoding='utf-8') as f:
-                    json.dump(data, f, ensure_ascii=False, indent=4)
-                QMessageBox.information(self, 'New MM2.json created', "Settings updated. Please restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
-                guilib.stop_mm2(creds[0], creds[1])
-                print("MM2.json file created!")
+                password, ok = QInputDialog.getText(self, 'Enter Password', 'Enter your login password: ')
+                if ok:
+                    data = {}
+                    data.update({"gui":gui})
+                    data.update({"rpc_password":rpc_password})
+                    data.update({"netid":int(netid)})
+                    data.update({"passphrase":passphrase})
+                    data.update({"userhome":home})
+                    data.update({"rpc_local_only":local_only})
+                    data.update({"rpc_allow_ip":rpc_ip})
+                    print(data)
+                    with open(config_path+username"_MM2.json", 'w') as f:
+                        f.write(encrypt_mm2_json(json.dumps(data)), password)
+                    QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
+                    if creds[0] != '':
+                        guilib.stop_mm2(creds[0], creds[1])
+                    authenticated = False
+                    self.show_login()
         else:
             QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
             pass
@@ -986,8 +1025,12 @@ class Ui(QTabWidget):
     def prepare_tab(self):
         QCoreApplication.processEvents()
         if self.authenticated:
+            self.stacked_login.setCurrentIndex(1)
             index = self.currentIndex()
-            if index == 0:
+            if creds[0] != '':
+                QMessageBox.information(self, 'Settings for user "'+current_user+'" not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
+                self.stacked_login.setCurrentIndex(6)                
+            elif index == 0:
                 # activate
                 print('show_active')
                 self.show_active()

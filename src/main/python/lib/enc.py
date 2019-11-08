@@ -17,14 +17,12 @@ def get_private_key(password):
     key = kdf[:32]
     return key
 
-
 def encrypt(raw, password):
     private_key = get_private_key(password)
     raw = pad(raw)
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(private_key, AES.MODE_CBC, iv)
     return base64.b64encode(iv + cipher.encrypt(raw))
-
 
 def decrypt(enc, password):
     private_key = get_private_key(password)
@@ -35,3 +33,15 @@ def decrypt(enc, password):
 
 def genPass(stringLength=16):
     return ''.join(random.choice(string.ascii_letters + string.digits) for i in range(stringLength))
+
+def decrypt_mm2_json(encrypted_mm2_json_file):
+    with open(encrypted_mm2_json_file) as f:
+    mm2_json = decrypt(f.read(), password)
+    print(mm2_json)
+    return mm2_json
+
+def encrypt_mm2_json(mm2_json_file):
+    with open(mm2_json_file) as f:
+    mm2_json = encrypt(f.read(), password)
+    print(mm2_json)
+    return mm2_json
