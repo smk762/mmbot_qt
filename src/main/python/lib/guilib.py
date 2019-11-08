@@ -37,20 +37,31 @@ home = expanduser("~")
 ignored_addresses = ['RDbAXLCmQ2EN7daEZZp7CC9xzkcN8DfAZd']
 
 def get_creds(mm2_json_file):
-    local_ip = ''
+    rpc_ip = ''
     userpass = ''
     print("getting creds")
     try:
         with open(mm2_json_file) as j:
             try:
                 mm2json = json.load(j)
-                print("MMJSON")
-                print(mm2json)
-                gui = mm2json['gui']
-                netid = mm2json['netid']
-                passphrase = mm2json['passphrase']
-                userpass = mm2json['rpc_password']
-                rpc_password = mm2json['rpc_password']
+                if 'gui' in mm2json:
+                    gui = mm2json['gui']
+                else:
+                    gui = ''
+                if 'netid' in mm2json:
+                    netid = mm2json['netid']
+                else:
+                    netid = 9999
+                if 'passphrase' in mm2json:
+                    passphrase = mm2json['passphrase']
+                else:
+                    passphrase = ''
+                if 'rpc_password' in mm2json:
+                    rpc_password = mm2json['rpc_password']
+                    userpass = mm2json['rpc_password']
+                else:
+                    rpc_password = ''
+                    userpass = ''
                 if 'bn_key' in mm2json:
                     bn_key = mm2json['bn_key']
                 else:
@@ -69,15 +80,31 @@ def get_creds(mm2_json_file):
                     rpc_ip = '127.0.0.1'
                 rpc_url = "http://"+rpc_ip+":7783"
                 MM2_json_exists = True
-            except:
+            except Exception as e:
                 print("assigning creds failed")
-                mm2json = j.read()
-                print(mm2json)
-    except:
+                print(e)
+                rpc_url = ''
+                rpc_password = ''
+                userpass = ''
+                passphrase = ''
+                netid = 9999
+                rpc_ip = ''
+                bn_key = ''
+                bn_secret = ''
+                margin = 0
+    except Exception as e:
         print("MM2json didnt open")
+        print(e)
+        rpc_url = ''
+        userpass = ''
+        rpc_password = ''
+        passphrase = ''
+        netid = 9999
+        rpc_ip = ''
+        bn_key = ''
+        bn_secret = ''
+        margin = 0
         pass
-    print(local_ip)
-    print(userpass)
     return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin
 
 def colorize(string, color):
