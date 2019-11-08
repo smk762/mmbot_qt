@@ -939,17 +939,17 @@ class Ui(QTabWidget):
 
     def show_config(self):
         if self.creds[0] != '':
-            rpc_password = self.rpcpass_text_input.setText(self.creds[1])
-            passphrase = self.seed_text_input.setText(self.creds[2])
-            netid = self.netid_input.setValue(self.creds[3])
-            rpc_ip = self.rpc_ip_text_input.setText(self.creds[4])
-            binance_key = self.binance_key_text_input.setText(self.creds[5])
-            binance_secret = self.binance_secret_text_input.setText(self.creds[6])
-            margin = self.margin_input.setValue(self.creds[7])
-            # TODO: figure out why this isnt working
-            if rpc_ip == '127.0.0.1':
+            self.rpcpass_text_input.setText(self.creds[1])
+            self.seed_text_input.setText(self.creds[2])
+            self.netid_input.setValue(self.creds[3])
+            self.rpc_ip_text_input.setText(self.creds[4])
+            self.binance_key_text_input.setText(self.creds[5])
+            self.binance_secret_text_input.setText(self.creds[6])
+            self.margin_input.setValue(self.creds[7])
+            if self.creds[4] == '127.0.0.1':
                 self.checkbox_local_only.setChecked(True)
             else:
+                print(rpc_ip)
                 self.checkbox_local_only.setChecked(False)
 
     def set_localonly(self):
