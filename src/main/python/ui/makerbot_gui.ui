@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -57,117 +57,126 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="login_page">
-       <widget class="QLabel" name="label_5">
-        <property name="geometry">
-         <rect>
-          <x>630</x>
-          <y>120</y>
-          <width>431</width>
-          <height>431</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/lrg/img/400/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_8">
-        <property name="geometry">
-         <rect>
-          <x>580</x>
-          <y>20</y>
-          <width>551</width>
-          <height>61</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>24</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Antara Makerbot</string>
-        </property>
-       </widget>
-       <widget class="QWidget" name="formLayoutWidget">
-        <property name="geometry">
-         <rect>
-          <x>540</x>
-          <y>550</y>
-          <width>601</width>
-          <height>122</height>
-         </rect>
-        </property>
-        <layout class="QFormLayout" name="formLayout_2">
-         <item row="2" column="0">
-          <widget class="QLabel" name="password_lbl">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Password</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>password_input</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="username_lbl">
-           <property name="font">
-            <font>
-             <pointsize>14</pointsize>
-            </font>
-           </property>
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Username</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-           <property name="buddy">
-            <cstring>username_input</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="username_input"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="password_input">
-           <property name="echoMode">
-            <enum>QLineEdit::Password</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QPushButton" name="login_btn">
-        <property name="geometry">
-         <rect>
-          <x>750</x>
-          <y>680</y>
-          <width>170</width>
-          <height>48</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Log In</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="gridLayout_28">
+        <item row="0" column="0">
+         <widget class="QFrame" name="frame_15">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>550</width>
+            <height>710</height>
+           </size>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_27">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_8">
+             <property name="font">
+              <font>
+               <pointsize>24</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Antara Makerbot</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/lrg/img/400/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <layout class="QFormLayout" name="formLayout_2">
+             <item row="2" column="0">
+              <widget class="QLabel" name="password_lbl">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
+               <property name="text">
+                <string>Password</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>password_input</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="username_lbl">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
+               <property name="text">
+                <string>Username</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <property name="buddy">
+                <cstring>username_input</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="username_input"/>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="password_input">
+               <property name="echoMode">
+                <enum>QLineEdit::Password</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="3" column="0">
+            <widget class="QPushButton" name="login_btn">
+             <property name="text">
+              <string>Log In</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="activate_page">
        <property name="sizePolicy">
@@ -1681,7 +1690,7 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-99</y>
+                   <y>0</y>
                    <width>503</width>
                    <height>566</height>
                   </rect>
@@ -5896,7 +5905,7 @@
           <set>Qt::AlignCenter</set>
          </property>
          <property name="readOnly">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <property name="placeholderText">
           <string>127.0.0.1</string>
@@ -5950,7 +5959,7 @@
         </widget>
        </item>
        <item row="7" column="1">
-        <widget class="QDoubleSpinBox" name="trade_premium_input">
+        <widget class="QDoubleSpinBox" name="margin_input">
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
          </property>
@@ -6524,6 +6533,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>password_input</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>login()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>950</x>
+     <y>640</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>username_input</sender>
+   <signal>returnPressed()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>login()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>950</x>
+     <y>574</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkbox_local_only</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>set_localonly()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>991</x>
+     <y>435</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>860</x>
+     <y>417</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -6552,5 +6609,6 @@
   <slot>sell_75pct()</slot>
   <slot>sell_100pct()</slot>
   <slot>login()</slot>
+  <slot>set_localonly()</slot>
  </slots>
 </ui>

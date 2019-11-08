@@ -36,10 +36,8 @@ def genPass(stringLength=16):
 
 def decrypt_mm2_json(encrypted_mm2_json_data, password):
     mm2_json = decrypt(encrypted_mm2_json_data, password)
-    print(mm2_json)
     return mm2_json
 
 def encrypt_mm2_json(mm2_json_data, password):    
     mm2_json = encrypt(mm2_json_data, password)
-    print(mm2_json)
     return mm2_json

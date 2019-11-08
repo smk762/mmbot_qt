@@ -51,7 +51,23 @@ def get_creds(mm2_json_file):
                 passphrase = mm2json['passphrase']
                 userpass = mm2json['rpc_password']
                 rpc_password = mm2json['rpc_password']
-                local_ip = "http://127.0.0.1:7783"
+                if 'bn_key' in mm2json:
+                    bn_key = mm2json['bn_key']
+                else:
+                    bn_key = ''
+                if 'bn_secret' in mm2json:
+                    bn_secret = mm2json['bn_secret']
+                else:
+                    bn_secret = ''
+                if 'margin' in mm2json:
+                    margin = mm2json['margin']
+                else:
+                    margin = 0
+                if 'rpc_allow_ip' in mm2json:
+                    rpc_ip = mm2json['rpc_allow_ip']
+                else:
+                    rpc_ip = '127.0.0.1'
+                rpc_url = "http://"+rpc_ip+":7783"
                 MM2_json_exists = True
             except:
                 print("assigning creds failed")
@@ -62,7 +78,7 @@ def get_creds(mm2_json_file):
         pass
     print(local_ip)
     print(userpass)
-    return local_ip, userpass
+    return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin
 
 def colorize(string, color):
         colors = {

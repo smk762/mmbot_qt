@@ -273,81 +273,59 @@ class Ui(QTabWidget):
     def show_login(self):
         self.stacked_login.setCurrentIndex(0)
         self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        self.username_input.setFocus()
         print("show_login")
 
     def login(self):
         print("logging in...")
         self.username = self.username_input.text()
         self.password = self.password_input.text()
-        if self.username == '' and self.password == '':
-            self.authenticated = True
-            guilib.start_mm2()
-            time.sleep(0.3)
-            resp = rpclib.version(self.creds[0], self.creds[1]).json()
-            print(resp)
-            version = resp['result']
-            self.mm2_version_lbl.setText("MarketMaker version: "+version)
-            self.stacked_login.setCurrentIndex(1)
+        if not os.path.isfile(config_path+self.username+"_MM2.enc"):
+            with open(config_path+self.username+"_MM2.enc", 'w') as f:
+                f.write('')
         else:
-            if not os.path.isfile(config_path+self.username+"_MM2.enc"):
-                print("creating blank .enc")
-                with open(config_path+self.username+"_MM2.enc", 'w') as f:
-                    f.write('')
-            else:
-                with open(config_path+self.username+"_MM2.enc", 'r') as f:
-                    print(f)
-                    encrypted_mm2_json = f.read()
-                print("encrypted: "+ encrypted_mm2_json)
-                if encrypted_mm2_json != '':
-                    mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
-                    try:
-                        print("decrypted: "+mm2_json_decrypted.decode())
-                        with open(config_path+self.username+"_MM2.json", 'w') as j:
-                            print("decrypting .enc")
-                            j.write(mm2_json_decrypted.decode())
-                        self.authenticated = True
-                    except:
-                        # did not decode, bad password
-                        pass
-            if self.authenticated:
-                self.creds = guilib.get_creds(config_path+self.username+"_MM2.json")
-                print("CREDS")
-                print(self.creds)
-                if self.username in settings.value('users'):
-                    #check password etc
-                    self.username_input.setText('')
-                    self.password_input.setText('')
+            with open(config_path+self.username+"_MM2.enc", 'r') as f:
+                encrypted_mm2_json = f.read()
+            if encrypted_mm2_json != '':
+                mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
+                try:
+                    print("decrypted: "+mm2_json_decrypted.decode())
+                    with open(config_path+self.username+"_MM2.json", 'w') as j:
+                        j.write(mm2_json_decrypted.decode())
                     self.authenticated = True
-                    self.stacked_login.setCurrentIndex(1)
-
-                    if self.creds[0] != '':
-                        try:
-                            guilib.stop_mm2(self.creds[0], self.creds[1])
-                        except:
-                            pass
-                        os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
-                        guilib.start_mm2()
-                        time.sleep(0.3)
-                        with open(config_path+self.username+"_MM2.json", 'w') as j:
-                            j.write('')
-                        version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
-                        self.mm2_version_lbl.setText("MarketMaker version: "+version)
-                        self.show_active()
-                    else:
-                        self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+                except:
+                    # did not decode, bad password
+                    pass
+        if self.authenticated:
+            self.creds = guilib.get_creds(config_path+self.username+"_MM2.json")
+            if self.username in settings.value('users'):
+                self.username_input.setText('')
+                self.password_input.setText('')
+                self.authenticated = True
+                self.stacked_login.setCurrentIndex(1)
+                if self.creds[0] != '':
+                    guilib.stop_mm2(self.creds[0], self.creds[1])
+                    os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
+                    guilib.start_mm2()
+                    time.sleep(0.3)
+                    with open(config_path+self.username+"_MM2.json", 'w') as j:
+                        j.write('')
+                    version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                    self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
+                    self.show_active()
                 else:
-                    resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                    if resp == QMessageBox.Yes:
-                        settings.setValue('users', settings.value('users')+[self.username])
-                        self.authenticated = True
-                        self.show_config()
-                    elif resp == QMessageBox.No:
-                        QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
-
+                    self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
             else:
-                QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+                resp = QMessageBox.information(self, 'User not found', 'Create new user?', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if resp == QMessageBox.Yes:
+                    settings.setValue('users', settings.value('users')+[self.username])
+                    self.authenticated = True
+                    self.show_config()
+                elif resp == QMessageBox.No:
+                    QMessageBox.information(self, 'Login failed', 'Try again...', QMessageBox.Ok, QMessageBox.Ok)
 
-            
+        else:
+            QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     # ACTIVATE
     def show_active(self):
@@ -960,8 +938,28 @@ class Ui(QTabWidget):
     ## CONFIG
 
     def show_config(self):
-        
-        pass
+        if self.creds[0] != '':
+            rpc_password = self.rpcpass_text_input.setText(self.creds[1])
+            passphrase = self.seed_text_input.setText(self.creds[2])
+            netid = self.netid_input.setValue(self.creds[3])
+            rpc_ip = self.rpc_ip_text_input.setText(self.creds[4])
+            binance_key = self.binance_key_text_input.setText(self.creds[5])
+            binance_secret = self.binance_secret_text_input.setText(self.creds[6])
+            margin = self.margin_input.setValue(self.creds[7])
+            # TODO: figure out why this isnt working
+            if rpc_ip == '127.0.0.1':
+                self.checkbox_local_only.setChecked(True)
+            else:
+                self.checkbox_local_only.setChecked(False)
+
+    def set_localonly(self):
+        local_only = self.checkbox_local_only.isChecked()
+        if local_only:
+            rpc_ip = '127.0.0.1'
+            self.rpc_ip_text_input.setReadOnly(True)
+            self.rpc_ip_text_input.setText(rpc_ip)
+        else:
+            self.rpc_ip_text_input.setReadOnly(False)
 
     def save_config(self):
         msg = ''
@@ -975,9 +973,9 @@ class Ui(QTabWidget):
         ip_valid = guilib.validate_ip(rpc_ip)
         if not ip_valid:
             msg += 'RPC IP is invalid! \n'
-        binanace_key = self.binance_key_text_input.text()
+        binance_key = self.binance_key_text_input.text()
         binance_secret = self.binance_secret_text_input.text()
-        margin = self.trade_premium_input.text()
+        margin = self.margin_input.text()
         netid = self.netid_input.text()
         if passphrase == '':
             msg += 'No seed phrase input! \n'
@@ -1002,6 +1000,9 @@ class Ui(QTabWidget):
                     data.update({"userhome":home})
                     data.update({"rpc_local_only":local_only})
                     data.update({"rpc_allow_ip":rpc_ip})
+                    data.update({"bn_key":binance_key})
+                    data.update({"bn_secret":binance_secret})
+                    data.update({"margin":margin})
                     print(data)
                     enc_data = enc.encrypt_mm2_json(json.dumps(data), password)
                     print(bytes.decode(enc_data))
