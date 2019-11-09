@@ -35,19 +35,21 @@ if settings.value('users') is None:
 print("Existing users: " +str(settings.value('users')))
 
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
-try:
-    print("Downloading latest coins file")
-    with open(config_path+"coins", 'w') as f:
-        r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
-        if r.status_code == 200:
-            f.write(json.dumps(r.json()))
-        else:
-            print("coins update failed: "+str(r.status_code))
-except:
-    pass
+if 1 == 0:
+    try:
+        print("Downloading latest coins file")
+        with open(config_path+"coins", 'w') as f:
+            r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
+            if r.status_code == 200:
+                f.write(json.dumps(r.json()))
+            else:
+                print("coins update failed: "+str(r.status_code))
+    except:
+        pass
 
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
+# TODO: add signal for 'active' button background update
 class activation_thread(QThread):
     def __init__(self, creds, coins_to_activate):
         QThread.__init__(self)
@@ -406,6 +408,24 @@ class Ui(QTabWidget):
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.start()
         self.show_active()
+
+    def select_all(self, state, cointype):
+        for coin in gui_coins:
+            if gui_coins[coin]['type'] == cointype:
+                gui_coins[coin]['checkbox'].setChecked(state)
+
+    def select_all_smart(self):
+        state = self.checkBox_all_smartchains.isChecked()
+        self.select_all(state, 'smartchain')
+
+    def select_all_erc20(self):
+        state = self.checkBox_all_erc20.isChecked()
+        self.select_all(state, 'erc20')
+
+    def select_all_utxo(self):
+        state = self.checkBox_all_utxo.isChecked()
+        self.select_all(state, 'utxo')
+
 
     ## SHOW ORDERS
 

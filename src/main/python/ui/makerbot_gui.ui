@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -387,16 +387,7 @@
               <set>Qt::AlignCenter</set>
              </property>
              <layout class="QGridLayout" name="gridLayout_19">
-              <property name="sizeConstraint">
-               <enum>QLayout::SetNoConstraint</enum>
-              </property>
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
               <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
                <number>0</number>
               </property>
               <property name="bottomMargin">
@@ -405,7 +396,7 @@
               <property name="spacing">
                <number>0</number>
               </property>
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QScrollArea" name="activate_ac_scroll">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -433,8 +424,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>502</width>
-                   <height>606</height>
+                   <width>484</width>
+                   <height>584</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1247,6 +1238,64 @@
                 </widget>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QFrame" name="frame_15">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_all_smartchains">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <italic>true</italic>
+                    </font>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="text">
+                    <string>select all</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -1274,13 +1323,13 @@
                <enum>QLayout::SetNoConstraint</enum>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="topMargin">
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -1288,7 +1337,7 @@
               <property name="spacing">
                <number>0</number>
               </property>
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QScrollArea" name="activate_utxo_scroll">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -1316,8 +1365,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>502</width>
-                   <height>606</height>
+                   <width>484</width>
+                   <height>584</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -2163,6 +2212,67 @@
                 </widget>
                </widget>
               </item>
+              <item row="0" column="0">
+               <widget class="QFrame" name="frame_16">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_all_utxo">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <italic>true</italic>
+                    </font>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="text">
+                    <string>select all</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -2190,13 +2300,13 @@
                <enum>QLayout::SetNoConstraint</enum>
               </property>
               <property name="leftMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="topMargin">
                <number>0</number>
               </property>
               <property name="rightMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="bottomMargin">
                <number>0</number>
@@ -2204,7 +2314,7 @@
               <property name="spacing">
                <number>0</number>
               </property>
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QScrollArea" name="activate_erc20_scroll">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -2232,8 +2342,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>502</width>
-                   <height>606</height>
+                   <width>484</width>
+                   <height>584</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
@@ -2837,6 +2947,64 @@
                   </item>
                  </layout>
                 </widget>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QFrame" name="frame_17">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_all_erc20">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <italic>true</italic>
+                    </font>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="text">
+                    <string>select all</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -5202,8 +5370,8 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1306</x>
-     <y>57</y>
+     <x>1466</x>
+     <y>47</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5218,8 +5386,8 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1154</x>
-     <y>57</y>
+     <x>1314</x>
+     <y>47</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5266,8 +5434,8 @@
    <slot>orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1424</x>
-     <y>57</y>
+     <x>1564</x>
+     <y>46</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5579,6 +5747,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>checkBox_all_erc20</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>select_all_erc20()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1313</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>799</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_all_smartchains</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>select_all_smart()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>285</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>799</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox_all_utxo</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>select_all_utxo()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>799</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>799</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -5608,5 +5824,8 @@
   <slot>sell_100pct()</slot>
   <slot>login()</slot>
   <slot>set_localonly()</slot>
+  <slot>select_all_smart()</slot>
+  <slot>select_all_utxo()</slot>
+  <slot>select_all_erc20()</slot>
  </slots>
 </ui>

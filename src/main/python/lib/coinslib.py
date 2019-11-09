@@ -11,6 +11,24 @@ coins = {
         "bot_sell": False,
         "bot_buy": False
     },
+    "AWC":{
+        "min_swap": 0.5,
+        "activate_with":"electrum",
+        "api-id": "",
+        "tx_explorer":"https://etherscan.io/tx",
+        "electrum": ["http://eth1.cipig.net:8555",
+                     "http://eth2.cipig.net:8555",
+                     "http://eth3.cipig.net:8555"],
+        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
+        "reserve_balance":500,
+        "premium":1.03,
+        "min_swap":1,
+        "minQty":"1.00000000",
+        "maxQty":"90000000.00000000",
+        "stepSize":"1.00000000",
+        "bot_sell": True,
+        "bot_buy": True
+    },
     "BAT":{
         "min_swap": 0.5,
         "activate_with":"electrum",
