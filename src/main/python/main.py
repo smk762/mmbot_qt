@@ -48,7 +48,21 @@ except:
 
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
-# TODO: username/password - encrypts file "username_MM2.json" using password as key.
+class activation_thread(QThread):
+    def __init__(self, creds, coins_to_activate):
+        QThread.__init__(self)
+        self.coins =  coins_to_activate
+        self.creds = creds
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        for coin in self.coins:
+            r = rpclib.electrum(self.creds[0], self.creds[1], coin)
+            print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
+
+
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
@@ -383,14 +397,14 @@ class Ui(QTabWidget):
                 row += 1
 
     def activate_coins(self):
+        coins_to_activate = []
         for coin in gui_coins:
             checkbox = gui_coins[coin]['checkbox']
             combo = gui_coins[coin]['combo']
             if checkbox.isChecked():
-                QCoreApplication.processEvents()
-                r = rpclib.electrum(self.creds[0], self.creds[1], coin)
-                print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+                coins_to_activate.append(coin)
+        self.activate_thread = activation_thread(self.creds, coins_to_activate)
+        self.activate_thread.start()
         self.show_active()
 
     ## SHOW ORDERS
@@ -575,7 +589,7 @@ class Ui(QTabWidget):
                     row += 1
         self.orderbook_table.setSortingEnabled(True)
 
-    def update_orderbook_combos(self, base, rel, active_coins, trigger=''):
+    def update_orderbook_combos(self, base, rel, active_coins):
         # check current coins in combobox
         if base == rel:
             base = ''
