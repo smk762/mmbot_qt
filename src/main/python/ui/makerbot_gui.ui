@@ -391,7 +391,7 @@
                <number>0</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="spacing">
                <number>0</number>
@@ -425,7 +425,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>484</width>
-                   <height>584</height>
+                   <height>575</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1332,11 +1332,72 @@
                <number>9</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="spacing">
                <number>0</number>
               </property>
+              <item row="0" column="0">
+               <widget class="QFrame" name="frame_16">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <property name="lineWidth">
+                 <number>0</number>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_8">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QCheckBox" name="checkBox_all_utxo">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>10</pointsize>
+                     <italic>true</italic>
+                    </font>
+                   </property>
+                   <property name="layoutDirection">
+                    <enum>Qt::RightToLeft</enum>
+                   </property>
+                   <property name="text">
+                    <string>select all</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
               <item row="1" column="0">
                <widget class="QScrollArea" name="activate_utxo_scroll">
                 <property name="sizePolicy">
@@ -1366,7 +1427,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>484</width>
-                   <height>584</height>
+                   <height>575</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -1451,6 +1512,12 @@
                     </item>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="checkBox_doge">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -1672,6 +1739,12 @@
                     </item>
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_dash">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -1691,6 +1764,12 @@
                     </item>
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="checkBox_bch">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -1937,6 +2016,12 @@
                     </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_btc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -1962,6 +2047,12 @@
                     </item>
                     <item row="3" column="0">
                      <widget class="QCheckBox" name="checkBox_ltc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -2212,67 +2303,6 @@
                 </widget>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QFrame" name="frame_16">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="frameShape">
-                 <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <property name="lineWidth">
-                 <number>0</number>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_8">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="sizeConstraint">
-                  <enum>QLayout::SetDefaultConstraint</enum>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QCheckBox" name="checkBox_all_utxo">
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>10</pointsize>
-                     <italic>true</italic>
-                    </font>
-                   </property>
-                   <property name="layoutDirection">
-                    <enum>Qt::RightToLeft</enum>
-                   </property>
-                   <property name="text">
-                    <string>select all</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
@@ -2309,7 +2339,7 @@
                <number>9</number>
               </property>
               <property name="bottomMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="spacing">
                <number>0</number>
@@ -2343,12 +2373,12 @@
                    <x>0</x>
                    <y>0</y>
                    <width>484</width>
-                   <height>584</height>
+                   <height>575</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
                   <item row="0" column="0">
-                   <layout class="QGridLayout" name="erc20_layout">
+                   <layout class="QGridLayout" name="erc20_layout" rowstretch="0,0,0,0,0,0,0" rowminimumheight="0,0,0,0,0,0,0">
                     <property name="sizeConstraint">
                      <enum>QLayout::SetDefaultConstraint</enum>
                     </property>
@@ -2362,11 +2392,36 @@
                      <number>12</number>
                     </property>
                     <property name="bottomMargin">
-                     <number>12</number>
+                     <number>10</number>
                     </property>
                     <property name="spacing">
                      <number>12</number>
                     </property>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="checkBox_bat">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>BAT</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/bat.png</normaloff>:/sml/img/32/color/bat.png</iconset>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="0" column="1">
                      <widget class="QComboBox" name="eth_combo">
                       <property name="sizePolicy">
@@ -2400,84 +2455,6 @@
                       </property>
                       <property name="currentIndex">
                        <number>2</number>
-                      </property>
-                      <property name="maxVisibleItems">
-                       <number>4</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>View only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Sell</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy &amp; sell</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="checkBox_dai">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>DAI</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/dai.png</normaloff>:/sml/img/32/color/dai.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="1">
-                     <widget class="QComboBox" name="dai_combo">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>125</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(114, 159, 207)</string>
-                      </property>
-                      <property name="currentText">
-                       <string>View only</string>
-                      </property>
-                      <property name="currentIndex">
-                       <number>0</number>
                       </property>
                       <property name="maxVisibleItems">
                        <number>4</number>
@@ -2563,65 +2540,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="3" column="1">
-                     <widget class="QComboBox" name="usdc_combo">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>125</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(114, 159, 207)</string>
-                      </property>
-                      <property name="currentText">
-                       <string>Sell</string>
-                      </property>
-                      <property name="currentIndex">
-                       <number>2</number>
-                      </property>
-                      <property name="maxVisibleItems">
-                       <number>4</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>View only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Sell</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy &amp; sell</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
                     <item row="4" column="1">
                      <widget class="QComboBox" name="tusd_combo">
                       <property name="sizePolicy">
@@ -2679,75 +2597,6 @@
                         <string>Buy &amp; sell</string>
                        </property>
                       </item>
-                     </widget>
-                    </item>
-                    <item row="4" column="0">
-                     <widget class="QCheckBox" name="checkBox_tusd">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="accessibleName">
-                       <string/>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>TUSD</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="0">
-                     <widget class="QCheckBox" name="checkBox_awc">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="accessibleName">
-                       <string/>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>AWC</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="0">
-                     <widget class="QCheckBox" name="checkBox_bat">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>BAT</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/bat.png</normaloff>:/sml/img/32/color/bat.png</iconset>
-                      </property>
                      </widget>
                     </item>
                     <item row="5" column="1">
@@ -2809,8 +2658,45 @@
                       </item>
                      </widget>
                     </item>
+                    <item row="4" column="0">
+                     <widget class="QCheckBox" name="checkBox_tusd">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="accessibleName">
+                       <string/>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>TUSD</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="5" column="0">
                      <widget class="QCheckBox" name="checkBox_pax">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -2832,6 +2718,186 @@
                       <property name="checked">
                        <bool>false</bool>
                       </property>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QComboBox" name="usdc_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>Sell</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>2</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="3" column="0">
+                     <widget class="QCheckBox" name="checkBox_usdc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="accessibleName">
+                       <string/>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>USDC</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/usdc.png</normaloff>:/sml/img/32/color/usdc.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="0">
+                     <widget class="QCheckBox" name="checkBox_awc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="accessibleName">
+                       <string/>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>AWC</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="1">
+                     <widget class="QComboBox" name="dai_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                     <item row="6" column="1">
@@ -2893,33 +2959,14 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QCheckBox" name="checkBox_usdc">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="accessibleName">
-                       <string/>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>USDC</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/usdc.png</normaloff>:/sml/img/32/color/usdc.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_eth">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
                       <property name="font">
                        <font>
                         <pointsize>11</pointsize>
@@ -2940,6 +2987,31 @@
                       </property>
                       <property name="checked">
                        <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="checkBox_dai">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>DAI</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/dai.png</normaloff>:/sml/img/32/color/dai.png</iconset>
                       </property>
                      </widget>
                     </item>
@@ -4371,6 +4443,9 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(186, 189, 182);</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -4378,6 +4453,28 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="wallet_amount">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="decimals">
+          <number>8</number>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="recipient_lbl">
          <property name="minimumSize">
@@ -4420,6 +4517,9 @@
            <height>16777215</height>
           </size>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
         </widget>
        </item>
        <item row="2" column="0">
@@ -4441,25 +4541,6 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QDoubleSpinBox" name="wallet_amount">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>40</height>
-          </size>
-         </property>
-         <property name="decimals">
-          <number>8</number>
          </property>
         </widget>
        </item>
@@ -4501,8 +4582,8 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>10</pointsize>
-           <italic>true</italic>
+           <pointsize>14</pointsize>
+           <italic>false</italic>
           </font>
          </property>
          <property name="text">
@@ -4516,6 +4597,28 @@
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="recipient_lbl_2">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>250</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Your Address:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
          </property>
         </widget>
        </item>
@@ -4572,7 +4675,8 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207);padding-left:25px;</string>
+          <string notr="true">background-color: rgb(138, 226, 52);padding-left:25px;
+</string>
          </property>
          <property name="currentText">
           <string/>
@@ -4630,6 +4734,9 @@
         <height>167777</height>
        </size>
       </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(186, 189, 182);</string>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -4638,27 +4745,120 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
        <item row="0" column="0">
-        <widget class="QLabel" name="wallet_balance_lbl">
+        <widget class="QFrame" name="frame_18">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="font">
-          <font>
-           <italic>true</italic>
-          </font>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
          </property>
-         <property name="text">
-          <string>Your balance</string>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="topMargin">
+           <number>150</number>
+          </property>
+          <property name="bottomMargin">
+           <number>150</number>
+          </property>
+          <item>
+           <widget class="QLabel" name="wallet_balance_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+              <pointsize>24</pointsize>
+              <weight>50</weight>
+              <italic>false</italic>
+              <bold>false</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>BALANCE</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="wallet_balance">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>36</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="wallet_locked_by_swaps">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>locked by swaps: 0</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="wallet_usd_value_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>$0 USD</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
-       <item row="0" column="1" rowspan="4">
+       <item row="0" column="1">
         <widget class="QLabel" name="wallet_qr_code">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -4674,69 +4874,6 @@
          </property>
          <property name="text">
           <string/>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="wallet_balance">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>32</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="wallet_locked_by_swaps">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <italic>true</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>locked by swaps: 0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="wallet_usd_value">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <italic>true</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>$0 USD</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </item>

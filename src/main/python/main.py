@@ -271,7 +271,7 @@ class Ui(QTabWidget):
         print("logging in...")
         self.username = self.username_input.text()
         self.password = self.password_input.text()
-        if self.password == '' or self.password == '' and not authenticated:
+        if self.username == '' or self.password == '' and not authenticated:
             QMessageBox.information(self, 'Login failed!', 'username and password fields can not be blank!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             # create .enc if new user
@@ -304,9 +304,9 @@ class Ui(QTabWidget):
             print(self.creds)
             if self.authenticated:            
                 if self.username in settings.value('users'):
+                    self.authenticated = True
                     self.username_input.setText('')
                     self.password_input.setText('')
-                    self.authenticated = True
                     self.stacked_login.setCurrentIndex(1)
                     if self.creds[0] != '':
                         version = ''
@@ -883,9 +883,9 @@ class Ui(QTabWidget):
                 locked_text = round(float(balance_info['locked_by_swaps']),8)
                 # todo add address explorer links to coinslib
                 if 'addr_explorer' in coinslib.coins[coin]:
-                    self.wallet_address.setText("Your address: <a href='"+coinslib.coins[coin]['addr_explorer']+addr_text+"'>"+addr_text+"</href>")
+                    self.wallet_address.setText("<a href='"+coinslib.coins[coin]['addr_explorer']+addr_text+"'>"+addr_text+"</href>")
                 else:
-                    self.wallet_address.setText("Your address: "+addr_text)
+                    self.wallet_address.setText(addr_text)
                 self.wallet_balance.setText(str(balance_text))
                 self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked_text))
                 self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
