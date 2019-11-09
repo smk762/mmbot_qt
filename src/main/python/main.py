@@ -35,13 +35,16 @@ if settings.value('users') is None:
 print("Existing users: " +str(settings.value('users')))
 
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
-print("Downloading latest coins file")
-with open(config_path+"coins", 'w') as f:
-    r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
-    if r.status_code == 200:
-        f.write(json.dumps(r.json()))
-    else:
-        print("coins update failed: "+str(r.status_code))
+try:
+    print("Downloading latest coins file")
+    with open(config_path+"coins", 'w') as f:
+        r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
+        if r.status_code == 200:
+            f.write(json.dumps(r.json()))
+        else:
+            print("coins update failed: "+str(r.status_code))
+except:
+    pass
 
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
@@ -74,7 +77,7 @@ class Ui(QTabWidget):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi(script_path+'/ui/makerbot_gui.ui', self) # Load the .ui file
         self.show() # Show the GUI
-        self.setWindowTitle('Icon')
+        self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
         global gui_coins
         self.authenticated = False
@@ -83,159 +86,133 @@ class Ui(QTabWidget):
                 "type":"utxo",
                 "checkbox": self.checkBox_btc, 
                 "combo": self.btc_combo,
-                "status": self.btc_status,
             },
             "ETH": {
                 "type":"erc20",
                 "checkbox": self.checkBox_eth, 
                 "combo": self.eth_combo,
-                "status": self.eth_status,
             },
             "KMD": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_kmd, 
                 "combo": self.kmd_combo,
-                "status": self.kmd_status,
                 "icon":":/coins/kmd_400.png"
             },
             "LABS": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
-                "status": self.labs_status,
                 "icon":":/coins/KMD_Labs_Logo_thick_outline_2_32.png"
             },
             "BCH": {
                 "type":"utxo",
                 "checkbox": self.checkBox_bch, 
                 "combo": self.bch_combo,
-                "status": self.bch_status,
             },
             "BAT": {
                 "type":"erc20",
                 "checkbox": self.checkBox_bat, 
                 "combo": self.bat_combo,
-                "status": self.bat_status,
             },
             "DOGE": {
                 "type":"utxo",
                 "checkbox": self.checkBox_doge, 
                 "combo": self.doge_combo,
-                "status": self.doge_status,
             },
             "DGB": {
                 "type":"utxo",
                 "checkbox": self.checkBox_dgb, 
                 "combo": self.dgb_combo,
-                "status": self.dgb_status,
             },
             "DASH": {
                 "type":"utxo",
                 "checkbox": self.checkBox_dash, 
                 "combo": self.dash_combo,
-                "status": self.dash_status,
             },
             "LTC": {
                 "type":"utxo",
                 "checkbox": self.checkBox_ltc, 
                 "combo": self.ltc_combo,
-                "status": self.ltc_status,
             },
             "ZEC": {
                 "type":"utxo",
                 "checkbox": self.checkBox_zec, 
                 "combo": self.zec_combo,
-                "status": self.zec_status,
             },
             "QTUM": {
                 "type":"utxo",
                 "checkbox": self.checkBox_qtum, 
                 "combo": self.qtum_combo,
-                "status": self.qtum_status,
             },
             "AXE": {
                 "type":"utxo",
                 "checkbox": self.checkBox_axe, 
                 "combo": self.axe_combo,
-                "status": self.axe_status,
             },
             "VRSC": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_vrsc, 
                 "combo": self.vrsc_combo,
-                "status": self.vrsc_status,
             },
             "RFOX": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_rfox, 
                 "combo": self.rfox_combo,
-                "status": self.rfox_status,
             },
             "ZILLA": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_zilla, 
                 "combo": self.zilla_combo,
-                "status": self.zilla_status,
             },
             "HUSH": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_hush, 
                 "combo": self.hush_combo,
-                "status": self.hush_status,
             },
             "OOT": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_oot, 
                 "combo": self.oot_combo,
-                "status": self.oot_status,
             },
             "USDC": {
                 "type":"erc20",
                 "checkbox": self.checkBox_usdc, 
                 "combo": self.usdc_combo,
-                "status": self.usdc_status,
             },
             "AWC": {
                 "type":"erc20",
                 "checkbox": self.checkBox_awc, 
                 "combo": self.awc_combo,
-                "status": self.awc_status,
             },
             "TUSD": {
                 "type":"erc20",
                 "checkbox": self.checkBox_tusd, 
                 "combo": self.tusd_combo,
-                "status": self.tusd_status,
             },
             "PAX": {
                 "type":"erc20",
                 "checkbox": self.checkBox_pax, 
                 "combo": self.pax_combo,
-                "status": self.pax_status,
             },
             "RICK": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_rick, 
                 "combo": self.rick_combo,
-                "status": self.rick_status,
             },
             "MORTY": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_morty, 
                 "combo": self.morty_combo,
-                "status": self.morty_status,
             },
             "DAI": {
                 "type":"erc20",
                 "checkbox": self.checkBox_dai, 
                 "combo": self.dai_combo,
-                "status": self.dai_status,
             },
             "RVN": {
                 "type":"utxo",
                 "checkbox": self.checkBox_rvn, 
                 "combo": self.rvn_combo,
-                "status": self.rvn_status,
             },
         }               
         self.show_login()
@@ -265,9 +242,6 @@ class Ui(QTabWidget):
         if filename != '':
             with open(filename, 'w') as f:
                 f.write(table_csv)
-        # popup for file to save as
-        # write data to file
-        # json, csv option?
 
     ## LOGIN 
 
@@ -319,19 +293,27 @@ class Ui(QTabWidget):
                     self.authenticated = True
                     self.stacked_login.setCurrentIndex(1)
                     if self.creds[0] != '':
-                        print("stopping mm2 (if running)")
-                        try:
-                            guilib.stop_mm2(self.creds[0], self.creds[1])
-                        except:
-                            pass
-                        os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
-                        print("starting mm2")
-                        guilib.start_mm2()
-                        time.sleep(0.3)
+                        version = ''
+                        stopped = False
+                        while version == '':
+                            if not stopped:
+                                try:
+                                    print("stopping mm2 (if running)")
+                                    guilib.stop_mm2(self.creds[0], self.creds[1])
+                                except:
+                                    stopped = True
+                                    pass
+                            os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
+                            try:
+                                print("starting mm2")
+                                guilib.start_mm2()
+                                time.sleep(0.6)
+                                version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                                self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
+                            except:
+                                pass
                         with open(config_path+self.username+"_MM2.json", 'w') as j:
                             j.write('')
-                        version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
-                        self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
                         self.show_active()
                     else:
                         self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
@@ -346,8 +328,6 @@ class Ui(QTabWidget):
                 elif resp == QMessageBox.No:
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
-            
-
     # ACTIVATE
     def show_active(self):
         print("show_active")
@@ -360,11 +340,10 @@ class Ui(QTabWidget):
             for coin in gui_coins:
                 gui_coins[coin]['checkbox'].hide()
                 gui_coins[coin]['combo'].hide()
-                gui_coins[coin]['status'].hide()
                 if coin in active_coins:
-                    gui_coins[coin]['status'].setText('<html><head/><body><p><img src=":/other/img/other/active.png"/></p></body></html>')
+                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
                 else:
-                    gui_coins[coin]['status'].setText('<html><head/><body><p><img src=":/other/img/other/inactive.png"/></p></body></html>')
+                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
                 if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
                     if gui_coins[coin]['type'] == 'utxo':
                         display_coins_utxo.append(coin)
@@ -376,23 +355,18 @@ class Ui(QTabWidget):
             for coin in display_coins_smartchain:
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
-                gui_coins[coin]['status'].show()
                 self.smartchains_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.smartchains_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                self.smartchains_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
                 icon = QIcon()
                 icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
                 gui_coins[coin]['checkbox'].setIcon(icon)
-
                 row += 1
             row = 0
             for coin in display_coins_erc20:
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
-                gui_coins[coin]['status'].show()
                 self.erc20_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.erc20_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                self.erc20_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
                 icon = QIcon()
                 icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
                 gui_coins[coin]['checkbox'].setIcon(icon)
@@ -401,10 +375,8 @@ class Ui(QTabWidget):
             for coin in display_coins_utxo:
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
-                gui_coins[coin]['status'].show()
                 self.utxo_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
                 self.utxo_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                self.utxo_layout.addWidget(gui_coins[coin]['status'], row, 2, 1, 1)
                 icon = QIcon()
                 icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
                 gui_coins[coin]['checkbox'].setIcon(icon)
@@ -437,14 +409,11 @@ class Ui(QTabWidget):
             market_price = QTableWidgetItem('')
             margin = QTableWidgetItem('')
             uuid = QTableWidgetItem('')
-            self.orders_table.setItem(row,0,created_at)
-            self.orders_table.setItem(row,1,base)
-            self.orders_table.setItem(row,2,available)
-            self.orders_table.setItem(row,3,rel)
-            self.orders_table.setItem(row,4,price)
-            self.orders_table.setItem(row,5,market_price)
-            self.orders_table.setItem(row,5,margin)
-            self.orders_table.setItem(row,7,uuid)
+            orders_row = [created_at, base, available, rel, price, market_price, margin, uuid]
+            col = 0
+            for cell in orders_row:
+                self.orders_table.setItem(row,col,cell)
+                col += 1
             row += 1
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
@@ -454,19 +423,17 @@ class Ui(QTabWidget):
                 base = QTableWidgetItem(maker_orders[item]['base'])
                 rel = QTableWidgetItem(maker_orders[item]['rel'])
                 price = QTableWidgetItem(maker_orders[item]['price'])
-                timestamp = int(maker_orders[item]['created_at'])/1000
+                timestamp = int(maker_orders[item]['created_at']/1000)
                 created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
                 market_price = QTableWidgetItem('')
                 margin = QTableWidgetItem('')
                 uuid = QTableWidgetItem(item)
-                self.orders_table.setItem(row,0,created_at)
-                self.orders_table.setItem(row,1,base)
-                self.orders_table.setItem(row,2,available)
-                self.orders_table.setItem(row,3,rel)
-                self.orders_table.setItem(row,4,price)
-                self.orders_table.setItem(row,5,market_price)
-                self.orders_table.setItem(row,5,margin)
-                self.orders_table.setItem(row,7,uuid)
+                maker_row = [created_at, base, available, rel, price, market_price, margin, uuid]
+                col = 0
+                for cell in maker_row:
+                    self.orders_table.setItem(row,col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    col += 1
                 row += 1
         self.orders_table.setSortingEnabled(True)
         # todo the bit below
@@ -484,14 +451,12 @@ class Ui(QTabWidget):
                 uuid = QTableWidgetItem(item)
                 market_price = QTableWidgetItem('')
                 margin = QTableWidgetItem('')
-                self.orders_table.setItem(row,0,created_at)
-                self.orders_table.setItem(row,1,base)
-                self.orders_table.setItem(row,2,base_amount)
-                self.orders_table.setItem(row,3,rel)
-                self.orders_table.setItem(row,4,price)
-                self.orders_table.setItem(row,5,market_price)
-                self.orders_table.setItem(row,5,margin)
-                self.orders_table.setItem(row,7,uuid)
+                taker_row = [created_at, base, available, rel, price, market_price, margin, uuid]
+                col = 0
+                for cell in taker_row:
+                    self.orders_table.setItem(row,col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    col += 1
                 row += 1
 
     def cancel_order_uuid(self):
@@ -539,36 +504,26 @@ class Ui(QTabWidget):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
         row = 0
         for swap in swaps_info['result']['swaps']:
-            status = ''
-            uuid = QTableWidgetItem(swap['uuid'])
-            uuid.setTextAlignment(Qt.AlignHCenter)
-            my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
-            my_amount.setTextAlignment(Qt.AlignHCenter)
-            my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
-            my_coin.setTextAlignment(Qt.AlignHCenter)
-            other_amount = QTableWidgetItem(swap['my_info']['other_amount'])
-            other_amount.setTextAlignment(Qt.AlignHCenter)
-            other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
-            other_coin.setTextAlignment(Qt.AlignHCenter)
-            start_time = str(datetime.datetime.fromtimestamp(swap['my_info']['started_at']))
-            started_at = QTableWidgetItem(start_time)
-            started_at.setTextAlignment(Qt.AlignHCenter)
-            sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
-            sell_price.setTextAlignment(Qt.AlignHCenter)
-            self.trades_table.setItem(row,0,started_at)
-            self.trades_table.setItem(row,2,other_coin)
-            self.trades_table.setItem(row,3,other_amount)
-            self.trades_table.setItem(row,4,my_coin)
-            self.trades_table.setItem(row,5,my_amount)
-            self.trades_table.setItem(row,6,sell_price)
-            self.trades_table.setItem(row,7,uuid)
             for event in swap['events']:
                 event_type = event['event']['type']
                 if event_type in rpclib.error_events:
                     event_type = 'Failed'
                     break
             status = QTableWidgetItem(event_type)
-            self.trades_table.setItem(row,1,status)
+            uuid = QTableWidgetItem(swap['uuid'])
+            my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
+            my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
+            other_amount = QTableWidgetItem(swap['my_info']['other_amount'])
+            other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
+            start_time = str(datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000))
+            started_at = QTableWidgetItem(start_time)
+            sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
+            trade_row = [started_at, status, other_coin, other_amount, my_coin, my_amount, sell_price, uuid]
+            col = 0
+            for cell in trade_row:
+                self.trades_table.setItem(row,col,cell)
+                cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                col += 1            
             row += 1
 
     ## SHOW ORDERBOOK
@@ -596,28 +551,27 @@ class Ui(QTabWidget):
                 rel = QTableWidgetItem('')
                 price = QTableWidgetItem('')
                 volume = QTableWidgetItem('')
-                self.orderbook_table.setItem(row,0,base)
-                self.orderbook_table.setItem(row,1,rel)
-                self.orderbook_table.setItem(row,2,volume)
-                self.orderbook_table.setItem(row,3,price)
+                orderbook_row = [base, rel, volume, price]
+                col = 0
+                for cell in orderbook_row:
+                    self.orderbook_table.setItem(row,col,cell)
+                    col += 1
                 row += 1
             if 'error' in pair_book:
                 pass
-            elif 'bids' in pair_book:
+            elif 'asks' in pair_book:
                 row = 0
                 for item in pair_book['asks']:
                     base = QTableWidgetItem(pair_book['base'])
-                    base.setTextAlignment(Qt.AlignHCenter)
                     rel = QTableWidgetItem(pair_book['rel'])
-                    rel.setTextAlignment(Qt.AlignHCenter)
                     price = QTableWidgetItem(str(round(float(item['price']), 8)))
-                    price.setTextAlignment(Qt.AlignHCenter)
                     volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
-                    volume.setTextAlignment(Qt.AlignHCenter)
-                    self.orderbook_table.setItem(row,0,base)
-                    self.orderbook_table.setItem(row,1,rel)
-                    self.orderbook_table.setItem(row,2,volume)
-                    self.orderbook_table.setItem(row,3,price)
+                    asks_row = [base, rel, volume, price]
+                    col = 0
+                    for cell in asks_row:
+                        self.orderbook_table.setItem(row,col,cell)
+                        cell.setTextAlignment(Qt.AlignCenter)    
+                        col += 1
                     row += 1
         self.orderbook_table.setSortingEnabled(True)
 
@@ -719,9 +673,11 @@ class Ui(QTabWidget):
                 price = QTableWidgetItem('')
                 volume = QTableWidgetItem('')
                 value = QTableWidgetItem('')
-                self.depth_table.setItem(row,0,price)
-                self.depth_table.setItem(row,1,volume)
-                self.depth_table.setItem(row,2,value)
+                depth_row = [price, volume, value]
+                col = 0
+                for cell in depth_row:
+                    self.depth_table.setItem(row,col,cell)
+                    col += 1
                 row += 1
             if 'error' in pair_book:
                 pass
@@ -729,15 +685,15 @@ class Ui(QTabWidget):
                 row = 0
                 for item in pair_book['asks']:
                     price = QTableWidgetItem(str(round(float(item['price']), 8)))
-                    price.setTextAlignment(Qt.AlignHCenter)
                     volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
-                    volume.setTextAlignment(Qt.AlignHCenter)
                     val = float(item['price'])*float(item['maxvolume'])
                     value = QTableWidgetItem(str(round(val, 8)))
-                    value.setTextAlignment(Qt.AlignHCenter)
-                    self.depth_table.setItem(row,0,price)
-                    self.depth_table.setItem(row,1,volume)
-                    self.depth_table.setItem(row,2,value)
+                    depth_row = [price, volume, value]
+                    col = 0
+                    for cell in depth_row:
+                        self.depth_table.setItem(row,col,cell)
+                        cell.setTextAlignment(Qt.AlignCenter)
+                        col += 1
                     row += 1
             self.depth_table.setSortingEnabled(True)
 

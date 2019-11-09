@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1721</width>
-    <height>836</height>
+    <width>1600</width>
+    <height>860</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,8 +21,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>0</width>
-    <height>300</height>
+    <width>1600</width>
+    <height>860</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -41,14 +41,14 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>6</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
     <string>Activate</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_16">
-    <item row="0" column="0" rowspan="2">
+    <item row="0" column="0">
      <widget class="QStackedWidget" name="stacked_login">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -56,13 +56,19 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_page">
-       <layout class="QGridLayout" name="gridLayout_28">
+       <layout class="QGridLayout" name="gridLayout_29">
         <item row="0" column="0">
-         <widget class="QFrame" name="frame_15">
+         <widget class="QFrame" name="login_frame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
             <horstretch>0</horstretch>
@@ -81,27 +87,45 @@
             <height>710</height>
            </size>
           </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(211, 215, 207)</string>
+          </property>
           <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+           <enum>QFrame::StyledPanel</enum>
           </property>
           <property name="frameShadow">
            <enum>QFrame::Raised</enum>
           </property>
-          <layout class="QGridLayout" name="gridLayout_27">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_8">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QLabel" name="login_lbl">
              <property name="font">
               <font>
-               <pointsize>24</pointsize>
+               <pointsize>32</pointsize>
               </font>
              </property>
              <property name="text">
               <string>Antara Makerbot</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_5">
+           <item>
+            <widget class="QLabel" name="login_image_lbl">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>450</width>
+               <height>450</height>
+              </size>
+             </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/lrg/img/400/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
@@ -110,67 +134,118 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <layout class="QFormLayout" name="formLayout_2">
-             <item row="2" column="0">
-              <widget class="QLabel" name="password_lbl">
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                </font>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::RightToLeft</enum>
-               </property>
-               <property name="text">
-                <string>Password</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>password_input</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="username_lbl">
-               <property name="font">
-                <font>
-                 <pointsize>14</pointsize>
-                </font>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::RightToLeft</enum>
-               </property>
-               <property name="text">
-                <string>Username</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>username_input</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="username_input"/>
-             </item>
-             <item row="2" column="1">
-              <widget class="QLineEdit" name="password_input">
-               <property name="echoMode">
-                <enum>QLineEdit::Password</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="3" column="0">
-            <widget class="QPushButton" name="login_btn">
-             <property name="text">
-              <string>Log In</string>
+           <item>
+            <widget class="QFrame" name="login_inputs_frame">
+             <property name="styleSheet">
+              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
              </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_27">
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="password_input">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(238, 238, 236);</string>
+                </property>
+                <property name="echoMode">
+                 <enum>QLineEdit::Password</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="username_lbl">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="text">
+                 <string>&amp;Username</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>username_input</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="username_input">
+                <property name="styleSheet">
+                 <string notr="true">background-color: rgb(238, 238, 236);</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="password_lbl">
+                <property name="font">
+                 <font>
+                  <pointsize>14</pointsize>
+                 </font>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="text">
+                 <string>Password</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>password_input</cstring>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="login_btn_frame">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <widget class="QPushButton" name="login_btn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>Log In</string>
+                </property>
+                <property name="autoDefault">
+                 <bool>false</bool>
+                </property>
+                <property name="flat">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
@@ -359,7 +434,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>502</width>
-                   <height>514</height>
+                   <height>606</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -386,7 +461,7 @@
                     <item row="2" column="1">
                      <widget class="QComboBox" name="kmd_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -394,13 +469,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -501,7 +576,7 @@
                     <item row="0" column="1">
                      <widget class="QComboBox" name="labs_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -509,13 +584,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -560,7 +635,7 @@
                     <item row="3" column="1">
                      <widget class="QComboBox" name="morty_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -568,13 +643,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -640,57 +715,7 @@
                         <normaloff>:/sml/img/32/color/vrc.png</normaloff>:/sml/img/32/color/vrc.png</iconset>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="2">
-                     <widget class="QLabel" name="labs_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
@@ -725,7 +750,7 @@
                     <item row="1" column="1">
                      <widget class="QComboBox" name="rick_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -733,13 +758,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -805,7 +830,7 @@
                         <normaloff>:/sml/img/32/color/zilla.png</normaloff>:/sml/img/32/color/zilla.png</iconset>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
@@ -827,6 +852,34 @@
                       </property>
                       <property name="text">
                        <string>RedFox</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QCheckBox" name="checkBox_rick">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Rick</string>
                       </property>
                       <property name="icon">
                        <iconset resource="coin_icons.qrc">
@@ -861,185 +914,7 @@
                         <normaloff>:/sml/img/32/color/hush.png</normaloff>:/sml/img/32/color/hush.png</iconset>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QCheckBox" name="checkBox_rick">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>Rick</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="2">
-                     <widget class="QLabel" name="kmd_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="rick_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="2">
-                     <widget class="QLabel" name="morty_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
@@ -1067,264 +942,14 @@
                         <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
                       </property>
                       <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="2">
-                     <widget class="QLabel" name="vrsc_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="2">
-                     <widget class="QLabel" name="rfox_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="2">
-                     <widget class="QLabel" name="zilla_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="7" column="2">
-                     <widget class="QLabel" name="hush_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="8" column="2">
-                     <widget class="QLabel" name="oot_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
                     <item row="4" column="1">
                      <widget class="QComboBox" name="vrsc_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1332,13 +957,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1383,7 +1008,7 @@
                     <item row="5" column="1">
                      <widget class="QComboBox" name="rfox_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1391,13 +1016,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1442,7 +1067,7 @@
                     <item row="6" column="1">
                      <widget class="QComboBox" name="zilla_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1450,13 +1075,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1501,7 +1126,7 @@
                     <item row="7" column="1">
                      <widget class="QComboBox" name="hush_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1509,13 +1134,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1560,7 +1185,7 @@
                     <item row="8" column="1">
                      <widget class="QComboBox" name="oot_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1568,13 +1193,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1691,8 +1316,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>503</width>
-                   <height>566</height>
+                   <width>502</width>
+                   <height>606</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -1719,7 +1344,7 @@
                     <item row="5" column="1">
                      <widget class="QComboBox" name="rvn_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1727,13 +1352,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1797,7 +1422,7 @@
                     <item row="1" column="1">
                      <widget class="QComboBox" name="doge_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1805,13 +1430,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1856,7 +1481,7 @@
                     <item row="0" column="1">
                      <widget class="QComboBox" name="btc_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1864,13 +1489,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1940,7 +1565,7 @@
                     <item row="3" column="1">
                      <widget class="QComboBox" name="ltc_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1948,13 +1573,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1996,25 +1621,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="2" column="0">
-                     <widget class="QCheckBox" name="checkBox_bch">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>Bitcoin Cash</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/bch.png</normaloff>:/sml/img/32/color/bch.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_dash">
                       <property name="font">
@@ -2034,142 +1640,29 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="doge_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
+                    <item row="2" column="0">
+                     <widget class="QCheckBox" name="checkBox_bch">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
                       </property>
                       <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                       <string>Bitcoin Cash</string>
                       </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="2">
-                     <widget class="QLabel" name="ltc_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="2">
-                     <widget class="QLabel" name="bch_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/bch.png</normaloff>:/sml/img/32/color/bch.png</iconset>
                       </property>
                      </widget>
                     </item>
                     <item row="6" column="1">
                      <widget class="QComboBox" name="zec_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2177,13 +1670,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2253,7 +1746,7 @@
                     <item row="2" column="1">
                      <widget class="QComboBox" name="bch_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2261,13 +1754,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2312,7 +1805,7 @@
                     <item row="4" column="1">
                      <widget class="QComboBox" name="dash_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2320,13 +1813,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2393,69 +1886,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="3" column="0">
-                     <widget class="QCheckBox" name="checkBox_ltc">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>Litecoin</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/ltc.png</normaloff>:/sml/img/32/color/ltc.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="2">
-                     <widget class="QLabel" name="btc_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_btc">
                       <property name="font">
@@ -2481,6 +1911,25 @@
                       </property>
                      </widget>
                     </item>
+                    <item row="3" column="0">
+                     <widget class="QCheckBox" name="checkBox_ltc">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Litecoin</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/ltc.png</normaloff>:/sml/img/32/color/ltc.png</iconset>
+                      </property>
+                     </widget>
+                    </item>
                     <item row="5" column="0">
                      <widget class="QCheckBox" name="checkBox_rvn">
                       <property name="sizePolicy">
@@ -2503,150 +1952,6 @@
                       <property name="icon">
                        <iconset resource="coin_icons.qrc">
                         <normaloff>:/sml/img/32/color/rvn.png</normaloff>:/sml/img/32/color/rvn.png</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="2">
-                     <widget class="QLabel" name="dash_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="6" column="2">
-                     <widget class="QLabel" name="zec_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="5" column="2">
-                     <widget class="QLabel" name="rvn_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -2678,7 +1983,7 @@
                     <item row="7" column="1">
                      <widget class="QComboBox" name="qtum_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2686,13 +1991,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2737,7 +2042,7 @@
                     <item row="8" column="1">
                      <widget class="QComboBox" name="axe_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2745,13 +2050,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2796,7 +2101,7 @@
                     <item row="9" column="1">
                      <widget class="QComboBox" name="dgb_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2804,13 +2109,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -2850,156 +2155,6 @@
                         <string>Buy &amp; sell</string>
                        </property>
                       </item>
-                     </widget>
-                    </item>
-                    <item row="7" column="2">
-                     <widget class="QLabel" name="qtum_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="8" column="2">
-                     <widget class="QLabel" name="axe_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="9" column="2">
-                     <widget class="QLabel" name="dgb_status">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -3077,8 +2232,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>530</width>
-                   <height>431</height>
+                   <width>502</width>
+                   <height>606</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
@@ -3102,98 +2257,10 @@
                     <property name="spacing">
                      <number>12</number>
                     </property>
-                    <item row="6" column="2">
-                     <widget class="QLabel" name="awc_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="4" column="2">
-                     <widget class="QLabel" name="tusd_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="1">
                      <widget class="QComboBox" name="eth_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3201,13 +2268,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3249,94 +2316,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="1" column="2">
-                     <widget class="QLabel" name="dai_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="2">
-                     <widget class="QLabel" name="bat_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="checkBox_dai">
                       <property name="font">
@@ -3359,7 +2338,7 @@
                     <item row="1" column="1">
                      <widget class="QComboBox" name="dai_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3367,13 +2346,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3418,7 +2397,7 @@
                     <item row="2" column="1">
                      <widget class="QComboBox" name="bat_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3426,13 +2405,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3477,7 +2456,7 @@
                     <item row="3" column="1">
                      <widget class="QComboBox" name="usdc_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3485,13 +2464,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3536,7 +2515,7 @@
                     <item row="4" column="1">
                      <widget class="QComboBox" name="tusd_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3544,13 +2523,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3592,31 +2571,6 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="6" column="0">
-                     <widget class="QCheckBox" name="checkBox_awc">
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="accessibleName">
-                       <string/>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>AWC</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="coin_icons.qrc">
-                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_tusd">
                       <property name="font">
@@ -3632,6 +2586,31 @@
                       </property>
                       <property name="text">
                        <string>TUSD</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="6" column="0">
+                     <widget class="QCheckBox" name="checkBox_awc">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="accessibleName">
+                       <string/>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>AWC</string>
                       </property>
                       <property name="icon">
                        <iconset resource="coin_icons.qrc">
@@ -3664,7 +2643,7 @@
                     <item row="5" column="1">
                      <widget class="QComboBox" name="pax_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3672,13 +2651,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3745,54 +2724,10 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="5" column="2">
-                     <widget class="QLabel" name="pax_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="6" column="1">
                      <widget class="QComboBox" name="awc_combo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3800,13 +2735,13 @@
                       <property name="minimumSize">
                        <size>
                         <width>125</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
                         <width>150</width>
-                        <height>40</height>
+                        <height>30</height>
                        </size>
                       </property>
                       <property name="font">
@@ -3873,50 +2808,6 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="0" column="2">
-                     <widget class="QLabel" name="eth_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_eth">
                       <property name="font">
@@ -3939,50 +2830,6 @@
                       </property>
                       <property name="checked">
                        <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="3" column="2">
-                     <widget class="QLabel" name="usdc_status">
-                      <property name="palette">
-                       <palette>
-                        <active>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </active>
-                        <inactive>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>164</red>
-                            <green>0</green>
-                            <blue>0</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </inactive>
-                        <disabled>
-                         <colorrole role="WindowText">
-                          <brush brushstyle="SolidPattern">
-                           <color alpha="255">
-                            <red>190</red>
-                            <green>190</green>
-                            <blue>190</blue>
-                           </color>
-                          </brush>
-                         </colorrole>
-                        </disabled>
-                       </palette>
-                      </property>
-                      <property name="text">
-                       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/other/img/other/inactive.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -4041,8 +2888,8 @@
              </property>
              <property name="minimumSize">
               <size>
-               <width>180</width>
-               <height>60</height>
+               <width>120</width>
+               <height>30</height>
               </size>
              </property>
              <property name="styleSheet">
@@ -4583,10 +3430,16 @@
        </item>
        <item row="0" column="2">
         <widget class="QComboBox" name="sell_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -4606,10 +3459,16 @@
        </item>
        <item row="0" column="4">
         <widget class="QComboBox" name="buy_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -4620,15 +3479,15 @@
        <item row="0" column="5">
         <widget class="QPushButton" name="orderbook_buy_btn">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="maximumSize">
           <size>
-           <width>240</width>
-           <height>40</height>
+           <width>16777215</width>
+           <height>16777215</height>
           </size>
          </property>
          <property name="font">
@@ -4724,6 +3583,12 @@
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="frameShadow">
+       <enum>QFrame::Sunken</enum>
+      </property>
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -4739,11 +3604,14 @@
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
+      <property name="textElideMode">
+       <enum>Qt::ElideMiddle</enum>
+      </property>
       <property name="sortingEnabled">
        <bool>true</bool>
       </property>
       <property name="rowCount">
-       <number>16</number>
+       <number>30</number>
       </property>
       <property name="columnCount">
        <number>5</number>
@@ -4764,14 +3632,28 @@
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
       <attribute name="verticalHeaderHighlightSections">
        <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
       <row/>
       <row/>
       <row/>
@@ -5260,7 +4142,7 @@
        <item row="1" column="0">
         <widget class="QLabel" name="creat_buy_lbl">
          <property name="text">
-          <string>Buy:</string>
+          <string>B&amp;uy:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -6113,7 +4995,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="font">
@@ -6136,7 +5018,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="font">
@@ -6177,26 +5059,110 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>username_input</tabstop>
+  <tabstop>password_input</tabstop>
+  <tabstop>login_btn</tabstop>
+  <tabstop>search_activate</tabstop>
+  <tabstop>activate_ac_scroll</tabstop>
+  <tabstop>kmd_combo</tabstop>
+  <tabstop>checkBox_labs</tabstop>
+  <tabstop>checkBox_kmd</tabstop>
+  <tabstop>labs_combo</tabstop>
+  <tabstop>morty_combo</tabstop>
+  <tabstop>checkBox_vrsc</tabstop>
+  <tabstop>checkBox_morty</tabstop>
+  <tabstop>rick_combo</tabstop>
+  <tabstop>checkBox_zilla</tabstop>
+  <tabstop>checkBox_rfox</tabstop>
+  <tabstop>checkBox_hush</tabstop>
+  <tabstop>checkBox_rick</tabstop>
+  <tabstop>checkBox_oot</tabstop>
+  <tabstop>vrsc_combo</tabstop>
+  <tabstop>rfox_combo</tabstop>
+  <tabstop>zilla_combo</tabstop>
+  <tabstop>hush_combo</tabstop>
+  <tabstop>oot_combo</tabstop>
+  <tabstop>activate_utxo_scroll</tabstop>
+  <tabstop>rvn_combo</tabstop>
+  <tabstop>checkBox_doge</tabstop>
+  <tabstop>doge_combo</tabstop>
+  <tabstop>btc_combo</tabstop>
+  <tabstop>checkBox_axe</tabstop>
+  <tabstop>ltc_combo</tabstop>
+  <tabstop>checkBox_bch</tabstop>
+  <tabstop>checkBox_dash</tabstop>
+  <tabstop>zec_combo</tabstop>
+  <tabstop>checkBox_zec</tabstop>
+  <tabstop>bch_combo</tabstop>
+  <tabstop>dash_combo</tabstop>
+  <tabstop>checkBox_qtum</tabstop>
+  <tabstop>checkBox_ltc</tabstop>
+  <tabstop>checkBox_btc</tabstop>
+  <tabstop>checkBox_rvn</tabstop>
+  <tabstop>checkBox_dgb</tabstop>
+  <tabstop>qtum_combo</tabstop>
+  <tabstop>axe_combo</tabstop>
+  <tabstop>dgb_combo</tabstop>
+  <tabstop>activate_erc20_scroll</tabstop>
+  <tabstop>eth_combo</tabstop>
+  <tabstop>checkBox_dai</tabstop>
+  <tabstop>dai_combo</tabstop>
+  <tabstop>bat_combo</tabstop>
+  <tabstop>usdc_combo</tabstop>
+  <tabstop>tusd_combo</tabstop>
+  <tabstop>checkBox_awc</tabstop>
+  <tabstop>checkBox_tusd</tabstop>
+  <tabstop>checkBox_bat</tabstop>
+  <tabstop>pax_combo</tabstop>
+  <tabstop>checkBox_pax</tabstop>
+  <tabstop>awc_combo</tabstop>
+  <tabstop>checkBox_usdc</tabstop>
+  <tabstop>checkBox_eth</tabstop>
+  <tabstop>btn_activate</tabstop>
+  <tabstop>cancel_selected_order_btn</tabstop>
+  <tabstop>cancel_all_btn</tabstop>
+  <tabstop>pushButton_5</tabstop>
+  <tabstop>orders_table</tabstop>
+  <tabstop>trades_table</tabstop>
+  <tabstop>export_trade_table_btn</tabstop>
+  <tabstop>sell_combo</tabstop>
+  <tabstop>buy_combo</tabstop>
+  <tabstop>orderbook_buy_btn</tabstop>
+  <tabstop>orderbook_table</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>depth_table</tabstop>
+  <tabstop>create_sell_price</tabstop>
+  <tabstop>create_sell_amount</tabstop>
+  <tabstop>create_sell_100pct_btn</tabstop>
+  <tabstop>create_sell_75pct_btn</tabstop>
+  <tabstop>create_sell_50pct_btn</tabstop>
+  <tabstop>create_sell_25pct_btn</tabstop>
+  <tabstop>create_sell_combo</tabstop>
+  <tabstop>create_buy_combo</tabstop>
+  <tabstop>create_sell_btn</tabstop>
+  <tabstop>wallet_recipient</tabstop>
+  <tabstop>wallet_amount</tabstop>
+  <tabstop>wallet_send_btn</tabstop>
+  <tabstop>wallet_combo</tabstop>
+  <tabstop>btn_generate_seed</tabstop>
+  <tabstop>seed_text_input</tabstop>
+  <tabstop>rpcpass_text_input</tabstop>
+  <tabstop>rpc_ip_text_input</tabstop>
+  <tabstop>checkbox_local_only</tabstop>
+  <tabstop>binance_key_text_input</tabstop>
+  <tabstop>binance_secret_text_input</tabstop>
+  <tabstop>margin_input</tabstop>
+  <tabstop>netid_input</tabstop>
+  <tabstop>btn_save_config</tabstop>
+  <tabstop>btn_export_logs</tabstop>
+  <tabstop>btn_update_logs</tabstop>
+  <tabstop>console_logs</tabstop>
+ </tabstops>
  <resources>
   <include location="coin_icons.qrc"/>
  </resources>
  <connections>
-  <connection>
-   <sender>btn_activate</sender>
-   <signal>clicked()</signal>
-   <receiver>MainTabs</receiver>
-   <slot>activate_coins()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>817</x>
-     <y>722</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>978</x>
-     <y>771</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>MainTabs</sender>
    <signal>currentChanged(int)</signal>
@@ -6220,8 +5186,8 @@
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1682</x>
-     <y>718</y>
+     <x>1242</x>
+     <y>812</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6236,8 +5202,8 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1412</x>
-     <y>76</y>
+     <x>1306</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6252,8 +5218,8 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1026</x>
-     <y>58</y>
+     <x>1154</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6268,8 +5234,8 @@
    <slot>generate_seed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>136</x>
-     <y>233</y>
+     <x>110</x>
+     <y>271</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6284,8 +5250,8 @@
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>991</x>
-     <y>718</y>
+     <x>1139</x>
+     <y>548</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6300,8 +5266,8 @@
    <slot>orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1670</x>
-     <y>76</y>
+     <x>1424</x>
+     <y>57</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6316,8 +5282,8 @@
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1656</x>
-     <y>44</y>
+     <x>1570</x>
+     <y>58</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6332,7 +5298,7 @@
    <slot>cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1512</x>
+     <x>1481</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -6348,7 +5314,7 @@
    <slot>cancel_order_uuid()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1337</x>
+     <x>1323</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -6380,8 +5346,8 @@
    <slot>show_create_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1045</x>
-     <y>655</y>
+     <x>1022</x>
+     <y>761</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6396,8 +5362,8 @@
    <slot>show_create_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1045</x>
-     <y>598</y>
+     <x>1022</x>
+     <y>729</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6412,8 +5378,8 @@
    <slot>populate_create_order_vals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1425</x>
-     <y>417</y>
+     <x>1148</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6428,8 +5394,8 @@
    <slot>sell_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>386</x>
-     <y>719</y>
+     <x>375</x>
+     <y>809</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6444,8 +5410,8 @@
    <slot>sell_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>520</x>
-     <y>719</y>
+     <x>509</x>
+     <y>809</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6460,8 +5426,8 @@
    <slot>sell_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>755</x>
-     <y>719</y>
+     <x>778</x>
+     <y>809</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6476,8 +5442,8 @@
    <slot>sell_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>588</x>
-     <y>719</y>
+     <x>644</x>
+     <y>809</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6492,8 +5458,8 @@
    <slot>create_setprice()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1010</x>
-     <y>715</y>
+     <x>1022</x>
+     <y>808</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6508,8 +5474,8 @@
    <slot>show_active()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1552</x>
-     <y>74</y>
+     <x>1519</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6524,8 +5490,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>854</x>
-     <y>723</y>
+     <x>839</x>
+     <y>751</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6540,8 +5506,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>950</x>
-     <y>640</y>
+     <x>737</x>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6556,8 +5522,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>950</x>
-     <y>574</y>
+     <x>737</x>
+     <y>671</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -6572,12 +5538,44 @@
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>991</x>
-     <y>435</y>
+     <x>1139</x>
+     <y>391</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
      <y>417</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btn_activate</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>activate_coins()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>859</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>978</x>
+     <y>771</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>login_btn</sender>
+   <signal>pressed()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>login()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>799</x>
+     <y>739</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>799</x>
+     <y>429</y>
     </hint>
    </hints>
   </connection>
