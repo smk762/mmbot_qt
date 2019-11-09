@@ -51,6 +51,7 @@ os.environ['MM_COINS_PATH'] = config_path+"coins"
 
 # TODO: add signal for 'active' button background update
 class activation_thread(QThread):
+    trigger = pyqtSignal(str)
     def __init__(self, creds, coins_to_activate):
         QThread.__init__(self)
         self.coins =  coins_to_activate
@@ -59,11 +60,14 @@ class activation_thread(QThread):
     def __del__(self):
         self.wait()
 
+    # creds[1] to emit signal for buttton stylesheet change
     def run(self):
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         for coin in self.coins:
-            r = rpclib.electrum(self.creds[0], self.creds[1], coin)
-            print(guilib.colorize("Activating "+coin+" with electrum", 'cyan'))
-
+            if coin[0] not in active_coins:
+                r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
+                print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
+                self.trigger.emit(coin[0])
 
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
@@ -399,15 +403,23 @@ class Ui(QTabWidget):
                 row += 1
 
     def activate_coins(self):
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         coins_to_activate = []
         for coin in gui_coins:
-            checkbox = gui_coins[coin]['checkbox']
-            combo = gui_coins[coin]['combo']
-            if checkbox.isChecked():
-                coins_to_activate.append(coin)
+            if coin not in active_coins:
+                checkbox = gui_coins[coin]['checkbox']
+                combo = gui_coins[coin]['combo']
+                if checkbox.isChecked():
+                    coins_to_activate.append([coin,combo])
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
+        self.activate_thread.trigger.connect(self.show_active)
         self.activate_thread.start()
         self.show_active()
+        #coin[1].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
+
+    def show_combo_activated(self, coin):
+        gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
+
 
     def select_all(self, state, cointype):
         for coin in gui_coins:
@@ -425,7 +437,6 @@ class Ui(QTabWidget):
     def select_all_utxo(self):
         state = self.checkBox_all_utxo.isChecked()
         self.select_all(state, 'utxo')
-
 
     ## SHOW ORDERS
 
@@ -696,8 +707,8 @@ class Ui(QTabWidget):
             pair = self.update_create_order_combos(base, rel, active_coins)
             base = pair[0]
             rel = pair[1]
-            self.create_buy_depth_baserel_lbl.setText(rel+"/"+base)
-            self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+rel])
+            self.create_buy_depth_baserel_lbl.setText(base+"/"+rel)
+            self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
             row = 0
             row_count = self.depth_table.rowCount()
@@ -886,6 +897,7 @@ class Ui(QTabWidget):
                     self.wallet_address.setText("<a href='"+coinslib.coins[coin]['addr_explorer']+addr_text+"'>"+addr_text+"</href>")
                 else:
                     self.wallet_address.setText(addr_text)
+                self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
                 self.wallet_balance.setText(str(balance_text))
                 self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked_text))
                 self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
