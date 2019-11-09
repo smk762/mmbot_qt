@@ -255,7 +255,7 @@ class Ui(QTabWidget):
         print("logging in...")
         self.username = self.username_input.text()
         self.password = self.password_input.text()
-        if self.password == '' or self.password == '':
+        if self.password == '' or self.password == '' and not authenticated:
             QMessageBox.information(self, 'Login failed!', 'username and password fields can not be blank!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             # create .enc if new user
@@ -841,10 +841,7 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
-            if 'icon' in gui_coins[coin]:
-                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
-            else:
-                self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/labs.png\"/></p></body></html>")
+            self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
             balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
             if 'address' in balance_info:
                 addr_text = balance_info['address']

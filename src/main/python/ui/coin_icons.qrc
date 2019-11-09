@@ -1,5 +1,20 @@
 <RCC>
   <qresource prefix="lrg">
+    <file>img/400/bat.png</file>
+    <file>img/400/bch.png</file>
+    <file>img/400/btc.png</file>
+    <file>img/400/dai.png</file>
+    <file>img/400/dash.png</file>
+    <file>img/400/dgb.png</file>
+    <file>img/400/doge.png</file>
+    <file>img/400/eth.png</file>
+    <file>img/400/ltc.png</file>
+    <file>img/400/qtum.png</file>
+    <file>img/400/rvn.png</file>
+    <file>img/400/usdc.png</file>
+    <file>img/400/vrsc.png</file>
+    <file>img/400/zec.png</file>
+    <file>img/400/zilla.png</file>
     <file>img/400/kmd.png</file>
     <file>img/400/labs.png</file>
   </qresource>
