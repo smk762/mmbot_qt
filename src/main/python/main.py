@@ -693,7 +693,7 @@ class Ui(QTabWidget):
    
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
 
-    def show_create_orders(self):
+    def show_create_sell(self):
         active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
@@ -707,13 +707,13 @@ class Ui(QTabWidget):
             pair = self.update_create_order_combos(base, rel, active_coins)
             base = pair[0]
             rel = pair[1]
-            self.create_buy_depth_baserel_lbl.setText(base+"/"+rel)
-            self.depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
+            self.create_sell_depth_baserel_lbl.setText(base+"/"+rel)
+            self.sell_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
             row = 0
             row_count = self.depth_table.rowCount()
             # todo - investigate wierd tables after sorting then changing pair.
-            self.depth_table.setSortingEnabled(False)
+            self.sell_depth_table.setSortingEnabled(False)
             while row_count > row:
                 price = QTableWidgetItem('')
                 volume = QTableWidgetItem('')
@@ -721,7 +721,7 @@ class Ui(QTabWidget):
                 depth_row = [price, volume, value]
                 col = 0
                 for cell in depth_row:
-                    self.depth_table.setItem(row,col,cell)
+                    self.sell_depth_table.setItem(row,col,cell)
                     col += 1
                 row += 1
             if 'error' in pair_book:
@@ -736,11 +736,11 @@ class Ui(QTabWidget):
                     depth_row = [price, volume, value]
                     col = 0
                     for cell in depth_row:
-                        self.depth_table.setItem(row,col,cell)
+                        self.sell_depth_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)
                         col += 1
                     row += 1
-            self.depth_table.setSortingEnabled(True)
+            self.sell_depth_table.setSortingEnabled(True)
 
     def update_create_order_combos(self, base, rel, active_coins):
         existing_sell_coins = []
@@ -877,6 +877,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+            self.wallet_recipient.setFocus()
             existing_coins = []
             for i in range(self.wallet_combo.count()):
                 existing_coin = self.wallet_combo.itemText(i)
@@ -907,39 +908,41 @@ class Ui(QTabWidget):
         cointag = self.wallet_combo.itemText(index)
         recipient_addr = self.wallet_recipient.text()
         amount = self.wallet_amount.text()
-        msg = ''
-        resp = rpclib.withdraw(self.creds[0], self.creds[1], cointag, recipient_addr, amount).json()
-        if 'error' in resp:
-            print(resp['error'])
-            if resp['error'].find("Invalid Address!") > -1:
-                msg += "Invalid Address"
-            elif resp['error'].find("Not sufficient balance!") > -1:
-                msg += "Insufficient balance"
-            elif resp['error'].find("less than dust amount") > -1:
-                msg += "Transaction value too small!"
-            else:
-                msg = str(resp['error'])
-        elif 'tx_hex' in resp:
-            raw_hex = resp['tx_hex']
-            resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], cointag, raw_hex).json()
-            print(resp)
-            if 'tx_hash' in resp:
-                txid = resp['tx_hash']
-                if recipient_addr.startswith('0x'):
-                    txid_str = '0x'+txid
+        confirm = QMessageBox.question(self, 'Confirm send?', "Confirm sending "+str(amount)+" "+cointag+" to "+recipient_addr+"?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if confirm == QMessageBox.Yes:
+            msg = ''
+            resp = rpclib.withdraw(self.creds[0], self.creds[1], cointag, recipient_addr, amount).json()
+            if 'error' in resp:
+                print(resp['error'])
+                if resp['error'].find("Invalid Address!") > -1:
+                    msg += "Invalid Address"
+                elif resp['error'].find("Not sufficient balance!") > -1:
+                    msg += "Insufficient balance"
+                elif resp['error'].find("less than dust amount") > -1:
+                    msg += "Transaction value too small!"
                 else:
-                    txid_str = txid
-                try:
-                    msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
-                except:
-                    msg = "Sent! TXID: ["+txid_str+"]"
-                balance_info = rpclib.my_balance(self.creds[0], self.creds[1], cointag).json()
-                if 'address' in balance_info:
-                    balance_text = balance_info['balance']
-                    self.wallet_balance.setText(balance_text)
-        else:
-            msg = str(resp)
-        QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
+                    msg = str(resp['error'])
+            elif 'tx_hex' in resp:
+                raw_hex = resp['tx_hex']
+                resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], cointag, raw_hex).json()
+                print(resp)
+                if 'tx_hash' in resp:
+                    txid = resp['tx_hash']
+                    if recipient_addr.startswith('0x'):
+                        txid_str = '0x'+txid
+                    else:
+                        txid_str = txid
+                    try:
+                        msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
+                    except:
+                        msg = "Sent! TXID: ["+txid_str+"]"
+                    balance_info = rpclib.my_balance(self.creds[0], self.creds[1], cointag).json()
+                    if 'address' in balance_info:
+                        balance_text = balance_info['balance']
+                        self.wallet_balance.setText(balance_text)
+            else:
+                msg = str(resp)
+            QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
         pass
 
     ## CONFIG
@@ -1085,17 +1088,21 @@ class Ui(QTabWidget):
                 self.show_orderbook()
             elif index == 4:
                 # create order
-                print('show_create_orders')
-                self.show_create_orders()
+                print('show_create_buy')
+                self.show_create_buy()
             elif index == 5:
+                # create order
+                print('show_create_sell')
+                self.show_create_sell()
+            elif index == 6:
                 # wallet
                 print('show_wallet')
                 self.show_wallet()
-            elif index == 6:
+            elif index == 7:
                 # config
                 print('show_config')
                 self.show_config()
-            elif index == 7:
+            elif index == 8:
                 # logs
                 print('update_logs')
                 self.update_logs()

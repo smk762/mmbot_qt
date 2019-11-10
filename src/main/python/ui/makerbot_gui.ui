@@ -41,14 +41,14 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>5</number>
+   <number>4</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
     <string>Activate</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_16">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QStackedWidget" name="stacked_login">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -63,7 +63,7 @@
        <string notr="true"/>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="login_page">
        <layout class="QGridLayout" name="gridLayout_29">
@@ -261,7 +261,65 @@
         </sizepolicy>
        </property>
        <layout class="QGridLayout" name="gridLayout_26">
-        <item row="0" column="0">
+        <item row="3" column="1">
+         <widget class="QFrame" name="activate_btn_frame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="layoutDirection">
+           <enum>Qt::RightToLeft</enum>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_15">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>18</number>
+           </property>
+           <property name="spacing">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="btn_activate">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>120</width>
+               <height>30</height>
+              </size>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">background-color: rgb(114, 159, 207)</string>
+             </property>
+             <property name="text">
+              <string>Activate</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
          <widget class="QFrame" name="activate_head_frame">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
@@ -334,7 +392,7 @@
           </layout>
          </widget>
         </item>
-        <item row="1" column="0">
+        <item row="2" column="1">
          <widget class="QFrame" name="activate_coins_frame">
           <property name="sizePolicy">
            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -424,8 +482,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>484</width>
-                   <height>575</height>
+                   <width>449</width>
+                   <height>523</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1300,6 +1358,19 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_12">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QGroupBox" name="utxo_groupbox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -1426,8 +1497,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>484</width>
-                   <height>575</height>
+                   <width>450</width>
+                   <height>523</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
@@ -2307,6 +2378,19 @@
             </widget>
            </item>
            <item>
+            <spacer name="verticalSpacer_13">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QGroupBox" name="erc20_groupbox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -2372,8 +2456,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>484</width>
-                   <height>575</height>
+                   <width>449</width>
+                   <height>523</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
@@ -3085,67 +3169,61 @@
           </layout>
          </widget>
         </item>
-        <item row="2" column="0">
-         <widget class="QFrame" name="activate_btn_frame">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+        <item row="1" column="1">
+         <spacer name="horizontalSpacer_18">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="layoutDirection">
-           <enum>Qt::RightToLeft</enum>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_15">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>18</number>
-           </property>
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="btn_activate">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>120</width>
-               <height>30</height>
-              </size>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(114, 159, 207)</string>
-             </property>
-             <property name="text">
-              <string>Activate</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </widget>
      </widget>
+    </item>
+    <item row="0" column="2">
+     <spacer name="verticalSpacer_15">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_17">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="0">
+     <spacer name="verticalSpacer_14">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -3154,7 +3232,7 @@
     <string>My Orders</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_6">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QFrame" name="frame_14">
       <property name="maximumSize">
        <size>
@@ -3269,7 +3347,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="1">
      <widget class="QTableWidget" name="orders_table">
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
@@ -3284,7 +3362,7 @@
        <enum>QAbstractItemView::SelectRows</enum>
       </property>
       <property name="rowCount">
-       <number>16</number>
+       <number>32</number>
       </property>
       <property name="columnCount">
        <number>8</number>
@@ -3305,14 +3383,30 @@
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
       <attribute name="verticalHeaderHighlightSections">
        <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
       <row/>
       <row/>
       <row/>
@@ -3372,20 +3466,56 @@
      </widget>
     </item>
     <item row="2" column="0">
-     <widget class="QFrame" name="frame_10">
-      <property name="minimumSize">
+     <spacer name="verticalSpacer_16">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
        <size>
-        <width>930</width>
-        <height>0</height>
+        <width>20</width>
+        <height>40</height>
        </size>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_17">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
       </property>
-     </widget>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_20">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1">
+     <spacer name="horizontalSpacer_19">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -3394,7 +3524,20 @@
     <string>My Trades</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_20">
-    <item row="2" column="0">
+    <item row="3" column="0">
+     <spacer name="verticalSpacer_18">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1">
      <widget class="QTableWidget" name="trades_table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -3421,7 +3564,7 @@
        <bool>true</bool>
       </property>
       <property name="rowCount">
-       <number>16</number>
+       <number>32</number>
       </property>
       <property name="columnCount">
        <number>8</number>
@@ -3442,14 +3585,30 @@
        <bool>false</bool>
       </attribute>
       <attribute name="verticalHeaderDefaultSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
       <attribute name="verticalHeaderHighlightSections">
        <bool>true</bool>
       </attribute>
       <attribute name="verticalHeaderMinimumSectionSize">
-       <number>40</number>
+       <number>30</number>
       </attribute>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
+      <row/>
       <row/>
       <row/>
       <row/>
@@ -3508,7 +3667,7 @@
       </column>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="1" column="1">
      <widget class="QFrame" name="frame_9">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -3593,6 +3752,45 @@
       </layout>
      </widget>
     </item>
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer_21">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_19">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="4" column="1">
+     <spacer name="horizontalSpacer_22">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="tab_orderbook">
@@ -3600,7 +3798,20 @@
     <string>Orderbook</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_24">
-    <item row="0" column="0">
+    <item row="1" column="2">
+     <spacer name="verticalSpacer_21">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
      <widget class="QFrame" name="frame_7">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -3746,7 +3957,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="1" column="1">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -3785,7 +3996,7 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="1" rowspan="2">
+    <item row="1" column="3" rowspan="3">
      <widget class="QFrame" name="frame_11">
       <property name="maximumSize">
        <size>
@@ -3815,7 +4026,7 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="3" column="1">
      <widget class="QTableWidget" name="orderbook_table">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
@@ -3937,14 +4148,82 @@
       </column>
      </widget>
     </item>
+    <item row="3" column="0">
+     <spacer name="verticalSpacer_20">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="4" column="1">
+     <spacer name="horizontalSpacer_23">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer_24">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="tab_createorder">
+  <widget class="QWidget" name="tab_create_sell">
    <attribute name="title">
-    <string>Create Order</string>
+    <string>Create Sell</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_12">
-    <item row="0" column="0" colspan="2">
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="5">
+     <spacer name="horizontalSpacer_11">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" colspan="3">
      <widget class="QFrame" name="frame_4">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -3954,9 +4233,12 @@
       </property>
       <property name="minimumSize">
        <size>
-        <width>1050</width>
+        <width>0</width>
         <height>0</height>
        </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -3967,161 +4249,143 @@
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <widget class="QLabel" name="create_buy_graph_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Graph placeholder</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QGraphicsView" name="graphicsView"/>
+        <widget class="QGraphicsView" name="graphicsView">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="2" rowspan="2">
-     <widget class="QFrame" name="frame_13">
+    <item row="5" column="5">
+     <spacer name="horizontalSpacer_10">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="4">
+     <spacer name="verticalSpacer_6">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="6">
+     <spacer name="verticalSpacer_5">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="5">
+     <widget class="QLabel" name="create_order_balance_lbl">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
-      <property name="minimumSize">
-       <size>
-        <width>550</width>
-        <height>650</height>
-       </size>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
       </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+      <property name="text">
+       <string>Balance: </string>
       </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_11">
-       <item row="0" column="0">
-        <widget class="QLabel" name="create_buy_depth_lbl">
-         <property name="text">
-          <string>Buy / Sell Depth</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="create_buy_depth_baserel_lbl">
-         <property name="text">
-          <string>BASE/REL</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QTableWidget" name="depth_table">
-         <property name="font">
-          <font>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <property name="textElideMode">
-          <enum>Qt::ElideMiddle</enum>
-         </property>
-         <property name="sortingEnabled">
-          <bool>true</bool>
-         </property>
-         <property name="rowCount">
-          <number>24</number>
-         </property>
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>160</number>
-         </attribute>
-         <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>125</number>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderDefaultSectionSize">
-          <number>30</number>
-         </attribute>
-         <attribute name="verticalHeaderMinimumSectionSize">
-          <number>30</number>
-         </attribute>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <row/>
-         <column>
-          <property name="text">
-           <string>Price</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Amount</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Value</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignCenter</set>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </item>
-    <item row="1" column="0" rowspan="2">
+    <item row="4" column="5">
+     <widget class="QLabel" name="create_order_locked_lbl">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Locked by swaps:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <spacer name="horizontalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1" rowspan="2">
      <widget class="QFrame" name="frame_3">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -4144,6 +4408,11 @@
            <height>40</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Price</string>
          </property>
@@ -4162,6 +4431,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
          </property>
          <property name="decimals">
           <number>8</number>
@@ -4188,6 +4460,11 @@
            <height>40</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Amount</string>
          </property>
@@ -4206,6 +4483,9 @@
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
          </property>
          <property name="decimals">
           <number>8</number>
@@ -4344,13 +4624,16 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="1" rowspan="2">
+    <item row="3" column="3" rowspan="2">
      <widget class="QFrame" name="frame_5">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -4361,6 +4644,11 @@
       <layout class="QGridLayout" name="gridLayout_10">
        <item row="0" column="0">
         <widget class="QLabel" name="create_sell_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>Sell:</string>
          </property>
@@ -4381,6 +4669,11 @@
        </item>
        <item row="1" column="0">
         <widget class="QLabel" name="creat_buy_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
          <property name="text">
           <string>B&amp;uy:</string>
          </property>
@@ -4421,12 +4714,905 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="2">
-     <widget class="QLabel" name="create_order_balance_lbl">
+    <item row="1" column="5">
+     <widget class="QFrame" name="frame_13">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>350</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_sell_depth_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Buy / Sell Depth</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="create_sell_depth_baserel_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>BASE/REL</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableWidget" name="sell_depth_table">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideMiddle</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="rowCount">
+          <number>24</number>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderDefaultSectionSize">
+          <number>30</number>
+         </attribute>
+         <attribute name="verticalHeaderMinimumSectionSize">
+          <number>30</number>
+         </attribute>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <column>
+          <property name="text">
+           <string>Price</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Amount</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <spacer name="verticalSpacer_4">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
+     <spacer name="horizontalSpacer_7">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="tab_create_buy">
+   <attribute name="title">
+    <string>Create Buy</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_34">
+    <item row="0" column="1">
+     <spacer name="horizontalSpacer_12">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>897</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="verticalSpacer_8">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>589</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1" colspan="3">
+     <widget class="QFrame" name="frame_23">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QLabel" name="create_buy_graph_lbl_2">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Graph placeholder</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGraphicsView" name="create_buy_graphicsView">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <spacer name="verticalSpacer_11">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>589</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="5">
+     <widget class="QFrame" name="frame_22">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>350</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_33">
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_buy_depth_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Buy / Sell Depth</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="create_buy_depth_baserel_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>BASE/REL</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableWidget" name="buy_depth_table">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>8</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="textElideMode">
+          <enum>Qt::ElideMiddle</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="rowCount">
+          <number>24</number>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderMinimumSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderDefaultSectionSize">
+          <number>30</number>
+         </attribute>
+         <attribute name="verticalHeaderMinimumSectionSize">
+          <number>30</number>
+         </attribute>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <column>
+          <property name="text">
+           <string>Price</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Amount</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Value</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignCenter</set>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="6">
+     <spacer name="verticalSpacer_9">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>589</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer_14">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>897</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="5">
+     <spacer name="horizontalSpacer_16">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>347</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1" rowspan="2">
+     <widget class="QFrame" name="frame_20">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_32">
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_buy_price_lbl">
+         <property name="minimumSize">
+          <size>
+           <width>240</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>240</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Price</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_sell_price</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QDoubleSpinBox" name="create_buy_price">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="decimals">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <double>999999999.990000009536743</double>
+         </property>
+         <property name="singleStep">
+          <double>0.000001000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="create_buy_amount_lbl">
+         <property name="minimumSize">
+          <size>
+           <width>240</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>240</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Amount</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_sell_amount</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QDoubleSpinBox" name="create_buy_amount">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="decimals">
+          <number>8</number>
+         </property>
+         <property name="maximum">
+          <double>9999999999.989999771118164</double>
+         </property>
+         <property name="singleStep">
+          <double>0.000001000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QFrame" name="frame_21">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="create_buy_100pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>100%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_75pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>75%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_50pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>50%</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="create_buy_25pct_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>75</width>
+              <height>40</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>25%</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="2">
+     <spacer name="verticalSpacer_10">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>74</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="3" rowspan="2">
+     <widget class="QFrame" name="frame_19">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_31">
+       <item row="1" column="1">
+        <widget class="QComboBox" name="create_buy_sell_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="create_buy_buy_combo">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="create_buy_btn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>180</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Buy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="create_buy_sell_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sell:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_sell_combo</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="create_buy_buy_lbl">
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>B&amp;uy:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>create_buy_combo</cstring>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="3" column="5">
+     <widget class="QLabel" name="create_buy_balance_lbl">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>Balance: </string>
       </property>
      </widget>
+    </item>
+    <item row="4" column="5">
+     <widget class="QLabel" name="create_buy_locked_lbl">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Locked by swaps:</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <spacer name="horizontalSpacer_15">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>897</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="5" column="5">
+     <spacer name="horizontalSpacer_13">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>347</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -4447,7 +5633,7 @@
        <string notr="true">background-color: rgb(186, 189, 182);</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -4808,7 +5994,7 @@
        <string notr="true">background-color: rgb(186, 189, 182);</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
@@ -5019,7 +6205,7 @@
     <string>Config</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QFrame" name="frame_6">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -5108,13 +6294,16 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
+    <item row="2" column="1">
      <widget class="QFrame" name="frame_mm2json">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -5123,7 +6312,20 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QFormLayout" name="formLayout">
-       <item row="0" column="0">
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer_33">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
         <widget class="QFrame" name="frame_12">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -5173,7 +6375,7 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="1" column="1">
         <widget class="QTextEdit" name="seed_text_input">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -5189,6 +6391,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
          <property name="readOnly">
           <bool>false</bool>
          </property>
@@ -5197,133 +6402,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="lbl_rpcpass">
-         <property name="text">
-          <string>RPC Password</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
-        <widget class="QLineEdit" name="rpcpass_text_input">
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QLabel" name="lbl_rpc_ip">
-         <property name="text">
-          <string>RPC IP address</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="1">
-        <widget class="QLineEdit" name="rpc_ip_text_input">
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="placeholderText">
-          <string>127.0.0.1</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QCheckBox" name="checkbox_local_only">
-         <property name="font">
-          <font>
-           <pointsize>9</pointsize>
-           <italic>true</italic>
-          </font>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::RightToLeft</enum>
-         </property>
-         <property name="text">
-          <string>Local only</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="lbl_binance_key">
-         <property name="text">
-          <string>Binance API key</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QLineEdit" name="binance_key_text_input"/>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="lbl_binance_secret">
-         <property name="text">
-          <string>Binance Secret key</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QLineEdit" name="binance_secret_text_input"/>
-       </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="lbl_premium">
-         <property name="text">
-          <string>Trade Premium (%)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QDoubleSpinBox" name="margin_input">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="lbl_netid">
-         <property name="text">
-          <string>NetID</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
-        <widget class="QSpinBox" name="netid_input">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="maximum">
-          <number>9999</number>
-         </property>
-         <property name="value">
-          <number>9999</number>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="1">
-        <widget class="QPushButton" name="btn_save_config">
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
-         <property name="text">
-          <string>Save Settings</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
         <widget class="QLabel" name="label_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -5345,8 +6424,268 @@
          </property>
         </widget>
        </item>
+       <item row="3" column="1">
+        <spacer name="horizontalSpacer_29">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="lbl_rpcpass">
+         <property name="text">
+          <string>RPC Password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="rpcpass_text_input">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="lbl_rpc_ip">
+         <property name="text">
+          <string>RPC IP address</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="rpc_ip_text_input">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="placeholderText">
+          <string>127.0.0.1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QCheckBox" name="checkbox_local_only">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <italic>true</italic>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Local only</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <spacer name="horizontalSpacer_30">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="lbl_binance_key">
+         <property name="text">
+          <string>Binance API key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="binance_key_text_input">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="lbl_binance_secret">
+         <property name="text">
+          <string>Binance Secret key</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="binance_secret_text_input">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <spacer name="horizontalSpacer_31">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="lbl_premium">
+         <property name="text">
+          <string>Trade Premium (%)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QDoubleSpinBox" name="margin_input">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QLabel" name="lbl_netid">
+         <property name="text">
+          <string>NetID</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QSpinBox" name="netid_input">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="value">
+          <number>9999</number>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <spacer name="horizontalSpacer_32">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="14" column="1">
+        <widget class="QPushButton" name="btn_save_config">
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+         <property name="text">
+          <string>Save Settings</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1">
+        <widget class="QFrame" name="frame_24">
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
+    </item>
+    <item row="2" column="0">
+     <spacer name="verticalSpacer_23">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_22">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_25">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="1">
+     <spacer name="horizontalSpacer_26">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -5355,7 +6694,20 @@
     <string>Logs</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_25">
-    <item row="0" column="0">
+    <item row="1" column="1">
+     <spacer name="horizontalSpacer_27">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
      <widget class="QFrame" name="frame_8">
       <property name="minimumSize">
        <size>
@@ -5476,21 +6828,90 @@
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QPlainTextEdit" name="console_logs">
-      <property name="font">
-       <font>
-        <family>Ubuntu</family>
-        <pointsize>9</pointsize>
-        <italic>false</italic>
-       </font>
+    <item row="3" column="1">
+     <spacer name="horizontalSpacer_28">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
       </property>
-      <property name="readOnly">
-       <bool>true</bool>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
       </property>
-      <property name="plainText">
-       <string/>
+     </spacer>
+    </item>
+    <item row="2" column="2">
+     <spacer name="verticalSpacer_25">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="0">
+     <spacer name="verticalSpacer_24">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <widget class="QFrame" name="frame_10">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(211, 215, 207);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_35">
+       <item row="0" column="0">
+        <widget class="QPlainTextEdit" name="console_logs">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>9</pointsize>
+           <italic>false</italic>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(238, 238, 236);</string>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="plainText">
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -5568,7 +6989,7 @@
   <tabstop>orderbook_buy_btn</tabstop>
   <tabstop>orderbook_table</tabstop>
   <tabstop>graphicsView</tabstop>
-  <tabstop>depth_table</tabstop>
+  <tabstop>sell_depth_table</tabstop>
   <tabstop>create_sell_price</tabstop>
   <tabstop>create_sell_amount</tabstop>
   <tabstop>create_sell_100pct_btn</tabstop>
@@ -5623,8 +7044,8 @@
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1242</x>
-     <y>812</y>
+     <x>1246</x>
+     <y>785</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5639,7 +7060,7 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1466</x>
+     <x>1440</x>
      <y>47</y>
     </hint>
     <hint type="destinationlabel">
@@ -5655,7 +7076,7 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1314</x>
+     <x>1288</x>
      <y>47</y>
     </hint>
     <hint type="destinationlabel">
@@ -5687,8 +7108,8 @@
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1139</x>
-     <y>548</y>
+     <x>1165</x>
+     <y>702</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5703,7 +7124,7 @@
    <slot>orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1564</x>
+     <x>1538</x>
      <y>46</y>
     </hint>
     <hint type="destinationlabel">
@@ -5719,7 +7140,7 @@
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1570</x>
+     <x>1544</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -5735,7 +7156,7 @@
    <slot>cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1481</x>
+     <x>1455</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -5751,7 +7172,7 @@
    <slot>cancel_order_uuid()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1323</x>
+     <x>1297</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -5780,11 +7201,11 @@
    <sender>create_buy_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_create_orders()</slot>
+   <slot>show_create_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1022</x>
-     <y>761</y>
+     <x>1170</x>
+     <y>737</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5796,11 +7217,11 @@
    <sender>create_sell_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_create_orders()</slot>
+   <slot>show_create_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1022</x>
-     <y>729</y>
+     <x>1170</x>
+     <y>706</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5809,14 +7230,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>depth_table</sender>
+   <sender>sell_depth_table</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>MainTabs</receiver>
    <slot>populate_create_order_vals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1148</x>
-     <y>73</y>
+     <x>1322</x>
+     <y>104</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5831,8 +7252,8 @@
    <slot>sell_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>375</x>
-     <y>809</y>
+     <x>401</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5847,8 +7268,8 @@
    <slot>sell_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>509</x>
-     <y>809</y>
+     <x>559</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5863,8 +7284,8 @@
    <slot>sell_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>778</x>
-     <y>809</y>
+     <x>876</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5879,8 +7300,8 @@
    <slot>sell_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>644</x>
-     <y>809</y>
+     <x>718</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5895,8 +7316,8 @@
    <slot>create_setprice()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1022</x>
-     <y>808</y>
+     <x>1170</x>
+     <y>783</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5975,8 +7396,8 @@
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1139</x>
-     <y>391</y>
+     <x>1165</x>
+     <y>469</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -5992,7 +7413,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>859</x>
-     <y>794</y>
+     <y>768</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -6023,8 +7444,8 @@
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1313</x>
-     <y>154</y>
+     <x>1305</x>
+     <y>180</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -6039,8 +7460,8 @@
    <slot>select_all_smart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>285</x>
-     <y>154</y>
+     <x>294</x>
+     <y>180</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -6056,7 +7477,7 @@
    <hints>
     <hint type="sourcelabel">
      <x>799</x>
-     <y>154</y>
+     <y>180</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -6080,7 +7501,7 @@
   <slot>export_table()</slot>
   <slot>cancel_all_orders()</slot>
   <slot>cancel_order_uuid()</slot>
-  <slot>show_create_orders()</slot>
+  <slot>show_create_sell()</slot>
   <slot>populate_create_order_vals()</slot>
   <slot>buy_25pct()</slot>
   <slot>buy_50pct()</slot>
@@ -6096,5 +7517,6 @@
   <slot>select_all_smart()</slot>
   <slot>select_all_utxo()</slot>
   <slot>select_all_erc20()</slot>
+  <slot>show_create_buy()</slot>
  </slots>
 </ui>
