@@ -152,3 +152,27 @@ def validate_ip(ip):
         return True
     else:  
         return False
+
+def get_unfinished_swaps(node_ip, user_pass):
+    unfinished_swaps = []
+    unfinished_swap_uuids = []
+    recent_swaps = my_recent_swaps(node_ip, user_pass, 50).json()
+    for swap in recent_swaps['result']['swaps']:
+        swap_events = []
+        for event in swap['events']:
+            swap_events.append(event['event']['type'])
+        if 'Finished' not in swap_events:
+            unfinished_swaps.append(swap)
+            unfinished_swap_uuids.append(swap['uuid'])
+    return unfinished_swap_uuids, unfinished_swaps
+
+def get_active_coins(node_ip, user_pass):
+    active_cointags = []
+    active_coins = rpclib.get_enabled_coins(node_ip, user_pass).json()
+    if 'result' in active_coins:
+        active_coins = active_coins['result']
+        for coin in active_coins:
+            active_cointags.append(coin['ticker'])
+        return active_cointags 
+    else:
+      print(active_coins)

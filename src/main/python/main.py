@@ -61,7 +61,7 @@ class activation_thread(QThread):
 
     # creds[1] to emit signal for buttton stylesheet change
     def run(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         for coin in self.coins:
             if coin[0] not in active_coins:
                 r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
@@ -115,13 +115,11 @@ class Ui(QTabWidget):
                 "type":"smartchain",
                 "checkbox": self.checkBox_kmd, 
                 "combo": self.kmd_combo,
-                "icon":":/coins/kmd_400.png"
             },
             "LABS": {
                 "type":"smartchain",
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
-                "icon":":/coins/KMD_Labs_Logo_thick_outline_2_32.png"
             },
             "BCH": {
                 "type":"utxo",
@@ -266,7 +264,7 @@ class Ui(QTabWidget):
     # Runs whenever activation_thread signals a coin has been activated
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         existing_coins = []
         for i in range(self.wallet_combo.count()):
             existing_coin = self.wallet_combo.itemText(i)
@@ -416,7 +414,7 @@ class Ui(QTabWidget):
                 row += 1
 
     def activate_coins(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         coins_to_activate = []
         for coin in gui_coins:
             if coin not in active_coins:
@@ -585,7 +583,7 @@ class Ui(QTabWidget):
     ## SHOW ORDERBOOK
 
     def show_orderbook(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -718,7 +716,7 @@ class Ui(QTabWidget):
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
 
     def show_create_sell(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -895,7 +893,7 @@ class Ui(QTabWidget):
     ## WALLET
 
     def show_wallet(self):
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
