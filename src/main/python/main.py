@@ -29,7 +29,6 @@ settings = QSettings()
 ini_file = settings.fileName()
 config_path = settings.fileName().replace("AntaraMakerbot.ini", "")
 
-
 if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
@@ -337,7 +336,7 @@ class Ui(QTabWidget):
                             if not stopped:
                                 try:
                                     print("stopping mm2 (if running)")
-                                    guilib.stop_mm2(self.creds[0], self.creds[1])
+                                    rpclib.stop_mm2(self.creds[0], self.creds[1])
                                 except:
                                     stopped = True
                                     pass
@@ -365,7 +364,6 @@ class Ui(QTabWidget):
                     self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
                 elif resp == QMessageBox.No:
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
-
 
     # ACTIVATE
     def show_active(self):
@@ -433,7 +431,6 @@ class Ui(QTabWidget):
 
     def show_combo_activated(self, coin):
         gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
-
 
     def select_all(self, state, cointype):
         for coin in gui_coins:
@@ -704,7 +701,20 @@ class Ui(QTabWidget):
         else:
             msg = "No order selected!"
             QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
-   
+
+## BUY ORDER PAGE - PENDING
+
+    def show_create_buy(self):
+        pass
+
+    def populate_buy_order_vals(self):
+        selected_row = self.buy_depth_table.currentRow()
+        if self.buy_depth_table.item(selected_row,0).text() == '':
+            selected_price = 0
+        else:
+            selected_price = float(self.buy_depth_table.item(selected_row,0).text())
+        self.create_buy_price.setValue(selected_price)
+
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
 
     def show_create_sell(self):
@@ -725,7 +735,7 @@ class Ui(QTabWidget):
             self.sell_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
             row = 0
-            row_count = self.depth_table.rowCount()
+            row_count = self.sell_depth_table.rowCount()
             # todo - investigate wierd tables after sorting then changing pair.
             self.sell_depth_table.setSortingEnabled(False)
             while row_count > row:
@@ -797,12 +807,12 @@ class Ui(QTabWidget):
             self.create_order_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
         return base, rel
 
-    def populate_create_order_vals(self):
-        selected_row = self.depth_table.currentRow()
-        if self.depth_table.item(selected_row,0).text() == '':
+    def populate_sell_order_vals(self):
+        selected_row = self.sell_depth_table.currentRow()
+        if self.sell_depth_table.item(selected_row,0).text() == '':
             selected_price = 0
         else:
-            selected_price = float(self.depth_table.item(selected_row,0).text())
+            selected_price = float(self.sell_depth_table.item(selected_row,0).text())
         self.create_sell_price.setValue(selected_price)
 
     def sell_25pct(self):
@@ -820,7 +830,7 @@ class Ui(QTabWidget):
 
     def sell_pct(self, pct):
         if self.create_sell_price.value() == 0:
-            price = self.depth_table.item(0,0).text()
+            price = self.sell_depth_table.item(0,0).text()
         else:
             price = self.create_sell_price.value()
         bal_txt = self.create_order_balance_lbl.text()
@@ -1034,7 +1044,7 @@ class Ui(QTabWidget):
 
                         print("stop_mm2 with old creds")
                         try:
-                            guilib.stop_mm2(self.creds[0], self.creds[1])
+                            rpclib.stop_mm2(self.creds[0], self.creds[1])
                         except Exception as e:
                             print(e)
                             pass
@@ -1102,12 +1112,12 @@ class Ui(QTabWidget):
                 self.show_orderbook()
             elif index == 4:
                 # create order
-                print('show_create_buy')
-                self.show_create_buy()
-            elif index == 5:
-                # create order
                 print('show_create_sell')
                 self.show_create_sell()
+            elif index == 5:
+                # create order
+                print('show_create_buy')
+                self.show_create_buy()
             elif index == 6:
                 # wallet
                 print('show_wallet')
@@ -1135,4 +1145,4 @@ if __name__ == '__main__':
     app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
     window = Ui() # Create an instance of our class
     app.exec_() # Start the application
-    guilib.stop_mm2(window.creds[0], window.creds[1])
+    rpclib.stop_mm2(window.creds[0], window.creds[1])

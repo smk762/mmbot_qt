@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>6</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -3349,6 +3349,9 @@
     </item>
     <item row="2" column="1">
      <widget class="QTableWidget" name="orders_table">
+      <property name="sizeAdjustPolicy">
+       <enum>QAbstractScrollArea::AdjustToContents</enum>
+      </property>
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
@@ -3360,6 +3363,9 @@
       </property>
       <property name="selectionBehavior">
        <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
       </property>
       <property name="rowCount">
        <number>32</number>
@@ -7233,7 +7239,7 @@
    <sender>sell_depth_table</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>MainTabs</receiver>
-   <slot>populate_create_order_vals()</slot>
+   <slot>populate_sell_order_vals()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1322</x>
@@ -7502,7 +7508,7 @@
   <slot>cancel_all_orders()</slot>
   <slot>cancel_order_uuid()</slot>
   <slot>show_create_sell()</slot>
-  <slot>populate_create_order_vals()</slot>
+  <slot>populate_sell_order_vals()</slot>
   <slot>buy_25pct()</slot>
   <slot>buy_50pct()</slot>
   <slot>buy_75pct()</slot>
@@ -7518,5 +7524,6 @@
   <slot>select_all_utxo()</slot>
   <slot>select_all_erc20()</slot>
   <slot>show_create_buy()</slot>
+  <slot>populate_buy_order_vals()</slot>
  </slots>
 </ui>

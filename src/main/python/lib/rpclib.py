@@ -26,114 +26,44 @@ taker_errors_events = ['StartFailed', 'NegotiateFailed', 'TakerFeeSendFailed', '
                       'TakerPaymentRefundFailed']
 
 error_events = list(set(taker_errors_events + maker_errors_events))
-#TODO: change this to match python methods
-def help_mm2(node_ip, user_pass):
-    params = {'userpass': user_pass, 'method': 'help'}
-    r = requests.post(node_ip, json=params)
-    return r.text
 
-def check_mm2_status(node_ip, user_pass):
-    try: 
-        help_mm2(node_ip, user_pass)
-        return True
-    except Exception as e:
-        return False
+#TODO: Review methods for optional params handling.
 
-def get_enabled_coins(node_ip, user_pass):
+def buy(node_ip, user_pass, base, rel, basevolume, relprice):
+    params ={'userpass': user_pass,
+             'method': 'buy',
+             'base': base,
+             'rel': rel,
+             'volume': basevolume,
+             'price': relprice,}
+    r = requests.post(node_ip,json=params)
+    return r    
+
+def cancel_all(node_ip, user_pass):
     params = {'userpass': user_pass,
-              'method': 'get_enabled_coins'}
-    r = requests.post(node_ip, json=params)
+              'method': 'cancel_all_orders',
+              'cancel_by': {"type":"All"},}
+    r = requests.post(node_ip,json=params)
     return r
 
-def check_active_coins(node_ip, user_pass):
-    active_cointags = []
-    active_coins = get_enabled_coins(node_ip, user_pass).json()
-    if 'result' in active_coins:
-      active_coins = active_coins['result']
-      for coin in active_coins:
-          active_cointags.append(coin['ticker'])
-      return active_cointags 
-    else:
-      print(active_coins)
-
-def my_orders(node_ip, user_pass):
-    params = {'userpass': user_pass, 'method': 'my_orders',}
-    r = requests.post(node_ip, json=params)
-    return r
-
-def version(node_ip, user_pass):
-    params = {'userpass': user_pass, 'method': 'version',}
-    r = requests.post(node_ip, json=params)
-    return r
-
-def orderbook(node_ip, user_pass, base, rel):
+def cancel_uuid(node_ip, user_pass, order_uuid):
     params = {'userpass': user_pass,
-              'method': 'orderbook',
-              'base': base, 'rel': rel,}
-    r = requests.post(node_ip, json=params)
+              'method': 'cancel_order',
+              'uuid': order_uuid,}
+    r = requests.post(node_ip,json=params)
     return r
 
-def check_coins_status(node_ip, user_pass):
-    if os.path.exists(script_path+"/coins") is False:
-        print(guilib.colorize("\n'coins' file not found in "+script_path+"!",'red'))
-        print(guilib.colorize("Use 'wget https://raw.githubusercontent.com/jl777/coins/master/coins' to download.", 'orange'))
-        print(guilib.colorize("Exiting...\n", 'blue'))
-        sys.exit()
-    elif os.path.exists(script_path+"/api_keys.json") is False:
-        print(guilib.colorize("\n'api_keys.json' file not found in "+script_path+"!",'red'))
-        print(guilib.colorize("Use 'cp api_keys_example.json api_keys.json' to copy it.", 'orange'))
-        print(guilib.colorize("You can leave the values blank, or input your own Binance API keys", 'orange'))
-        print(guilib.colorize("Exiting...\n", 'blue'))
-        sys.exit()     
-    else:
-        cointag_list = []
-        for coin in coinslib.coins:
-            cointag_list.append(coin)
-        num_all_coins = len(cointag_list)
-        active_coins = check_active_coins(node_ip, user_pass, cointag_list)
-        num_active_coins = len(active_coins)
-        msg = str(num_active_coins)+"/"+str(num_all_coins)+" coins active"
-        if num_active_coins == 0:
-            color = 'red'
-            all_active = False
-        elif num_active_coins < len(coinslib.coins):
-            color = 'yellow'
-            all_active = False
-        else:
-            color = 'green'
-            all_active = True
-        return msg, color, all_active, active_coins
-
-def get_status(node_ip, user_pass):
-    mm2_active = check_mm2_status(node_ip, user_pass)
-    if mm2_active:
-        version_txt = version(node_ip, user_pass).json()
-        try:
-          ver = "v"+version_txt['result'].split("_")[0]
-        except:
-          ver = ''
-          pass
-        mm2_msg = guilib.colorize("[MM2 "+ver+" active]", 'green')
-        coins_status = check_coins_status(node_ip, user_pass)
-        my_current_orders = my_orders(node_ip, user_pass).json()['result']
-        num_orders = len(my_current_orders['maker_orders']) + len(my_current_orders['taker_orders'])
-        coin_msg = guilib.colorize("["+coins_status[0]+"]", coins_status[1])
-        status_msg = mm2_msg+"   "+coin_msg
-    else:
-        mm2_msg = guilib.colorize("[MM2 disabled]", 'red')
-        num_orders = 0
-        status_msg = ''
-        coins_status = ['','','','']
-    return status_msg, mm2_active, coins_status[2], coins_status[3], num_orders
-
-def enable(node_ip, user_pass, cointag, tx_history=True):
-    coin = coinslib.coins[cointag]
+def coins_needed_for_kick_start(node_ip, user_pass, order_uuid):
     params = {'userpass': user_pass,
-              'method': 'enable',
-              'coin': cointag,
-              'mm2':1,  
-              'tx_history':tx_history,}
-    r = requests.post(node_ip, json=params)
+              'method': 'coins_needed_for_kick_start'}
+    r = requests.post(node_ip,json=params)
+    return r
+
+def disable_coin(node_ip, user_pass, coin):
+    params = {'userpass': user_pass,
+              'method': 'disable_coin',
+              'coin': coin}
+    r = requests.post(node_ip,json=params)
     return r
 
 def electrum(node_ip, user_pass, cointag, tx_history=True):
@@ -156,35 +86,20 @@ def electrum(node_ip, user_pass, cointag, tx_history=True):
     r = requests.post(node_ip, json=params)
     return r
 
-def buy(node_ip, user_pass, base, rel, basevolume, relprice):
-    params ={'userpass': user_pass,
-             'method': 'buy',
-             'base': base,
-             'rel': rel,
-             'volume': basevolume,
-             'price': relprice,}
-    r = requests.post(node_ip,json=params)
-    return r    
-
-def my_balance(node_ip, user_pass, cointag):
+def enable(node_ip, user_pass, cointag, tx_history=True):
+    coin = coinslib.coins[cointag]
     params = {'userpass': user_pass,
-              'method': 'my_balance',
-              'coin': cointag,}
+              'method': 'enable',
+              'coin': cointag,
+              'mm2':1,  
+              'tx_history':tx_history,}
     r = requests.post(node_ip, json=params)
     return r
 
-def cancel_all(node_ip, user_pass):
+def get_enabled_coins(node_ip, user_pass):
     params = {'userpass': user_pass,
-              'method': 'cancel_all_orders',
-              'cancel_by': {"type":"All"},}
-    r = requests.post(node_ip,json=params)
-    return r
-
-def cancel_uuid(node_ip, user_pass, order_uuid):
-    params = {'userpass': user_pass,
-              'method': 'cancel_order',
-              'uuid': order_uuid,}
-    r = requests.post(node_ip,json=params)
+              'method': 'get_enabled_coins'}
+    r = requests.post(node_ip, json=params)
     return r
 
 def get_fee(node_ip, user_pass, coin):
@@ -195,58 +110,28 @@ def get_fee(node_ip, user_pass, coin):
     r = requests.post(node_ip,json=params)
     return r
 
-def cancel_pair(node_ip, user_pass, base, rel):
+def help_mm2(node_ip, user_pass):
+    params = {'userpass': user_pass, 'method': 'help'}
+    r = requests.post(node_ip, json=params)
+    return r.text
+
+def import_swaps(node_ip, user_pass, coin):
     params = {'userpass': user_pass,
-              'method': 'cancel_all_orders',
-              'cancel_by': {
-                    "type":"Pair",
-                    "data":{"base":base,"rel":rel},
-                    },}
+              'method': 'import_swaps',
+              'swaps': swaps
+              }
     r = requests.post(node_ip,json=params)
     return r
 
-def setprice(node_ip, user_pass, base, rel, basevolume, relprice, trademax=False, cancel_previous=True):
+def my_balance(node_ip, user_pass, cointag):
     params = {'userpass': user_pass,
-              'method': 'setprice',
-              'base': base,
-              'rel': rel,
-              'volume': basevolume,
-              'price': relprice,
-              'max':trademax,
-              'cancel_previous':cancel_previous,}
+              'method': 'my_balance',
+              'coin': cointag,}
     r = requests.post(node_ip, json=params)
     return r
 
-def recover_stuck_swap(node_ip, user_pass, uuid):
-    params = {'userpass': user_pass,
-              'method': 'recover_funds_of_swap',
-              'params': {'uuid':uuid}
-              }
-    r = requests.post(node_ip, json=params)
-    return r    
-
-def withdraw(node_ip, user_pass, cointag, address, amount):
-    params = {'userpass': user_pass,
-              'method': 'withdraw',
-              'coin': cointag,
-              'to': address,
-              'amount': amount,}
-    r = requests.post(node_ip, json=params)
-    return r 
-
-def withdraw_all(node_ip, user_pass, cointag, address):
-    params = {'userpass': user_pass,
-              'method': 'withdraw',
-              'coin': cointag,
-              'to': address,
-              'max': True}
-    r = requests.post(node_ip, json=params)
-    return r 
-
-def send_raw_transaction(node_ip, user_pass, cointag, rawhex):
-    params = {'userpass': user_pass,
-              'method': 'send_raw_transaction',
-              'coin': cointag, "tx_hex":rawhex,}
+def my_orders(node_ip, user_pass):
+    params = {'userpass': user_pass, 'method': 'my_orders',}
     r = requests.post(node_ip, json=params)
     return r
 
@@ -261,6 +146,141 @@ def my_recent_swaps(node_ip, user_pass, limit=10, from_uuid=''):
                   'method': 'my_recent_swaps',
                   "limit": int(limit),
                   "from_uuid":from_uuid,}
+    r = requests.post(node_ip,json=params)
+    return r
+
+def my_swap_status(node_ip, user_pass, swap_uuid):
+    params = {'userpass': user_pass,
+              'method': 'my_swap_status',
+              'params': {"uuid": swap_uuid},}
+    r = requests.post(node_ip,json=params)
+    return r
+
+def my_tx_history(node_ip, user_pass, coin, limit=10, from_id=''):
+    method_params = {"uuid": swap_uuid,
+                     "coin": coin,
+                     "limit": limit,
+                     }
+    if from_id != '':
+        method_params.update({"from_id":from_id})
+    params = {'userpass': user_pass,
+              'method': 'my_tx_history',
+              'params': method_params
+                }
+    r = requests.post(node_ip,json=params)
+    return r
+
+def order_status(node_ip, user_pass, uuid):
+    params = {'userpass': user_pass,
+              'method': 'order_status',
+              'uuid': uuid,}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def orderbook(node_ip, user_pass, base, rel):
+    params = {'userpass': user_pass,
+              'method': 'orderbook',
+              'base': base, 'rel': rel,}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def recover_stuck_swap(node_ip, user_pass, uuid):
+    params = {'userpass': user_pass,
+              'method': 'recover_funds_of_swap',
+              'params': {'uuid':uuid}
+              }
+    r = requests.post(node_ip, json=params)
+    return r    
+
+def sell(node_ip, user_pass, base, rel, basevolume, relprice):
+    params ={'userpass': user_pass,
+             'method': 'sell',
+             'base': base,
+             'rel': rel,
+             'volume': basevolume,
+             'price': relprice,}
+    r = requests.post(node_ip,json=params)
+    return r    
+
+def send_raw_transaction(node_ip, user_pass, cointag, rawhex):
+    params = {'userpass': user_pass,
+              'method': 'send_raw_transaction',
+              'coin': cointag, "tx_hex":rawhex,}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def setprice(node_ip, user_pass, base, rel, basevolume, relprice, trademax=False, cancel_previous=True):
+    params = {'userpass': user_pass,
+              'method': 'setprice',
+              'base': base,
+              'rel': rel,
+              'volume': basevolume,
+              'price': relprice,
+              'max':trademax,
+              'cancel_previous':cancel_previous,}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def set_required_confirmations(node_ip, user_pass, cointag, confirmations):
+    params = {'userpass': user_pass,
+              'method': 'set_required_confirmations',
+              'coin': cointag,
+              'confirmations':confirmations,}
+    r = requests.post(node_ip, json=params)
+    return r
+
+def stop_mm2(node_ip, user_pass):
+    params = {'userpass': user_pass, 'method': 'stop'}
+    try:
+        r = requests.post(node_ip, json=params)
+        msg = "MM2 stopped. "
+    except:
+        msg = "MM2 was not running. "
+    return msg
+
+def check_mm2_status(node_ip, user_pass):
+    try: 
+        help_mm2(node_ip, user_pass)
+        return True
+    except Exception as e:
+        return False
+
+def version(node_ip, user_pass):
+    params = {'userpass': user_pass, 'method': 'version',}
+    r = requests.post(node_ip, json=params)
+    return r
+
+
+def check_active_coins(node_ip, user_pass):
+    active_cointags = []
+    active_coins = get_enabled_coins(node_ip, user_pass).json()
+    if 'result' in active_coins:
+        active_coins = active_coins['result']
+        for coin in active_coins:
+            active_cointags.append(coin['ticker'])
+        return active_cointags 
+    else:
+      print(active_coins)
+
+def withdraw(node_ip, user_pass, cointag, address, amount, maxvolume=False):
+    params = {'userpass': user_pass,
+              'method': 'withdraw',
+              'coin': cointag,
+              'to': address,
+              'amount': amount,}
+    if maxvolume:
+        params.update({"maxvolume":maxvolume})
+    r = requests.post(node_ip, json=params)
+    return r 
+
+# deprecated?
+def cancel_pair(node_ip, user_pass, base, rel):
+    params = {'userpass': user_pass,
+              'method': 'cancel_all_orders',
+              'cancel_by': {
+                    "type":"Pair",
+                    "data":{"base":base,"rel":rel},
+                    },}
     r = requests.post(node_ip,json=params)
     return r
 
@@ -333,11 +353,6 @@ def build_coins_data(node_ip, user_pass, cointag_list=''):
   except Exception as e:
     print(e)
 
-def gecko_fiat_prices(gecko_ids, fiat):
-    url = 'https://api.coingecko.com/api/v3/simple/price'
-    params = dict(ids=str(gecko_ids),vs_currencies=fiat)
-    r = requests.get(url=url, params=params)
-    return r
 
 def get_kmd_mm2_price(node_ip, user_pass, coin):
     kmd_orders = orderbook(node_ip, user_pass, coin, 'KMD').json()
@@ -360,13 +375,6 @@ def get_kmd_mm2_price(node_ip, user_pass, coin):
     else:
         median_kmd_value = 0
     return min_kmd_value, median_kmd_value, max_kmd_value
-
-def my_swap_status(node_ip, user_pass, swap_uuid):
-    params = {'userpass': user_pass,
-              'method': 'my_swap_status',
-              'params': {"uuid": swap_uuid},}
-    r = requests.post(node_ip,json=params)
-    return r
 
 def get_unfinished_swaps(node_ip, user_pass):
     unfinished_swaps = []
