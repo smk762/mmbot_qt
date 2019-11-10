@@ -33,6 +33,7 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
+# TODO: User specific trade values. BUY/SELL T/F in mm2.json?
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
 if 1 == 0:
     try:
@@ -48,7 +49,7 @@ if 1 == 0:
 
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
-# TODO: add signal for 'active' button background update
+
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
     def __init__(self, creds, coins_to_activate):
@@ -416,12 +417,26 @@ class Ui(QTabWidget):
     def activate_coins(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         coins_to_activate = []
+        buy_coins = []
+        sell_coins = []
         for coin in gui_coins:
-            if coin not in active_coins:
-                checkbox = gui_coins[coin]['checkbox']
-                combo = gui_coins[coin]['combo']
-                if checkbox.isChecked():
+            combo = gui_coins[coin]['combo']
+            checkbox = gui_coins[coin]['checkbox']
+            if coin not in active_coins and checkbox.isChecked():
                     coins_to_activate.append([coin,combo])
+            if combo.itemText(combo.currentIndex()) == 'Buy':
+                buy_coins.append(coin)
+            elif combo.itemText(combo.currentIndex()) == 'Sell':
+                sell_coins.append(coin)
+            elif combo.itemText(combo.currentIndex()) == 'Buy & Sell':
+                buy_coins.append(coin)
+                sell_coins.append(coin)
+            trade_lists = {
+                "buy_coins":buy_coins,
+                "sell_coins":sell_coins
+            }
+        with open(config_path+self.username+"_trade_coins.json", 'w') as j:
+            j.write(json.dumps(trade_lists))
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
