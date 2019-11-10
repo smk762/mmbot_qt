@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="lrg">
+    <file>img/400/placeholder.png</file>
     <file>img/400/bat.png</file>
     <file>img/400/bch.png</file>
     <file>img/400/btc.png</file>
@@ -18,10 +19,7 @@
     <file>img/400/kmd.png</file>
     <file>img/400/labs.png</file>
   </qresource>
-  <qresource prefix="other">
-    <file>img/other/active.png</file>
-    <file>img/other/inactive.png</file>
-  </qresource>
+  <qresource prefix="other"/>
   <qresource prefix="sml">
     <file>img/32/color/0xbtc.png</file>
     <file>img/32/color/dgb.png</file>
@@ -41,7 +39,6 @@
     <file>img/32/color/btc.png</file>
     <file>img/32/color/dai.png</file>
     <file>img/32/color/dash.png</file>
-    <file>img/32/color/dgb.png</file>
     <file>img/32/color/doge.png</file>
     <file>img/32/color/labs.png</file>
     <file>img/32/color/ltc.png</file>

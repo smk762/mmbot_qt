@@ -263,6 +263,24 @@ class Ui(QTabWidget):
             with open(filename, 'w') as f:
                 f.write(table_csv)
 
+
+    # Runs whenever activation_thread signals a coin has been activated
+    # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
+    def update_active(self):
+        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
+        existing_coins = []
+        for i in range(self.wallet_combo.count()):
+            existing_coin = self.wallet_combo.itemText(i)
+            existing_coins.append(existing_coin)
+        if 'gui_coins' in globals():
+            for coin in gui_coins:
+                if coin in active_coins:
+                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
+                    if coin not in existing_coins:
+                        self.wallet_combo.addItem(coin)
+                else:
+                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
+
     ## LOGIN 
 
     def show_login(self):
@@ -348,23 +366,20 @@ class Ui(QTabWidget):
                 elif resp == QMessageBox.No:
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
+
     # ACTIVATE
     def show_active(self):
         print("show_active")
-        active_coins = rpclib.check_active_coins(self.creds[0], self.creds[1])
-        search_txt = self.search_activate.text().lower()
         display_coins_erc20 = []
         display_coins_utxo = []
         display_coins_smartchain = []
+        self.update_active()
         if 'gui_coins' in globals():
             for coin in gui_coins:
-                gui_coins[coin]['checkbox'].hide()
-                gui_coins[coin]['combo'].hide()
-                if coin in active_coins:
-                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
-                else:
-                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
+                search_txt = self.search_activate.text().lower()
                 if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
+                    gui_coins[coin]['checkbox'].hide()
+                    gui_coins[coin]['combo'].hide()
                     if gui_coins[coin]['type'] == 'utxo':
                         display_coins_utxo.append(coin)
                     elif gui_coins[coin]['type'] == 'erc20':
@@ -412,10 +427,9 @@ class Ui(QTabWidget):
                 if checkbox.isChecked():
                     coins_to_activate.append([coin,combo])
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
-        self.activate_thread.trigger.connect(self.show_active)
+        self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
         self.show_active()
-        #coin[1].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
 
     def show_combo_activated(self, coin):
         gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
