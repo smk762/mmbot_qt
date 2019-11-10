@@ -8,10 +8,17 @@ def get_forex(base=USD):
     r = requests.get(url)
     return r
 
-def gecko_fiat_prices(gecko_ids, fiat):
+# TODO: parse https://api.coingecko.com/api/v3/coins/list for supported coins api-codes
+def gecko_fiat_prices(coin_ids, fiat):
     url = 'https://api.coingecko.com/api/v3/simple/price'
-    params = dict(ids=str(gecko_ids),vs_currencies=fiat)
+    params = dict(ids=str(coin_ids),vs_currencies=fiat)
     r = requests.get(url=url, params=params)
+    return r
+
+# TODO: parse https://api.coinpaprika.com/v1/coins for supported coins api-codes
+def gecko_paprika_price(coin_id):
+    url = 'ttps://api.coinpaprika.com/v1/ticker/'+coin_id
+    r = requests.get(url)
     return r
 
 def get_btc_price(cointag):
