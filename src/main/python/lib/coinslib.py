@@ -1,567 +1,795 @@
-coins = {
-    "AXE":{
-        "min_swap": 1,
-        "api-id": "axe",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10057"},
-                     {"url":"electrum2.cipig.net:10057"},
-                     {"url":"electrum3.cipig.net:10057"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "AWC":{
-        "min_swap": 0.5,
-        "activate_with":"electrum",
-        "api-id": "",
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "reserve_balance":500,
-        "premium":1.03,
-        "min_swap":1,
-        "minQty":"1.00000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"1.00000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "BAT":{
-        "min_swap": 0.5,
-        "activate_with":"electrum",
-        "api-id": "basic-attention-token",
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "reserve_balance":500,
-        "premium":1.03,
-        "min_swap":1,
-        "minQty":"1.00000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"1.00000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "BCH":{
-        "min_swap": 0.01,
-        "activate_with":"electrum",
-        "tx_explorer":"https://explorer.bitcoin.com/bch/tx",
-        "electrum": [{"url":"electron.coinucopia.io:50001"},
-                     {"url":"bch.imaginary.cash:50001"},
-                     {"url":"wallet.satoshiscoffeehouse.com:50001"},
-                     {"url":"electroncash.dk:50001"},
-                     {"url":"electron-cash.dragon.zone:50001"}],
-        "reserve_balance":1,
-        "premium":1.03,
-        "min_swap":0.01,
-        "minQty":"0.00001000",
-        "maxQty":"900000.00000000",
-        "stepSize":"0.00001000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "BOTS":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://bots.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10007"},
-                     {"url":"electrum2.cipig.net:10007"},
-                     {"url":"electrum3.cipig.net:10007"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "BTC":{
-        "api-id": "bitcoin",
-        "activate_with":"electrum",
-        "reserve_balance":0.1,
-        "tx_explorer":"https://explorer.bitcoin.com/btc/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10000"},
-                     {"url":"electrum2.cipig.net:10000"},
-                     {"url":"electrum3.cipig.net:10000"}],
-        "bot_sell": False,
-        "bot_buy": True
-    },
-    "BTCH":{
-        "min_swap": 0.1,
-        "api-id": "bitcoin-hush",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://bots.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10020"},
-                     {"url":"electrum2.cipig.net:10020"},
-                     {"url":"electrum3.cipig.net:10020"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "CHIPS":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://chips.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10053"},
-                     {"url":"electrum2.cipig.net:10053"},
-                     {"url":"electrum3.cipig.net:10053"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "COMMOD":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://commod.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10022"},
-                     {"url":"electrum2.cipig.net:10022"},
-                     {"url":"electrum3.cipig.net:10022"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "COQUI":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://coqui.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10011"},
-                     {"url":"electrum2.cipig.net:10011"},
-                     {"url":"electrum3.cipig.net:10011"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "CRYPTO":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://crypto.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10008"},
-                     {"url":"electrum2.cipig.net:10008"},
-                     {"url":"electrum3.cipig.net:10008"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "DAI":{
-        "min_swap": 0.5,
-        "api-id": "dai",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "DASH":{
-        "api-id": "dash",
-        "min_swap": 0.01,
-        "activate_with":"electrum",
-        "tx_explorer":"https://explorer.dash.org/tx",
-        "electrum":  [{"url":"electrum1.cipig.net:10061"},
-                      {"url":"electrum2.cipig.net:10061"},
-                      {"url":"electrum3.cipig.net:10061"}],
-        "reserve_balance":1,
-        "premium":1.03,
-        "min_swap":0.01,
-        "minQty":"0.00100000",
-        "maxQty":"900000.00000000",
-        "stepSize":"0.00100000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "DEX":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "override_KMD_buy_price":10,
-        "tx_explorer":"https://dex.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10006"},
-                     {"url":"electrum2.cipig.net:10006"},
-                     {"url":"electrum3.cipig.net:10006"}],
-        "bot_sell": False,
-        "bot_buy": True
-    },
-    "DGB":{
-        "api-id": "digibyte",
-        "min_swap": 10,
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://digiexplorer.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10059"},
-                     {"url":"electrum2.cipig.net:10059"},
-                     {"url":"electrum3.cipig.net:10059"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "DOGE":{
-        "api-id": "dogecoin",
-        "activate_with":"electrum",
-        "tx_explorer":"https://live.blockcypher.com/doge/tx",
-        "min_swap": 10,
-        "electrum": [{"url":"electrum1.cipig.net:10060"},
-                     {"url":"electrum2.cipig.net:10060"},
-                     {"url":"electrum3.cipig.net:10060"}],
-        "reserve_balance":20000,
-        "premium":1.0377,
-        "min_swap":10,
-        "minQty":"1.00000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"1.00000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "ETH":{
-        "api-id": "ethereum",
-        "activate_with":"electrum",
-        "min_swap": 0.01,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "reserve_balance":1,
-        "premium":1.03,
-        "min_swap":0.01,
-        "minQty":"0.001000000",
-        "maxQty":"100000.00000000",
-        "stepSize":"0.001000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "HUSH":{
-        "min_swap": 1,
-        "api-id": "hush",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://hush3.komodod.com/t",
-        "electrum": [{"url":"electrum1.cipig.net:10064"},
-                     {"url":"electrum2.cipig.net:10064"},
-                     {"url":"electrum3.cipig.net:10064"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "KMD":{
-        "api-id": "komodo",
-        "activate_with":"electrum",
-        "tx_explorer":"https://www.kmdexplorer.io/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10001"},
-                     {"url":"electrum2.cipig.net:10001"},
-                     {"url":"electrum3.cipig.net:10001"}],
-        "reserve_balance":1000,
-        "premium":1.03,
-        "min_swap":0.1,
-        "minQty":"0.01000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"0.01000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "KMDICE":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://kmdice.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10031"},
-                     {"url":"electrum2.cipig.net:10031"},
-                     {"url":"electrum3.cipig.net:10031"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "LABS":{
-        "min_swap": 5,
-        "use_api":"graviex",
-        "activate_with":"electrum",
-        "reserve_balance":50000,
-        "override_KMD_buy_price":0.016,
-        "override_KMD_sell_price":0.032,
-        "premium":1.05,
-        "tx_explorer":"https://labs.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10019"},
-                     {"url":"electrum2.cipig.net:10019"},
-                     {"url":"electrum3.cipig.net:10019"}],
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "LINK":{
-        "min_swap": 0.5,
-        "activate_with":"electrum",
-        "api-id": "chainlink",
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "reserve_balance":20,
-        "premium":1.03,
-        "minQty":"1.00000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"1.00000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "LTC":{
-        "api-id": "litecoin",
-        "min_swap": 0.01,
-        "activate_with":"electrum",
-        "tx_explorer":"https://live.blockcypher.com/ltc/tx",
-        "electrum": [{"url":"electrum-ltc.bysh.me:50001"},
-                     {"url":"electrum.ltc.xurious.com:50001"},
-                     {"url":"ltc.rentonisk.com:50001"},
-                     {"url":"backup.electrum-ltc.org:50001"}],
-        "reserve_balance":1,
-        "premium":1.03,
-        "min_swap":0.01,
-        "minQty":"0.01000000",
-        "maxQty":"100000.00000000",
-        "stepSize":"0.01000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "MORTY":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "reserve_balance":2,
-        "activate_with":"electrum",
-        "tx_explorer":"https://morty.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10018"},
-                     {"url":"electrum2.cipig.net:10018"},
-                     {"url":"electrum3.cipig.net:10018"}],
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "OOT":{
-        "min_swap": 1,
-        "api-id": "",
-        "reserve_balance":2,
-        "activate_with":"electrum",
-        "tx_explorer":"https://oot.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.utrum.io:10088"},
-                     {"url":"electrum2.utrum.io:10088"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "PAX":{
-        "min_swap": 0.5,
-        "api-id": "paxos-standard",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "QTUM":{
-        "min_swap": 4,
-        "activate_with":"electrum",
-        "tx_explorer":"https://qtum.info/tx",
-        "electrum": [{"url":"s1.qtum.info:50001"},
-                     {"url":"s2.qtum.info:50001"},
-                     {"url":"s3.qtum.info:50001"},
-                     {"url":"s4.qtum.info:50001"},
-                     {"url":"s5.qtum.info:50001"},
-                     {"url":"s6.qtum.info:50001"},
-                     {"url":"s7.qtum.info:50001"},
-                     {"url":"s8.qtum.info:50001"},
-                     {"url":"s9.qtum.info:50001"}
-                     ],
-        "reserve_balance":50,
-        "premium":1.03,
-        "min_swap":3.4,
-        "minQty":"0.01000000",
-        "maxQty":"10000000.00000000",
-        "stepSize":"0.01000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "REVS":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://revs.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10003"},
-                     {"url":"electrum2.cipig.net:10003"},
-                     {"url":"electrum3.cipig.net:10003"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "RVN":{
-        "min_swap": 5,
-        "activate_with":"electrum",
-        "tx_explorer":"https://ravencoin.network/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10051"},
-                     {"url":"electrum2.cipig.net:10051"},
-                     {"url":"electrum3.cipig.net:10051"}],
-        "reserve_balance":2500,
-        "premium":1.03,
-        "min_swap":1,
-        "minQty":"1.00000000",
-        "maxQty":"90000000.00000000",
-        "stepSize":"1.00000000",
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "RFOX":{
-        "min_swap": 5,
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://rfox.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10034"},
-                     {"url":"electrum2.cipig.net:10034"},
-                     {"url":"electrum3.cipig.net:10034"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "RICK":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://rick.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10017"},
-                     {"url":"electrum2.cipig.net:10017"},
-                     {"url":"electrum3.cipig.net:10017"}],
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "SUPERNET":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://supernet.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10005"},
-                     {"url":"electrum2.cipig.net:10005"},
-                     {"url":"electrum3.cipig.net:10005"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "THC":{
-        "min_swap": 5,
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://thc.explorer.dexstats.info/tx",
-        "electrum": [{"url":"165.22.52.123:10022"},
-                     {"url":"157.230.45.184:10022"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "USDC":{
-        "min_swap": 0.5,
-        "api-id": "usd-coin",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "TUSD":{
-        "min_swap": 0.5,
-        "api-id": "true-usd",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://etherscan.io/tx",
-        "electrum": ["http://eth1.cipig.net:8555",
-                     "http://eth2.cipig.net:8555",
-                     "http://eth3.cipig.net:8555"],
-        "contract": "0x8500AFc0bc5214728082163326C2FF0C73f4a871",
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "VRSC":{        
-        "min_swap": 0.1,
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://explorer.veruscoin.io/tx",
-        "electrum": [{"url":"el0.vrsc.0x03.services:10000"},
-                     {"url":"el1.vrsc.0x03.services:10000"},
-                     {"url":"electrum1.cipig.net:10021"},
-                     {"url":"electrum2.cipig.net:10021"},
-                     {"url":"electrum3.cipig.net:10021"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "WLC":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://wlc.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10014"},
-                     {"url":"electrum2.cipig.net:10014"},
-                     {"url":"electrum3.cipig.net:10014"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "ZEC":{
-        "min_swap": 0.1,
-        "api-id": "zcash",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://explorer.zcha.in/transactions",
-        "electrum": [{"url":"electrum3.cipig.net:10058"},
-                     {"url":"electrum3.cipig.net:10058"},
-                     {"url":"electrum3.cipig.net:10058"}],
-        "bot_sell": True,
-        "bot_buy": True
-    },
-    "ZEXO":{
-        "min_swap": 0.1,
-        "api-id": "zaddex",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://zexo.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10035"},
-                     {"url":"electrum2.cipig.net:10035"},
-                     {"url":"electrum3.cipig.net:10035"}],
-        "bot_sell": False,
-        "bot_buy": False
-    },
-    "ZILLA":{
-        "min_swap": 0.1,
-        "api-id": "",
-        "activate_with":"electrum",
-        "reserve_balance":2,
-        "tx_explorer":"https://zilla.explorer.dexstats.info/tx",
-        "electrum": [{"url":"electrum1.cipig.net:10028"},
-                     {"url":"electrum2.cipig.net:10028"},
-                     {"url":"electrum3.cipig.net:10028"}],
-        "bot_sell": False,
-        "bot_buy": False
-    }
-}
-
 # Input coins you want to trade here. 
 # reserve_balance: excess funds will be sent to your Binance wallet
 # premium: value relative to binance market rate to setprices as marketmaker.
 # min/max/stepsize need to be set from values from 
 # https://api.binance.com/api/v1/exchangeInfo
 
+coin_activation = {
+   'AXE':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10057'},
+         {'url':'electrum2.cipig.net:10057'},
+         {'url':'electrum3.cipig.net:10057'}
+      ],
+      'type':'utxo',
+   },
+   'AWC':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'BAT':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'BCH':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electron.coinucopia.io:50001'},
+         {'url':'bch.imaginary.cash:50001'},
+         {'url':'wallet.satoshiscoffeehouse.com:50001'},
+         {'url':'electroncash.dk:50001'},
+         {'url':'electron-cash.dragon.zone:50001'}
+      ],
+      'type':'utxo'
+   },
+   'BOTS':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10007'},
+         {'url':'electrum2.cipig.net:10007'},
+         {'url':'electrum3.cipig.net:10007'}
+      ],
+      'type':'smartchain'
+   },
+   'BTC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10000'},
+         {'url':'electrum2.cipig.net:10000'},
+         {'url':'electrum3.cipig.net:10000'}
+      ],
+      'type':'utxo'
+   },
+   'BTCH':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10020'},
+         {'url':'electrum2.cipig.net:10020'},
+         {'url':'electrum3.cipig.net:10020'}
+      ],
+      'type':'smartchain'
+   },
+   'CHIPS':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10053'},
+         {'url':'electrum2.cipig.net:10053'},
+         {'url':'electrum3.cipig.net:10053'}
+      ],
+      'type':'smartchain'
+   },
+   'COMMOD':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10022'},
+         {'url':'electrum2.cipig.net:10022'},
+         {'url':'electrum3.cipig.net:10022'}
+      ],
+      'type':'smartchain'
+   },
+   'COQUI':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10011'},
+         {'url':'electrum2.cipig.net:10011'},
+         {'url':'electrum3.cipig.net:10011'}
+      ],
+      'type':'smartchain'
+   },
+   'CRYPTO':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10008'},
+         {'url':'electrum2.cipig.net:10008'},
+         {'url':'electrum3.cipig.net:10008'}
+      ],
+      'type':'smartchain'
+   },
+   'DAI':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'DASH':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10061'},
+         {'url':'electrum2.cipig.net:10061'},
+         {'url':'electrum3.cipig.net:10061'}
+      ],
+      'type':'utxo'
+   },
+   'DEX':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10006'},
+         {'url':'electrum2.cipig.net:10006'},
+         {'url':'electrum3.cipig.net:10006'}
+      ],
+      'type':'smartchain'
+   },
+   'DGB':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10059'},
+         {'url':'electrum2.cipig.net:10059'},
+         {'url':'electrum3.cipig.net:10059'}
+      ],
+      'type':'utxo'
+   },
+   'DOGE':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10060'},
+         {'url':'electrum2.cipig.net:10060'},
+         {'url':'electrum3.cipig.net:10060'}
+      ],
+      'type':'utxo'
+   },
+   'ETH':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'HUSH':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10064'},
+         {'url':'electrum2.cipig.net:10064'},
+         {'url':'electrum3.cipig.net:10064'}
+      ],
+      'type':'smartchain'
+   },
+   'KMD':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10001'},
+         {'url':'electrum2.cipig.net:10001'},
+         {'url':'electrum3.cipig.net:10001'}
+      ],
+      'type':'smartchain'
+   },
+   'KMDICE':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10031'},
+         {'url':'electrum2.cipig.net:10031'},
+         {'url':'electrum3.cipig.net:10031'}
+      ],
+      'type':'smartchain'
+   },
+   'LABS':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10019'},
+         {'url':'electrum2.cipig.net:10019'},
+         {'url':'electrum3.cipig.net:10019'}
+      ],
+      'type':'smartchain'
+   },
+   'LINK':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'LTC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum-ltc.bysh.me:50001'},
+         {'url':'electrum.ltc.xurious.com:50001'},
+         {'url':'ltc.rentonisk.com:50001'},
+         {'url':'backup.electrum-ltc.org:50001'}
+      ],
+      'type':'utxo'
+   },
+   'MORTY':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10018'},
+         {'url':'electrum2.cipig.net:10018'},
+         {'url':'electrum3.cipig.net:10018'}
+      ],
+      'type':'smartchain'
+   },
+   'OOT':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.utrum.io:10088'},
+         {'url':'electrum2.utrum.io:10088'}
+      ],
+      'type':'smartchain'
+   },
+   'PAX':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'QTUM':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'s1.qtum.info:50001'},
+         {'url':'s2.qtum.info:50001'},
+         {'url':'s3.qtum.info:50001'},
+         {'url':'s4.qtum.info:50001'},
+         {'url':'s5.qtum.info:50001'},
+         {'url':'s6.qtum.info:50001'},
+         {'url':'s7.qtum.info:50001'},
+         {'url':'s8.qtum.info:50001'},
+         {'url':'s9.qtum.info:50001'}
+      ],
+      'type':'utxo'
+   },
+   'REVS':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10003'},
+         {'url':'electrum2.cipig.net:10003'},
+         {'url':'electrum3.cipig.net:10003'}
+      ],
+      'type':'smartchain'
+   },
+   'RVN':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10051'},
+         {'url':'electrum2.cipig.net:10051'},
+         {'url':'electrum3.cipig.net:10051'}
+      ],
+      'type':'utxo'
+   },
+   'RFOX':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10034'},
+         {'url':'electrum2.cipig.net:10034'},
+         {'url':'electrum3.cipig.net:10034'}
+      ],
+      'type':'smartchain'
+   },
+   'RICK':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10017'},
+         {'url':'electrum2.cipig.net:10017'},
+         {'url':'electrum3.cipig.net:10017'}
+      ],
+      'type':'smartchain'
+   },
+   'SUPERNET':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10005'},
+         {'url':'electrum2.cipig.net:10005'},
+         {'url':'electrum3.cipig.net:10005'}
+      ],
+      'type':'smartchain'
+   },
+   'THC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'165.22.52.123:10022'},
+         {'url':'157.230.45.184:10022'}
+      ],
+      'type':'smartchain'
+   },
+   'USDC':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'TUSD':{
+      'activate_with':'electrum',
+      'electrum':[
+         'http://eth1.cipig.net:8555',
+         'http://eth2.cipig.net:8555',
+         'http://eth3.cipig.net:8555'
+      ],
+      'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
+      'type':'erc20'
+   },
+   'VRSC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'el0.vrsc.0x03.services:10000'},
+         {'url':'el1.vrsc.0x03.services:10000'},
+         {'url':'electrum1.cipig.net:10021'},
+         {'url':'electrum2.cipig.net:10021'},
+         {'url':'electrum3.cipig.net:10021'}
+      ],
+      'type':'smartchain'
+   },
+   'WLC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10014'},
+         {'url':'electrum2.cipig.net:10014'},
+         {'url':'electrum3.cipig.net:10014'}
+      ],
+      'type':'smartchain'
+   },
+   'ZEC':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum3.cipig.net:10058'},
+         {'url':'electrum3.cipig.net:10058'},
+         {'url':'electrum3.cipig.net:10058'}
+      ],
+      'type':'utxo'
+   },
+   'ZEXO':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10035'},
+         {'url':'electrum2.cipig.net:10035'},
+         {'url':'electrum3.cipig.net:10035'}
+      ],
+      'type':'smartchain'
+   },
+   'ZILLA':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10028'},
+         {'url':'electrum2.cipig.net:10028'},
+         {'url':'electrum3.cipig.net:10028'}
+      ],
+      'type':'smartchain'
+   }
+}
+
+coin_api_codes =  {
+   'AXE':{
+      'coingecko_id':'axe',
+      'binance_id':'',
+      'paprika_id':'axe-axe',
+      'name':'Axe'
+   },
+   'AWC':{
+      'coingecko_id':'atomic-wallet-coin',
+      'binance_id':'',
+      'paprika_id':'awc-atomic-wallet-coin',
+      'name':'Atomic Wallet Coin'
+   },
+   'BAT':{
+      'coingecko_id':'batcoin',
+      'binance_id':'BAT',
+      'paprika_id':'bat-batcoin',
+      'name':'BatCoin'
+   },
+   'BCH':{
+      'coingecko_id':'bitcoin-cash',
+      'binance_id':'',
+      'paprika_id':'bch-bitcoin-cash',
+      'name':'Bitcoin Cash'
+   },
+   'BOTS':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'BOTS'
+   },
+   'BTC':{
+      'coingecko_id':'bitcoin',
+      'binance_id':'',
+      'paprika_id':'btc-bitcoin',
+      'name':'Bitcoin'
+   },
+   'BTCH':{
+      'coingecko_id':'bitcoin-hush',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'Bitcoin Hush'
+   },
+   'CHIPS':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'chips-chips',
+      'name':'CHIPS'
+   },
+   'COMMOD':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'COMMOD'
+   },
+   'COQUI':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'COQUI'
+   },
+   'CRYPTO':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'CRYPTO'
+   },
+   'DAI':{
+      'coingecko_id':'dai',
+      'binance_id':'',
+      'paprika_id':'dai-dai',
+      'name':'Dai'
+   },
+   'DASH':{
+      'coingecko_id':'dash',
+      'binance_id':'DASH',
+      'paprika_id':'dash-dash',
+      'name':'Dash'
+   },
+   'DEX':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'DEX'
+   },
+   'DGB':{
+      'coingecko_id':'digibyte',
+      'binance_id':'',
+      'paprika_id':'dgb-digibyte',
+      'name':'DigiByte'
+   },
+   'DOGE':{
+      'coingecko_id':'dogecoin',
+      'binance_id':'DOGE',
+      'paprika_id':'doge-dogecoin',
+      'name':'Dogecoin'
+   },
+   'ETH':{
+      'coingecko_id':'ethereum',
+      'binance_id':'ETH',
+      'paprika_id':'eth-ethereum',
+      'name':'Ethereum'
+   },
+   'HUSH':{
+      'coingecko_id':'hush',
+      'binance_id':'',
+      'paprika_id':'hush-hush',
+      'name':'Hush'
+   },
+   'KMD':{
+      'coingecko_id':'komodo',
+      'binance_id':'KMD',
+      'paprika_id':'kmd-komodo',
+      'name':'Komodo'
+   },
+   'KMDICE':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'KMDICE'
+   },
+   'LABS':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'LABS'
+   },
+   'LINK':{
+      'coingecko_id':'chainlink',
+      'binance_id':'LINK',
+      'paprika_id':'link-chainlink',
+      'name':'ChainLink'
+   },
+   'LTC':{
+      'coingecko_id':'litecoin',
+      'binance_id':'LTC',
+      'paprika_id':'ltc-litecoin',
+      'name':'Litecoin'
+   },
+   'MORTY':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'MORTY'
+   },
+   'OOT':{
+      'coingecko_id':'utrum',
+      'binance_id':'',
+      'paprika_id':'oot-utrum',
+      'name':'Utrum'
+   },
+   'PAX':{
+      'coingecko_id':'paxos-standard',
+      'binance_id':'PAX',
+      'paprika_id':'pax-paxos-standard-token',
+      'name':'Paxos Standard'
+   },
+   'QTUM':{
+      'coingecko_id':'qtum',
+      'binance_id':'QTUM',
+      'paprika_id':'qtum-qtum',
+      'name':'Qtum'
+   },
+   'REVS':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'REVS'
+   },
+   'RVN':{
+      'coingecko_id':'ravencoin',
+      'binance_id':'RVN',
+      'paprika_id':'rvn-ravencoin',
+      'name':'Ravencoin'
+   },
+   'RFOX':{
+      'coingecko_id':'redfox-labs',
+      'binance_id':'',
+      'paprika_id':'rfox-redfox-labs',
+      'name':'RedFOX Labs'
+   },
+   'RICK':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'RICK'
+   },
+   'SUPERNET':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'SUPERNET'
+   },
+   'THC':{
+      'coingecko_id':'hempcoin-thc',
+      'binance_id':'',
+      'paprika_id':'thc-hempcoin',
+      'name':'HempCoin'
+   },
+   'USDC':{
+      'coingecko_id':'usd-coin',
+      'binance_id':'',
+      'paprika_id':'usdc-usd-coin',
+      'name':'USD Coin'
+   },
+   'TUSD':{
+      'coingecko_id':'true-usd',
+      'binance_id':'TUSD',
+      'paprika_id':'tusd-trueusd',
+      'name':'TrueUSD'
+   },
+   'VRSC':{
+      'coingecko_id':'verus-coin',
+      'binance_id':'',
+      'paprika_id':'vrsc-verus-coin',
+      'name':'Verus Coin'
+   },
+   'WLC':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'WLC'
+   },
+   'ZEC':{
+      'coingecko_id':'zcash',
+      'binance_id':'ZEC',
+      'paprika_id':'zec-zcash',
+      'name':'Zcash'
+   },
+   'ZEXO':{
+      'coingecko_id':'zaddex',
+      'binance_id':'',
+      'paprika_id':'zex-zaddex',
+      'name':'Zaddex'
+   },
+   'ZILLA':{
+      'coingecko_id':'chainzilla',
+      'binance_id':'',
+      'paprika_id':'zilla-chainzilla',
+      'name':'ChainZilla'
+   }
+}
+
+coin_explorers = {
+   'AXE':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':''
+   },
+   'AWC':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'BAT':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'BCH':{
+      'tx_explorer':'https://explorer.bitcoin.com/bch/tx',
+      'addr_explorer':''
+   },
+   'BOTS':{
+      'tx_explorer':'https://bots.explorer.dexstats.info/tx',
+      'addr_explorer':'https://bots.explorer.dexstats.info/address'
+   },
+   'BTC':{
+      'tx_explorer':'https://explorer.bitcoin.com/btc/tx',
+      'addr_explorer':''
+   },
+   'BTCH':{
+      'tx_explorer':'https://btch.explorer.dexstats.info/tx',
+      'addr_explorer':'https://btch.explorer.dexstats.info/address'
+   },
+   'CHIPS':{
+      'tx_explorer':'https://chips.explorer.dexstats.info/tx',
+      'addr_explorer':'https://chips.explorer.dexstats.info/address'
+   },
+   'COMMOD':{
+      'tx_explorer':'https://commod.explorer.dexstats.info/tx',
+      'addr_explorer':'https://commod.explorer.dexstats.info/address'
+   },
+   'COQUI':{
+      'tx_explorer':'https://coqui.explorer.dexstats.info/tx',
+      'addr_explorer':'https://coqui.explorer.dexstats.info/address'
+   },
+   'CRYPTO':{
+      'tx_explorer':'https://crypto.explorer.dexstats.info/tx',
+      'addr_explorer':'https://crypto.explorer.dexstats.info/address'
+   },
+   'DAI':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'DASH':{
+      'tx_explorer':'https://explorer.dash.org/tx',
+      'addr_explorer':''
+   },
+   'DEX':{
+      'tx_explorer':'https://dex.explorer.dexstats.info/tx',
+      'addr_explorer':'https://dex.explorer.dexstats.info/address'
+   },
+   'DGB':{
+      'tx_explorer':'https://digiexplorer.info/tx',
+      'addr_explorer':''
+   },
+   'DOGE':{
+      'tx_explorer':'https://live.blockcypher.com/doge/tx',
+      'addr_explorer':''
+   },
+   'ETH':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'HUSH':{
+      'tx_explorer':'https://hush.explorer.dexstats.info/tx',
+      'addr_explorer':'https://hush.explorer.dexstats.info/address'
+   },
+   'KMD':{
+      'tx_explorer':'https://kmd.explorer.dexstats.info/tx',
+      'addr_explorer':'https://kmd.explorer.dexstats.info/address'
+   },
+   'KMDICE':{
+      'tx_explorer':'https://kmdice.explorer.dexstats.info/tx',
+      'addr_explorer':'https://kmdice.explorer.dexstats.info/address'
+   },
+   'LABS':{
+      'tx_explorer':'https://labs.explorer.dexstats.info/tx',
+      'addr_explorer':'https://labs.explorer.dexstats.info/address'
+   },
+   'LINK':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'LTC':{
+      'tx_explorer':'https://live.blockcypher.com/ltc/tx',
+      'addr_explorer':''
+   },
+   'MORTY':{
+      'tx_explorer':'https://morty.explorer.dexstats.info/tx',
+      'addr_explorer':'https://morty.explorer.dexstats.info/address'
+   },
+   'OOT':{
+      'tx_explorer':'https://oot.explorer.dexstats.info/tx',
+      'addr_explorer':'https://oot.explorer.dexstats.info/address'
+   },
+   'PAX':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'QTUM':{
+      'tx_explorer':'https://qtum.info/tx',
+      'addr_explorer':''
+   },
+   'REVS':{
+      'tx_explorer':'https://revs.explorer.dexstats.info/tx',
+      'addr_explorer':'https://revs.explorer.dexstats.info/address'
+   },
+   'RVN':{
+      'tx_explorer':'https://ravencoin.network/tx',
+      'addr_explorer':''
+   },
+   'RFOX':{
+      'tx_explorer':'https://rfox.explorer.dexstats.info/tx',
+      'addr_explorer':'https://rfox.explorer.dexstats.info/address'
+   },
+   'RICK':{
+      'tx_explorer':'https://rick.explorer.dexstats.info/tx',
+      'addr_explorer':'https://rick.explorer.dexstats.info/address'
+   },
+   'SUPERNET':{
+      'tx_explorer':'https://supernet.explorer.dexstats.info/tx',
+      'addr_explorer':'https://supernet.explorer.dexstats.info/address'
+   },
+   'THC':{
+      'tx_explorer':'https://thc.explorer.dexstats.info/tx',
+      'addr_explorer':'https://thc.explorer.dexstats.info/address'
+   },
+   'USDC':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'TUSD':{
+      'tx_explorer':'https://etherscan.io/tx',
+      'addr_explorer':'https://etherscan.io/address'
+   },
+   'VRSC':{
+      'tx_explorer':'https://vrsc.explorer.dexstats.info/tx',
+      'addr_explorer':'https://vrsc.explorer.dexstats.info/address'
+   },
+   'WLC':{
+      'tx_explorer':'https://wlc.explorer.dexstats.info/tx',
+      'addr_explorer':'https://wlc.explorer.dexstats.info/address'
+   },
+   'ZEC':{
+      'tx_explorer':'https://explorer.zcha.in/transactions',
+      'addr_explorer':''
+   },
+   'ZEXO':{
+      'tx_explorer':'https://zexo.explorer.dexstats.info/tx',
+      'addr_explorer':'https://zexo.explorer.dexstats.info/address'
+   },
+   'ZILLA':{
+      'tx_explorer':'https://zilla.explorer.dexstats.info/tx',
+      'addr_explorer':'https://zilla.explorer.dexstats.info/address'
+   }
+}
+
 cointags = []
-buy_list = []
-sell_list = []
-for ticker in coins:
-  cointags.append(ticker)
-  if coins[ticker]['bot_buy']:
-    buy_list.append(ticker)
-  if coins[ticker]['bot_sell']:
-    sell_list.append(ticker)
-trading_list = list(set(buy_list+sell_list))
+for ticker in coin_activation:
+    cointags.append(ticker)

@@ -103,137 +103,168 @@ class Ui(QTabWidget):
         self.authenticated = False
         gui_coins = {
             "BTC": {
-                "type":"utxo",
                 "checkbox": self.checkBox_btc, 
                 "combo": self.btc_combo,
             },
             "ETH": {
-                "type":"erc20",
                 "checkbox": self.checkBox_eth, 
                 "combo": self.eth_combo,
             },
             "KMD": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_kmd, 
                 "combo": self.kmd_combo,
             },
             "LABS": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_labs, 
                 "combo": self.labs_combo,
             },
             "BCH": {
-                "type":"utxo",
                 "checkbox": self.checkBox_bch, 
                 "combo": self.bch_combo,
             },
             "BAT": {
-                "type":"erc20",
                 "checkbox": self.checkBox_bat, 
                 "combo": self.bat_combo,
             },
             "DOGE": {
-                "type":"utxo",
                 "checkbox": self.checkBox_doge, 
                 "combo": self.doge_combo,
             },
             "DGB": {
-                "type":"utxo",
                 "checkbox": self.checkBox_dgb, 
                 "combo": self.dgb_combo,
             },
             "DASH": {
-                "type":"utxo",
                 "checkbox": self.checkBox_dash, 
                 "combo": self.dash_combo,
             },
             "LTC": {
-                "type":"utxo",
                 "checkbox": self.checkBox_ltc, 
                 "combo": self.ltc_combo,
             },
             "ZEC": {
-                "type":"utxo",
                 "checkbox": self.checkBox_zec, 
                 "combo": self.zec_combo,
             },
             "QTUM": {
-                "type":"utxo",
                 "checkbox": self.checkBox_qtum, 
                 "combo": self.qtum_combo,
             },
             "AXE": {
-                "type":"utxo",
                 "checkbox": self.checkBox_axe, 
                 "combo": self.axe_combo,
             },
             "VRSC": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_vrsc, 
                 "combo": self.vrsc_combo,
             },
             "RFOX": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_rfox, 
                 "combo": self.rfox_combo,
             },
             "ZILLA": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_zilla, 
                 "combo": self.zilla_combo,
             },
             "HUSH": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_hush, 
                 "combo": self.hush_combo,
             },
             "OOT": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_oot, 
                 "combo": self.oot_combo,
             },
             "USDC": {
-                "type":"erc20",
                 "checkbox": self.checkBox_usdc, 
                 "combo": self.usdc_combo,
             },
             "AWC": {
-                "type":"erc20",
                 "checkbox": self.checkBox_awc, 
                 "combo": self.awc_combo,
             },
             "TUSD": {
-                "type":"erc20",
                 "checkbox": self.checkBox_tusd, 
                 "combo": self.tusd_combo,
             },
             "PAX": {
-                "type":"erc20",
                 "checkbox": self.checkBox_pax, 
                 "combo": self.pax_combo,
             },
             "RICK": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_rick, 
                 "combo": self.rick_combo,
             },
             "MORTY": {
-                "type":"smartchain",
                 "checkbox": self.checkBox_morty, 
                 "combo": self.morty_combo,
             },
             "DAI": {
-                "type":"erc20",
                 "checkbox": self.checkBox_dai, 
                 "combo": self.dai_combo,
             },
             "RVN": {
-                "type":"utxo",
                 "checkbox": self.checkBox_rvn, 
                 "combo": self.rvn_combo,
             },
+            "BOTS":{ 
+                "checkbox":self.checkBox_bots, 
+                "combo":self.bots_combo, 
+            },
+            "BTCH":{ 
+                "checkbox":self.checkBox_btch, 
+                "combo":self.btch_combo, 
+            },
+            "CHIPS":{ 
+                "checkbox":self.checkBox_chips, 
+                "combo":self.chips_combo, 
+            },
+            "COMMOD":{ 
+                "checkbox":self.checkBox_commod, 
+                "combo":self.commod_combo, 
+            },
+            "COQUI":{ 
+                "checkbox":self.checkBox_coqui, 
+                "combo":self.coqui_combo, 
+            },
+            "CRYPTO":{ 
+                "checkbox":self.checkBox_crypto, 
+                "combo":self.crypto_combo, 
+            },
+            "DEX":{ 
+                "checkbox":self.checkBox_dex, 
+                "combo":self.dex_combo, 
+            },
+            "KMDICE":{ 
+                "checkbox":self.checkBox_kmdice, 
+                "combo":self.kmdice_combo, 
+            },
+            "LINK":{ 
+                "checkbox":self.checkBox_link, 
+                "combo":self.link_combo, 
+            },
+            "REVS":{ 
+                "checkbox":self.checkBox_revs, 
+                "combo":self.revs_combo, 
+            },
+            "SUPERNET":{ 
+                "checkbox":self.checkBox_supernet, 
+                "combo":self.supernet_combo, 
+            },
+            "THC":{ 
+                "checkbox":self.checkBox_thc, 
+                "combo":self.thc_combo, 
+            },
+            "WLC":{ 
+                "checkbox":self.checkBox_wlc, 
+                "combo":self.wlc_combo, 
+            },
+            "ZEXO":{ 
+                "checkbox":self.checkBox_zexo, 
+                "combo":self.zexo_combo, 
+            },
         }               
         self.show_login()
+
 
     ## COMMON
     def saveFileDialog(self):
@@ -370,20 +401,28 @@ class Ui(QTabWidget):
         display_coins_erc20 = []
         display_coins_utxo = []
         display_coins_smartchain = []
+        search_txt = self.search_activate.text().lower()
         self.update_active()
         if 'gui_coins' in globals():
             for coin in gui_coins:
-                search_txt = self.search_activate.text().lower()
+                gui_coins[coin]['checkbox'].hide()
+                gui_coins[coin]['combo'].hide()
+                gui_coins[coin]['checkbox'].setText(coinslib.coin_api_codes[coin]['name'])
                 if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
-                    gui_coins[coin]['checkbox'].hide()
-                    gui_coins[coin]['combo'].hide()
-                    if gui_coins[coin]['type'] == 'utxo':
+                    if coinslib.coin_activation[coin]['type'] == 'utxo':
                         display_coins_utxo.append(coin)
-                    elif gui_coins[coin]['type'] == 'erc20':
+                    elif coinslib.coin_activation[coin]['type'] == 'erc20':
                         display_coins_erc20.append(coin)
-                    elif gui_coins[coin]['type'] == 'smartchain':
+                    elif coinslib.coin_activation[coin]['type'] == 'smartchain':
                         display_coins_smartchain.append(coin)
             row = 0
+            # TODO: lambda sort by coin_api_codes['name']
+            display_coins_erc20.sort()
+            print(display_coins_erc20)
+            display_coins_utxo.sort()
+            print(display_coins_utxo)
+            display_coins_smartchain.sort()
+            print(display_coins_smartchain)
             for coin in display_coins_smartchain:
                 gui_coins[coin]['checkbox'].show()
                 gui_coins[coin]['combo'].show()
@@ -447,7 +486,7 @@ class Ui(QTabWidget):
 
     def select_all(self, state, cointype):
         for coin in gui_coins:
-            if gui_coins[coin]['type'] == cointype:
+            if coinslib.coin_activation[coin]['type'] == cointype:
                 gui_coins[coin]['checkbox'].setChecked(state)
 
     def select_all_smart(self):
@@ -931,8 +970,8 @@ class Ui(QTabWidget):
                 balance_text = round(float(balance_info['balance']))
                 locked_text = round(float(balance_info['locked_by_swaps']),8)
                 # todo add address explorer links to coinslib
-                if 'addr_explorer' in coinslib.coins[coin]:
-                    self.wallet_address.setText("<a href='"+coinslib.coins[coin]['addr_explorer']+addr_text+"'>"+addr_text+"</href>")
+                if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+addr_text+"'>"+addr_text+"</href>")
                 else:
                     self.wallet_address.setText(addr_text)
                 self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
@@ -969,10 +1008,10 @@ class Ui(QTabWidget):
                         txid_str = '0x'+txid
                     else:
                         txid_str = txid
-                    try:
-                        msg = "Sent! <a href='"+coinslib.coins[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
-                    except:
-                        msg = "Sent! TXID: ["+txid_str+"]"
+                    if coinslib.coin_explorers[cointag]['tx_explorer'] != '':
+                        msg = "Sent! \n<a href='"+coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
+                    else:
+                        msg = "Sent! \nTXID: ["+txid_str+"]"
                     balance_info = rpclib.my_balance(self.creds[0], self.creds[1], cointag).json()
                     if 'address' in balance_info:
                         balance_text = balance_info['balance']

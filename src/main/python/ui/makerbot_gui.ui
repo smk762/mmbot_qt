@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>7</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -482,8 +482,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>449</width>
-                   <height>523</height>
+                   <width>435</width>
+                   <height>952</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -507,65 +507,6 @@
                     <property name="spacing">
                      <number>12</number>
                     </property>
-                    <item row="2" column="1">
-                     <widget class="QComboBox" name="kmd_combo">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>125</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(114, 159, 207)</string>
-                      </property>
-                      <property name="currentText">
-                       <string>Buy</string>
-                      </property>
-                      <property name="currentIndex">
-                       <number>1</number>
-                      </property>
-                      <property name="maxVisibleItems">
-                       <number>4</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>View only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Sell</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy &amp; sell</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_labs">
                       <property name="sizePolicy">
@@ -651,69 +592,10 @@
                        <string notr="true">background-color: rgb(114, 159, 207)</string>
                       </property>
                       <property name="currentText">
-                       <string>View only</string>
+                       <string>Buy</string>
                       </property>
                       <property name="currentIndex">
-                       <number>0</number>
-                      </property>
-                      <property name="maxVisibleItems">
-                       <number>4</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>View only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Sell</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy &amp; sell</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="3" column="1">
-                     <widget class="QComboBox" name="morty_combo">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>125</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(114, 159, 207)</string>
-                      </property>
-                      <property name="currentText">
-                       <string>View only</string>
-                      </property>
-                      <property name="currentIndex">
-                       <number>0</number>
+                       <number>1</number>
                       </property>
                       <property name="maxVisibleItems">
                        <number>4</number>
@@ -967,8 +849,126 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="8" column="0">
-                     <widget class="QCheckBox" name="checkBox_oot">
+                    <item row="11" column="1">
+                     <widget class="QComboBox" name="commod_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="13" column="1">
+                     <widget class="QComboBox" name="crypto_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="17" column="0">
+                     <widget class="QCheckBox" name="checkBox_revs">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                         <horstretch>0</horstretch>
@@ -984,7 +984,209 @@
                        <enum>Qt::RightToLeft</enum>
                       </property>
                       <property name="text">
-                       <string>Utrum</string>
+                       <string>REVS</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="9" column="1">
+                     <widget class="QComboBox" name="btch_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="20" column="0">
+                     <widget class="QCheckBox" name="checkBox_wlc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>WLC</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="15" column="0">
+                     <widget class="QCheckBox" name="checkBox_bots">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>BOTS</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="19" column="1">
+                     <widget class="QComboBox" name="thc_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="12" column="0">
+                     <widget class="QCheckBox" name="checkBox_coqui">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Coqui</string>
                       </property>
                       <property name="icon">
                        <iconset resource="coin_icons.qrc">
@@ -993,6 +1195,65 @@
                       <property name="checked">
                        <bool>false</bool>
                       </property>
+                     </widget>
+                    </item>
+                    <item row="12" column="1">
+                     <widget class="QComboBox" name="coqui_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
                      </widget>
                     </item>
                     <item row="4" column="1">
@@ -1054,8 +1315,8 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="5" column="1">
-                     <widget class="QComboBox" name="rfox_combo">
+                    <item row="10" column="1">
+                     <widget class="QComboBox" name="chips_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
@@ -1113,8 +1374,8 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="6" column="1">
-                     <widget class="QComboBox" name="zilla_combo">
+                    <item row="8" column="1">
+                     <widget class="QComboBox" name="oot_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
@@ -1231,8 +1492,878 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="8" column="1">
-                     <widget class="QComboBox" name="oot_combo">
+                    <item row="14" column="1">
+                     <widget class="QComboBox" name="dex_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="3" column="1">
+                     <widget class="QComboBox" name="morty_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="14" column="0">
+                     <widget class="QCheckBox" name="checkBox_dex">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>DEX</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="9" column="0">
+                     <widget class="QCheckBox" name="checkBox_btch">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Bitcoin Hush</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="21" column="1">
+                     <widget class="QComboBox" name="zexo_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="6" column="1">
+                     <widget class="QComboBox" name="zilla_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="11" column="0">
+                     <widget class="QCheckBox" name="checkBox_commod">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Commod</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="16" column="1">
+                     <widget class="QComboBox" name="kmdice_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="21" column="0">
+                     <widget class="QCheckBox" name="checkBox_zexo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>ZEXO</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="5" column="1">
+                     <widget class="QComboBox" name="rfox_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="19" column="0">
+                     <widget class="QCheckBox" name="checkBox_thc">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>THC</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="18" column="0">
+                     <widget class="QCheckBox" name="checkBox_supernet">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>SUPERNET</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="1">
+                     <widget class="QComboBox" name="kmd_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>Buy</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>1</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="10" column="0">
+                     <widget class="QCheckBox" name="checkBox_chips">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Chips</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="16" column="0">
+                     <widget class="QCheckBox" name="checkBox_kmdice">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>KMDICE</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="0">
+                     <widget class="QCheckBox" name="checkBox_oot">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Utrum</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="20" column="1">
+                     <widget class="QComboBox" name="wlc_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="17" column="1">
+                     <widget class="QComboBox" name="revs_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="18" column="1">
+                     <widget class="QComboBox" name="supernet_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>View only</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>0</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="13" column="0">
+                     <widget class="QCheckBox" name="checkBox_crypto">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>Crypto</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="15" column="1">
+                     <widget class="QComboBox" name="bots_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
@@ -2462,7 +3593,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
                   <item row="0" column="0">
-                   <layout class="QGridLayout" name="erc20_layout" rowstretch="0,0,0,0,0,0,0" rowminimumheight="0,0,0,0,0,0,0">
+                   <layout class="QGridLayout" name="erc20_layout" rowstretch="0,0,0,0,0,0,0,0">
                     <property name="sizeConstraint">
                      <enum>QLayout::SetDefaultConstraint</enum>
                     </property>
@@ -2986,6 +4117,96 @@
                     </item>
                     <item row="6" column="1">
                      <widget class="QComboBox" name="awc_combo">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="minimumSize">
+                       <size>
+                        <width>125</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>150</width>
+                        <height>30</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(114, 159, 207)</string>
+                      </property>
+                      <property name="currentText">
+                       <string>Sell</string>
+                      </property>
+                      <property name="currentIndex">
+                       <number>2</number>
+                      </property>
+                      <property name="maxVisibleItems">
+                       <number>4</number>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>View only</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Sell</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Buy &amp; sell</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item row="7" column="0">
+                     <widget class="QCheckBox" name="checkBox_link">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                       </font>
+                      </property>
+                      <property name="accessibleName">
+                       <string/>
+                      </property>
+                      <property name="layoutDirection">
+                       <enum>Qt::RightToLeft</enum>
+                      </property>
+                      <property name="text">
+                       <string>LINK</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="coin_icons.qrc">
+                        <normaloff>:/sml/img/32/color/eth.png</normaloff>:/sml/img/32/color/eth.png</iconset>
+                      </property>
+                      <property name="checked">
+                       <bool>false</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="1">
+                     <widget class="QComboBox" name="link_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                         <horstretch>0</horstretch>
@@ -5679,7 +6900,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QDoubleSpinBox" name="wallet_amount">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -5748,7 +6969,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="send_amount_lbl">
          <property name="minimumSize">
           <size>
@@ -5770,7 +6991,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
+       <item row="4" column="2">
         <widget class="QPushButton" name="wallet_send_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -5825,6 +7046,45 @@
           <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
          </property>
         </widget>
+       </item>
+       <item row="2" column="3" rowspan="3">
+        <spacer name="verticalSpacer_26">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="1" colspan="2">
+        <spacer name="horizontalSpacer_34">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <spacer name="horizontalSpacer_35">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>
@@ -6369,367 +7629,27 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_38">
+       <property name="leftMargin">
+        <number>240</number>
+       </property>
+       <property name="topMargin">
+        <number>60</number>
+       </property>
+       <property name="rightMargin">
+        <number>240</number>
+       </property>
+       <property name="bottomMargin">
+        <number>60</number>
+       </property>
        <item row="2" column="0">
         <widget class="QFrame" name="frame_26">
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_36">
-          <item row="8" column="0">
-           <widget class="QLabel" name="lbl_binance_key">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Binance API key</string>
-            </property>
-            <property name="buddy">
-             <cstring>binance_key_text_input</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="0">
-           <widget class="QLabel" name="lbl_binance_secret">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Binance Secret key</string>
-            </property>
-            <property name="buddy">
-             <cstring>binance_secret_text_input</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="lbl_rpcpass">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>RPC Password</string>
-            </property>
-            <property name="buddy">
-             <cstring>rpcpass_text_input</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="lbl_rpc_ip">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>RPC IP address</string>
-            </property>
-            <property name="buddy">
-             <cstring>rpc_ip_text_input</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <spacer name="horizontalSpacer_29">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>1348</width>
-              <height>13</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="10" column="1">
-           <spacer name="horizontalSpacer_31">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="5" column="1">
-           <widget class="QLineEdit" name="rpc_ip_text_input">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-            <property name="placeholderText">
-             <string>127.0.0.1</string>
-            </property>
-           </widget>
-          </item>
-          <item row="12" column="1">
-           <widget class="QFrame" name="frame_24">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_13">
-             <item>
-              <widget class="QFrame" name="frame_27">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QFormLayout" name="formLayout_3">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="ref_currency_lbl">
-                  <property name="text">
-                   <string>Reference Currency</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buddy">
-                   <cstring>ref_currency_combo</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="ref_currency_combo"/>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frame_28">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QFormLayout" name="formLayout_2">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="pricing_lbl">
-                  <property name="text">
-                   <string>Pricing API</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buddy">
-                   <cstring>pricing_api</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="pricing_api"/>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="btn_save_config">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207)</string>
-               </property>
-               <property name="text">
-                <string>Save Settings</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="11" column="1">
-           <widget class="QFrame" name="frame_29">
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QHBoxLayout" name="horizontalLayout_14">
-             <item>
-              <widget class="QFrame" name="frame_30">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QFormLayout" name="formLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="lbl_netid">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="text">
-                   <string>NetID</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                  </property>
-                  <property name="buddy">
-                   <cstring>netid_input</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QSpinBox" name="netid_input">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true">background-color: rgb(238, 238, 236);</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                  <property name="maximum">
-                   <number>9999</number>
-                  </property>
-                  <property name="value">
-                   <number>9999</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frame_31">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <widget class="QDoubleSpinBox" name="margin_input">
-                <property name="geometry">
-                 <rect>
-                  <x>148</x>
-                  <y>10</y>
-                  <width>431</width>
-                  <height>25</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">background-color: rgb(238, 238, 236);</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="lbl_premium">
-                <property name="geometry">
-                 <rect>
-                  <x>10</x>
-                  <y>10</y>
-                  <width>130</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>Trade Premium (%)</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>margin_input</cstring>
-                </property>
-               </widget>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <spacer name="horizontalSpacer_30">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="4" column="1">
-           <widget class="QLineEdit" name="rpcpass_text_input">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="9" column="1">
-           <widget class="QLineEdit" name="binance_secret_text_input">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-           </widget>
-          </item>
-          <item row="8" column="1">
-           <widget class="QLineEdit" name="binance_key_text_input">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1">
            <widget class="QTextEdit" name="seed_text_input">
             <property name="sizePolicy">
@@ -6757,54 +7677,10 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
-           <widget class="QCheckBox" name="checkbox_local_only">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-              <italic>true</italic>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::RightToLeft</enum>
-            </property>
-            <property name="text">
-             <string>Local only</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-              <italic>true</italic>
-             </font>
-            </property>
-            <property name="text">
-             <string>If you lose your seed, you lose access to your funds. Make sure to keep an offline backup on paper!</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>seed_text_input</cstring>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="QFrame" name="frame_25">
             <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
@@ -6854,6 +7730,481 @@
                </property>
                <property name="buddy">
                 <cstring>seed_text_input</cstring>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="11" column="0">
+           <widget class="QLabel" name="lbl_binance_secret">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Binance Secret key</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>binance_secret_text_input</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="11" column="1">
+           <widget class="QLineEdit" name="binance_secret_text_input">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="1">
+           <widget class="QLineEdit" name="binance_key_text_input">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="lbl_rpc_ip">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>RPC IP address</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>rpc_ip_text_input</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="rpc_ip_text_input">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="placeholderText">
+             <string>127.0.0.1</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <widget class="QCheckBox" name="checkbox_local_only">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
+            <property name="text">
+             <string>Local only</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="label_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>If you lose your seed, you lose access to your funds. Make sure to keep an offline backup on paper!</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>seed_text_input</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <spacer name="horizontalSpacer_30">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="8" column="1">
+           <spacer name="horizontalSpacer_32">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="1">
+           <widget class="QLineEdit" name="rpcpass_text_input">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <spacer name="horizontalSpacer_33">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="lbl_rpcpass">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>RPC Password</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>rpcpass_text_input</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="10" column="0">
+           <widget class="QLabel" name="lbl_binance_key">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Binance API key</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+            <property name="buddy">
+             <cstring>binance_key_text_input</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <spacer name="horizontalSpacer_29">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>888</width>
+              <height>13</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="12" column="1">
+           <spacer name="horizontalSpacer_31">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="13" column="1">
+           <widget class="QFrame" name="frame_29">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_14">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="frame_30">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QFormLayout" name="formLayout_4">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lbl_netid">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>NetID</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>netid_input</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="netid_input">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(238, 238, 236);</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="maximum">
+                   <number>9999</number>
+                  </property>
+                  <property name="value">
+                   <number>9999</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_31">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QFormLayout" name="formLayout">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="lbl_premium">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Trade Premium (%)</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>margin_input</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QDoubleSpinBox" name="margin_input">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="layoutDirection">
+                   <enum>Qt::LeftToRight</enum>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(238, 238, 236);</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="14" column="1">
+           <widget class="QFrame" name="frame_24">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_13">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="frame_27">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QFormLayout" name="formLayout_3">
+                <property name="horizontalSpacing">
+                 <number>9</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="ref_currency_lbl">
+                  <property name="text">
+                   <string>Reference Currency</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>ref_currency_combo</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="ref_currency_combo"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_28">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QFormLayout" name="formLayout_2">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="pricing_lbl">
+                  <property name="text">
+                   <string>Pricing API</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>pricing_api</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="pricing_api"/>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_save_config">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(114, 159, 207)</string>
+               </property>
+               <property name="text">
+                <string>Save Settings</string>
                </property>
               </widget>
              </item>

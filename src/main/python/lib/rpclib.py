@@ -67,7 +67,7 @@ def disable_coin(node_ip, user_pass, coin):
     return r
 
 def electrum(node_ip, user_pass, cointag, tx_history=True):
-    coin = coinslib.coins[cointag]
+    coin = coinslib.coin_activation[cointag]
     if 'contract' in coin:
         params = {'userpass': user_pass,
                   'method': 'enable',
@@ -87,7 +87,6 @@ def electrum(node_ip, user_pass, cointag, tx_history=True):
     return r
 
 def enable(node_ip, user_pass, cointag, tx_history=True):
-    coin = coinslib.coins[cointag]
     params = {'userpass': user_pass,
               'method': 'enable',
               'coin': cointag,
