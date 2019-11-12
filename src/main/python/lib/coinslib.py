@@ -398,14 +398,14 @@ coin_api_codes =  {
       'name':'Atomic Wallet Coin'
    },
    'BAT':{
-      'coingecko_id':'batcoin',
+      'coingecko_id':'basic-attention-token',
       'binance_id':'BAT',
-      'paprika_id':'bat-batcoin',
-      'name':'BatCoin'
+      'paprika_id':'bat-basic-attention-token',
+      'name':'Basic Attention Token'
    },
    'BCH':{
       'coingecko_id':'bitcoin-cash',
-      'binance_id':'',
+      'binance_id':'BCHABC',
       'paprika_id':'bch-bitcoin-cash',
       'name':'Bitcoin Cash'
    },
@@ -430,7 +430,7 @@ coin_api_codes =  {
    'CHIPS':{
       'coingecko_id':'',
       'binance_id':'',
-      'paprika_id':'chips-chips',
+      'paprika_id':'',
       'name':'CHIPS'
    },
    'COMMOD':{
@@ -622,7 +622,7 @@ coin_api_codes =  {
    'ZILLA':{
       'coingecko_id':'chainzilla',
       'binance_id':'',
-      'paprika_id':'zilla-chainzilla',
+      'paprika_id':'',
       'name':'ChainZilla'
    }
 }

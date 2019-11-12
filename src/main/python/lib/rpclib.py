@@ -6,7 +6,7 @@ import time
 import requests
 import subprocess
 from os.path import expanduser
-from . import coinslib, guilib, binance_api
+from . import coinslib, rpclib, binance_api
 
 cwd = os.getcwd()
 script_path = sys.path[0]

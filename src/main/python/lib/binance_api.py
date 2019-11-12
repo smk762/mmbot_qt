@@ -18,26 +18,10 @@ conf_path = script_path+"/conf"
 
 # from https://code.luasoftware.com/tutorials/cryptocurrency/python-connect-to-binance-api/
 
-while True:
-    tries = 0
-    try:
-        tries += 1
-        with open(conf_path+"/api_keys.json") as keys_j:
-            keys_json = json.load(keys_j)
-        print("Api keys loaded from "+conf_path+"...")
-        break
-    except FileNotFoundError:
-        copyfile(conf_path+"/api_keys_example.json", conf_path+"/api_keys.json")
-        print("Copying api keys template to "+conf_path+"...")
-        pass
-    time.sleep(3)
-    if tries > 3:
-        print("API keys not found, failing and exit...")
-        sys.exit()
 
 
-api_key = keys_json['binance_key']
-api_secret = keys_json['binance_secret']
+api_key = ''
+api_secret = ''
 base_url = 'https://api.binance.com'
 
 headers = {

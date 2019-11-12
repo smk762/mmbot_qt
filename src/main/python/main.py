@@ -8,7 +8,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from lib import guilib, rpclib, coinslib, wordlist, enc
+from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib
 import qrcode
 import random
 from ui import coin_icons
@@ -19,6 +19,12 @@ import time
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
+
+global last_price_update
+global price_data
+global last_balance_update
+global balance_data
+global in_activation_loop
 
 # Setup local settings ini.
 # Need to test this on alternative Operating systems.
@@ -33,6 +39,9 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
+# TODO: Periodic threaded price/balance updates to cache.
+# TODO: Dropdowns in alpha order. Might need lambda function.
+# TODO: Detect if in activation loop on activate button press. Ignore or add extar coins if checked.
 # TODO: User specific trade values. BUY/SELL T/F in mm2.json?
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
 if 1 == 0:
@@ -46,9 +55,7 @@ if 1 == 0:
                 print("coins update failed: "+str(r.status_code))
     except:
         pass
-
 os.environ['MM_COINS_PATH'] = config_path+"coins"
-
 
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
@@ -265,7 +272,6 @@ class Ui(QTabWidget):
         }               
         self.show_login()
 
-
     ## COMMON
     def saveFileDialog(self):
         filename = ''
@@ -292,7 +298,6 @@ class Ui(QTabWidget):
             with open(filename, 'w') as f:
                 f.write(table_csv)
 
-
     # Runs whenever activation_thread signals a coin has been activated
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
@@ -311,7 +316,6 @@ class Ui(QTabWidget):
                     gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
 
     ## LOGIN 
-
     def show_login(self):
         self.stacked_login.setCurrentIndex(0)
         self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
@@ -607,7 +611,6 @@ class Ui(QTabWidget):
         self.show_orders()
    
     ## SHOW TRADES
-
     def show_trades(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
         row = 0
@@ -635,7 +638,6 @@ class Ui(QTabWidget):
             row += 1
 
     ## SHOW ORDERBOOK
-
     def show_orderbook(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
@@ -754,8 +756,7 @@ class Ui(QTabWidget):
             msg = "No order selected!"
             QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-## BUY ORDER PAGE - PENDING
-
+    ## BUY ORDER PAGE - PENDING
     def show_create_buy(self):
         pass
 
@@ -768,7 +769,6 @@ class Ui(QTabWidget):
         self.create_buy_price.setValue(selected_price)
 
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
-
     def show_create_sell(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
@@ -944,8 +944,66 @@ class Ui(QTabWidget):
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-    ## WALLET
+    ## PRICES
+    def show_prices(self):
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+        if len(active_coins) < 1:
+            msg = 'Please activate at least one coin. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
+            print(prices_data)
+            row = 0
+            for item in prices_data:
+                if item in active_coins:
+                    coin = QTableWidgetItem(item)
 
+                    btc_price = str(prices_data[item]["average_btc"])
+                    if btc_price == '':
+                        btc_price = 'No Data'
+                    btc_price = QTableWidgetItem(btc_price)
+
+                    usd_price = str(str(prices_data[item]["average_usd"]))
+                    if usd_price == '':
+                        usd_price = 'No Data'
+                    usd_price = QTableWidgetItem(usd_price)
+
+                    kmd_price = str(str(prices_data[item]["kmd_price"]))
+                    if kmd_price == '':
+                        kmd_price = 'No Data'
+                    kmd_price = QTableWidgetItem(kmd_price)
+
+                    mm2_btc_price = str(str(prices_data[item]["mm2_btc_price"]))
+                    if mm2_btc_price == '':
+                        mm2_btc_price = 'No Data'
+                    mm2_btc_price = QTableWidgetItem(mm2_btc_price)
+
+                    mm2_kmd_price = str(str(prices_data[item]["mm2_kmd_price"]))
+                    if mm2_kmd_price == '':
+                        mm2_kmd_price = 'No Data'
+                    mm2_kmd_price = QTableWidgetItem(mm2_kmd_price)
+
+                    mm2_usd_price = str(str(prices_data[item]["mm2_usd_price"]))
+                    if mm2_usd_price == '':
+                        mm2_usd_price = 'No Data'
+                    mm2_usd_price = QTableWidgetItem(mm2_usd_price)
+
+                    sources = str(str(prices_data[item]["sources"]))
+                    if sources == '':
+                        sources = 'No Data'
+                    sources = QTableWidgetItem(sources)
+
+                    price_row = [coin, btc_price, kmd_price, usd_price, mm2_btc_price, mm2_kmd_price, mm2_usd_price, sources]
+                    col = 0
+                    for cell in price_row:
+                        self.prices_table.setItem(row,col,cell)
+                        cell.setTextAlignment(Qt.AlignCenter)    
+                        col += 1
+                    row += 1
+        self.prices_table.setSortingEnabled(True)
+
+    ## WALLET
     def show_wallet(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 1:
@@ -1022,7 +1080,6 @@ class Ui(QTabWidget):
         pass
 
     ## CONFIG
-
     def show_config(self):
         if self.creds[0] != '':
             self.rpcpass_text_input.setText(self.creds[1])
@@ -1121,7 +1178,6 @@ class Ui(QTabWidget):
         self.seed_text_input.setText(seed_phrase)
 
     ## LOGS
-
     def export_logs(self):
         pass
 
@@ -1136,7 +1192,6 @@ class Ui(QTabWidget):
         pass
 
     ## TABS
-
     def prepare_tab(self):
         QCoreApplication.processEvents()
         if self.authenticated:
@@ -1172,13 +1227,17 @@ class Ui(QTabWidget):
                 self.show_create_buy()
             elif index == 6:
                 # wallet
+                print('show_prices')
+                self.show_prices()
+            elif index == 7:
+                # wallet
                 print('show_wallet')
                 self.show_wallet()
-            elif index == 7:
+            elif index == 8:
                 # config
                 print('show_config')
                 self.show_config()
-            elif index == 8:
+            elif index == 9:
                 # logs
                 print('update_logs')
                 self.update_logs()
@@ -1189,8 +1248,6 @@ class Ui(QTabWidget):
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
             self.show_login()
-
-
 
 if __name__ == '__main__':
     

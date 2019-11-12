@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import json
-import coinslib
+import coinslib, priceslib
 import requests
+from statistics import mean
 
 '''
 r = requests.get("https://api.coinpaprika.com/v1/coins")
@@ -59,7 +60,7 @@ for coin in coinslib.cointags:
         "paprika_id":paprika_id,
         "name":name
     }
-print(api_codes)'''
+print(api_codes)
 
 coin_explorers = {}
 
@@ -79,4 +80,18 @@ for coin in coinslib.cointags:
     }
 
 print(coin_explorers)
+'''
 
+print(priceslib.get_prices_data())
+
+
+'''
+i = 0
+for coin in coinslib.coin_api_codes:
+    api_id = coinslib.coin_api_codes[coin]['paprika_id']
+    if api_id != '':
+        i += 1
+        r = requests.get("https://api.coinpaprika.com/v1/tickers/"+api_id).json()
+        print(r)
+print(i)
+'''

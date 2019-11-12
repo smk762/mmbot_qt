@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import json
+import time
 import requests
-from . import coinslib, guilib, binance_api
+from . import coinslib, rpclib, binance_api
+from statistics import mean
 
-def get_forex(base=USD):
+def get_forex(base='USD'):
     url = 'https://api.exchangerate-api.com/v4/latest/'+base
     r = requests.get(url)
     return r
@@ -17,7 +19,7 @@ def gecko_fiat_prices(coin_ids, fiat):
 
 # TODO: parse https://api.coinpaprika.com/v1/coins for supported coins api-codes
 def gecko_paprika_price(coin_id):
-    url = 'ttps://api.coinpaprika.com/v1/ticker/'+coin_id
+    url = 'https://api.coinpaprika.com/v1/ticker/'+coin_id
     r = requests.get(url)
     return r
 
@@ -34,12 +36,13 @@ def get_btc_price(cointag):
         return 0
 
 def get_kmd_mm2_price(node_ip, user_pass, coin):
-    kmd_orders = orderbook(node_ip, user_pass, coin, 'KMD').json()
+    kmd_orders = rpclib.orderbook(node_ip, user_pass, coin, 'KMD').json()
     kmd_value = 0
     min_kmd_value = 999999999999999999
     total_kmd_value = 0
     max_kmd_value = 0
     kmd_volume = 0
+    print(kmd_orders)
     num_asks = len(kmd_orders['asks'])
     for asks in kmd_orders['asks']:
         kmd_value = float(asks['maxvolume']) * float(asks['price'])
@@ -52,8 +55,142 @@ def get_kmd_mm2_price(node_ip, user_pass, coin):
     if num_asks > 0:
         median_kmd_value = total_kmd_value/kmd_volume
     else:
-        median_kmd_value = 0
+        min_kmd_value = ''
+        median_kmd_value = ''
+        max_kmd_value = ''
     return min_kmd_value, median_kmd_value, max_kmd_value
+
+def get_prices_data(node_ip, user_pass, coins_list):
+    binance_ids = []
+    binance_prices = {}
+    binance_data = requests.get("https://api.binance.com/api/v1/ticker/allPrices").json()
+    for coin in coinslib.coin_api_codes:
+        binance_id = coinslib.coin_api_codes[coin]['binance_id']
+        if binance_id != '':
+            binance_ids.append(binance_id+"BTC")
+    for item in binance_data:
+        if item['symbol'] in binance_ids:
+            binance_id = item['symbol'][:-3]
+            binance_prices[binance_id] = {
+                "btc":float(item['price'])
+            }
+    binance_ids = []
+    for coin in coinslib.coin_api_codes:
+        binance_id = coinslib.coin_api_codes[coin]['binance_id']
+        if binance_id != '':
+            binance_ids.append(binance_id)
+
+    gecko_ids = []
+    for coin in coinslib.coin_api_codes:
+        gecko_id = coinslib.coin_api_codes[coin]['coingecko_id']
+        if gecko_id != '':
+            gecko_ids.append(gecko_id)
+    gecko_prices = gecko_fiat_prices(",".join(gecko_ids), 'usd,btc').json()
+
+    paprika_data = requests.get("https://api.coinpaprika.com/v1/tickers?quotes=USD%2CBTC").json()
+    paprika_ids = []
+    for coin in coinslib.coin_api_codes:
+        paprika_id = coinslib.coin_api_codes[coin]['paprika_id']
+        if paprika_id != '':
+            paprika_ids.append(paprika_id)
+
+    paprika_prices = {}
+    for item in paprika_data:
+        if item['id'] in paprika_ids:
+            paprika_prices[item['id']] = {
+                "usd":float(item['quotes']['USD']['price']),
+                "btc":float(item['quotes']['BTC']['price'])
+            }
+
+    prices_data = {}
+    for coin in coinslib.coin_api_codes:
+        btc_prices = []
+        usd_prices = []
+        gecko_id = coinslib.coin_api_codes[coin]['coingecko_id']
+        paprika_id = coinslib.coin_api_codes[coin]['paprika_id']
+        binance_id = coinslib.coin_api_codes[coin]['binance_id']
+        if gecko_id != '':
+            gecko_usd = float(gecko_prices[gecko_id]['usd'])
+            gecko_btc = float(gecko_prices[gecko_id]['btc'])
+            btc_prices.append(gecko_btc)
+            usd_prices.append(gecko_usd)
+        else:
+            gecko_usd = ''
+            gecko_btc = ''
+        if paprika_id != '':
+            paprika_usd = float(paprika_prices[paprika_id]['usd'])
+            paprika_btc = float(paprika_prices[paprika_id]['btc'])
+            btc_prices.append(paprika_btc)
+            usd_prices.append(paprika_usd)
+        else:
+            paprika_usd = ''
+            paprika_btc = ''
+        if binance_id != '':
+            binance_btc = float(binance_prices[binance_id]['btc'])
+            btc_prices.append(binance_btc)
+        else:
+            binance_btc = ''
+        if len(btc_prices) > 0:
+            average_btc = mean(btc_prices)
+            range_btc = max(btc_prices)-min(btc_prices)
+        else:
+            average_btc = ''
+            range_btc = ''
+        if len(usd_prices) > 0:
+            average_usd = mean(usd_prices)
+            range_usd = max(usd_prices)-min(usd_prices)
+        else:
+            average_usd = ''
+            range_usd = ''
+        prices_data[coin] = {
+            "gecko_usd":gecko_usd,
+            "gecko_btc":gecko_btc,
+            "paprika_usd":paprika_usd,
+            "paprika_btc":paprika_btc,
+            "binance_btc":binance_btc,
+            "average_btc":average_btc,
+            "range_btc":range_btc,
+            "average_usd":average_usd,
+            "range_usd":range_usd
+        }
+    kmd_btc_price = prices_data["KMD"]["average_btc"]
+    for coin in prices_data:
+        if prices_data[coin]["average_btc"] != '':
+            coin_kmd_price = prices_data[coin]["average_btc"]/kmd_btc_price
+        else:
+            coin_kmd_price = ''
+        prices_data[coin].update({"kmd_price":coin_kmd_price})
+    for coin in prices_data: 
+        if coin in coins_list and prices_data[coin]["average_btc"] != '':
+            if coin != 'KMD':
+                mm2_kmd_price = get_kmd_mm2_price(node_ip, user_pass, coin)
+                if mm2_kmd_price[1] != '':
+                    prices_data[coin].update({'mm2_kmd_price':mm2_kmd_price[1]})
+                    prices_data[coin].update({'mm2_btc_price':prices_data[coin]["average_btc"]/mm2_kmd_price[1]})
+                    prices_data[coin].update({'mm2_usd_price':prices_data[coin]["average_usd"]/mm2_kmd_price[1]})
+                else:
+                    prices_data[coin].update({'mm2_kmd_price':''})
+                    prices_data[coin].update({'mm2_btc_price':''})
+                    prices_data[coin].update({'mm2_usd_price':''})                    
+                time.sleep(0.02)
+            else:
+                prices_data[coin].update({'mm2_kmd_price':1})
+                prices_data[coin].update({'mm2_btc_price':prices_data[coin]["average_btc"]})
+                prices_data[coin].update({'mm2_usd_price':prices_data[coin]["average_usd"]})
+        else:
+            prices_data[coin].update({'mm2_kmd_price':''})
+            prices_data[coin].update({'mm2_btc_price':''})
+            prices_data[coin].update({'mm2_usd_price':''})
+        sources = []
+        if prices_data[coin]["paprika_btc"] != '':
+            sources.append('CoinPaprika')
+        if prices_data[coin]["gecko_btc"] != '':
+            sources.append('CoinGecko')
+        if len(sources) == 0:
+            sources = ''
+        prices_data[coin].update({'sources':sources})
+
+    return prices_data
 
 def build_prices_data(node_ip, user_pass, cointag_list=''):
   try:
