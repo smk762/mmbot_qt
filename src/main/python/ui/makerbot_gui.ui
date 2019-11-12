@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -482,7 +482,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>604</width>
+                   <width>566</width>
                    <height>952</height>
                   </rect>
                  </property>
@@ -2628,7 +2628,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>618</width>
+                   <width>581</width>
                    <height>523</height>
                   </rect>
                  </property>
@@ -3587,7 +3587,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>618</width>
+                   <width>580</width>
                    <height>523</height>
                   </rect>
                  </property>
@@ -6500,7 +6500,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Price</string>
+          <string>Pr&amp;ice</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -8852,8 +8852,8 @@
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1246</x>
-     <y>785</y>
+     <x>1919</x>
+     <y>759</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -8868,7 +8868,7 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1440</x>
+     <x>1833</x>
      <y>47</y>
     </hint>
     <hint type="destinationlabel">
@@ -8884,7 +8884,7 @@
    <slot>show_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1288</x>
+     <x>1682</x>
      <y>47</y>
     </hint>
     <hint type="destinationlabel">
@@ -8900,8 +8900,8 @@
    <slot>generate_seed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>110</x>
-     <y>197</y>
+     <x>371</x>
+     <y>333</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -8916,8 +8916,8 @@
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>697</x>
-     <y>743</y>
+     <x>1705</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -8932,7 +8932,7 @@
    <slot>orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1538</x>
+     <x>1931</x>
      <y>46</y>
     </hint>
     <hint type="destinationlabel">
@@ -8948,7 +8948,7 @@
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1544</x>
+     <x>1946</x>
      <y>58</y>
     </hint>
     <hint type="destinationlabel">
@@ -8964,7 +8964,7 @@
    <slot>cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1455</x>
+     <x>1848</x>
      <y>45</y>
     </hint>
     <hint type="destinationlabel">
@@ -8980,7 +8980,7 @@
    <slot>cancel_order_uuid()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1297</x>
+     <x>1690</x>
      <y>45</y>
     </hint>
     <hint type="destinationlabel">
@@ -9012,7 +9012,7 @@
    <slot>show_create_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1170</x>
+     <x>1563</x>
      <y>737</y>
     </hint>
     <hint type="destinationlabel">
@@ -9028,7 +9028,7 @@
    <slot>show_create_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1170</x>
+     <x>1563</x>
      <y>706</y>
     </hint>
     <hint type="destinationlabel">
@@ -9044,8 +9044,8 @@
    <slot>populate_sell_order_vals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1322</x>
-     <y>104</y>
+     <x>1945</x>
+     <y>166</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -9092,7 +9092,7 @@
    <slot>sell_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>876</x>
+     <x>1322</x>
      <y>783</y>
     </hint>
     <hint type="destinationlabel">
@@ -9108,7 +9108,7 @@
    <slot>sell_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>718</x>
+     <x>1065</x>
      <y>783</y>
     </hint>
     <hint type="destinationlabel">
@@ -9124,7 +9124,7 @@
    <slot>create_setprice()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1170</x>
+     <x>1563</x>
      <y>783</y>
     </hint>
     <hint type="destinationlabel">
@@ -9140,7 +9140,7 @@
    <slot>show_active()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1519</x>
+     <x>1928</x>
      <y>73</y>
     </hint>
     <hint type="destinationlabel">
@@ -9156,8 +9156,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>839</x>
-     <y>751</y>
+     <x>108</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -9172,8 +9172,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>737</x>
-     <y>702</y>
+     <x>108</x>
+     <y>38</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -9188,8 +9188,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>737</x>
-     <y>671</y>
+     <x>108</x>
+     <y>40</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -9204,8 +9204,8 @@
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>261</x>
-     <y>469</y>
+     <x>648</x>
+     <y>505</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -9220,7 +9220,7 @@
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>859</x>
+     <x>1056</x>
      <y>768</y>
     </hint>
     <hint type="destinationlabel">
@@ -9236,8 +9236,8 @@
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>799</x>
-     <y>739</y>
+     <x>108</x>
+     <y>41</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -9252,8 +9252,8 @@
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1305</x>
-     <y>180</y>
+     <x>1670</x>
+     <y>191</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -9268,8 +9268,8 @@
    <slot>select_all_smart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>294</x>
-     <y>180</y>
+     <x>397</x>
+     <y>191</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -9284,11 +9284,75 @@
    <slot>select_all_utxo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>799</x>
-     <y>180</y>
+     <x>1034</x>
+     <y>191</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_buy_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_create_buy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1520</x>
+     <y>694</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_sell_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_create_buy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1520</x>
+     <y>725</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>create_buy_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>create_setprice_buy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1473</x>
+     <y>763</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buy_depth_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>populate_buy_order_vals()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1780</x>
+     <y>351</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
      <y>429</y>
     </hint>
    </hints>
@@ -9327,5 +9391,6 @@
   <slot>select_all_erc20()</slot>
   <slot>show_create_buy()</slot>
   <slot>populate_buy_order_vals()</slot>
+  <slot>create_setprice_buy()</slot>
  </slots>
 </ui>
