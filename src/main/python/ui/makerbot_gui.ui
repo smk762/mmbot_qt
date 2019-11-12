@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>5</number>
+   <number>7</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7670,7 +7670,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="wallet_usd_value_2">
+           <widget class="QLabel" name="wallet_usd_value">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -7685,6 +7685,28 @@
             </property>
             <property name="text">
              <string>$0 USD</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="wallet_btc_value">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>14</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>0 BTC</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

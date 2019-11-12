@@ -851,7 +851,7 @@ class Ui(QTabWidget):
         else:
             trade_max = False
         if not cancel_trade:
-            resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, 1/relprice, trade_max, cancel_previous).json()
+            resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
             if 'error' in resp:
                 if resp['error'].find("larger than available") > -1:
                     msg = "Insufficient funds to complete order."
@@ -1084,7 +1084,7 @@ class Ui(QTabWidget):
             balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
             if 'address' in balance_info:
                 addr_text = balance_info['address']
-                balance_text = round(float(balance_info['balance']))
+                balance_text = round(float(balance_info['balance']),8)
                 locked_text = round(float(balance_info['locked_by_swaps']),8)
                 # todo add address explorer links to coinslib
                 if coinslib.coin_explorers[coin]['addr_explorer'] != '':
@@ -1093,7 +1093,26 @@ class Ui(QTabWidget):
                     self.wallet_address.setText(addr_text)
                 self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
                 self.wallet_balance.setText(str(balance_text))
-                self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked_text))
+                self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
+                if coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                    price = priceslib.gecko_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+                    usd_price = float(price['price_usd'])
+                    btc_price = float(price['price_btc'])
+                elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                    price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
+                    usd_price = float(price['usd'])
+                    btc_price = float(price['btc'])
+                else:
+                    usd_price = 0
+                    btc_price = 0
+                print(btc_price)
+                if btc_price != 0:
+                    self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
+                    self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
+                else:
+                    self.wallet_usd_value.setText("")
+                    self.wallet_btc_value.setText("")
+
                 self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
 
     def send_funds(self):
