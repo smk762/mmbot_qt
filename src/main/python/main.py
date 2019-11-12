@@ -516,21 +516,21 @@ class Ui(QTabWidget):
             row = 0
             for item in maker_orders:
                 print(guilib.colorize(maker_orders[item],'blue'))
-                role = QTableWidgetItem("Maker")
-                base = QTableWidgetItem(maker_orders[item]['base'])
-                base_vol = QTableWidgetItem(maker_orders[item]['available_amount'])
-                rel = QTableWidgetItem(maker_orders[item]['rel'])
-                rel_vol = QTableWidgetItem(str(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])))
-                sell_price = QTableWidgetItem(maker_orders[item]['price'])
-                buy_price = QTableWidgetItem('-')
+                role = "Maker"
+                base = maker_orders[item]['base']
+                base_vol = maker_orders[item]['available_amount']
+                rel = maker_orders[item]['rel']
+                rel_vol = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
+                sell_price = maker_orders[item]['price']
+                buy_price = '-'
                 timestamp = int(maker_orders[item]['created_at']/1000)
-                created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
-                market_price = QTableWidgetItem('-')
-                margin = QTableWidgetItem('-')
-                uuid = QTableWidgetItem(item)
-                maker_row = [created_at, role, base, base_vol, rel, rel_vol, buy_price, sell_price, market_price, margin, uuid]
+                created_at = datetime.datetime.fromtimestamp(timestamp)
+                market_price = '-'
+                margin = '-'
+                maker_row = [created_at, role, base, base_vol, rel, rel_vol, buy_price, sell_price, market_price, margin, item]
                 col = 0
-                for cell in maker_row:
+                for cell_data in maker_row:
+                    cell = QTableWidgetItem(str(cell_data))
                     self.orders_table.setItem(row,col,cell)
                     cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                     col += 1
@@ -540,22 +540,22 @@ class Ui(QTabWidget):
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
-                role = QTableWidgetItem("Taker")
+                role = "Taker"
                 print(guilib.colorize(taker_orders[item],'cyan'))
                 timestamp = int(taker_orders[item]['created_at'])/1000
-                created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
-                base = QTableWidgetItem(taker_orders[item]['request']['base'])
-                rel = QTableWidgetItem(taker_orders[item]['request']['rel'])
-                base_amount = QTableWidgetItem(taker_orders[item]['request']['base_amount'])
-                rel_amount = QTableWidgetItem(taker_orders[item]['request']['rel_amount'])
-                buy_price = QTableWidgetItem(str(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])))
-                sell_price = QTableWidgetItem('-')
-                uuid = QTableWidgetItem(item)
-                market_price = QTableWidgetItem('')
-                margin = QTableWidgetItem('')
-                taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, uuid]
+                created_at = datetime.datetime.fromtimestamp(timestamp)
+                base = taker_orders[item]['request']['base']
+                rel = taker_orders[item]['request']['rel']
+                base_amount = taker_orders[item]['request']['base_amount']
+                rel_amount = taker_orders[item]['request']['rel_amount']
+                buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
+                sell_price = '-'
+                market_price = ''
+                margin = ''
+                taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, item]
                 col = 0
-                for cell in taker_row:
+                for cell_data in taker_row:
+                    cell = QTableWidgetItem(str(cell_data))
                     self.orders_table.setItem(row,col,cell)
                     cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                     col += 1
@@ -612,24 +612,24 @@ class Ui(QTabWidget):
                     break
             self.trades_table.setSortingEnabled(False)
             self.clear_table(self.orderbook_table)
-            status = QTableWidgetItem(event_type)
-            role = QTableWidgetItem(swap['type'])
-            uuid = QTableWidgetItem(swap['uuid'])
-            my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
-            my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
-            other_amount = QTableWidgetItem(swap['my_info']['other_amount'])
-            other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
-            start_time = str(datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000))
-            started_at = QTableWidgetItem(start_time)
+            status = event_type
+            role = swap['type']
+            uuid = swap['uuid']
+            my_amount = swap['my_info']['my_amount']
+            my_coin = swap['my_info']['my_coin']
+            other_amount = swap['my_info']['other_amount']
+            other_coin = swap['my_info']['other_coin']
+            started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
             if swap['type'] == 'Taker':
-                buy_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
-                sell_price = QTableWidgetItem('-')
+                buy_price = float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])
+                sell_price = '-'
             else:
-                buy_price = QTableWidgetItem('-')
-                sell_price = QTableWidgetItem(str(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount'])))
+                buy_price = '-'
+                sell_price = float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount'])
             trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
             col = 0
-            for cell in trade_row:
+            for cell_data in trade_row:
+                cell = QTableWidgetItem(str(cell_data))
                 self.trades_table.setItem(row,col,cell)
                 cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                 col += 1            
@@ -682,13 +682,14 @@ class Ui(QTabWidget):
                 row = 0
                 for item in pair_book['asks']:
                     # buying base for rel
-                    base = QTableWidgetItem(pair_book['base'])
-                    rel = QTableWidgetItem(pair_book['rel'])
-                    basevolume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
-                    relprice = QTableWidgetItem(str(round(float(item['price']), 8)))
+                    base = pair_book['base']
+                    rel = pair_book['rel']
+                    basevolume = round(float(item['maxvolume']), 8)
+                    relprice = round(float(item['price']), 8)
                     asks_row = [base, rel, basevolume, relprice]
                     col = 0
-                    for cell in asks_row:
+                    for cell_data in asks_row:
+                        cell = QTableWidgetItem(str(cell_data))
                         self.orderbook_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)    
                         col += 1
@@ -773,13 +774,14 @@ class Ui(QTabWidget):
             elif 'asks' in pair_book:
                 row = 0
                 for item in pair_book['asks']:
-                    price = QTableWidgetItem(str(round(float(item['price']), 8)))
-                    volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
+                    price = round(float(item['price']), 8)
+                    volume = round(float(item['maxvolume']), 8)
                     val = float(item['price'])*float(item['maxvolume'])
-                    value = QTableWidgetItem(str(round(val, 8)))
+                    value = round(val, 8)
                     depth_row = [price, volume, value]
                     col = 0
-                    for cell in depth_row:
+                    for cell_data in depth_row:
+                        cell = QTableWidgetItem(str(cell_data))
                         self.sell_depth_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)
                         col += 1
@@ -925,46 +927,18 @@ class Ui(QTabWidget):
             row = 0
             for item in prices_data:
                 if item in active_coins:
-                    coin = QTableWidgetItem(item)
-
-                    btc_price = str(prices_data[item]["average_btc"])
-                    if btc_price == '':
-                        btc_price = 'No Data'
-                    btc_price = QTableWidgetItem(btc_price)
-
-                    usd_price = str(str(prices_data[item]["average_usd"]))
-                    if usd_price == '':
-                        usd_price = 'No Data'
-                    usd_price = QTableWidgetItem(usd_price)
-
-                    kmd_price = str(str(prices_data[item]["kmd_price"]))
-                    if kmd_price == '':
-                        kmd_price = 'No Data'
-                    kmd_price = QTableWidgetItem(kmd_price)
-
-                    mm2_btc_price = str(str(prices_data[item]["mm2_btc_price"]))
-                    if mm2_btc_price == '':
-                        mm2_btc_price = 'No Data'
-                    mm2_btc_price = QTableWidgetItem(mm2_btc_price)
-
-                    mm2_kmd_price = str(str(prices_data[item]["mm2_kmd_price"]))
-                    if mm2_kmd_price == '':
-                        mm2_kmd_price = 'No Data'
-                    mm2_kmd_price = QTableWidgetItem(mm2_kmd_price)
-
-                    mm2_usd_price = str(str(prices_data[item]["mm2_usd_price"]))
-                    if mm2_usd_price == '':
-                        mm2_usd_price = 'No Data'
-                    mm2_usd_price = QTableWidgetItem(mm2_usd_price)
-
-                    sources = str(str(prices_data[item]["sources"]))
-                    if sources == '':
-                        sources = 'No Data'
-                    sources = QTableWidgetItem(sources)
-
+                    coin = item
+                    btc_price = prices_data[item]["average_btc"]
+                    usd_price = prices_data[item]["average_usd"]
+                    kmd_price = prices_data[item]["kmd_price"]
+                    mm2_btc_price = prices_data[item]["mm2_btc_price"]
+                    mm2_kmd_price = prices_data[item]["mm2_kmd_price"]
+                    mm2_usd_price = prices_data[item]["mm2_usd_price"]
+                    sources = prices_data[item]["sources"]
                     price_row = [coin, btc_price, kmd_price, usd_price, mm2_btc_price, mm2_kmd_price, mm2_usd_price, sources]
                     col = 0
-                    for cell in price_row:
+                    for cell_data in price_row:
+                        cell = QTableWidgetItem(str(cell_data))
                         self.prices_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)    
                         col += 1
