@@ -24,7 +24,6 @@ global last_price_update
 global price_data
 global last_balance_update
 global balance_data
-global in_activation_loop
 
 # Setup local settings ini.
 # Need to test this on alternative Operating systems.
@@ -39,6 +38,7 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
+# TODO: more images for activate and wallet page
 # TODO: Periodic threaded price/balance updates to cache.
 # TODO: Dropdowns in alpha order. Might need lambda function.
 # TODO: Detect if in activation loop on activate button press. Ignore or add extar coins if checked.
@@ -106,8 +106,8 @@ class Ui(QTabWidget):
         self.show() # Show the GUI
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
-        global gui_coins
         self.authenticated = False
+        global gui_coins
         gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
@@ -298,6 +298,21 @@ class Ui(QTabWidget):
             with open(filename, 'w') as f:
                 f.write(table_csv)
 
+    def clear_table(self, table):
+        row = 0
+        row_count = table.rowCount()
+        col_count = table.columnCount()
+        while row_count > row:
+            row_items = []
+            for i in range(col_count):
+                row_items.append(QTableWidgetItem(''))
+            col = 0
+            for cell in row_items:
+                table.setItem(row,col,cell)
+                col += 1
+            row += 1
+
+
     # Runs whenever activation_thread signals a coin has been activated
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
@@ -306,14 +321,13 @@ class Ui(QTabWidget):
         for i in range(self.wallet_combo.count()):
             existing_coin = self.wallet_combo.itemText(i)
             existing_coins.append(existing_coin)
-        if 'gui_coins' in globals():
-            for coin in gui_coins:
-                if coin in active_coins:
-                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
-                    if coin not in existing_coins:
-                        self.wallet_combo.addItem(coin)
-                else:
-                    gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
+        for coin in gui_coins:
+            if coin in active_coins:
+                gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
+                if coin not in existing_coins:
+                    self.wallet_combo.addItem(coin)
+            else:
+                gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
 
     ## LOGIN 
     def show_login(self):
@@ -326,7 +340,7 @@ class Ui(QTabWidget):
         print("logging in...")
         self.username = self.username_input.text()
         self.password = self.password_input.text()
-        if self.username == '' or self.password == '' and not authenticated:
+        if self.username == '' or self.password == '' and not self.authenticated:
             QMessageBox.information(self, 'Login failed!', 'username and password fields can not be blank!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             # create .enc if new user
@@ -399,6 +413,18 @@ class Ui(QTabWidget):
                 elif resp == QMessageBox.No:
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
+    def populate_activation_menu(self, display_coins, layout):
+        row = 0
+        for coin in display_coins:
+            gui_coins[coin]['checkbox'].show()
+            gui_coins[coin]['combo'].show()
+            layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
+            layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+            icon = QIcon()
+            icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
+            gui_coins[coin]['checkbox'].setIcon(icon)
+            row += 1
+
     # ACTIVATE
     def show_active(self):
         print("show_active")
@@ -407,65 +433,38 @@ class Ui(QTabWidget):
         display_coins_smartchain = []
         search_txt = self.search_activate.text().lower()
         self.update_active()
-        if 'gui_coins' in globals():
-            for coin in gui_coins:
-                gui_coins[coin]['checkbox'].hide()
-                gui_coins[coin]['combo'].hide()
-                gui_coins[coin]['checkbox'].setText(coinslib.coin_api_codes[coin]['name'])
-                if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
-                    if coinslib.coin_activation[coin]['type'] == 'utxo':
-                        display_coins_utxo.append(coin)
-                    elif coinslib.coin_activation[coin]['type'] == 'erc20':
-                        display_coins_erc20.append(coin)
-                    elif coinslib.coin_activation[coin]['type'] == 'smartchain':
-                        display_coins_smartchain.append(coin)
-            row = 0
+        for coin in gui_coins:
+            gui_coins[coin]['checkbox'].hide()
+            gui_coins[coin]['combo'].hide()
+            gui_coins[coin]['checkbox'].setText(coinslib.coin_api_codes[coin]['name'])
+            if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
+                if coinslib.coin_activation[coin]['type'] == 'utxo':
+                    display_coins_utxo.append(coin)
+                elif coinslib.coin_activation[coin]['type'] == 'erc20':
+                    display_coins_erc20.append(coin)
+                elif coinslib.coin_activation[coin]['type'] == 'smartchain':
+                    display_coins_smartchain.append(coin)
             # TODO: lambda sort by coin_api_codes['name']
             display_coins_erc20.sort()
-            print(display_coins_erc20)
             display_coins_utxo.sort()
-            print(display_coins_utxo)
             display_coins_smartchain.sort()
-            print(display_coins_smartchain)
-            for coin in display_coins_smartchain:
-                gui_coins[coin]['checkbox'].show()
-                gui_coins[coin]['combo'].show()
-                self.smartchains_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
-                self.smartchains_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                icon = QIcon()
-                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
-                gui_coins[coin]['checkbox'].setIcon(icon)
-                row += 1
-            row = 0
-            for coin in display_coins_erc20:
-                gui_coins[coin]['checkbox'].show()
-                gui_coins[coin]['combo'].show()
-                self.erc20_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
-                self.erc20_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                icon = QIcon()
-                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
-                gui_coins[coin]['checkbox'].setIcon(icon)
-                row += 1
-            row = 0
-            for coin in display_coins_utxo:
-                gui_coins[coin]['checkbox'].show()
-                gui_coins[coin]['combo'].show()
-                self.utxo_layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
-                self.utxo_layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
-                icon = QIcon()
-                icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
-                gui_coins[coin]['checkbox'].setIcon(icon)
-                row += 1
+            self.populate_activation_menu(display_coins_smartchain, self.smartchains_layout)
+            self.populate_activation_menu(display_coins_erc20, self.erc20_layout)
+            self.populate_activation_menu(display_coins_utxo, self.utxo_layout)
 
     def activate_coins(self):
+        print('Start activate')
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         coins_to_activate = []
+        autoactivate = []
         buy_coins = []
         sell_coins = []
         for coin in gui_coins:
             combo = gui_coins[coin]['combo']
             checkbox = gui_coins[coin]['checkbox']
-            if coin not in active_coins and checkbox.isChecked():
+            if checkbox.isChecked():
+                autoactivate.append(coin)
+                if coin not in active_coins:
                     coins_to_activate.append([coin,combo])
             if combo.itemText(combo.currentIndex()) == 'Buy':
                 buy_coins.append(coin)
@@ -474,12 +473,14 @@ class Ui(QTabWidget):
             elif combo.itemText(combo.currentIndex()) == 'Buy & Sell':
                 buy_coins.append(coin)
                 sell_coins.append(coin)
-            trade_lists = {
+            activate_list = {
+                "autoactivate":autoactivate,
                 "buy_coins":buy_coins,
                 "sell_coins":sell_coins
             }
-        with open(config_path+self.username+"_trade_coins.json", 'w') as j:
-            j.write(json.dumps(trade_lists))
+        with open(config_path+self.username+"_coins.json", 'w') as j:
+            j.write(json.dumps(activate_list))
+        # Activate selected coins in separate thread
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
@@ -506,41 +507,28 @@ class Ui(QTabWidget):
         self.select_all(state, 'utxo')
 
     ## SHOW ORDERS
-
     def show_orders(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
-        row = 0
-        row_count = self.orders_table.rowCount()
         self.orders_table.setSortingEnabled(False)
-        while row_count > row:
-            available = QTableWidgetItem('')
-            base = QTableWidgetItem('')
-            rel = QTableWidgetItem('')
-            price = QTableWidgetItem('')
-            created_at = QTableWidgetItem('')
-            market_price = QTableWidgetItem('')
-            margin = QTableWidgetItem('')
-            uuid = QTableWidgetItem('')
-            orders_row = [created_at, base, available, rel, price, market_price, margin, uuid]
-            col = 0
-            for cell in orders_row:
-                self.orders_table.setItem(row,col,cell)
-                col += 1
-            row += 1
+        self.clear_table(self.orders_table)
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
             row = 0
             for item in maker_orders:
-                available = QTableWidgetItem(maker_orders[item]['available_amount'])
+                print(guilib.colorize(maker_orders[item],'blue'))
+                role = QTableWidgetItem("Maker")
                 base = QTableWidgetItem(maker_orders[item]['base'])
+                base_vol = QTableWidgetItem(maker_orders[item]['available_amount'])
                 rel = QTableWidgetItem(maker_orders[item]['rel'])
-                price = QTableWidgetItem(maker_orders[item]['price'])
+                rel_vol = QTableWidgetItem(str(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])))
+                sell_price = QTableWidgetItem(maker_orders[item]['price'])
+                buy_price = QTableWidgetItem('-')
                 timestamp = int(maker_orders[item]['created_at']/1000)
                 created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
-                market_price = QTableWidgetItem('')
-                margin = QTableWidgetItem('')
+                market_price = QTableWidgetItem('-')
+                margin = QTableWidgetItem('-')
                 uuid = QTableWidgetItem(item)
-                maker_row = [created_at, base, available, rel, price, market_price, margin, uuid]
+                maker_row = [created_at, role, base, base_vol, rel, rel_vol, buy_price, sell_price, market_price, margin, uuid]
                 col = 0
                 for cell in maker_row:
                     self.orders_table.setItem(row,col,cell)
@@ -548,22 +536,24 @@ class Ui(QTabWidget):
                     col += 1
                 row += 1
         self.orders_table.setSortingEnabled(True)
-        # todo the bit below
+        # todo the bit below - need to see an active taker order in action!
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
+                role = QTableWidgetItem("Taker")
                 print(guilib.colorize(taker_orders[item],'cyan'))
-                timestamp = int(maker_orders[item]['request']['created_at'])/1000
+                timestamp = int(taker_orders[item]['created_at'])/1000
                 created_at = QTableWidgetItem(str(datetime.datetime.fromtimestamp(timestamp)))
-                base = QTableWidgetItem(maker_orders[item]['request']['base'])
-                rel = QTableWidgetItem(maker_orders[item]['request']['rel'])
-                base_amount = QTableWidgetItem(maker_orders[item]['request']['base_amount'])
-                rel_amount = QTableWidgetItem(maker_orders[item]['request']['rel_amount'])
-                price = QTableWidgetItem(str(float(rel_amount)/float(base_amount)))
+                base = QTableWidgetItem(taker_orders[item]['request']['base'])
+                rel = QTableWidgetItem(taker_orders[item]['request']['rel'])
+                base_amount = QTableWidgetItem(taker_orders[item]['request']['base_amount'])
+                rel_amount = QTableWidgetItem(taker_orders[item]['request']['rel_amount'])
+                buy_price = QTableWidgetItem(str(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])))
+                sell_price = QTableWidgetItem('-')
                 uuid = QTableWidgetItem(item)
                 market_price = QTableWidgetItem('')
                 margin = QTableWidgetItem('')
-                taker_row = [created_at, base, available, rel, price, market_price, margin, uuid]
+                taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, uuid]
                 col = 0
                 for cell in taker_row:
                     self.orders_table.setItem(row,col,cell)
@@ -574,9 +564,9 @@ class Ui(QTabWidget):
     def cancel_order_uuid(self):
         selected_row = self.orders_table.currentRow()
         print(selected_row)
-        if self.orders_table.item(selected_row,7) is not None:
-            if self.orders_table.item(selected_row,7).text() != '':
-                order_uuid = self.orders_table.item(selected_row,7).text()
+        if self.orders_table.item(selected_row,10) is not None:
+            if self.orders_table.item(selected_row,0).text() != '':
+                order_uuid = self.orders_table.item(selected_row,10).text()
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 msg = ''
                 if 'result' in resp:
@@ -586,7 +576,7 @@ class Ui(QTabWidget):
                         msg = resp
                 else:
                     msg = resp
-                QMessageBox.information(self, 'Order Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
             else:
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
@@ -620,7 +610,10 @@ class Ui(QTabWidget):
                 if event_type in rpclib.error_events:
                     event_type = 'Failed'
                     break
+            self.trades_table.setSortingEnabled(False)
+            self.clear_table(self.orderbook_table)
             status = QTableWidgetItem(event_type)
+            role = QTableWidgetItem(swap['type'])
             uuid = QTableWidgetItem(swap['uuid'])
             my_amount = QTableWidgetItem(swap['my_info']['my_amount'])
             my_coin = QTableWidgetItem(swap['my_info']['my_coin'])
@@ -628,16 +621,35 @@ class Ui(QTabWidget):
             other_coin = QTableWidgetItem(swap['my_info']['other_coin'])
             start_time = str(datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000))
             started_at = QTableWidgetItem(start_time)
-            sell_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
-            trade_row = [started_at, status, other_coin, other_amount, my_coin, my_amount, sell_price, uuid]
+            if swap['type'] == 'Taker':
+                buy_price = QTableWidgetItem(str(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount'])))
+                sell_price = QTableWidgetItem('-')
+            else:
+                buy_price = QTableWidgetItem('-')
+                sell_price = QTableWidgetItem(str(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount'])))
+            trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
             col = 0
             for cell in trade_row:
                 self.trades_table.setItem(row,col,cell)
                 cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                 col += 1            
             row += 1
+            self.orderbook_table.setSortingEnabled(True)
 
     ## SHOW ORDERBOOK
+
+    def update_combo(self,combo,options,selected):
+        combo.clear()
+        combo.addItems(options)
+        if selected in options:
+            for i in range(combo.count()):
+                if combo.itemText(i) == selected:
+                    combo.setCurrentIndex(i)
+        else:
+            combo.setCurrentIndex(0)
+            selected = combo.itemText(combo.currentIndex())
+        return selected
+
     def show_orderbook(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         if len(active_coins) < 2:
@@ -645,85 +657,53 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            index = self.buy_combo.currentIndex()
-            base = self.buy_combo.itemText(index)
-            index = self.sell_combo.currentIndex()
-            rel = self.sell_combo.itemText(index)
-            pair = self.update_orderbook_combos(base, rel, active_coins)
-            base = pair[0]
-            rel = pair[1]
+            index = self.orderbook_buy_combo.currentIndex()
+            if index != -1:
+                base = self.orderbook_buy_combo.itemText(index)
+            else:
+                base = ''
+            index = self.orderbook_sell_combo.currentIndex()
+            if index != -1:
+                rel = self.orderbook_sell_combo.itemText(index)
+            else:
+                rel = ''
+            base = self.update_combo(self.orderbook_buy_combo,active_coins,base)
+            active_coins.remove(base)
+            rel = self.update_combo(self.orderbook_sell_combo,active_coins,rel)
+            self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
+
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
-            row = 0
             self.orderbook_table.setSortingEnabled(False)
-            row_count = self.orderbook_table.rowCount()
-            while row_count > row:
-                base = QTableWidgetItem('')
-                rel = QTableWidgetItem('')
-                price = QTableWidgetItem('')
-                volume = QTableWidgetItem('')
-                orderbook_row = [base, rel, volume, price]
-                col = 0
-                for cell in orderbook_row:
-                    self.orderbook_table.setItem(row,col,cell)
-                    col += 1
-                row += 1
+            self.clear_table(self.orderbook_table)
+            print(pair_book)
             if 'error' in pair_book:
                 pass
             elif 'asks' in pair_book:
                 row = 0
                 for item in pair_book['asks']:
+                    # buying base for rel
                     base = QTableWidgetItem(pair_book['base'])
                     rel = QTableWidgetItem(pair_book['rel'])
-                    price = QTableWidgetItem(str(round(float(item['price']), 8)))
-                    volume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
-                    asks_row = [base, rel, volume, price]
+                    basevolume = QTableWidgetItem(str(round(float(item['maxvolume']), 8)))
+                    relprice = QTableWidgetItem(str(round(float(item['price']), 8)))
+                    asks_row = [base, rel, basevolume, relprice]
                     col = 0
                     for cell in asks_row:
                         self.orderbook_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)    
                         col += 1
                     row += 1
-        self.orderbook_table.setSortingEnabled(True)
+            self.orderbook_table.setSortingEnabled(True)
 
     def update_orderbook_combos(self, base, rel, active_coins):
-        # check current coins in combobox
-        if base == rel:
-            base = ''
-        existing_buy_coins = []
-        for i in range(self.buy_combo.count()):
-            existing_buy_coin = self.buy_combo.itemText(i)
-            existing_buy_coins.append(existing_buy_coin)
-        existing_sell_coins = []
-        for i in range(self.sell_combo.count()):
-            existing_sell_coin = self.sell_combo.itemText(i)
-            existing_sell_coins.append(existing_sell_coin)
-        # add activated if not in combobox if not already there.
-        for coin in active_coins:
-            if coin not in existing_sell_coins:
-                self.sell_combo.addItem(coin)
-            if coin not in existing_buy_coins:
-                if coin != rel:
-                    self.buy_combo.addItem(coin)
-        # eliminate selection duplication
-        for i in range(self.buy_combo.count()):
-            if self.buy_combo.itemText(i) == rel:
-                self.buy_combo.removeItem(i)
-        # set values if empty
-        if base == '':
-            self.buy_combo.setCurrentIndex(0)
-            base = self.buy_combo.itemText(self.buy_combo.currentIndex())
-        if rel == '':
-            self.sell_combo.setCurrentIndex(1)
-            rel = self.sell_combo.itemText(self.sell_combo.currentIndex())
-        self.orderbook_table.setHorizontalHeaderLabels(['Sell coin', 'Buy coin', base+' Volume', rel+' price', 'Market price'])
-        return base, rel
+        pass
 
     def orderbook_buy(self):
         row = 0
-        index = self.buy_combo.currentIndex()
-        rel = self.buy_combo.itemText(index)
-        index = self.sell_combo.currentIndex()
-        base = self.sell_combo.itemText(index)
+        index = self.orderbook_buy_combo.currentIndex()
+        base = self.orderbook_buy_combo.itemText(index)
+        index = self.orderbook_sell_combo.currentIndex()
+        rel = self.orderbook_sell_combo.itemText(index)
         selected_row = self.orderbook_table.currentRow()
         if selected_row != -1:
             selected_price = self.orderbook_table.item(selected_row,3).text()
@@ -734,7 +714,7 @@ class Ui(QTabWidget):
                     locked_text = balance_info['locked_by_swaps']
                     available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
                     max_vol = available_balance/float(selected_price)*0.99
-                vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter Volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ', QLineEdit.Password)
+                vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ', QLineEdit.Password)
                 if ok:
                     resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, vol, selected_price).json()
                     if 'error' in resp:
@@ -745,7 +725,7 @@ class Ui(QTabWidget):
                     elif 'result' in resp:
                         trade_val = round(float(selected_price)*float(vol),8)
                         msg = "Order Submitted.\n"
-                        msg += str(vol)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+                        msg += "Buying "+str(trade_val)+" "+rel +"\nfor\n"+" "+str(vol)+" "+base
                     else:
                         msg = resp
                     QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -786,20 +766,8 @@ class Ui(QTabWidget):
             self.create_sell_depth_baserel_lbl.setText(base+"/"+rel)
             self.sell_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
-            row = 0
-            row_count = self.sell_depth_table.rowCount()
-            # todo - investigate wierd tables after sorting then changing pair.
             self.sell_depth_table.setSortingEnabled(False)
-            while row_count > row:
-                price = QTableWidgetItem('')
-                volume = QTableWidgetItem('')
-                value = QTableWidgetItem('')
-                depth_row = [price, volume, value]
-                col = 0
-                for cell in depth_row:
-                    self.sell_depth_table.setItem(row,col,cell)
-                    col += 1
-                row += 1
+            self.clear_table(self.sell_depth_table)
             if 'error' in pair_book:
                 pass
             elif 'asks' in pair_book:

@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1600</width>
+    <width>2106</width>
     <height>860</height>
    </rect>
   </property>
@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>8</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -482,7 +482,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>435</width>
+                   <width>604</width>
                    <height>952</height>
                   </rect>
                  </property>
@@ -2628,7 +2628,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>450</width>
+                   <width>618</width>
                    <height>523</height>
                   </rect>
                  </property>
@@ -3587,7 +3587,7 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>449</width>
+                   <width>618</width>
                    <height>523</height>
                   </rect>
                  </property>
@@ -4592,7 +4592,7 @@
        <number>32</number>
       </property>
       <property name="columnCount">
-       <number>8</number>
+       <number>11</number>
       </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>true</bool>
@@ -4657,6 +4657,11 @@
       </column>
       <column>
        <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>Sell Coin</string>
        </property>
       </column>
@@ -4672,7 +4677,17 @@
       </column>
       <column>
        <property name="text">
+        <string>Buy Vol</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>Buy Price</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Sell Price</string>
        </property>
       </column>
       <column>
@@ -4794,7 +4809,7 @@
        <number>32</number>
       </property>
       <property name="columnCount">
-       <number>8</number>
+       <number>10</number>
       </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>true</bool>
@@ -4859,6 +4874,11 @@
       </column>
       <column>
        <property name="text">
+        <string>Type</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>Status</string>
        </property>
       </column>
@@ -4870,6 +4890,11 @@
       <column>
        <property name="text">
         <string>Buy Vol</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Buy Price</string>
        </property>
       </column>
       <column>
@@ -5096,65 +5121,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Sell:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QComboBox" name="sell_combo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Buy:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
-        <widget class="QComboBox" name="buy_combo">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(114, 159, 207)</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="5">
+       <item row="0" column="8">
         <widget class="QPushButton" name="orderbook_buy_btn">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -5178,6 +5145,64 @@
          </property>
          <property name="text">
           <string>Buy Selected</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QComboBox" name="orderbook_sell_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLabel" name="orderbook_sell_lbl">
+         <property name="text">
+          <string>Sell:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLabel" name="orderbook_buy_lbl">
+         <property name="text">
+          <string>Buy:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QComboBox" name="orderbook_buy_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">background-color: rgb(114, 159, 207)</string>
          </property>
         </widget>
        </item>
@@ -8767,8 +8792,7 @@
   <tabstop>orders_table</tabstop>
   <tabstop>trades_table</tabstop>
   <tabstop>export_trade_table_btn</tabstop>
-  <tabstop>sell_combo</tabstop>
-  <tabstop>buy_combo</tabstop>
+  <tabstop>orderbook_sell_combo</tabstop>
   <tabstop>orderbook_buy_btn</tabstop>
   <tabstop>orderbook_table</tabstop>
   <tabstop>graphicsView</tabstop>
@@ -8835,7 +8859,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buy_combo</sender>
+   <sender>orderbook_sell_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
    <slot>show_orderbook()</slot>
@@ -8851,7 +8875,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>sell_combo</sender>
+   <sender>orderbook_buy_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
    <slot>show_orderbook()</slot>
