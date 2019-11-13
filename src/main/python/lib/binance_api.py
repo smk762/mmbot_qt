@@ -7,26 +7,15 @@ import hmac
 import hashlib
 import requests
 import sys
-from shutil import copyfile
 from urllib.parse import urljoin, urlencode
 
 # Get and set config
 cwd = os.getcwd()
 home = expanduser("~")
-script_path = sys.path[0]
-conf_path = script_path+"/conf"
 
 # from https://code.luasoftware.com/tutorials/cryptocurrency/python-connect-to-binance-api/
 
-
-
-api_key = ''
-api_secret = ''
 base_url = 'https://api.binance.com'
-
-headers = {
-    'X-MBX-APIKEY': api_key
-}
 
 class BinanceException(Exception):
     def __init__(self, status_code, data):
@@ -55,8 +44,11 @@ def get_serverTime():
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def get_price(ticker_pair):
+def get_price(api_key, ticker_pair):
     path = '/api/v3/ticker/price'
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair
     }
@@ -65,8 +57,11 @@ def get_price(ticker_pair):
     return r.json()
 
 
-def get_orderbook(ticker_pair):
+def get_orderbook(api_key, ticker_pair):
     path = '/api/v1/depth'
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair,
         'limit': 5
@@ -78,9 +73,12 @@ def get_orderbook(ticker_pair):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def create_buy_order(ticker_pair, qty, price):
+def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     path = '/api/v3/order'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair,
         'side': 'BUY',
@@ -103,10 +101,13 @@ def create_buy_order(ticker_pair, qty, price):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def create_sell_order(ticker_pair, qty, price):
+def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     print("Selling "+str(qty)+" "+ticker_pair+" at "+str(price))
     path = '/api/v3/order'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair,
         'side': 'SELL',
@@ -127,9 +128,14 @@ def create_sell_order(ticker_pair, qty, price):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def get_account_info():
+def get_account_info(api_key, api_secret):
+    print(api_key)
+    print(api_secret)
     path = '/api/v3/account'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'recvWindow': 5000,
         'timestamp': timestamp
@@ -141,9 +147,12 @@ def get_account_info():
     return r.json()
 
 
-def get_order(ticker_pair, order_id):
+def get_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair,
         'orderId': order_id,
@@ -161,9 +170,12 @@ def get_order(ticker_pair, order_id):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def delete_order(ticker_pair, order_id):
+def delete_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'symbol': ticker_pair,
         'orderId': order_id,
@@ -182,9 +194,12 @@ def delete_order(ticker_pair, order_id):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-def get_deposit_addr(asset):
+def get_deposit_addr(api_key, api_secret, asset):
     path = '/wapi/v3/depositAddress.html'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'asset': asset,
         'timestamp': timestamp
@@ -195,9 +210,12 @@ def get_deposit_addr(asset):
     r = requests.get(url, headers=headers, params=params)
     return r.json()
 
-def withdraw(asset, addr, amount):
+def withdraw(api_key, api_secret, asset, addr, amount):
     path = '/wapi/v3/withdraw.html'
     timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
     params = {
         'asset': asset,
         'address': addr,

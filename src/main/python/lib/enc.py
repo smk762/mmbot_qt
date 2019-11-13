@@ -19,7 +19,7 @@ def get_private_key(password):
 
 def encrypt(raw, password):
     private_key = get_private_key(password)
-    raw = pad(raw)
+    raw = pad(raw).encode("utf8")
     iv = Random.new().read(AES.block_size)
     cipher = AES.new(private_key, AES.MODE_CBC, iv)
     return base64.b64encode(iv + cipher.encrypt(raw))

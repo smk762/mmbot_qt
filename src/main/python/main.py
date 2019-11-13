@@ -8,7 +8,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib
+from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api
 import qrcode
 import random
 from ui import coin_icons
@@ -387,7 +387,6 @@ class Ui(QTabWidget):
                 print(e)
                 self.creds = ['','','','','','','','']
                 pass
-            print(self.creds)
             if self.authenticated:            
                 if self.username in settings.value('users'):
                     self.authenticated = True
@@ -1334,6 +1333,10 @@ class Ui(QTabWidget):
             self.scrollbar.setValue(10000)
         pass
 
+    def show_binance_acct(self):
+        acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
+        print(acct_info)
+
     ## TABS
     def prepare_tab(self):
         QCoreApplication.processEvents()
@@ -1384,6 +1387,10 @@ class Ui(QTabWidget):
                 # logs
                 print('update_logs')
                 self.update_logs()
+            elif index == 10 :
+                # logs
+                print('binance_acct')
+                self.show_binance_acct()
         else:
             print('show_active - login')
             self.stacked_login.setCurrentIndex(0)
