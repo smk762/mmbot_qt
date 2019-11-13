@@ -453,7 +453,17 @@ class Ui(QTabWidget):
         for coin in gui_coins:
             gui_coins[coin]['checkbox'].hide()
             gui_coins[coin]['combo'].hide()
-            gui_coins[coin]['checkbox'].setText(coinslib.coin_api_codes[coin]['name'])
+            coin_label_txt = coinslib.coin_api_codes[coin]['name']
+            coin_label_api = ""
+            if coinslib.coin_api_codes[coin]['binance_id'] != '':
+                coin_label_api += "ᵇ"
+            if coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                coin_label_api += "ᵍ"
+            if coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                coin_label_api += "ᵖ"
+            if coin_label_api != "":
+                coin_label_api = " ⁽"+coin_label_api+"⁾"
+            gui_coins[coin]['checkbox'].setText(coin_label_txt+coin_label_api)
             if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
                 if coinslib.coin_activation[coin]['type'] == 'utxo':
                     display_coins_utxo.append(coin)
@@ -461,6 +471,30 @@ class Ui(QTabWidget):
                     display_coins_erc20.append(coin)
                 elif coinslib.coin_activation[coin]['type'] == 'smartchain':
                     display_coins_smartchain.append(coin)
+            if self.checkBox_binance_compatible_checkbox.isChecked():
+                if gui_coins[coin]['checkbox'].text().find("ᵇ") == -1:
+                    if coin in display_coins_erc20:
+                        display_coins_erc20.remove(coin)
+                    if coin in display_coins_utxo:
+                        display_coins_utxo.remove(coin)
+                    if coin in display_coins_smartchain:
+                        display_coins_smartchain.remove(coin)
+            if self.checkBox_gecko_compatible_checkbox.isChecked():
+                if gui_coins[coin]['checkbox'].text().find("ᵍ") == -1:
+                    if coin in display_coins_erc20:
+                        display_coins_erc20.remove(coin)
+                    if coin in display_coins_utxo:
+                        display_coins_utxo.remove(coin)
+                    if coin in display_coins_smartchain:
+                        display_coins_smartchain.remove(coin)
+            if self.checkBox_paprika_compatible_checkbox.isChecked():
+                if gui_coins[coin]['checkbox'].text().find("ᵖ") == -1:
+                    if coin in display_coins_erc20:
+                        display_coins_erc20.remove(coin)
+                    if coin in display_coins_utxo:
+                        display_coins_utxo.remove(coin)
+                    if coin in display_coins_smartchain:
+                        display_coins_smartchain.remove(coin)
             # TODO: lambda sort by coin_api_codes['name']
             display_coins_erc20.sort()
             display_coins_utxo.sort()
@@ -522,6 +556,26 @@ class Ui(QTabWidget):
     def select_all_utxo(self):
         state = self.checkBox_all_utxo.isChecked()
         self.select_all(state, 'utxo')
+
+    def select_all_api(self):
+        filter_list = []
+        if self.checkBox_binance_compatible_checkbox.isChecked():
+            filter_list.append("ᵇ")
+        if self.checkBox_gecko_compatible_checkbox.isChecked():
+            filter_list.append("ᵍ")
+        if self.checkBox_paprika_compatible_checkbox.isChecked():
+            filter_list.append("ᵖ")
+        for coin in gui_coins:
+            include_coin = ['True']
+            for apitype in filter_list:
+                if gui_coins[coin]['checkbox'].text().find(apitype) != -1:
+                    include_coin.append('True')
+                else:
+                    include_coin.append('False')
+            if 'False' not in include_coin:
+                gui_coins[coin]['checkbox'].setChecked(True)
+            else:
+                gui_coins[coin]['checkbox'].setChecked(False)
 
     ## SHOW ORDERS
     def show_orders(self):
@@ -1108,7 +1162,7 @@ class Ui(QTabWidget):
                 print(btc_price)
                 if btc_price != 0:
                     self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-                    self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
+                    self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" ₿")
                 else:
                     self.wallet_usd_value.setText("")
                     self.wallet_btc_value.setText("")

@@ -384,7 +384,7 @@ coin_activation = {
    }
 }
 
-coin_api_codes =  {
+coin_api_codes = {
    'AXE':{
       'coingecko_id':'axe',
       'binance_id':'',
