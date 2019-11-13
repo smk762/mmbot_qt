@@ -38,11 +38,11 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
+# TODO: set row count at table population based on num records to insert.
 # TODO: more images for activate and wallet page
 # TODO: Periodic threaded price/balance updates to cache.
 # TODO: Dropdowns in alpha order. Might need lambda function.
 # TODO: Detect if in activation loop on activate button press. Ignore or add extar coins if checked.
-# TODO: User specific trade values. BUY/SELL T/F in mm2.json?
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
 if 1 == 0:
     try:
@@ -1333,13 +1333,27 @@ class Ui(QTabWidget):
             self.scrollbar.setValue(10000)
         pass
 
-    ## Binance API
+    ## BINANCE API
     def show_binance_acct(self):
-        self.update_binance_balance_table()
+        tickers = self.update_binance_balance_table()
+        self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
+        print(tickers[0])
+        addr_text = self.get_binance_deposit_addr()
+        self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+        self.binance_addr_lbl.setText(addr_text)
+        self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
+
+    def update_binance_addr(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        addr_text = self.get_binance_deposit_addr(asset)['address']
+        self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+        binance_addr_lbl.setText(addr_text)
+        binance_coin_addr_lbl.setText(asset)
 
     def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
-        print(acct_info)
+        tickers = []
         self.clear_table(self.binance_balances_table)
         self.binance_balances_table.setSortingEnabled(False)
         rows = len(acct_info['balances'])
@@ -1350,6 +1364,8 @@ class Ui(QTabWidget):
             available = float(item['free'])
             locked = float(item['locked'])
             balance = locked + available
+            if balance > 0 or coin in coinslib.binance_coins:
+                tickers.append(coin)
             balance_row = [coin, balance, available, locked]
             col = 0
             for cell_data in balance_row:
@@ -1359,6 +1375,22 @@ class Ui(QTabWidget):
                 col += 1
             row += 1
         self.binance_balances_table.setSortingEnabled(True)
+        return tickers
+
+    def get_binance_deposit_addr(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], asset)
+        return resp['address']
+
+    def binance_withdraw(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        addr = self.binance_withdraw_addr_lineEdit.text()
+        amount = self.binance_withdraw_amount_spinbox.value()
+        resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
+        QMessageBox.information(self, 'Binance Withdraw', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+
     ## TABS
     def prepare_tab(self):
         QCoreApplication.processEvents()

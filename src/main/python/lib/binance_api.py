@@ -128,8 +128,6 @@ def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
         raise BinanceException(status_code=r.status_code, data=r.json())
 
 def get_account_info(api_key, api_secret):
-    print(api_key)
-    print(api_secret)
     path = '/api/v3/account'
     timestamp = int(time.time() * 1000)
     headers = {

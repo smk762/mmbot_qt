@@ -9106,7 +9106,7 @@
      <item row="5" column="0" colspan="3">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Order ID:</string>
+        <string>Order &amp;ID:</string>
        </property>
        <property name="buddy">
         <cstring>binance_order_id_comboBox</cstring>
@@ -9137,7 +9137,7 @@
      <rect>
       <x>570</x>
       <y>20</y>
-      <width>249</width>
+      <width>331</width>
       <height>162</height>
      </rect>
     </property>
@@ -9182,20 +9182,30 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="3">
-      <widget class="QDoubleSpinBox" name="binance_withdraw_amount_spinbox"/>
-     </item>
      <item row="4" column="0" colspan="3">
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="binance_address_btn">
        <property name="text">
         <string>get deposit address</string>
        </property>
       </widget>
      </item>
      <item row="4" column="3">
-      <widget class="QPushButton" name="pushButton_10">
+      <widget class="QPushButton" name="binance_withdraw_btn">
        <property name="text">
         <string>withdraw</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="2" colspan="2">
+      <widget class="QDoubleSpinBox" name="binance_withdraw_amount_spinbox">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>99999999999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.001000000000000</double>
        </property>
       </widget>
      </item>
@@ -9204,9 +9214,9 @@
    <widget class="QFrame" name="frame_33">
     <property name="geometry">
      <rect>
-      <x>1550</x>
+      <x>1510</x>
       <y>20</y>
-      <width>431</width>
+      <width>461</width>
       <height>801</height>
      </rect>
     </property>
@@ -9231,6 +9241,12 @@
      </item>
      <item>
       <widget class="QTableWidget" name="binance_balances_table">
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>110</number>
+       </attribute>
+       <attribute name="horizontalHeaderMinimumSectionSize">
+        <number>60</number>
+       </attribute>
        <column>
         <property name="text">
          <string>New Column</string>
@@ -9251,6 +9267,70 @@
          <string>Locked</string>
         </property>
        </column>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QFrame" name="frame_36">
+    <property name="geometry">
+     <rect>
+      <x>1119</x>
+      <y>30</y>
+      <width>371</width>
+      <height>431</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_8">
+     <item>
+      <widget class="QLabel" name="binance_addr_coin_lbl">
+       <property name="font">
+        <font>
+         <pointsize>18</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Binance Address</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="binance_qr_code">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>280</width>
+         <height>280</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="binance_addr_lbl">
+       <property name="font">
+        <font>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
       </widget>
      </item>
     </layout>
@@ -9934,6 +10014,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>binance_withdraw_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_withdraw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>849</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_address_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>get_binance_deposit_addr()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>691</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_asset_comboBox</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_binance_addr()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>803</x>
+     <y>67</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>429</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -9970,5 +10098,8 @@
   <slot>populate_buy_order_vals()</slot>
   <slot>create_setprice_buy()</slot>
   <slot>select_all_api()</slot>
+  <slot>binance_withdraw()</slot>
+  <slot>get_binance_deposit_addr()</slot>
+  <slot>update_binance_addr()</slot>
  </slots>
 </ui>
