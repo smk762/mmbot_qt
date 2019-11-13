@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7248,7 +7248,7 @@
        <number>32</number>
       </property>
       <property name="columnCount">
-       <number>8</number>
+       <number>11</number>
       </property>
       <attribute name="horizontalHeaderCascadingSectionResizes">
        <bool>true</bool>
@@ -7318,17 +7318,17 @@
       </column>
       <column>
        <property name="text">
-        <string>KMD Price (ave)</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>USD Price (ave)</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
         <string>BTC Price (mm2)</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>BTC Price delta</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>KMD Price (ave)</string>
        </property>
       </column>
       <column>
@@ -7338,7 +7338,22 @@
       </column>
       <column>
        <property name="text">
+        <string>KMD Price delta</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>USD Price (ave)</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
         <string>USD Price (mm2)</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>USD Price delta</string>
        </property>
       </column>
       <column>

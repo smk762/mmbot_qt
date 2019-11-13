@@ -417,7 +417,7 @@ coin_api_codes = {
    },
    'BTC':{
       'coingecko_id':'bitcoin',
-      'binance_id':'',
+      'binance_id':'BTC',
       'paprika_id':'btc-bitcoin',
       'name':'Bitcoin'
    },
@@ -616,7 +616,7 @@ coin_api_codes = {
    'ZEXO':{
       'coingecko_id':'zaddex',
       'binance_id':'',
-      'paprika_id':'zex-zaddex',
+      'paprika_id':'',
       'name':'Zaddex'
    },
    'ZILLA':{

@@ -77,14 +77,14 @@ def get_prices_data(node_ip, user_pass, coins_list):
     for item in binance_data:
         if item['symbol'] in binance_ids:
             binance_id = item['symbol'][:-3]
-            binance_prices[binance_id] = {
-                "btc":float(item['price'])
-            }
-    binance_ids = []
-    for coin in coinslib.coin_api_codes:
-        binance_id = coinslib.coin_api_codes[coin]['binance_id']
-        if binance_id != '':
-            binance_ids.append(binance_id)
+            if binance_id == 'BTC':
+                binance_prices[binance_id] = {
+                    "btc":1
+                }
+            else:
+                binance_prices[binance_id] = {
+                    "btc":float(item['price'])
+                }
 
     gecko_ids = []
     for coin in coinslib.coin_api_codes:
@@ -116,24 +116,35 @@ def get_prices_data(node_ip, user_pass, coins_list):
         paprika_id = coinslib.coin_api_codes[coin]['paprika_id']
         binance_id = coinslib.coin_api_codes[coin]['binance_id']
         if gecko_id != '':
-            gecko_usd = float(gecko_prices[gecko_id]['usd'])
-            gecko_btc = float(gecko_prices[gecko_id]['btc'])
-            btc_prices.append(gecko_btc)
-            usd_prices.append(gecko_usd)
+            try:
+                gecko_usd = float(gecko_prices[gecko_id]['usd'])
+                gecko_btc = float(gecko_prices[gecko_id]['btc'])
+                btc_prices.append(gecko_btc)
+                usd_prices.append(gecko_usd)
+            except:
+                gecko_usd = 'No Data'
+                gecko_btc = 'No Data'
         else:
             gecko_usd = 'No Data'
             gecko_btc = 'No Data'
         if paprika_id != '':
-            paprika_usd = float(paprika_prices[paprika_id]['usd'])
-            paprika_btc = float(paprika_prices[paprika_id]['btc'])
-            btc_prices.append(paprika_btc)
-            usd_prices.append(paprika_usd)
+            try:
+                paprika_usd = float(paprika_prices[paprika_id]['usd'])
+                paprika_btc = float(paprika_prices[paprika_id]['btc'])
+                btc_prices.append(paprika_btc)
+                usd_prices.append(paprika_usd)
+            except:
+                gecko_usd = 'No Data'
+                gecko_btc = 'No Data'
         else:
             paprika_usd = 'No Data'
             paprika_btc = 'No Data'
         if binance_id != '':
-            binance_btc = float(binance_prices[binance_id]['btc'])
-            btc_prices.append(binance_btc)
+            try:
+                binance_btc = float(binance_prices[binance_id]['btc'])
+                btc_prices.append(binance_btc)
+            except:
+                binance_btc = 'No Data'
         else:
             binance_btc = 'No Data'
         if len(btc_prices) > 0:
@@ -166,14 +177,15 @@ def get_prices_data(node_ip, user_pass, coins_list):
         else:
             coin_kmd_price = 'No Data'
         prices_data[coin].update({"kmd_price":coin_kmd_price})
+    # MM2 prices
     for coin in prices_data: 
         if coin in coins_list and prices_data[coin]["average_btc"] != 'No Data':
             if coin != 'KMD':
                 mm2_kmd_price = get_kmd_mm2_price(node_ip, user_pass, coin)
                 if mm2_kmd_price[1] != 'No Data':
                     prices_data[coin].update({'mm2_kmd_price':mm2_kmd_price[1]})
-                    prices_data[coin].update({'mm2_btc_price':prices_data[coin]["average_btc"]/mm2_kmd_price[1]})
-                    prices_data[coin].update({'mm2_usd_price':prices_data[coin]["average_usd"]/mm2_kmd_price[1]})
+                    prices_data[coin].update({'mm2_btc_price':mm2_kmd_price[1]*prices_data["KMD"]["average_btc"]})
+                    prices_data[coin].update({'mm2_usd_price':mm2_kmd_price[1]*prices_data["KMD"]["average_usd"]})
                 else:
                     prices_data[coin].update({'mm2_kmd_price':'No Data'})
                     prices_data[coin].update({'mm2_btc_price':'No Data'})
@@ -188,6 +200,8 @@ def get_prices_data(node_ip, user_pass, coins_list):
             prices_data[coin].update({'mm2_btc_price':'No Data'})
             prices_data[coin].update({'mm2_usd_price':'No Data'})
         sources = []
+        if prices_data[coin]["binance_btc"] != 'No Data':
+            sources.append('Binance')
         if prices_data[coin]["paprika_btc"] != 'No Data':
             sources.append('CoinPaprika')
         if prices_data[coin]["gecko_btc"] != 'No Data':

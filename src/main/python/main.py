@@ -471,30 +471,6 @@ class Ui(QTabWidget):
                     display_coins_erc20.append(coin)
                 elif coinslib.coin_activation[coin]['type'] == 'smartchain':
                     display_coins_smartchain.append(coin)
-            if self.checkBox_binance_compatible_checkbox.isChecked():
-                if gui_coins[coin]['checkbox'].text().find("ᵇ") == -1:
-                    if coin in display_coins_erc20:
-                        display_coins_erc20.remove(coin)
-                    if coin in display_coins_utxo:
-                        display_coins_utxo.remove(coin)
-                    if coin in display_coins_smartchain:
-                        display_coins_smartchain.remove(coin)
-            if self.checkBox_gecko_compatible_checkbox.isChecked():
-                if gui_coins[coin]['checkbox'].text().find("ᵍ") == -1:
-                    if coin in display_coins_erc20:
-                        display_coins_erc20.remove(coin)
-                    if coin in display_coins_utxo:
-                        display_coins_utxo.remove(coin)
-                    if coin in display_coins_smartchain:
-                        display_coins_smartchain.remove(coin)
-            if self.checkBox_paprika_compatible_checkbox.isChecked():
-                if gui_coins[coin]['checkbox'].text().find("ᵖ") == -1:
-                    if coin in display_coins_erc20:
-                        display_coins_erc20.remove(coin)
-                    if coin in display_coins_utxo:
-                        display_coins_utxo.remove(coin)
-                    if coin in display_coins_smartchain:
-                        display_coins_smartchain.remove(coin)
             # TODO: lambda sort by coin_api_codes['name']
             display_coins_erc20.sort()
             display_coins_utxo.sort()
@@ -1095,18 +1071,26 @@ class Ui(QTabWidget):
         else:
             prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
             print(prices_data)
+            self.prices_table.setSortingEnabled(False)
+            self.clear_table(self.prices_table)
             row = 0
             for item in prices_data:
                 if item in active_coins:
                     coin = item
-                    btc_price = prices_data[item]["average_btc"]
-                    usd_price = prices_data[item]["average_usd"]
-                    kmd_price = prices_data[item]["kmd_price"]
-                    mm2_btc_price = prices_data[item]["mm2_btc_price"]
-                    mm2_kmd_price = prices_data[item]["mm2_kmd_price"]
-                    mm2_usd_price = prices_data[item]["mm2_usd_price"]
+                    api_btc_price = str(round(prices_data[item]["average_btc"],8))+" ₿"
+                    mm2_btc_price = str(round(prices_data[item]["mm2_btc_price"],8))+" ₿"
+                    delta_btc_price = str(round(prices_data[item]["mm2_btc_price"]-prices_data[item]["average_btc"],8))+" ₿"
+                    api_kmd_price = round(prices_data[item]["kmd_price"],6)
+                    mm2_kmd_price = round(prices_data[item]["mm2_kmd_price"],6)
+                    delta_kmd_price = round(prices_data[item]["mm2_kmd_price"]-prices_data[item]["kmd_price"],6)
+                    api_usd_price = "$"+str(round(prices_data[item]["average_usd"],4))+" USD"
+                    mm2_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"],4))+" USD"
+                    delta_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"]-prices_data[item]["average_usd"],4))+" USD"
                     sources = prices_data[item]["sources"]
-                    price_row = [coin, btc_price, kmd_price, usd_price, mm2_btc_price, mm2_kmd_price, mm2_usd_price, sources]
+                    price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
+                                 api_kmd_price, mm2_kmd_price, delta_kmd_price,
+                                 api_usd_price, mm2_usd_price, delta_usd_price,
+                                 sources]
                     col = 0
                     for cell_data in price_row:
                         cell = QTableWidgetItem(str(cell_data))
