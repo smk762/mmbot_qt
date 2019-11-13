@@ -56,7 +56,6 @@ def get_price(api_key, ticker_pair):
     r = requests.get(url, headers=headers, params=params)
     return r.json()
 
-
 def get_orderbook(api_key, ticker_pair):
     path = '/api/v1/depth'
     headers = {
@@ -145,7 +144,6 @@ def get_account_info(api_key, api_secret):
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
     return r.json()
-
 
 def get_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'

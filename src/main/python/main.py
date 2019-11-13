@@ -1333,10 +1333,32 @@ class Ui(QTabWidget):
             self.scrollbar.setValue(10000)
         pass
 
+    ## Binance API
     def show_binance_acct(self):
+        self.update_binance_balance_table()
+
+    def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
         print(acct_info)
-
+        self.clear_table(self.binance_balances_table)
+        self.binance_balances_table.setSortingEnabled(False)
+        rows = len(acct_info['balances'])
+        self.binance_balances_table.setRowCount(rows)
+        row = 0
+        for item in acct_info['balances']:
+            coin = item['asset']
+            available = float(item['free'])
+            locked = float(item['locked'])
+            balance = locked + available
+            balance_row = [coin, balance, available, locked]
+            col = 0
+            for cell_data in balance_row:
+                cell = QTableWidgetItem(str(cell_data))
+                self.binance_balances_table.setItem(row,col,cell)
+                cell.setTextAlignment(Qt.AlignCenter)    
+                col += 1
+            row += 1
+        self.binance_balances_table.setSortingEnabled(True)
     ## TABS
     def prepare_tab(self):
         QCoreApplication.processEvents()
