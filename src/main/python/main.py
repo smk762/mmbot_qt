@@ -1077,15 +1077,42 @@ class Ui(QTabWidget):
             for item in prices_data:
                 if item in active_coins:
                     coin = item
-                    api_btc_price = str(round(prices_data[item]["average_btc"],8))+" ₿"
-                    mm2_btc_price = str(round(prices_data[item]["mm2_btc_price"],8))+" ₿"
-                    delta_btc_price = str(round(prices_data[item]["mm2_btc_price"]-prices_data[item]["average_btc"],8))+" ₿"
-                    api_kmd_price = round(prices_data[item]["kmd_price"],6)
-                    mm2_kmd_price = round(prices_data[item]["mm2_kmd_price"],6)
-                    delta_kmd_price = round(prices_data[item]["mm2_kmd_price"]-prices_data[item]["kmd_price"],6)
-                    api_usd_price = "$"+str(round(prices_data[item]["average_usd"],4))+" USD"
-                    mm2_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"],4))+" USD"
-                    delta_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"]-prices_data[item]["average_usd"],4))+" USD"
+                    try:
+                        api_btc_price = str(round(prices_data[item]["average_btc"],8))+" ₿"
+                    except:
+                        api_btc_price = "-"
+                    try:
+                        mm2_btc_price = str(round(prices_data[item]["mm2_btc_price"],8))+" ₿"
+                    except:
+                        mm2_btc_price = "-"
+                    try:
+                        delta_btc_price = str(round(prices_data[item]["mm2_btc_price"]-prices_data[item]["average_btc"],8))+" ₿"
+                    except:
+                        delta_btc_price = "-"
+                    try:
+                        api_kmd_price = round(prices_data[item]["kmd_price"],6)
+                    except:
+                        api_kmd_price = "-"
+                    try:
+                        mm2_kmd_price = round(prices_data[item]["mm2_kmd_price"],6)
+                    except:
+                        mm2_kmd_price = "-"
+                    try:
+                        delta_kmd_price = round(prices_data[item]["mm2_kmd_price"]-prices_data[item]["kmd_price"],6)
+                    except:
+                        delta_kmd_price = "-"
+                    try:
+                        api_usd_price = "$"+str(round(prices_data[item]["average_usd"],4))+" USD"
+                    except:
+                        api_usd_price = "-"
+                    try:
+                        mm2_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"],4))+" USD"
+                    except:
+                        mm2_usd_price = "-"
+                    try:
+                        delta_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"]-prices_data[item]["average_usd"],4))+" USD"
+                    except:
+                        delta_usd_price = "-"
                     sources = prices_data[item]["sources"]
                     price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
                                  api_kmd_price, mm2_kmd_price, delta_kmd_price,
