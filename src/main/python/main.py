@@ -1337,7 +1337,12 @@ class Ui(QTabWidget):
     def show_binance_acct(self):
         tickers = self.update_binance_balance_table()
         self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
-        print(tickers[0])
+        ticker_pairs = []
+        for ticker in tickers:
+            if ticker != "BTC":
+                ticker_pairs.append(ticker+"BTC")
+        self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
+        self.update_binance_orderbook()
         addr_text = self.get_binance_deposit_addr()
         self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         self.binance_addr_lbl.setText(addr_text)
@@ -1346,7 +1351,7 @@ class Ui(QTabWidget):
     def update_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
         asset = self.binance_asset_comboBox.itemText(index)
-        addr_text = self.get_binance_deposit_addr(asset)['address']
+        addr_text = self.get_binance_deposit_addr()
         self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         binance_addr_lbl.setText(addr_text)
         binance_coin_addr_lbl.setText(asset)
@@ -1376,6 +1381,40 @@ class Ui(QTabWidget):
             row += 1
         self.binance_balances_table.setSortingEnabled(True)
         return tickers
+
+    # TODO: dynamic column header update
+    # TODO: Improve available pairs selection
+    def update_binance_orderbook(self):
+        index = self.binance_ticker_pair_comboBox.currentIndex()
+        ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
+        orderbook = binance_api.get_orderbook(self.creds[5], ticker_pair)
+        self.clear_table(self.binance_orderbook_table)
+        self.binance_orderbook_table.setSortingEnabled(False)
+        self.binance_orderbook_table.setRowCount(10)
+        row = 0
+        for item in orderbook['bids']:
+            price = float(item[0])
+            volume = float(item[1])
+            balance_row = [ticker_pair, price, volume, 'bid']
+            col = 0
+            for cell_data in balance_row:
+                cell = QTableWidgetItem(str(cell_data))
+                self.binance_orderbook_table.setItem(row,col,cell)
+                cell.setTextAlignment(Qt.AlignCenter)    
+                col += 1
+            row += 1
+        for item in orderbook['asks']:
+            price = float(item[0])
+            volume = float(item[1])
+            balance_row = [ticker_pair, price, volume, 'ask']
+            col = 0
+            for cell_data in balance_row:
+                cell = QTableWidgetItem(str(cell_data))
+                self.binance_orderbook_table.setItem(row,col,cell)
+                cell.setTextAlignment(Qt.AlignCenter)    
+                col += 1
+            row += 1
+        self.binance_orderbook_table.setSortingEnabled(True)
 
     def get_binance_deposit_addr(self):
         index = self.binance_asset_comboBox.currentIndex()

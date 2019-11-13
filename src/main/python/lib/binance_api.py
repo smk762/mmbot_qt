@@ -68,9 +68,10 @@ def get_orderbook(api_key, ticker_pair):
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
     if r.status_code == 200:
-        print(json.dumps(r.json(), indent=2))
+        return r.json()
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
+
 
 def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     path = '/api/v3/order'
