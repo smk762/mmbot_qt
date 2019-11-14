@@ -9111,11 +9111,11 @@
         <widget class="QLabel" name="binance_addr_lbl">
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string/>
+          <string> </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -9242,6 +9242,44 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_43">
+       <item row="2" column="0">
+        <widget class="QFrame" name="frame_34">
+         <property name="minimumSize">
+          <size>
+           <width>341</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_30">
+          <item row="0" column="0">
+           <widget class="QPushButton" name="binance_cancel_selected_btn">
+            <property name="text">
+             <string>Cancel selected</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="binance_cancel_all_btn">
+            <property name="text">
+             <string>Cancel all</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="Binance_orders_lbl">
          <property name="font">
@@ -9369,44 +9407,6 @@
            <string>Time</string>
           </property>
          </column>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QFrame" name="frame_34">
-         <property name="minimumSize">
-          <size>
-           <width>341</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_30">
-          <item row="0" column="0">
-           <widget class="QPushButton" name="binance_delete_order_btn">
-            <property name="text">
-             <string>Cancel</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QPushButton" name="binance_view_order_btn">
-            <property name="text">
-             <string>Order</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
       </layout>
@@ -9635,16 +9635,6 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_44">
-       <item row="1" column="0">
-        <widget class="QGraphicsView" name="binance_history_graph">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>323</height>
-          </size>
-         </property>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QLabel" name="binance_history_lbl">
          <property name="font">
@@ -9657,6 +9647,16 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGraphicsView" name="binance_history_graph">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>323</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -10350,8 +10350,8 @@
    <slot>update_binance_addr()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1046</x>
-     <y>388</y>
+     <x>569</x>
+     <y>385</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10366,8 +10366,8 @@
    <slot>binance_withdraw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1184</x>
-     <y>449</y>
+     <x>707</x>
+     <y>446</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10384,6 +10384,38 @@
     <hint type="sourcelabel">
      <x>1837</x>
      <y>387</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_cancel_all_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_cancel_all_orders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1392</x>
+     <y>447</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_cancel_selected_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_cancel_selected_order()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>989</x>
+     <y>447</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10431,5 +10463,7 @@
   <slot>get_binance_deposit_addr()</slot>
   <slot>update_binance_addr()</slot>
   <slot>update_binance_orderbook()</slot>
+  <slot>binance_cancel_all_orders()</slot>
+  <slot>binance_cancel_selected_order()</slot>
  </slots>
 </ui>

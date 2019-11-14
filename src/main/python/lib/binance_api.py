@@ -85,7 +85,6 @@ def get_depth(api_key, ticker_pair, limit):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
-
 def get_open_orders(api_key, api_secret):
     path = '/api/v3/openOrders'
     timestamp = int(time.time() * 1000)
@@ -216,7 +215,7 @@ def delete_order(api_key, api_secret, ticker_pair, order_id):
     r = requests.delete(url, headers=headers, params=params)
     if r.status_code == 200:
         data = r.json()
-        print(json.dumps(data, indent=2))
+        return data
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 

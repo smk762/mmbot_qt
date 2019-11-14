@@ -1351,13 +1351,17 @@ class Ui(QTabWidget):
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
 
+
     def update_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
         asset = self.binance_asset_comboBox.itemText(index)
         addr_text = self.get_binance_deposit_addr()
-        self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+        if addr_text == 'Address not found - create it at Binance.com':
+            self.binance_qr_code.setPixmap(qrcode.make('https://www.binance.com/', image_factory=QR_image).pixmap())
+        else:
+            self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         self.binance_addr_lbl.setText(addr_text)
-        self.binance_coin_addr_lbl.setText(asset)
+        self.binance_addr_coin_lbl.setText("Binance "+asset+" Address")
 
     def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
@@ -1422,9 +1426,26 @@ class Ui(QTabWidget):
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
 
+
+    def get_binance_deposit_addr(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], asset)
+        if 'address' in resp:
+            return resp['address']
+        else:
+            return 'Address not found - create it at Binance.com'
+
+    def binance_withdraw(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        addr = self.binance_withdraw_addr_lineEdit.text()
+        amount = self.binance_withdraw_amount_spinbox.value()
+        resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
+        QMessageBox.information(self, 'Binance Withdraw', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+
     def update_orders_table(self):
         open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
-        print(open_orders)
         self.clear_table(self.binance_orders_table)
         self.binance_orders_table.setSortingEnabled(False)
         self.binance_orders_table.setRowCount(len(open_orders))
@@ -1447,19 +1468,41 @@ class Ui(QTabWidget):
             row += 1
         self.binance_orders_table.setSortingEnabled(True)
 
-    def get_binance_deposit_addr(self):
-        index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
-        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], asset)
-        return resp['address']
+    def binance_cancel_selected_order(self):
+        selected_row = self.binance_orders_table.currentRow()
+        print(selected_row)
+        if self.binance_orders_table.item(selected_row,0) is not None:
+            if self.binance_orders_table.item(selected_row,0).text() != '':
+                order_id = self.binance_orders_table.item(selected_row,0).text()
+                ticker_pair = self.binance_orders_table.item(selected_row,2).text()
+                resp = binance_api.delete_order(self.creds[5], self.creds[6], ticker_pair, order_id)
+                print(resp)
+                msg = ''
 
-    def binance_withdraw(self):
-        index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
-        addr = self.binance_withdraw_addr_lineEdit.text()
-        amount = self.binance_withdraw_amount_spinbox.value()
-        resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
-        QMessageBox.information(self, 'Binance Withdraw', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+                if "status" in resp:
+                    if resp["status"] == "CANCELED":
+                        msg = "Order "+order_id+" cancelled"
+                    else:
+                        msg = resp
+                else:
+                    msg = resp
+                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+        else:
+            QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+        self.update_orders_table()
+
+    def binance_cancel_all_orders(self):
+        open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
+        order_ids = []
+        for item in open_orders:
+            order_ids.append([item['orderId'],item['symbol']])
+        for order_id in order_ids:
+            binance_api.delete_order(self.creds[5], self.creds[6], order_id[1], order_id[0])
+            time.sleep(0.05)
+            self.update_orders_table()
+        QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
 
     ## TABS
     def prepare_tab(self):
