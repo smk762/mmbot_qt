@@ -56,14 +56,27 @@ def get_price(api_key, ticker_pair):
     r = requests.get(url, headers=headers, params=params)
     return r.json()
 
-def get_orderbook(api_key, ticker_pair):
-    path = '/api/v1/depth'
+def get_historicalTrades(api_key, ticker_pair):
+    path = '/api/v3/historicalTrades'
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+    params = {
+        'symbol': ticker_pair
+    }
+    url = urljoin(base_url, path)
+    r = requests.get(url, headers=headers, params=params)
+    return r.json()
+
+
+def get_depth(api_key, ticker_pair, limit):
+    path = '/api/v3/depth'
     headers = {
         'X-MBX-APIKEY': api_key
     }
     params = {
         'symbol': ticker_pair,
-        'limit': 5
+        'limit': limit
     }
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
@@ -72,6 +85,22 @@ def get_orderbook(api_key, ticker_pair):
     else:
         raise BinanceException(status_code=r.status_code, data=r.json())
 
+
+def get_open_orders(api_key, api_secret):
+    path = '/api/v3/openOrders'
+    timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+    params = {
+        'recvWindow': 5000,
+        'timestamp': timestamp
+    }
+    query_string = urlencode(params)
+    params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+    url = urljoin(base_url, path)
+    r = requests.get(url, headers=headers, params=params)
+    return r.json()
 
 def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     path = '/api/v3/order'

@@ -15,6 +15,8 @@ from ui import coin_icons
 import datetime
 import time
 
+import numpy as np
+import pyqtgraph as pg
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -1343,6 +1345,7 @@ class Ui(QTabWidget):
                 ticker_pairs.append(ticker+"BTC")
         self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
         self.update_binance_orderbook()
+        self.update_orders_table()
         addr_text = self.get_binance_deposit_addr()
         self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         self.binance_addr_lbl.setText(addr_text)
@@ -1353,8 +1356,8 @@ class Ui(QTabWidget):
         asset = self.binance_asset_comboBox.itemText(index)
         addr_text = self.get_binance_deposit_addr()
         self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
-        binance_addr_lbl.setText(addr_text)
-        binance_coin_addr_lbl.setText(asset)
+        self.binance_addr_lbl.setText(addr_text)
+        self.binance_coin_addr_lbl.setText(asset)
 
     def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
@@ -1387,10 +1390,11 @@ class Ui(QTabWidget):
     def update_binance_orderbook(self):
         index = self.binance_ticker_pair_comboBox.currentIndex()
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
-        orderbook = binance_api.get_orderbook(self.creds[5], ticker_pair)
+        depth_limit = 10
+        orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
         self.clear_table(self.binance_orderbook_table)
         self.binance_orderbook_table.setSortingEnabled(False)
-        self.binance_orderbook_table.setRowCount(10)
+        self.binance_orderbook_table.setRowCount(depth_limit*2)
         row = 0
         for item in orderbook['bids']:
             price = float(item[0])
@@ -1400,7 +1404,8 @@ class Ui(QTabWidget):
             for cell_data in balance_row:
                 cell = QTableWidgetItem(str(cell_data))
                 self.binance_orderbook_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)    
+                cell.setTextAlignment(Qt.AlignCenter)
+                self.binance_orderbook_table.item(row,col).setBackground(QColor(210, 255, 191))
                 col += 1
             row += 1
         for item in orderbook['asks']:
@@ -1411,10 +1416,36 @@ class Ui(QTabWidget):
             for cell_data in balance_row:
                 cell = QTableWidgetItem(str(cell_data))
                 self.binance_orderbook_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)    
+                cell.setTextAlignment(Qt.AlignCenter)
+                self.binance_orderbook_table.item(row,col).setBackground(QColor(255, 181, 181))
                 col += 1
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
+
+    def update_orders_table(self):
+        open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
+        print(open_orders)
+        self.clear_table(self.binance_orders_table)
+        self.binance_orders_table.setSortingEnabled(False)
+        self.binance_orders_table.setRowCount(len(open_orders))
+        row = 0
+        for item in open_orders:
+            order_id = item['orderId']
+            side = item['side']
+            symbol = item['symbol']
+            price = item['price']
+            qty = item['origQty']
+            filled = item['executedQty']
+            time = datetime.datetime.fromtimestamp(int(item['time']/1000))
+            balance_row = [order_id, side, symbol, price, qty, filled, time]
+            col = 0
+            for cell_data in balance_row:
+                cell = QTableWidgetItem(str(cell_data))
+                self.binance_orders_table.setItem(row,col,cell)
+                cell.setTextAlignment(Qt.AlignCenter)
+                col += 1
+            row += 1
+        self.binance_orders_table.setSortingEnabled(True)
 
     def get_binance_deposit_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
