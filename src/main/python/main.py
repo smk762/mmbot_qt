@@ -1393,6 +1393,7 @@ class Ui(QTabWidget):
     # TODO: Improve available pairs selection
     def update_binance_orderbook(self):
         index = self.binance_ticker_pair_comboBox.currentIndex()
+        self.binance_price_spinbox.setValue(0)
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
         depth_limit = 10
         orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
@@ -1425,7 +1426,42 @@ class Ui(QTabWidget):
                 col += 1
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
+        self.binance_orderbook_table.sortItems(1)
+        base = ticker_pair.replace("BTC","")
+        self.binance_sell_btn.setText("Sell "+base)
+        self.binance_buy_btn.setText("Buy "+base)
 
+    def update_binance_price_val(self):
+        selected_row = self.binance_orderbook_table.currentRow()
+        price = self.binance_orderbook_table.item(selected_row,1).text()
+        order_type = self.binance_orderbook_table.item(selected_row,3).text()
+        self.binance_price_spinbox.setValue(float(price))
+
+    def binance_buy(self):
+        qty = '{:.8f}'.format(self.binance_qty_spinbox.value())
+        price = '{:.8f}'.format(self.binance_price_spinbox.value())
+        index = self.binance_ticker_pair_comboBox.currentIndex()
+        ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
+        resp = binance_api.create_buy_order(self.creds[5], self.creds[6], ticker_pair, qty, price)
+        if 'orderId' in resp:
+            msg = "Order submitted!"
+            QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+        else:
+            QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.update_orders_table()
+
+    def binance_sell(self):
+        qty = '{:.8f}'.format(self.binance_qty_spinbox.value())
+        price = '{:.8f}'.format(self.binance_price_spinbox.value())
+        index = self.binance_ticker_pair_comboBox.currentIndex()
+        ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
+        resp = binance_api.create_sell_order(self.creds[5], self.creds[6], ticker_pair, qty, price)
+        if 'orderId' in resp:
+            msg = "Order submitted!"
+            QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+        else:
+            QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.update_orders_table()
 
     def get_binance_deposit_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
@@ -1470,7 +1506,6 @@ class Ui(QTabWidget):
 
     def binance_cancel_selected_order(self):
         selected_row = self.binance_orders_table.currentRow()
-        print(selected_row)
         if self.binance_orders_table.item(selected_row,0) is not None:
             if self.binance_orders_table.item(selected_row,0).text() != '':
                 order_id = self.binance_orders_table.item(selected_row,0).text()
@@ -1503,6 +1538,7 @@ class Ui(QTabWidget):
             time.sleep(0.05)
             self.update_orders_table()
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
+
 
     ## TABS
     def prepare_tab(self):

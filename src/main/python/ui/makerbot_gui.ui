@@ -9092,6 +9092,9 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item>
         <widget class="QLabel" name="binance_addr_coin_lbl">
          <property name="font">
@@ -9156,6 +9159,9 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_41">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="1" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
@@ -9242,6 +9248,9 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_43">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="2" column="0">
         <widget class="QFrame" name="frame_34">
          <property name="minimumSize">
@@ -9263,6 +9272,9 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_30">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QPushButton" name="binance_cancel_selected_btn">
             <property name="text">
@@ -9281,7 +9293,7 @@
         </widget>
        </item>
        <item row="0" column="0">
-        <widget class="QLabel" name="Binance_orders_lbl">
+        <widget class="QLabel" name="binance_orders_lbl">
          <property name="font">
           <font>
            <pointsize>18</pointsize>
@@ -9439,27 +9451,9 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_47">
-       <item row="0" column="0">
-        <widget class="QLabel" name="binance_depth_lbl">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>18</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Binance Depth</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
        <item row="1" column="0">
         <widget class="QTableWidget" name="binance_orderbook_table">
          <property name="minimumSize">
@@ -9478,6 +9472,12 @@
           <font>
            <pointsize>10</pointsize>
           </font>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
          </property>
          <property name="rowCount">
           <number>10</number>
@@ -9529,6 +9529,27 @@
          </column>
         </widget>
        </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="binance_depth_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>18</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Binance Depth</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QFrame" name="frame_39">
          <property name="minimumSize">
@@ -9550,70 +9571,77 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_42">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_18">
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_19">
             <property name="text">
-             <string>Order &amp;Qty:</string>
+             <string>Pair:</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
-           <widget class="QPushButton" name="binance_create_sell_btn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_20">
+            <property name="text">
+             <string>Price:</string>
             </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_18">
+            <property name="text">
+             <string>Qty:</string>
             </property>
-            <property name="maximumSize">
-             <size>
-              <width>150</width>
-              <height>16777215</height>
-             </size>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="binance_price_spinbox">
+            <property name="decimals">
+             <number>8</number>
+            </property>
+            <property name="maximum">
+             <double>99999999.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000010000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="2">
+           <widget class="QDoubleSpinBox" name="binance_qty_spinbox">
+            <property name="decimals">
+             <number>8</number>
+            </property>
+            <property name="maximum">
+             <double>999999999.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.000100000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QPushButton" name="binance_sell_btn">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Sell</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Ticker Pair:</string>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1" colspan="2">
            <widget class="QComboBox" name="binance_ticker_pair_comboBox"/>
           </item>
-          <item row="1" column="1" colspan="2">
-           <widget class="QDoubleSpinBox" name="binance_qty_spinbox"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="binance_create_buy_btn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>150</width>
-              <height>16777215</height>
-             </size>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="binance_buy_btn">
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
             </property>
             <property name="text">
              <string>Buy</string>
@@ -10382,8 +10410,8 @@
    <slot>update_binance_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1837</x>
-     <y>387</y>
+     <x>1776</x>
+     <y>355</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10416,6 +10444,54 @@
     <hint type="sourcelabel">
      <x>989</x>
      <y>447</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_orderbook_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_binance_price_val()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1799</x>
+     <y>189</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_buy_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_buy()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1799</x>
+     <y>448</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_sell_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_sell()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1909</x>
+     <y>448</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10465,5 +10541,8 @@
   <slot>update_binance_orderbook()</slot>
   <slot>binance_cancel_all_orders()</slot>
   <slot>binance_cancel_selected_order()</slot>
+  <slot>update_binance_price_val()</slot>
+  <slot>binance_buy()</slot>
+  <slot>binance_sell()</slot>
  </slots>
 </ui>

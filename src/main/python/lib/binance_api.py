@@ -123,11 +123,7 @@ def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
 
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    if r.status_code == 200:
-        data = r.json()
-        print(json.dumps(data, indent=2))
-    else:
-        raise BinanceException(status_code=r.status_code, data=r.json())
+    return r.json()
 
 def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     print("Selling "+str(qty)+" "+ticker_pair+" at "+str(price))
@@ -150,11 +146,7 @@ def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    if r.status_code == 200:
-        data = r.json()
-        print(json.dumps(data, indent=2))
-    else:
-        raise BinanceException(status_code=r.status_code, data=r.json())
+    return r.json()
 
 def get_account_info(api_key, api_secret):
     path = '/api/v3/account'
