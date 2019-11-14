@@ -227,6 +227,22 @@ def get_deposit_addr(api_key, api_secret, asset):
     r = requests.get(url, headers=headers, params=params)
     return r.json()
 
+# Returns error 500 at the moment
+def asset_detail(api_key, api_secret):
+    path = '/wapi/v3/assetDetail.html'
+    timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+    params = {
+        'timestamp': timestamp
+    }
+    query_string = urlencode(params)
+    params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+    url = urljoin(base_url, path)
+    r = requests.post(url, headers=headers, params=params)
+    return r.json()
+
 def withdraw(api_key, api_secret, asset, addr, amount):
     path = '/wapi/v3/withdraw.html'
     timestamp = int(time.time() * 1000)

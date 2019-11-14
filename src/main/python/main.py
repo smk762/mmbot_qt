@@ -1477,18 +1477,42 @@ class Ui(QTabWidget):
         asset = self.binance_asset_comboBox.itemText(index)
         addr = self.binance_withdraw_addr_lineEdit.text()
         amount = self.binance_withdraw_amount_spinbox.value()
-        resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
-        print(resp.keys())
-        if 'id' in resp:
-            txid = resp['id']
-            msg = "Sent!\n"
-            if coinslib.coin_explorers[asset]['tx_explorer'] != '':
-                msg += "<a href='"+coinslib.coin_explorers[asset]['tx_explorer']+"/"+txid+"'>[Link to block explorer]</href>"
-            else:
-                msg += "TXID: ["+txid+"]"
+        msg = ''
+        '''
+        # This API method is returning error 500
+        resp = binance_api.asset_detail(self.creds[5], self.creds[6])
+        min_withdraw = resp['asset_detail'][asset]['minWithdrawAmount']
+        fee = resp['asset_detail'][asset]['withdrawFee']
+        status = resp['asset_detail'][asset]['withdrawStatus']
+        proceed = True
+        if amount < float(min_withdraw):
+            msg += "Withdraw amount is less than Binance minimum!"
+            proceed = False
+        if not status:
+            msg += "Withdrawl of "+asset+" is currently suspended on Binance!"
+            proceed = False
+        if not proceed:
+            QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+
         else:
-            msg = resp
-        QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+        '''
+        confirm_msg = 'Confirm withdraw:\n\n'
+        confirm_msg += str(amount)+' '+asset+' to '+addr+'\n\n'
+        confirm_msg += "Check https://www.binance.com/en/fee/schedule for withdrawl fee details\n\n"
+        confirm = QMessageBox.question(self, "Confirm withdraw?", confirm_msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+        if confirm == QMessageBox.Yes:
+            proceed = True
+        else:
+            proceed = False
+        if proceed:
+            resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
+            print(resp.keys())
+            if 'id' in resp:
+                txid = resp['id']
+                msg += "Sent!\n"
+            else:
+                msg += str(resp)
+            QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_orders_table(self):
         open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
