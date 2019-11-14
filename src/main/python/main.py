@@ -15,8 +15,11 @@ from ui import coin_icons
 import datetime
 import time
 
+'''
+will try graphing later with these imports
 import numpy as np
 import pyqtgraph as pg
+'''
 
 cwd = os.getcwd()
 script_path = sys.path[0]
