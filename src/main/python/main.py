@@ -1478,7 +1478,17 @@ class Ui(QTabWidget):
         addr = self.binance_withdraw_addr_lineEdit.text()
         amount = self.binance_withdraw_amount_spinbox.value()
         resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
-        QMessageBox.information(self, 'Binance Withdraw', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        print(resp.keys())
+        if 'id' in resp:
+            txid = resp['id']
+            msg = "Sent!\n"
+            if coinslib.coin_explorers[asset]['tx_explorer'] != '':
+                msg += "<a href='"+coinslib.coin_explorers[asset]['tx_explorer']+"/"+txid+"'>[Link to block explorer]</href>"
+            else:
+                msg += "TXID: ["+txid+"]"
+        else:
+            msg = resp
+        QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_orders_table(self):
         open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])

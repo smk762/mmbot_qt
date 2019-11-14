@@ -9173,7 +9173,7 @@
            <widget class="QLineEdit" name="binance_withdraw_addr_lineEdit">
             <property name="font">
              <font>
-              <pointsize>10</pointsize>
+              <pointsize>9</pointsize>
              </font>
             </property>
            </widget>
