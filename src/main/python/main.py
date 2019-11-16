@@ -14,12 +14,16 @@ import random
 from ui import coin_icons
 import datetime
 import time
+import dateutil.parser
 
-'''
-will try graphing later with these imports
+
+# will try graphing later with these imports
 import numpy as np
 import pyqtgraph as pg
-'''
+from pyqtgraph.Point import Point
+
+pg.setConfigOption('background', (64,64,64))
+pg.setConfigOption('foreground', (78,155,46))
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -61,6 +65,58 @@ if 1 == 0:
     except:
         pass
 os.environ['MM_COINS_PATH'] = config_path+"coins"
+
+
+class bot_trading_thread(QThread):
+    trigger = pyqtSignal(str, str)
+    def __init__(self, creds, sell_coins, buy_coins, active_coins, premium):
+        QThread.__init__(self)
+        self.creds = creds
+        self.sell_coins = sell_coins
+        self.buy_coins = buy_coins
+        self.active_coins = active_coins
+        self.premium = premium
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):        
+        while True:                
+            for base in self.sell_coins:
+                if base in self.active_coins:
+                    balance_info = rpclib.my_balance(self.creds[0], self.creds[1], base).json()
+                    if 'address' in balance_info:
+                        balance_text = balance_info['balance']
+                        locked_text = balance_info['locked_by_swaps']
+                        available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
+                        for rel in self.buy_coins:
+                            if rel in self.active_coins:
+                                if base != rel:
+                                    if rel in coinslib.binance_coins:
+                                        base_btc_price = priceslib.get_btc_price(self.creds[5], base)
+                                        rel_btc_price = priceslib.get_btc_price(self.creds[5], rel)
+                                        rel_price = base_btc_price/rel_btc_price
+                                        trade_price = rel_price+rel_price*self.premium
+                                        trade_val = round(float(rel_price)*float(available_balance),8)
+                                        timestamp = int(time.time()/1000)*1000
+                                        time_str = datetime.datetime.fromtimestamp(timestamp)
+                                        prefix = str(time_str)+" (MM2): "
+                                        log_msg = prefix+" [Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_val)+" "+rel
+                                        resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, available_balance, trade_price, True, True).json()
+                                        if 'error' in resp:
+                                            if resp['error'].find("larger than available") > -1:
+                                                msg = "Insufficient funds to complete order."
+                                            else:
+                                                msg = resp
+                                        elif 'result' in resp:
+                                            msg = "New order submitted (previous "+base+"/"+rel+" orders cancelled)."
+                                        else:
+                                            msg = resp
+                                        self.trigger.emit(log_msg, str(msg))
+            time.sleep(120)
+
+    def stop(self):
+        self.terminate()
 
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
@@ -104,6 +160,11 @@ class QR_image(qrcode.image.base.BaseImage):
     def save(self, stream, kind=None):
         pass
 
+class crosshair_lines(pg.InfiniteLine):
+    def __init__(self, *args, **kwargs):
+        pg.InfiniteLine.__init__(self, *args, **kwargs)
+        self.setCursor(Qt.CrossCursor)
+
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
@@ -112,6 +173,7 @@ class Ui(QTabWidget):
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
         self.authenticated = False
+        self.bot_trading = False
         global gui_coins
         gui_coins = {
             "BTC": {
@@ -297,7 +359,7 @@ class Ui(QTabWidget):
                     pass
             table_csv += ','.join(row_list)+'\r\n'
         now = datetime.datetime.now()
-        timestamp = timestamp = datetime.datetime.timestamp(now)
+        timestamp = datetime.datetime.timestamp(now)
         filename = self.saveFileDialog()
         if filename != '':
             with open(filename, 'w') as f:
@@ -338,13 +400,13 @@ class Ui(QTabWidget):
     # Runs whenever activation_thread signals a coin has been activated
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+        self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         existing_coins = []
         for i in range(self.wallet_combo.count()):
             existing_coin = self.wallet_combo.itemText(i)
             existing_coins.append(existing_coin)
         for coin in gui_coins:
-            if coin in active_coins:
+            if coin in self.active_coins:
                 gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
                 if coin not in existing_coins:
                     self.wallet_combo.addItem(coin)
@@ -485,29 +547,32 @@ class Ui(QTabWidget):
 
     def activate_coins(self):
         print('Start activate')
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         coins_to_activate = []
         autoactivate = []
-        buy_coins = []
-        sell_coins = []
+        self.buy_coins = []
+        self.sell_coins = []
         for coin in gui_coins:
+            print("---"+coin+"----")
+            print(self.buy_coins)
+            print(self.sell_coins)
             combo = gui_coins[coin]['combo']
             checkbox = gui_coins[coin]['checkbox']
             if checkbox.isChecked():
                 autoactivate.append(coin)
-                if coin not in active_coins:
+                if coin not in self.active_coins:
                     coins_to_activate.append([coin,combo])
+            print(combo.itemText(combo.currentIndex()))
             if combo.itemText(combo.currentIndex()) == 'Buy':
-                buy_coins.append(coin)
+                self.buy_coins.append(coin)
             elif combo.itemText(combo.currentIndex()) == 'Sell':
-                sell_coins.append(coin)
-            elif combo.itemText(combo.currentIndex()) == 'Buy & Sell':
-                buy_coins.append(coin)
-                sell_coins.append(coin)
+                self.sell_coins.append(coin)
+            elif combo.itemText(combo.currentIndex()) == 'Buy & sell':
+                self.buy_coins.append(coin)
+                self.sell_coins.append(coin)
             activate_list = {
                 "autoactivate":autoactivate,
-                "buy_coins":buy_coins,
-                "sell_coins":sell_coins
+                "buy_coins":self.buy_coins,
+                "sell_coins":self.sell_coins
             }
         with open(config_path+self.username+"_coins.json", 'w') as j:
             j.write(json.dumps(activate_list))
@@ -690,8 +755,7 @@ class Ui(QTabWidget):
     ## SHOW ORDERBOOK
 
     def show_orderbook(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        if len(active_coins) < 2:
+        if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
@@ -706,9 +770,10 @@ class Ui(QTabWidget):
                 rel = self.orderbook_sell_combo.itemText(index)
             else:
                 rel = ''
-            base = self.update_combo(self.orderbook_buy_combo,active_coins,base)
-            active_coins.remove(base)
-            rel = self.update_combo(self.orderbook_sell_combo,active_coins,rel)
+            active_coins_selection = self.active_coins[:]
+            base = self.update_combo(self.orderbook_buy_combo,active_coins_selection,base)
+            active_coins_selection.remove(base)
+            rel = self.update_combo(self.orderbook_sell_combo,active_coins_selection,rel)
             self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
 
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
@@ -735,7 +800,7 @@ class Ui(QTabWidget):
                     row += 1
             self.orderbook_table.setSortingEnabled(True)
 
-    def update_orderbook_combos(self, base, rel, active_coins):
+    def update_orderbook_combos(self, base, rel):
         pass
 
     def orderbook_buy(self):
@@ -778,8 +843,7 @@ class Ui(QTabWidget):
 
     ## BUY ORDER PAGE - PENDING
     def show_create_buy(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        if len(active_coins) < 2:
+        if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
@@ -794,9 +858,10 @@ class Ui(QTabWidget):
                 rel = self.create_buy_sell_combo.itemText(index)
             else:
                 rel = ''
-            base = self.update_combo(self.create_buy_buy_combo,active_coins,base)
-            active_coins.remove(base)
-            rel = self.update_combo(self.create_buy_sell_combo,active_coins,rel)
+            active_coins_selection = self.active_coins[:]
+            base = self.update_combo(self.create_buy_buy_combo,active_coins_selection,base)
+            active_coins_selection.remove(base)
+            rel = self.update_combo(self.create_buy_sell_combo,active_coins_selection,rel)
             # Update labels
             self.create_buy_amount_lbl.setText("Buy Amount ("+base+")")
             self.create_buy_price_lbl.setText("Buy Price ("+rel+")")
@@ -902,8 +967,7 @@ class Ui(QTabWidget):
 
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
     def show_create_sell(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        if len(active_coins) < 2:
+        if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
@@ -912,7 +976,7 @@ class Ui(QTabWidget):
             base = self.create_buy_combo.itemText(index)
             index = self.create_sell_combo.currentIndex()
             rel = self.create_sell_combo.itemText(index)
-            pair = self.update_create_order_combos(base, rel, active_coins)
+            pair = self.update_create_order_combos(base, rel)
             base = pair[0]
             rel = pair[1]
             self.create_sell_depth_baserel_lbl.setText(base+"/"+rel)
@@ -939,7 +1003,7 @@ class Ui(QTabWidget):
                     row += 1
             self.sell_depth_table.setSortingEnabled(True)
 
-    def update_create_order_combos(self, base, rel, active_coins):
+    def update_create_order_combos(self, base, rel):
         existing_sell_coins = []
         for i in range(self.create_sell_combo.count()):
             existing_sell_coin = self.create_sell_combo.itemText(i)
@@ -949,7 +1013,7 @@ class Ui(QTabWidget):
             existing_buy_coin = self.create_buy_combo.itemText(i)
             existing_buy_coins.append(existing_buy_coin)
         # add activated if not in combobox if not already there.
-        for coin in active_coins:
+        for coin in self.active_coins:
             if coin not in existing_sell_coins:
                 self.create_sell_combo.addItem(coin)
             if rel == '':
@@ -1067,19 +1131,18 @@ class Ui(QTabWidget):
 
     ## PRICES
     def show_prices(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        if len(active_coins) < 1:
+        if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
+            prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],self.active_coins)
             print(prices_data)
             self.prices_table.setSortingEnabled(False)
             self.clear_table(self.prices_table)
             row = 0
             for item in prices_data:
-                if item in active_coins:
+                if item in self.active_coins:
                     coin = item
                     try:
                         api_btc_price = str(round(prices_data[item]["average_btc"],8))+" ₿"
@@ -1133,8 +1196,7 @@ class Ui(QTabWidget):
 
     ## WALLET
     def show_wallet(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        if len(active_coins) < 1:
+        if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
@@ -1144,7 +1206,7 @@ class Ui(QTabWidget):
             for i in range(self.wallet_combo.count()):
                 existing_coin = self.wallet_combo.itemText(i)
                 existing_coins.append(existing_coin)
-            for coin in active_coins:
+            for coin in self.active_coins:
                 if coin not in existing_coins:
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
@@ -1164,7 +1226,7 @@ class Ui(QTabWidget):
                 self.wallet_balance.setText(str(balance_text))
                 self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
                 if coinslib.coin_api_codes[coin]['paprika_id'] != '':
-                    price = priceslib.gecko_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+                    price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
                     usd_price = float(price['price_usd'])
                     btc_price = float(price['price_btc'])
                 elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
@@ -1341,6 +1403,7 @@ class Ui(QTabWidget):
     ## BINANCE API
     def show_binance_acct(self):
         tickers = self.update_binance_balance_table()
+        print(tickers)
         self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
         ticker_pairs = []
         for ticker in tickers:
@@ -1349,16 +1412,17 @@ class Ui(QTabWidget):
         self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
         self.update_binance_orderbook()
         self.update_orders_table()
+        self.update_history_graph()
         addr_text = self.get_binance_deposit_addr()
         self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
 
-
     def update_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
         asset = self.binance_asset_comboBox.itemText(index)
         addr_text = self.get_binance_deposit_addr()
+        self.update_history_graph()
         if addr_text == 'Address not found - create it at Binance.com':
             self.binance_qr_code.setPixmap(qrcode.make('https://www.binance.com/', image_factory=QR_image).pixmap())
         else:
@@ -1366,31 +1430,118 @@ class Ui(QTabWidget):
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+asset+" Address")
 
+
+    def update_history_graph(self):
+        index = self.binance_asset_comboBox.currentIndex()
+        asset = self.binance_asset_comboBox.itemText(index)
+        coin_id = coinslib.coin_api_codes[asset]['paprika_id']
+        if coin_id != '':
+            history = priceslib.get_paprika_history(coin_id)
+            x = []
+            x_str = []
+            y = []
+            mth_ticks = []
+            self.xy = {}
+            last_month = ''
+            for item in history:
+                y.append(item['price'])
+                dt = dateutil.parser.parse(item['timestamp'])
+                x.append(int(datetime.datetime.timestamp(dt)))
+                x_str.append(item['timestamp'])
+                month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
+                if month != last_month:
+                    if last_month != '':
+                        mth_ticks.append((int(datetime.datetime.timestamp(dt)),month))
+                    last_month = month
+                self.xy.update({str(int(datetime.datetime.timestamp(dt))):item['price']})
+
+            self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
+            self.binance_history_graph.setXRange(min(x),max(x), padding=0)
+            self.binance_history_graph.clear()
+
+
+            #self.price_curve = pg.PlotCurveItem(
+            price_curve = self.binance_history_graph.plot(
+                    x,
+                    y, 
+                    pen={'color':(78,155,46)},
+                    fillLevel=0, brush=(50,50,200,100),
+                )
+            self.binance_history_graph.addItem(price_curve)
+            self.binance_history_graph.setLabel('left', '$USD')
+            self.binance_history_graph.setLabel('bottom', '', units=None)
+            self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
+            price_ticks = self.binance_history_graph.getAxis('left')
+            price_ticks.enableAutoSIPrefix(enable=False)
+            date_ticks = self.binance_history_graph.getAxis('bottom')    
+            date_ticks.setTicks([mth_ticks])
+            date_ticks.enableAutoSIPrefix(enable=False)
+            self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
+            self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
+            self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
+            price = priceslib.get_paprika_price(coin_id).json()
+            usd_price = float(price['price_usd'])
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:8pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+            text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
+            self.binance_history_graph.addItem(text)
+            text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
+
+
+    def getDatePrice(self):
+        min_delta = 999999999999
+        xpos = self.vLine.getXPos()
+        print(xpos)
+        for item in self.xy:
+            delta = abs(int(item) - xpos)
+            if delta < min_delta:
+                min_delta = delta
+                ref_time = item
+                ref_price = self.xy[str(item)]
+        print("time: "+str(datetime.datetime.fromtimestamp(int(ref_time))))
+        print("price: "+str(ref_price))
+
+    def getPrice(self, x):
+        min_delta = 999999999999
+        for item in self.xy:
+            delta = abs(int(item) - x)
+            if delta < min_delta:
+                min_delta = delta
+                ref_time = item
+                ref_price = self.xy[str(item)]
+        print("time: "+str(datetime.datetime.fromtimestamp(int(ref_time))))
+        print("price: "+str(ref_price))
+        return ref_price
+
     def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
-        tickers = []
-        self.clear_table(self.binance_balances_table)
-        self.binance_balances_table.setSortingEnabled(False)
-        rows = len(acct_info['balances'])
-        self.binance_balances_table.setRowCount(rows)
-        row = 0
-        for item in acct_info['balances']:
-            coin = item['asset']
-            available = float(item['free'])
-            locked = float(item['locked'])
-            balance = locked + available
-            if balance > 0 or coin in coinslib.binance_coins:
-                tickers.append(coin)
-            balance_row = [coin, balance, available, locked]
-            col = 0
-            for cell_data in balance_row:
-                cell = QTableWidgetItem(str(cell_data))
-                self.binance_balances_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)    
-                col += 1
-            row += 1
-        self.binance_balances_table.setSortingEnabled(True)
-        return tickers
+        if 'msg' in acct_info:
+            QMessageBox.information(self, 'Binance API key error!', str(acct_info['msg']), QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+        else:
+            tickers = []
+            if 'balances' in acct_info:
+                self.clear_table(self.binance_balances_table)
+                self.binance_balances_table.setSortingEnabled(False)
+                rows = len(acct_info['balances'])
+                self.binance_balances_table.setRowCount(rows)
+                row = 0
+                for item in acct_info['balances']:
+                    coin = item['asset']
+                    available = float(item['free'])
+                    locked = float(item['locked'])
+                    balance = locked + available
+                    if balance > 0 or coin in coinslib.binance_coins:
+                        tickers.append(coin)
+                    balance_row = [coin, balance, available, locked]
+                    col = 0
+                    for cell_data in balance_row:
+                        cell = QTableWidgetItem(str(cell_data))
+                        self.binance_balances_table.setItem(row,col,cell)
+                        cell.setTextAlignment(Qt.AlignCenter)    
+                        col += 1
+                    row += 1
+                self.binance_balances_table.setSortingEnabled(True)
+            return tickers
 
     # TODO: dynamic column header update
     # TODO: Improve available pairs selection
@@ -1519,6 +1670,8 @@ class Ui(QTabWidget):
 
     def update_orders_table(self):
         open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
+        if 'msg' in open_orders:
+            QMessageBox.information(self, 'Binance API key error!', str(open_orders['msg']), QMessageBox.Ok, QMessageBox.Ok)
         self.clear_table(self.binance_orders_table)
         self.binance_orders_table.setSortingEnabled(False)
         self.binance_orders_table.setRowCount(len(open_orders))
@@ -1577,9 +1730,54 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
 
 
+    ## BOT TRADES
+    def show_bot_trades(self):
+        if len(self.active_coins) < 2:
+            msg = 'Please activate at least two coins. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            self.populate_bot_lists()
+
+    def populate_bot_lists(self):
+        self.bot_buy_list.clear()
+        self.bot_sell_list.clear()
+        print(self.buy_coins)
+        print(self.sell_coins)
+        for buy_coin in self.buy_coins:
+            if buy_coin not in self.active_coins:
+                buy_coin = buy_coin+ " (inactive)"
+            elif buy_coin not in coinslib.binance_coins:
+                buy_coin = buy_coin+ " (not on Binance, mm2 only)"
+            self.bot_buy_list.addItem(buy_coin)
+        for sell_coin in self.sell_coins:
+            if sell_coin not in self.active_coins:
+                sell_coin = sell_coin+ " (inactive)"
+            elif sell_coin not in coinslib.binance_coins:
+                sell_coin = sell_coin+ " (not on Binance, mm2 only)"
+            self.bot_sell_list.addItem(sell_coin)
+
+    def start_bot_trading(self):
+        print(self.bot_trading)
+        premium = self.margin_input.value()/100
+        self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins, premium)
+        if self.bot_trading:
+            self.bot_trading = False
+            self.bot_trade_thread.stop()
+        else:
+            self.bot_trading = True
+            self.bot_trade_thread.trigger.connect(self.update_bot_log)
+            self.bot_trade_thread.start()
+
+    def update_bot_log(self, log_msg, log_result):
+        self.bot_log_list.addItem(log_msg)
+        self.bot_log_list.addItem(">>> "+str(log_result))
+
     ## TABS
     def prepare_tab(self):
+        self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         QCoreApplication.processEvents()
+        print(self.active_coins)
         if self.authenticated:
             print("authenticated")
             self.stacked_login.setCurrentIndex(1)
@@ -1627,10 +1825,14 @@ class Ui(QTabWidget):
                 # logs
                 print('update_logs')
                 self.update_logs()
-            elif index == 10 :
+            elif index == 10:
                 # logs
                 print('binance_acct')
                 self.show_binance_acct()
+            elif index == 11:
+                # logs
+                print('bot_trades')
+                self.show_bot_trades()
         else:
             print('show_active - login')
             self.stacked_login.setCurrentIndex(0)
