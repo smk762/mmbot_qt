@@ -382,13 +382,24 @@ class Ui(QTabWidget):
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","All Files (*);;Text Files (*.csv)", options=options)
         return fileName
 
+    def add_row(self, row, row_data, table, bgcol=''):
+        col = 0
+        for cell_data in row_data:
+            cell = QTableWidgetItem(str(cell_data))
+            table.setItem(row,col,cell)
+            cell.setTextAlignment(Qt.AlignCenter)  
+            if bgcol != ''  :
+                table.item(row,col).setBackground(bgcol)
+            col += 1
+
+
     def export_table(self):
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
-        for i in range(self.trades_table.rowCount()):
+        for i in range(self.mm2_trades_table.rowCount()):
             row_list = []
-            for j in range(self.trades_table.columnCount()):
+            for j in range(self.mm2_trades_table.columnCount()):
                 try:
-                    row_list.append(self.trades_table.item(i,j).text())
+                    row_list.append(self.mm2_trades_table.item(i,j).text())
                 except:
                     pass
             table_csv += ','.join(row_list)+'\r\n'
@@ -472,25 +483,14 @@ class Ui(QTabWidget):
                 sell_price = maker_orders[item]['price']
                 timestamp = int(maker_orders[item]['created_at']/1000)
                 created_at = datetime.datetime.fromtimestamp(timestamp)
-                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
-
                 buy_price = 1/float(sell_price)
+
+                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
                 mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
 
-                bot_col = 0
-                for cell_data in bot_maker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    bot_col += 1
+                self.add_row(bot_row, mm2_maker_row, self.bot_mm2_orders_table)
                 bot_row += 1
-
-                mm2_col = 0
-                for cell_data in mm2_maker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    mm2_col += 1
+                self.add_row(mm2_row, mm2_maker_row, self.mm2_orders_table)
                 mm2_row += 1
 
         # todo the bit below - need to see an active taker order in action!
@@ -506,26 +506,16 @@ class Ui(QTabWidget):
                 base_amount = taker_orders[item]['request']['base_amount']
                 rel_amount = taker_orders[item]['request']['rel_amount']
                 buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
-                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
-
                 sell_price = 1/float(sell_price)
+
+                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
                 mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
 
-                bot_col = 0
-                for cell_data in bot_taker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    bot_col += 1
+                self.add_row(bot_row, bot_taker_row, self.bot_mm2_orders_table)
                 bot_row += 1
-
-                mm2_col = 0
-                for cell_data in mm2_taker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    mm2_col += 1
+                self.add_row(mm2_row, mm2_taker_row, self.mm2_orders_table)
                 mm2_row += 1
+
 
         self.bot_mm2_orders_table.setSortingEnabled(True)
         self.mm2_orders_table.setSortingEnabled(True)
@@ -817,12 +807,11 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
         self.update_mm2_orders_tables()
    
-    ## SHOW TRADES
-    def show_trades(self):
+    def show_mm2_trades(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
         row = 0
-        self.trades_table.setSortingEnabled(False)
-        self.clear_table(self.trades_table)
+        self.mm2_trades_table.setSortingEnabled(False)
+        self.clear_table(self.mm2_trades_table)
         for swap in swaps_info['result']['swaps']:
             for event in swap['events']:
                 event_type = event['event']['type']
@@ -844,14 +833,11 @@ class Ui(QTabWidget):
                 buy_price = '-'
                 sell_price = float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount'])
             trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
-            col = 0
-            for cell_data in trade_row:
-                cell = QTableWidgetItem(str(cell_data))
-                self.trades_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                col += 1            
+
+            self.add_row(row, trade_row, self.mm2_trades_table)
+
             row += 1
-            self.trades_table.setSortingEnabled(True)
+            self.mm2_trades_table.setSortingEnabled(True)
 
     ## SHOW ORDERBOOK
 
@@ -893,12 +879,7 @@ class Ui(QTabWidget):
                     basevolume = round(float(item['maxvolume']), 8)
                     relprice = round(float(item['price']), 8)
                     asks_row = [base, rel, basevolume, relprice]
-                    col = 0
-                    for cell_data in asks_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.orderbook_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)    
-                        col += 1
+                    self.add_row(row, asks_row, self.orderbook_table)
                     row += 1
             self.orderbook_table.setSortingEnabled(True)
 
@@ -956,6 +937,7 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             self.update_mm2_orders_tables()
+            self.show_mm2_trades()
             index = self.mm2_buy_buy_combo.currentIndex()
             if index != -1:
                 base = self.mm2_buy_buy_combo.itemText(index)
@@ -1024,12 +1006,7 @@ class Ui(QTabWidget):
                     val = float(item['price'])*float(item['maxvolume'])
                     value = round(val, 8)
                     depth_row = [price, volume, value]
-                    col = 0
-                    for cell_data in depth_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.mm2_buy_depth_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)
-                        col += 1
+                    self.add_row(row, depth_row, self.mm2_buy_depth_table)
                     row += 1
             self.mm2_buy_depth_table.setSortingEnabled(True)
 
@@ -1046,12 +1023,7 @@ class Ui(QTabWidget):
                     val = float(item['price'])*float(item['maxvolume'])
                     value = round(val, 8)
                     depth_row = [price, volume, value]
-                    col = 0
-                    for cell_data in depth_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.mm2_sell_depth_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)
-                        col += 1
+                    self.add_row(row, depth_row, self.mm2_sell_depth_table)
                     row += 1
             self.mm2_sell_depth_table.setSortingEnabled(True)
         pass
@@ -1181,6 +1153,7 @@ class Ui(QTabWidget):
                 msg = "Order Submitted.\n"
                 msg += "Buy "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
                 self.update_mm2_orders_tables()
+                self.show_mm2_trades()
             else:
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Buy Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -1235,6 +1208,7 @@ class Ui(QTabWidget):
                 msg = "Order Submitted.\n"
                 msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
                 self.update_mm2_orders_tables()
+                self.show_mm2_trades()
             else:
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Sell Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -1549,7 +1523,7 @@ class Ui(QTabWidget):
             if asset in self.prices_data:
                 btc_price = self.prices_data[asset]['average_btc']
                 usd_price = self.prices_data[asset]['average_usd']
-            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+            elif coinslib.coin_api_codes[asset]['paprika_id'] != '':
                 price = priceslib.get_paprika_price(coinslib.coin_api_codes[asset]['paprika_id']).json()
                 usd_price = float(price['price_usd'])
                 btc_price = float(price['price_btc'])
@@ -1560,7 +1534,7 @@ class Ui(QTabWidget):
             else:
                 usd_price = 'No Data'
                 btc_price = 'No Data'
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:8pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
             text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
             self.binance_history_graph.addItem(text)
             text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
@@ -1590,6 +1564,7 @@ class Ui(QTabWidget):
         print("price: "+str(ref_price))
         return ref_price
 
+
     def update_binance_balance_table(self):
         acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
         if 'msg' in acct_info:
@@ -1611,12 +1586,7 @@ class Ui(QTabWidget):
                     if balance > 0 or coin in coinslib.binance_coins:
                         tickers.append(coin)
                     balance_row = [coin, balance, available, locked]
-                    col = 0
-                    for cell_data in balance_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.binance_balances_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)    
-                        col += 1
+                    self.add_row(row, balance_row, self.binance_balances_table)
                     row += 1
                 self.binance_balances_table.setSortingEnabled(True)
             return tickers
@@ -1637,25 +1607,13 @@ class Ui(QTabWidget):
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'bid']
-            col = 0
-            for cell_data in balance_row:
-                cell = QTableWidgetItem(str(cell_data))
-                self.binance_orderbook_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)
-                self.binance_orderbook_table.item(row,col).setBackground(QColor(210, 255, 191))
-                col += 1
+            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(255, 181, 181))
             row += 1
         for item in orderbook['asks']:
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'ask']
-            col = 0
-            for cell_data in balance_row:
-                cell = QTableWidgetItem(str(cell_data))
-                self.binance_orderbook_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)
-                self.binance_orderbook_table.item(row,col).setBackground(QColor(255, 181, 181))
-                col += 1
+            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(218, 255, 127))
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
         self.binance_orderbook_table.sortItems(1)
@@ -1763,12 +1721,7 @@ class Ui(QTabWidget):
             filled = item['executedQty']
             time = datetime.datetime.fromtimestamp(int(item['time']/1000))
             balance_row = [order_id, side, symbol, price, qty, filled, time]
-            col = 0
-            for cell_data in balance_row:
-                cell = QTableWidgetItem(str(cell_data))
-                self.binance_orders_table.setItem(row,col,cell)
-                cell.setTextAlignment(Qt.AlignCenter)
-                col += 1
+            self.add_row(row, balance_row, self.binance_orders_table)
             row += 1
         self.binance_orders_table.setSortingEnabled(True)
 
@@ -1931,12 +1884,7 @@ class Ui(QTabWidget):
                              api_kmd_price, mm2_kmd_price, delta_kmd_price,
                              api_usd_price, mm2_usd_price, delta_usd_price,
                              sources]
-                col = 0
-                for cell_data in price_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.prices_table.setItem(row,col,cell)
-                    cell.setTextAlignment(Qt.AlignCenter)    
-                    col += 1
+                self.add_row(row, price_row, self.prices_table)
                 row += 1
         self.prices_table.setSortingEnabled(True)
 
