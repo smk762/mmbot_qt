@@ -29,10 +29,6 @@ cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
 
-global last_price_update
-global price_data
-global last_balance_update
-global balance_data
 
 # Setup local settings ini.
 # Need to test this on alternative Operating systems.
@@ -105,7 +101,7 @@ class bot_trading_thread(QThread):
                                         resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, available_balance, trade_price, True, True).json()
                                         if 'error' in resp:
                                             if resp['error'].find("larger than available") > -1:
-                                                msg = "Insufficient funds to complete order."
+                                                msg = "Insufficient funds to complete "+base+"/"+rel+" order."
                                             else:
                                                 msg = resp
                                         elif 'result' in resp:
@@ -117,6 +113,22 @@ class bot_trading_thread(QThread):
 
     def stop(self):
         self.terminate()
+
+class priceget_thread(QThread):
+    trigger = pyqtSignal(dict)
+    def __init__(self, creds):
+        QThread.__init__(self)
+        self.creds = creds
+
+    def __del__(self):
+        self.wait()
+
+    # creds[1] to emit signal for buttton stylesheet change
+    def run(self):
+        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+        prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
+        self.trigger.emit(prices_data)
+
 
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
@@ -168,12 +180,14 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi(script_path+'/ui/makerbot_gui.ui', self) # Load the .ui file
+        uic.loadUi(script_path+'/ui/makerbot_gui2.ui', self) # Load the .ui file
         self.show() # Show the GUI
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
         self.authenticated = False
         self.bot_trading = False
+        self.last_price_update = 0
+        self.prices_data = {}
         global gui_coins
         gui_coins = {
             "BTC": {
@@ -623,10 +637,10 @@ class Ui(QTabWidget):
                 gui_coins[coin]['checkbox'].setChecked(False)
 
     ## SHOW ORDERS
-    def show_orders(self):
+    def update_mm2_orders_table(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
-        self.orders_table.setSortingEnabled(False)
-        self.clear_table(self.orders_table)
+        self.bot_mm2_orders_table.setSortingEnabled(False)
+        self.clear_table(self.bot_mm2_orders_table)
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
             row = 0
@@ -634,24 +648,21 @@ class Ui(QTabWidget):
                 print(guilib.colorize(maker_orders[item],'blue'))
                 role = "Maker"
                 base = maker_orders[item]['base']
-                base_vol = maker_orders[item]['available_amount']
+                base_amount = maker_orders[item]['available_amount']
                 rel = maker_orders[item]['rel']
                 rel_vol = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
                 sell_price = maker_orders[item]['price']
-                buy_price = '-'
                 timestamp = int(maker_orders[item]['created_at']/1000)
                 created_at = datetime.datetime.fromtimestamp(timestamp)
-                market_price = '-'
-                margin = '-'
-                maker_row = [created_at, role, base, base_vol, rel, rel_vol, buy_price, sell_price, market_price, margin, item]
+                maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
                 col = 0
                 for cell_data in maker_row:
                     cell = QTableWidgetItem(str(cell_data))
-                    self.orders_table.setItem(row,col,cell)
+                    self.bot_mm2_orders_table.setItem(row,col,cell)
                     cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                     col += 1
                 row += 1
-        self.orders_table.setSortingEnabled(True)
+        self.bot_mm2_orders_table.setSortingEnabled(True)
         # todo the bit below - need to see an active taker order in action!
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
@@ -665,24 +676,21 @@ class Ui(QTabWidget):
                 base_amount = taker_orders[item]['request']['base_amount']
                 rel_amount = taker_orders[item]['request']['rel_amount']
                 buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
-                sell_price = '-'
-                market_price = ''
-                margin = ''
-                taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, item]
+                taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
                 col = 0
                 for cell_data in taker_row:
                     cell = QTableWidgetItem(str(cell_data))
-                    self.orders_table.setItem(row,col,cell)
+                    self.bot_mm2_orders_table.setItem(row,col,cell)
                     cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
                     col += 1
                 row += 1
 
     def cancel_order_uuid(self):
-        selected_row = self.orders_table.currentRow()
+        selected_row = self.bot_mm2_orders_table.currentRow()
         print(selected_row)
-        if self.orders_table.item(selected_row,10) is not None:
-            if self.orders_table.item(selected_row,0).text() != '':
-                order_uuid = self.orders_table.item(selected_row,10).text()
+        if self.bot_mm2_orders_table.item(selected_row,10) is not None:
+            if self.bot_mm2_orders_table.item(selected_row,0).text() != '':
+                order_uuid = self.bot_mm2_orders_table.item(selected_row,10).text()
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 msg = ''
                 if 'result' in resp:
@@ -697,10 +705,10 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
-        self.show_orders()
+        self.update_mm2_orders_table()
 
     def cancel_all_orders(self):
-        if self.orders_table.item(0,0).text() != '':
+        if self.bot_mm2_orders_table.item(0,0).text() != '':
             resp = rpclib.cancel_all(self.creds[0], self.creds[1]).json()
             msg = ''
             if 'result' in resp:
@@ -714,7 +722,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
-        self.show_orders()
+        self.update_mm2_orders_table()
    
     ## SHOW TRADES
     def show_trades(self):
@@ -1135,66 +1143,9 @@ class Ui(QTabWidget):
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],self.active_coins)
-            print(prices_data)
-            self.prices_table.setSortingEnabled(False)
-            self.clear_table(self.prices_table)
-            row = 0
-            for item in prices_data:
-                if item in self.active_coins:
-                    coin = item
-                    try:
-                        api_btc_price = str(round(prices_data[item]["average_btc"],8))+" ₿"
-                    except:
-                        api_btc_price = "-"
-                    try:
-                        mm2_btc_price = str(round(prices_data[item]["mm2_btc_price"],8))+" ₿"
-                    except:
-                        mm2_btc_price = "-"
-                    try:
-                        delta_btc_price = str(round(prices_data[item]["mm2_btc_price"]-prices_data[item]["average_btc"],8))+" ₿"
-                    except:
-                        delta_btc_price = "-"
-                    try:
-                        api_kmd_price = round(prices_data[item]["kmd_price"],6)
-                    except:
-                        api_kmd_price = "-"
-                    try:
-                        mm2_kmd_price = round(prices_data[item]["mm2_kmd_price"],6)
-                    except:
-                        mm2_kmd_price = "-"
-                    try:
-                        delta_kmd_price = round(prices_data[item]["mm2_kmd_price"]-prices_data[item]["kmd_price"],6)
-                    except:
-                        delta_kmd_price = "-"
-                    try:
-                        api_usd_price = "$"+str(round(prices_data[item]["average_usd"],4))+" USD"
-                    except:
-                        api_usd_price = "-"
-                    try:
-                        mm2_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"],4))+" USD"
-                    except:
-                        mm2_usd_price = "-"
-                    try:
-                        delta_usd_price = "$"+str(round(prices_data[item]["mm2_usd_price"]-prices_data[item]["average_usd"],4))+" USD"
-                    except:
-                        delta_usd_price = "-"
-                    sources = prices_data[item]["sources"]
-                    price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
-                                 api_kmd_price, mm2_kmd_price, delta_kmd_price,
-                                 api_usd_price, mm2_usd_price, delta_usd_price,
-                                 sources]
-                    col = 0
-                    for cell_data in price_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.prices_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)    
-                        col += 1
-                    row += 1
-        self.prices_table.setSortingEnabled(True)
 
     ## WALLET
+    # TODO: Threaded balance/address info get/store
     def show_wallet(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
@@ -1757,27 +1708,102 @@ class Ui(QTabWidget):
                 sell_coin = sell_coin+ " (not on Binance, mm2 only)"
             self.bot_sell_list.addItem(sell_coin)
 
+    def stop_bot_trading(self):
+        print("stopping bot")
+        self.bot_trade_thread.stop()
+        self.bot_status_lbl.setText("STOPPED")
+        self.bot_status_lbl.setStyleSheet('color: rgb(164, 0, 0)')
+        timestamp = int(time.time()/1000)*1000
+        time_str = datetime.datetime.fromtimestamp(timestamp)
+        self.bot_log_list.addItem(str(time_str)+" Bot stopped")
+
     def start_bot_trading(self):
-        print(self.bot_trading)
+        print("starting bot")
         premium = self.margin_input.value()/100
         self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins, premium)
-        if self.bot_trading:
-            self.bot_trading = False
-            self.bot_trade_thread.stop()
-        else:
-            self.bot_trading = True
-            self.bot_trade_thread.trigger.connect(self.update_bot_log)
-            self.bot_trade_thread.start()
+        self.bot_trade_thread.trigger.connect(self.update_bot_log)
+        self.bot_trade_thread.start()
+        self.bot_status_lbl.setText("ACTIVE")
+        self.bot_status_lbl.setStyleSheet('color: rgb(78, 154, 6)')
+        timestamp = int(time.time()/1000)*1000
+        time_str = datetime.datetime.fromtimestamp(timestamp)
+        self.bot_log_list.addItem(str(time_str)+" Bot started")
 
     def update_bot_log(self, log_msg, log_result):
         self.bot_log_list.addItem(log_msg)
         self.bot_log_list.addItem(">>> "+str(log_result))
+        self.update_mm2_orders_table()
 
     ## TABS
+    def update_prices(self, prices_dict):
+        print("updating prices data from thread")
+        self.prices_data = prices_dict
+        self.prices_table.setSortingEnabled(False)
+        self.clear_table(self.prices_table)
+        row = 0
+        for item in self.prices_data:
+            if item in self.active_coins:
+                coin = item
+                try:
+                    api_btc_price = str(round(self.prices_data[item]["average_btc"],8))+" ₿"
+                except:
+                    api_btc_price = "-"
+                try:
+                    mm2_btc_price = str(round(self.prices_data[item]["mm2_btc_price"],8))+" ₿"
+                except:
+                    mm2_btc_price = "-"
+                try:
+                    delta_btc_price = str(round(self.prices_data[item]["mm2_btc_price"]-self.prices_data[item]["average_btc"],8))+" ₿"
+                except:
+                    delta_btc_price = "-"
+                try:
+                    api_kmd_price = round(self.prices_data[item]["kmd_price"],6)
+                except:
+                    api_kmd_price = "-"
+                try:
+                    mm2_kmd_price = round(self.prices_data[item]["mm2_kmd_price"],6)
+                except:
+                    mm2_kmd_price = "-"
+                try:
+                    delta_kmd_price = round(self.prices_data[item]["mm2_kmd_price"]-self.prices_data[item]["kmd_price"],6)
+                except:
+                    delta_kmd_price = "-"
+                try:
+                    api_usd_price = "$"+str(round(self.prices_data[item]["average_usd"],4))+" USD"
+                except:
+                    api_usd_price = "-"
+                try:
+                    mm2_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"],4))+" USD"
+                except:
+                    mm2_usd_price = "-"
+                try:
+                    delta_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"]-self.prices_data[item]["average_usd"],4))+" USD"
+                except:
+                    delta_usd_price = "-"
+                sources = self.prices_data[item]["sources"]
+                price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
+                             api_kmd_price, mm2_kmd_price, delta_kmd_price,
+                             api_usd_price, mm2_usd_price, delta_usd_price,
+                             sources]
+                col = 0
+                for cell_data in price_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.prices_table.setItem(row,col,cell)
+                    cell.setTextAlignment(Qt.AlignCenter)    
+                    col += 1
+                row += 1
+        self.prices_table.setSortingEnabled(True)
+
     def prepare_tab(self):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         QCoreApplication.processEvents()
         print(self.active_coins)
+        if self.last_price_update < int(time.time()) - 120:
+            self.last_price_update = int(time.time())
+            self.prices_thread = priceget_thread(self.creds)
+            self.prices_thread.trigger.connect(self.update_prices)
+            self.prices_thread.start()
+
         if self.authenticated:
             print("authenticated")
             self.stacked_login.setCurrentIndex(1)
@@ -1790,49 +1816,37 @@ class Ui(QTabWidget):
                 print('show_active')
                 self.show_active()
             elif index == 1:
-                # orders
-                print('show_orders')
-                self.show_orders()
-            elif index == 2:
-                # trades
-                print('show_trades')
-                self.show_trades()
-            elif index == 3:
                 # order book
                 print('show_orderbook')
                 self.show_orderbook()
-            elif index == 4:
-                # create order
-                print('show_create_sell')
-                self.show_create_sell()
-            elif index == 5:
-                # create order
-                print('show_create_buy')
-                self.show_create_buy()
-            elif index == 6:
-                # wallet
+            elif index == 2:
+                # prices
                 print('show_prices')
                 self.show_prices()
-            elif index == 7:
+            elif index == 3:
                 # wallet
                 print('show_wallet')
                 self.show_wallet()
-            elif index == 8:
+            elif index == 4:
+                # mm trade
+                print('makerbot_trade')
+                self.show_create_sell()
+            elif index == 5:
+                # binance acct
+                print('binance_acct')
+                self.show_binance_acct()
+            elif index == 6:
+                # bot trade
+                print('bot_trades')
+                self.show_bot_trades()
+            elif index == 7:
                 # config
                 print('show_config')
                 self.show_config()
-            elif index == 9:
+            elif index == 8:
                 # logs
                 print('update_logs')
                 self.update_logs()
-            elif index == 10:
-                # logs
-                print('binance_acct')
-                self.show_binance_acct()
-            elif index == 11:
-                # logs
-                print('bot_trades')
-                self.show_bot_trades()
         else:
             print('show_active - login')
             self.stacked_login.setCurrentIndex(0)
