@@ -488,7 +488,7 @@ class Ui(QTabWidget):
                 bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
                 mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
 
-                self.add_row(bot_row, mm2_maker_row, self.bot_mm2_orders_table)
+                self.add_row(bot_row, bot_maker_row, self.bot_mm2_orders_table)
                 bot_row += 1
                 self.add_row(mm2_row, mm2_maker_row, self.mm2_orders_table)
                 mm2_row += 1
