@@ -6098,7 +6098,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_33">
           <item row="0" column="1">
-           <widget class="QLabel" name="create_buy_depth_baserel_lbl">
+           <widget class="QLabel" name="mm2_buy_depth_baserel_lbl">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
@@ -6113,7 +6113,7 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="buy_depth_table">
+           <widget class="QTableWidget" name="mm2_buy_depth_table">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -6260,7 +6260,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_68">
           <item row="0" column="0">
-           <widget class="QLabel" name="create_buy_balance_lbl">
+           <widget class="QLabel" name="mm2_buy_balance_lbl">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -6269,7 +6269,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="text">
@@ -6278,7 +6278,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="create_buy_locked_lbl">
+           <widget class="QLabel" name="mm2_buy_locked_lbl">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -6287,7 +6287,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="text">
@@ -6338,7 +6338,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_32">
              <item row="0" column="0">
-              <widget class="QLabel" name="create_buy_price_lbl">
+              <widget class="QLabel" name="mm2_buy_price_lbl">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -6353,7 +6353,7 @@
                </property>
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6365,12 +6365,17 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="create_buy_price">
+              <widget class="QDoubleSpinBox" name="mm2_buy_price">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -6387,7 +6392,7 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="create_buy_amount_lbl">
+              <widget class="QLabel" name="mm2_buy_amount_lbl">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -6402,7 +6407,7 @@
                </property>
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6414,12 +6419,17 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="create_buy_amount">
+              <widget class="QDoubleSpinBox" name="mm2_buy_amount">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -6580,21 +6590,21 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_31">
              <item row="1" column="1">
-              <widget class="QComboBox" name="create_buy_sell_combo">
+              <widget class="QComboBox" name="mm2_buy_sell_combo">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207)</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QComboBox" name="create_buy_buy_combo">
+              <widget class="QComboBox" name="mm2_buy_buy_combo">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207)</string>
                </property>
               </widget>
              </item>
              <item row="2" column="0" colspan="2">
-              <widget class="QPushButton" name="create_buy_btn">
+              <widget class="QPushButton" name="mm2_buy_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -6616,7 +6626,7 @@
               <widget class="QLabel" name="create_buy_sell_lbl">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6631,7 +6641,7 @@
               <widget class="QLabel" name="create_buy_buy_lbl">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6711,7 +6721,7 @@
             </property>
             <layout class="QGridLayout" name="gridLayout_61">
              <item row="0" column="0">
-              <widget class="QLabel" name="create_sell_price_lbl">
+              <widget class="QLabel" name="mm2_sell_price_lbl">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -6726,7 +6736,7 @@
                </property>
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6738,12 +6748,17 @@
               </widget>
              </item>
              <item row="0" column="1">
-              <widget class="QDoubleSpinBox" name="create_sell_price">
+              <widget class="QDoubleSpinBox" name="mm2_sell_price">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -6760,7 +6775,7 @@
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="create_sell_amount_lbl">
+              <widget class="QLabel" name="mm2_sell_amount_lbl">
                <property name="minimumSize">
                 <size>
                  <width>0</width>
@@ -6775,7 +6790,7 @@
                </property>
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6787,12 +6802,17 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QDoubleSpinBox" name="create_sell_amount">
+              <widget class="QDoubleSpinBox" name="mm2_sell_amount">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
                </property>
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -6956,7 +6976,7 @@
               <widget class="QLabel" name="create_sell_sell_lbl">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -6968,7 +6988,7 @@
               </widget>
              </item>
              <item row="4" column="0" colspan="2">
-              <widget class="QPushButton" name="create_sell_btn">
+              <widget class="QPushButton" name="mm2_sell_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -6987,7 +7007,7 @@
               </widget>
              </item>
              <item row="2" column="1">
-              <widget class="QComboBox" name="create_sell_buy_combo">
+              <widget class="QComboBox" name="mm2_sell_buy_combo">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207)</string>
                </property>
@@ -6997,7 +7017,7 @@
               <widget class="QLabel" name="creat_sell_buy_lbl">
                <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
+                 <pointsize>10</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -7009,7 +7029,7 @@
               </widget>
              </item>
              <item row="1" column="1">
-              <widget class="QComboBox" name="create_sell_sell_combo">
+              <widget class="QComboBox" name="mm2_sell_sell_combo">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207)</string>
                </property>
@@ -7046,7 +7066,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_57">
           <item row="0" column="1">
-           <widget class="QLabel" name="create_sell_depth_baserel_lbl">
+           <widget class="QLabel" name="mm2_sell_depth_baserel_lbl">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
@@ -7061,7 +7081,7 @@
            </widget>
           </item>
           <item row="1" column="0" colspan="2">
-           <widget class="QTableWidget" name="sell_depth_table">
+           <widget class="QTableWidget" name="mm2_sell_depth_table">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -7208,7 +7228,7 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_67">
           <item row="0" column="0">
-           <widget class="QLabel" name="create_order_balance_lbl">
+           <widget class="QLabel" name="mm2_sell_balance_lbl">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -7217,7 +7237,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="text">
@@ -7226,7 +7246,7 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="create_order_locked_lbl">
+           <widget class="QLabel" name="mm2_sell_locked_lbl">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
               <horstretch>0</horstretch>
@@ -7235,7 +7255,7 @@
             </property>
             <property name="font">
              <font>
-              <pointsize>16</pointsize>
+              <pointsize>11</pointsize>
              </font>
             </property>
             <property name="text">
@@ -10272,22 +10292,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>login_btn</sender>
-   <signal>pressed()</signal>
-   <receiver>MainTabs</receiver>
-   <slot>login()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>108</x>
-     <y>41</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>799</x>
-     <y>429</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>checkBox_all_erc20</sender>
    <signal>toggled(bool)</signal>
    <receiver>MainTabs</receiver>
@@ -10336,10 +10340,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>create_buy_buy_combo</sender>
+   <sender>mm2_buy_buy_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_create_buy()</slot>
+   <slot>show_mm2_trading_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>336</x>
@@ -10352,10 +10356,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>create_buy_sell_combo</sender>
+   <sender>mm2_buy_sell_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_create_buy()</slot>
+   <slot>show_mm2_trading_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>336</x>
@@ -10368,7 +10372,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>create_buy_btn</sender>
+   <sender>mm2_buy_btn</sender>
    <signal>clicked()</signal>
    <receiver>MainTabs</receiver>
    <slot>create_setprice_buy()</slot>
@@ -10384,7 +10388,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buy_depth_table</sender>
+   <sender>mm2_buy_depth_table</sender>
    <signal>itemSelectionChanged()</signal>
    <receiver>MainTabs</receiver>
    <slot>populate_buy_order_vals()</slot>
@@ -10671,6 +10675,54 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mm2_sell_sell_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>combo_box_switch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1906</x>
+     <y>713</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_buy_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>combo_box_switch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1906</x>
+     <y>747</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_depth_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>populate_sell_order_vals()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1781</x>
+     <y>330</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -10720,5 +10772,7 @@
   <slot>mm2_cancel_all_orders()</slot>
   <slot>mm2_cancel_order()</slot>
   <slot>mm2_cancel_bot_order()</slot>
+  <slot>show_mm2_trading_tab()</slot>
+  <slot>combo_box_switch()</slot>
  </slots>
 </ui>

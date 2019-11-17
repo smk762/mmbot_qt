@@ -431,7 +431,10 @@ class Ui(QTabWidget):
 
     def get_cell_val(self, table, column):
         if table.currentRow() != -1:
-            return float(table.item(table.currentRow(),column).text())
+            if table.item(table.currentRow(),column).text() != '':
+                return float(table.item(table.currentRow(),column).text())
+            else:
+                return 0
         else:
             return 0
 
@@ -949,31 +952,40 @@ class Ui(QTabWidget):
             msg = "No order selected!"
             QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-    ## BUY ORDER PAGE - PENDING
-    def show_create_buy(self):
+    ## PAGE IS HALF DONE, NEEDS SELL BITS POST MERGE
+    def show_mm2_trading_tab(self):
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            index = self.create_buy_buy_combo.currentIndex()
+            index = self.mm2_buy_buy_combo.currentIndex()
             if index != -1:
-                base = self.create_buy_buy_combo.itemText(index)
+                base = self.mm2_buy_buy_combo.itemText(index)
             else:
                 base = ''
-            index = self.create_buy_sell_combo.currentIndex()
+            index = self.mm2_buy_sell_combo.currentIndex()
             if index != -1:
-                rel = self.create_buy_sell_combo.itemText(index)
+                rel = self.mm2_buy_sell_combo.itemText(index)
             else:
                 rel = ''
             active_coins_selection = self.active_coins[:]
-            base = self.update_combo(self.create_buy_buy_combo,active_coins_selection,base)
+            base = self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,base)
             active_coins_selection.remove(base)
-            rel = self.update_combo(self.create_buy_sell_combo,active_coins_selection,rel)
+            rel = self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,rel)
+
+            active_coins_selection = self.active_coins[:]
+            self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,rel)
+            active_coins_selection.remove(rel)
+            self.update_combo(self.mm2_sell_buy_combo,active_coins_selection,base)
             # Update labels
-            self.create_buy_amount_lbl.setText("Buy Amount ("+base+")")
-            self.create_buy_price_lbl.setText("Buy Price ("+rel+")")
-            self.create_buy_depth_baserel_lbl.setText(rel+"/"+base)
+            self.mm2_buy_amount_lbl.setText("Amount ("+base+")")
+            self.mm2_buy_price_lbl.setText("Price ("+rel+")")
+            self.mm2_buy_depth_baserel_lbl.setText(rel+"/"+base)
+
+            self.mm2_sell_amount_lbl.setText("Amount ("+rel+")")
+            self.mm2_sell_price_lbl.setText("Price ("+base+")")
+            self.mm2_sell_depth_baserel_lbl.setText(base+"/"+rel)
 
             if rel not in self.balances_data:
                 self.update_balance(rel)
@@ -984,19 +996,20 @@ class Ui(QTabWidget):
                 locked_text = balance_info['locked']
                 available_balance = balance_info['available']
 
-                self.create_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
-                self.create_buy_locked_lbl.setText("Locked by swaps: "+str(locked)+" "+rel)
+                self.mm2_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
+                self.mm2_buy_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+rel)
 
-            self.buy_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
+            self.mm2_buy_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
+            self.mm2_sell_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
 
-            pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
-            self.buy_depth_table.setSortingEnabled(False)
-            self.clear_table(self.buy_depth_table)
-            if 'error' in pair_book:
+            buy_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
+            self.mm2_buy_depth_table.setSortingEnabled(False)
+            self.clear_table(self.mm2_buy_depth_table)
+            if 'error' in buy_pair_book:
                 pass
-            elif 'asks' in pair_book:
+            elif 'asks' in buy_pair_book:
                 row = 0
-                for item in pair_book['asks']:
+                for item in buy_pair_book['asks']:
                     price = round(float(item['price']), 8)
                     volume = round(float(item['maxvolume']), 8)
                     val = float(item['price'])*float(item['maxvolume'])
@@ -1005,32 +1018,116 @@ class Ui(QTabWidget):
                     col = 0
                     for cell_data in depth_row:
                         cell = QTableWidgetItem(str(cell_data))
-                        self.buy_depth_table.setItem(row,col,cell)
+                        self.mm2_buy_depth_table.setItem(row,col,cell)
                         cell.setTextAlignment(Qt.AlignCenter)
                         col += 1
                     row += 1
-            self.buy_depth_table.setSortingEnabled(True)
+            self.mm2_buy_depth_table.setSortingEnabled(True)
+
+            sell_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
+            self.mm2_sell_depth_table.setSortingEnabled(False)
+            self.clear_table(self.mm2_sell_depth_table)
+            if 'error' in sell_pair_book:
+                pass
+            elif 'asks' in sell_pair_book:
+                row = 0
+                for item in sell_pair_book['asks']:
+                    price = round(float(item['price']), 8)
+                    volume = round(float(item['maxvolume']), 8)
+                    val = float(item['price'])*float(item['maxvolume'])
+                    value = round(val, 8)
+                    depth_row = [price, volume, value]
+                    col = 0
+                    for cell_data in depth_row:
+                        cell = QTableWidgetItem(str(cell_data))
+                        self.mm2_sell_depth_table.setItem(row,col,cell)
+                        cell.setTextAlignment(Qt.AlignCenter)
+                        col += 1
+                    row += 1
+            self.mm2_sell_depth_table.setSortingEnabled(True)
         pass
 
+    def combo_box_switch(self):
+        index = self.mm2_sell_buy_combo.currentIndex()
+        if index != -1:
+            base = self.mm2_sell_buy_combo.itemText(index)
+        else:
+            base = ''
+        index = self.mm2_sell_sell_combo.currentIndex()
+        if index != -1:
+            rel = self.mm2_sell_sell_combo.itemText(index)
+        else:
+            rel = ''
+        active_coins_selection = self.active_coins[:]
+        self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,rel)
+        active_coins_selection.remove(rel)
+        self.update_combo(self.mm2_sell_buy_combo,active_coins_selection,base)
+        
+        active_coins_selection = self.active_coins[:]
+        base = self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,base)
+        active_coins_selection.remove(base)
+        rel = self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,rel)
+        self.show_mm2_trading_tab()
+
     def populate_buy_order_vals(self):
-        val = self.get_cell_val(self.buy_depth_table, 0)
+        val = self.get_cell_val(self.mm2_buy_depth_table, 0)
         if val == '':
             selected_price = 0
         else:
             selected_price = float(val)
-        self.create_buy_price.setValue(selected_price)
+        self.mm2_buy_price.setValue(selected_price)
+
+    def populate_sell_order_vals(self):
+        val = self.get_cell_val(self.mm2_sell_depth_table, 0)
+        if val == '':
+            selected_price = 0
+        else:
+            selected_price = float(val)
+        self.mm2_sell_price.setValue(selected_price)
 
     def get_bal_pct(self, bal_lbl, pct):
         bal = float(bal_lbl.text().split()[2])
         return  bal*pct/100
 
+    def sell_25pct(self):
+        val = self.get_bal_pct(mm2_sell_balance_lbl, 25)
+        self.mm2_sell_amount.setValue(val)
+
+    def sell_50pct(self):
+        val = self.get_bal_pct(mm2_sell_balance_lbl, 50)
+        self.mm2_sell_amount.setValue(val)
+
+    def sell_75pct(self):
+        val = self.get_bal_pct(mm2_sell_balance_lbl, 75)
+        self.mm2_sell_amount.setValue(val)
+
+    def sell_100pct(self):
+        val = self.get_bal_pct(mm2_sell_balance_lbl, 100)
+        self.mm2_sell_amount.setValue(val)
+
+    def buy_25pct(self):
+        val = self.get_bal_pct(mm2_buy_balance_lbl, 25)
+        self.mm2_buy_amount.setValue(val)
+
+    def buy_50pct(self):
+        val = self.get_bal_pct(mm2_buy_balance_lbl, 50)
+        self.mm2_buy_amount.setValue(val)
+
+    def buy_75pct(self):
+        val = self.get_bal_pct(mm2_buy_balance_lbl, 75)
+        self.mm2_buy_amount.setValue(val)
+
+    def buy_100pct(self):
+        val = self.get_bal_pct(mm2_buy_balance_lbl, 100)
+        self.mm2_buy_amount.setValue(val)
+
     def create_setprice_buy(self):
-        index = self.create_buy_sell_combo.currentIndex()
-        rel = self.create_buy_sell_combo.itemText(index)
-        index = self.create_buy_buy_combo.currentIndex()
-        base = self.create_buy_buy_combo.itemText(index)
-        basevolume = self.create_buy_amount.value()
-        relprice = self.create_buy_price.value()
+        index = self.mm2_buy_sell_combo.currentIndex()
+        rel = self.mm2_buy_sell_combo.itemText(index)
+        index = self.mm2_buy_buy_combo.currentIndex()
+        base = self.mm2_buy_buy_combo.itemText(index)
+        basevolume = self.mm2_buy_amount.value()
+        relprice = self.mm2_buy_price.value()
         # detect previous
         cancel_previous = True
         cancel_trade = False
@@ -1056,8 +1153,8 @@ class Ui(QTabWidget):
                         cancel_previous = False
                     elif confirm == QMessageBox.Cancel:
                         cancel_trade = True
-        max_vol = float(self.create_buy_balance_lbl.text().split()[2])
-        val = self.create_buy_amount.value()
+        max_vol = float(self.mm2_buy_balance_lbl.text().split()[2])
+        val = self.mm2_buy_amount.value()
         if val == max_vol:
             trade_max = True
         else:
@@ -1077,121 +1174,6 @@ class Ui(QTabWidget):
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Buy Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-
-    ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
-    def show_mm2_trading_tab(self):
-        if len(self.active_coins) < 2:
-            msg = 'Please activate at least two coins. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            index = self.create_buy_combo.currentIndex()
-            base = self.create_buy_combo.itemText(index)
-            index = self.create_sell_combo.currentIndex()
-            rel = self.create_sell_combo.itemText(index)
-            pair = self.update_create_order_combos(base, rel)
-            base = pair[0]
-            rel = pair[1]
-            self.create_sell_depth_baserel_lbl.setText(base+"/"+rel)
-            self.sell_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
-            pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
-            self.sell_depth_table.setSortingEnabled(False)
-            self.clear_table(self.sell_depth_table)
-            if 'error' in pair_book:
-                pass
-            elif 'asks' in pair_book:
-                row = 0
-                for item in pair_book['asks']:
-                    price = round(float(item['price']), 8)
-                    volume = round(float(item['maxvolume']), 8)
-                    val = float(item['price'])*float(item['maxvolume'])
-                    value = round(val, 8)
-                    depth_row = [price, volume, value]
-                    col = 0
-                    for cell_data in depth_row:
-                        cell = QTableWidgetItem(str(cell_data))
-                        self.sell_depth_table.setItem(row,col,cell)
-                        cell.setTextAlignment(Qt.AlignCenter)
-                        col += 1
-                    row += 1
-            self.sell_depth_table.setSortingEnabled(True)
-
-    def update_create_order_combos(self, base, rel):
-        existing_sell_coins = []
-        for i in range(self.create_sell_combo.count()):
-            existing_sell_coin = self.create_sell_combo.itemText(i)
-            existing_sell_coins.append(existing_sell_coin)
-        existing_buy_coins = []
-        for i in range(self.create_buy_combo.count()):
-            existing_buy_coin = self.create_buy_combo.itemText(i)
-            existing_buy_coins.append(existing_buy_coin)
-        # add activated if not in combobox if not already there.
-        for coin in self.active_coins:
-            if coin not in existing_sell_coins:
-                self.create_sell_combo.addItem(coin)
-            if rel == '':
-                self.create_sell_combo.setCurrentIndex(0)
-                rel = self.create_sell_combo.itemText(self.create_sell_combo.currentIndex())
-            if coin not in existing_buy_coins:
-                if coin != rel:
-                    self.create_buy_combo.addItem(coin)
-                    if base == '':
-                        self.create_buy_combo.setCurrentIndex(0)
-                        base = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
-        # eliminate selection duplication
-        for i in range(self.create_buy_combo.count()):
-            if self.create_buy_combo.itemText(i) == rel:
-                self.create_buy_combo.removeItem(i)
-                if base == rel:
-                    self.create_buy_combo.setCurrentIndex(0)
-                    base = self.create_buy_combo.itemText(self.create_buy_combo.currentIndex())
-                break
-        # Update labels
-        self.create_amount_lbl.setText("Sell Amount ("+rel+")")
-        self.create_price_lbl.setText("Sell Price ("+base+")")
-
-        if rel not in self.balances_data:
-            self.update_balance(rel)
-        balance_info = self.balances_data[rel]
-        if 'address' in balance_info:
-            address = balance_info['address']
-            balance_text = balance_info['balance']
-            locked_text = balance_info['locked']
-            available_balance = balance_info['available']
-
-            self.create_order_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
-        return base, rel
-
-    def populate_sell_order_vals(self):
-        val = self.get_cell_val(self.sell_depth_table, 0)
-        if val == '':
-            selected_price = 0
-        else:
-            selected_price = float(val)
-        self.create_sell_price.setValue(selected_price)
-
-    def sell_25pct(self):
-        self.sell_pct(25)
-
-    def sell_50pct(self):
-        self.sell_pct(50)
-
-    def sell_75pct(self):
-        self.sell_pct(75)
-
-    def sell_100pct(self):
-        # TODO: setup maxvol
-        self.sell_pct(100)
-
-    def sell_pct(self, pct):
-        if self.create_sell_price.value() == 0:
-            price = self.sell_depth_table.item(0,0).text()
-        else:
-            price = self.create_sell_price.value()
-        bal_txt = self.create_order_balance_lbl.text()
-        max_vol = float(bal_txt.split()[2])
-        val = max_vol*pct/100
-        self.create_sell_amount.setValue(val)
     
     def create_setprice(self):
         index = self.create_sell_combo.currentIndex()
@@ -1199,7 +1181,7 @@ class Ui(QTabWidget):
         index = self.create_buy_combo.currentIndex()
         rel = self.create_buy_combo.itemText(index)
         basevolume = self.create_sell_amount.value()
-        relprice = self.create_sell_price.value()
+        relprice = self.mm2_sell_price.value()
         # detect previous
         cancel_previous = True
         cancel_trade = False
