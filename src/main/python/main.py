@@ -82,9 +82,10 @@ class bot_trading_thread(QThread):
                 if base in self.active_coins:
                     balance_info = rpclib.my_balance(self.creds[0], self.creds[1], base).json()
                     if 'address' in balance_info:
+                        address = balance_info['address']
                         balance_text = balance_info['balance']
                         locked_text = balance_info['locked_by_swaps']
-                        available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
+                        available_balance = float(balance_info['balance']) - float(balance_info['locked_by_swaps'])
                         for rel in self.buy_coins:
                             if rel in self.active_coins:
                                 if base != rel:
@@ -114,8 +115,8 @@ class bot_trading_thread(QThread):
     def stop(self):
         self.terminate()
 
-class priceget_thread(QThread):
-    trigger = pyqtSignal(dict)
+class cachedata_thread(QThread):
+    trigger = pyqtSignal(dict, dict)
     def __init__(self, creds):
         QThread.__init__(self)
         self.creds = creds
@@ -127,8 +128,22 @@ class priceget_thread(QThread):
     def run(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
-        self.trigger.emit(prices_data)
-
+        balances_data = {}
+        for coin in active_coins:
+            balances_data[coin] = {}
+            balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
+            if 'address' in balance_info:
+                address = balance_info['address']
+                balance = round(float(balance_info['balance']),8)
+                locked = round(float(balance_info['locked_by_swaps']),8)
+                available = balance - locked
+                balances_data[coin].update({
+                    'address':address,
+                    'balance':balance,
+                    'locked':locked,
+                    'available':available
+                })
+        self.trigger.emit(prices_data, balances_data)
 
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
@@ -188,6 +203,7 @@ class Ui(QTabWidget):
         self.bot_trading = False
         self.last_price_update = 0
         self.prices_data = {}
+        self.balances_data = {}
         global gui_coins
         gui_coins = {
             "BTC": {
@@ -392,6 +408,22 @@ class Ui(QTabWidget):
                 table.setItem(row,col,cell)
                 col += 1
             row += 1
+
+    def update_balance(self, coin):
+        print("updating balance in main thread")
+        self.balances_data[coin] = {}
+        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
+        if 'address' in balance_info:
+            address = balance_info['address']
+            balance = round(float(balance_info['balance']),8)
+            locked = round(float(balance_info['locked_by_swaps']),8)
+            available = balance - locked
+            self.balances_data[coin].update({
+                'address':address,
+                'balance':balance,
+                'locked':locked,
+                'available':available
+            })
 
     def get_cell_val(self, table, column):
         if table.currentRow() != -1:
@@ -821,11 +853,16 @@ class Ui(QTabWidget):
         if selected_row != -1:
             selected_price = self.orderbook_table.item(selected_row,3).text()
             if selected_price != '':
-                balance_info = rpclib.my_balance(self.creds[0], self.creds[1], rel).json()
+
+                if rel not in self.balances_data:
+                    self.update_balance(rel)
+                balance_info = self.balances_data[rel]
                 if 'address' in balance_info:
+                    address = balance_info['address']
                     balance_text = balance_info['balance']
-                    locked_text = balance_info['locked_by_swaps']
-                    available_balance = float(balance_info['balance'])-float(balance_info['locked_by_swaps'])
+                    locked_text = balance_info['locked']
+                    available_balance = balance_info['available']
+
                     max_vol = available_balance/float(selected_price)*0.99
                 vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ', QLineEdit.Password)
                 if ok:
@@ -874,11 +911,16 @@ class Ui(QTabWidget):
             self.create_buy_amount_lbl.setText("Buy Amount ("+base+")")
             self.create_buy_price_lbl.setText("Buy Price ("+rel+")")
             self.create_buy_depth_baserel_lbl.setText(rel+"/"+base)
-            balance_info = rpclib.my_balance(self.creds[0], self.creds[1], rel).json()
+
+            if rel not in self.balances_data:
+                self.update_balance(rel)
+            balance_info = self.balances_data[rel]
             if 'address' in balance_info:
-                balance = round(float(balance_info['balance']),8)
-                locked = round(float(balance_info['locked_by_swaps']),8)
-                available_balance = balance - locked
+                address = balance_info['address']
+                balance_text = balance_info['balance']
+                locked_text = balance_info['locked']
+                available_balance = balance_info['available']
+
                 self.create_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
                 self.create_buy_locked_lbl.setText("Locked by swaps: "+str(locked)+" "+rel)
 
@@ -1044,11 +1086,16 @@ class Ui(QTabWidget):
         # Update labels
         self.create_amount_lbl.setText("Sell Amount ("+rel+")")
         self.create_price_lbl.setText("Sell Price ("+base+")")
-        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], rel).json()
+
+        if rel not in self.balances_data:
+            self.update_balance(rel)
+        balance_info = self.balances_data[rel]
         if 'address' in balance_info:
-            balance = round(float(balance_info['balance']),8)
-            locked = round(float(balance_info['locked_by_swaps']),8)
-            available_balance = balance - locked
+            address = balance_info['address']
+            balance_text = balance_info['balance']
+            locked_text = balance_info['locked']
+            available_balance = balance_info['available']
+
             self.create_order_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
         return base, rel
 
@@ -1163,39 +1210,47 @@ class Ui(QTabWidget):
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
-            balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
+            # get balance from cahe, or manually if not available
+            if coin not in self.balances_data:
+                self.update_balance(coin)
+            balance_info = self.balances_data[coin]
             if 'address' in balance_info:
-                addr_text = balance_info['address']
-                balance_text = round(float(balance_info['balance']),8)
-                locked_text = round(float(balance_info['locked_by_swaps']),8)
-                # todo add address explorer links to coinslib
-                if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+addr_text+"'>"+addr_text+"</href>")
-                else:
-                    self.wallet_address.setText(addr_text)
-                self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
-                self.wallet_balance.setText(str(balance_text))
-                self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
-                if coinslib.coin_api_codes[coin]['paprika_id'] != '':
-                    price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
-                    usd_price = float(price['price_usd'])
-                    btc_price = float(price['price_btc'])
-                elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-                    price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-                    usd_price = float(price['usd'])
-                    btc_price = float(price['btc'])
-                else:
-                    usd_price = 0
-                    btc_price = 0
-                print(btc_price)
-                if btc_price != 0:
-                    self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-                    self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" ₿")
-                else:
-                    self.wallet_usd_value.setText("")
-                    self.wallet_btc_value.setText("")
+                address = balance_info['address']
+                balance_text = balance_info['balance']
+                locked_text = balance_info['locked']
+                available_balance = balance_info['available']
+            # set block explorer
+            if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'>"+address+"</href>")
+            else:
+                self.wallet_address.setText(address)
+            # update labels
+            self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
+            self.wallet_balance.setText(str(balance_text))
+            self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
 
-                self.wallet_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+            if coin in self.prices_data:
+                btc_price = self.prices_data[coin]['average_btc']
+                usd_price = self.prices_data[coin]['average_usd']
+            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+                usd_price = float(price['price_usd'])
+                btc_price = float(price['price_btc'])
+            elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
+                usd_price = float(price['usd'])
+                btc_price = float(price['btc'])
+            else:
+                usd_price = 'No Data'
+                btc_price = 'No Data'
+            if btc_price != 'No Data':
+                self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
+                self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" ₿")
+            else:
+                self.wallet_usd_value.setText("")
+                self.wallet_btc_value.setText("")
+
+            self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image).pixmap())
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -1230,9 +1285,14 @@ class Ui(QTabWidget):
                         msg = "Sent! \n<a href='"+coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
                     else:
                         msg = "Sent! \nTXID: ["+txid_str+"]"
-                    balance_info = rpclib.my_balance(self.creds[0], self.creds[1], cointag).json()
+
+                    self.update_balance(cointag)
+                    balance_info = self.balances_data[cointag]
                     if 'address' in balance_info:
+                        address = balance_info['address']
                         balance_text = balance_info['balance']
+                        locked_text = balance_info['locked']
+                        available_balance = balance_info['available']
                         self.wallet_balance.setText(balance_text)
             else:
                 msg = str(resp)
@@ -1355,19 +1415,20 @@ class Ui(QTabWidget):
     def show_binance_acct(self):
         tickers = self.update_binance_balance_table()
         print(tickers)
-        self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
-        ticker_pairs = []
-        for ticker in tickers:
-            if ticker != "BTC":
-                ticker_pairs.append(ticker+"BTC")
-        self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
-        self.update_binance_orderbook()
-        self.update_orders_table()
-        self.update_history_graph()
-        addr_text = self.get_binance_deposit_addr()
-        self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
-        self.binance_addr_lbl.setText(addr_text)
-        self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
+        if tickers is not None:
+            self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
+            ticker_pairs = []
+            for ticker in tickers:
+                if ticker != "BTC":
+                    ticker_pairs.append(ticker+"BTC")
+            self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
+            self.update_binance_orderbook()
+            self.update_orders_table()
+            self.update_history_graph()
+            addr_text = self.get_binance_deposit_addr()
+            self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+            self.binance_addr_lbl.setText(addr_text)
+            self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
 
     def update_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
@@ -1430,8 +1491,20 @@ class Ui(QTabWidget):
             self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
             self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
             self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
-            price = priceslib.get_paprika_price(coin_id).json()
-            usd_price = float(price['price_usd'])
+            if asset in self.prices_data:
+                btc_price = self.prices_data[asset]['average_btc']
+                usd_price = self.prices_data[asset]['average_usd']
+            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                price = priceslib.get_paprika_price(coinslib.coin_api_codes[asset]['paprika_id']).json()
+                usd_price = float(price['price_usd'])
+                btc_price = float(price['price_btc'])
+            elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[asset]['coingecko_id'], 'usd,btc').json()
+                usd_price = float(price['usd'])
+                btc_price = float(price['btc'])
+            else:
+                usd_price = 'No Data'
+                btc_price = 'No Data'
             txt='<div style="text-align: center"><span style="color: #FFF;font-size:8pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
             text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
             self.binance_history_graph.addItem(text)
@@ -1718,16 +1791,29 @@ class Ui(QTabWidget):
         self.bot_log_list.addItem(str(time_str)+" Bot stopped")
 
     def start_bot_trading(self):
-        print("starting bot")
-        premium = self.margin_input.value()/100
-        self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins, premium)
-        self.bot_trade_thread.trigger.connect(self.update_bot_log)
-        self.bot_trade_thread.start()
-        self.bot_status_lbl.setText("ACTIVE")
-        self.bot_status_lbl.setStyleSheet('color: rgb(78, 154, 6)')
-        timestamp = int(time.time()/1000)*1000
-        time_str = datetime.datetime.fromtimestamp(timestamp)
-        self.bot_log_list.addItem(str(time_str)+" Bot started")
+        buys = 0
+        sells = 0
+        for coin in self.buy_coins:
+            if coin in coinslib.binance_coins:
+                buys += 1
+        for coin in self.sell_coins:
+            if coin in coinslib.binance_coins and coin not in self.buy_coins:
+                sells += 1
+        if buys > 0 and sells > 0:
+            print("starting bot")
+            premium = self.margin_input.value()/100
+            self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins, premium)
+            self.bot_trade_thread.trigger.connect(self.update_bot_log)
+            self.bot_trade_thread.start()
+            self.bot_status_lbl.setText("ACTIVE")
+            self.bot_status_lbl.setStyleSheet('color: rgb(78, 154, 6)')
+            timestamp = int(time.time()/1000)*1000
+            time_str = datetime.datetime.fromtimestamp(timestamp)
+            self.bot_log_list.addItem(str(time_str)+" Bot started")
+        else:
+            msg = 'Please activate at least one sell coin and at least one different buy coin (Binance compatible). '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
 
     def update_bot_log(self, log_msg, log_result):
         self.bot_log_list.addItem(log_msg)
@@ -1735,9 +1821,10 @@ class Ui(QTabWidget):
         self.update_mm2_orders_table()
 
     ## TABS
-    def update_prices(self, prices_dict):
-        print("updating prices data from thread")
+    def update_cachedata(self, prices_dict, balaces_dict):
+        print("updating cache data from thread")
         self.prices_data = prices_dict
+        self.balances_data = balaces_dict
         self.prices_table.setSortingEnabled(False)
         self.clear_table(self.prices_table)
         row = 0
@@ -1794,16 +1881,17 @@ class Ui(QTabWidget):
                 row += 1
         self.prices_table.setSortingEnabled(True)
 
+
+
     def prepare_tab(self):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         QCoreApplication.processEvents()
         print(self.active_coins)
         if self.last_price_update < int(time.time()) - 120:
             self.last_price_update = int(time.time())
-            self.prices_thread = priceget_thread(self.creds)
-            self.prices_thread.trigger.connect(self.update_prices)
-            self.prices_thread.start()
-
+            self.datacache_thread = cachedata_thread(self.creds)
+            self.datacache_thread.trigger.connect(self.update_cachedata)
+            self.datacache_thread.start()
         if self.authenticated:
             print("authenticated")
             self.stacked_login.setCurrentIndex(1)
