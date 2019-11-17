@@ -673,32 +673,51 @@ class Ui(QTabWidget):
                 self.gui_coins[coin]['checkbox'].setChecked(False)
 
     ## SHOW ORDERS
-    def update_mm2_orders_table(self):
+    def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         self.bot_mm2_orders_table.setSortingEnabled(False)
+        self.mm2_orders_table.setSortingEnabled(False)
+
         self.clear_table(self.bot_mm2_orders_table)
+        self.clear_table(self.mm2_orders_table)
+
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
-            row = 0
+            bot_row = 0
+            mm2_row = 0
             for item in maker_orders:
                 print(guilib.colorize(maker_orders[item],'blue'))
                 role = "Maker"
                 base = maker_orders[item]['base']
                 base_amount = maker_orders[item]['available_amount']
                 rel = maker_orders[item]['rel']
-                rel_vol = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
+                rel_amount = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
                 sell_price = maker_orders[item]['price']
                 timestamp = int(maker_orders[item]['created_at']/1000)
                 created_at = datetime.datetime.fromtimestamp(timestamp)
-                maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
-                col = 0
-                for cell_data in maker_row:
+                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
+
+                buy_price = '-'
+                market_price = '-'
+                margin = '-'
+                mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, market_price, margin, item]
+
+                bot_col = 0
+                for cell_data in bot_maker_row:
                     cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(row,col,cell)
+                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
                     cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    col += 1
-                row += 1
-        self.bot_mm2_orders_table.setSortingEnabled(True)
+                    bot_col += 1
+                bot_row += 1
+
+                mm2_col = 0
+                for cell_data in mm2_maker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    mm2_col += 1
+                mm2_row += 1
+
         # todo the bit below - need to see an active taker order in action!
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
@@ -712,21 +731,38 @@ class Ui(QTabWidget):
                 base_amount = taker_orders[item]['request']['base_amount']
                 rel_amount = taker_orders[item]['request']['rel_amount']
                 buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
-                taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
-                col = 0
-                for cell_data in taker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(row,col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    col += 1
-                row += 1
+                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
 
-    def cancel_order_uuid(self):
-        selected_row = self.bot_mm2_orders_table.currentRow()
+                sell_price = '-'
+                market_price = ''
+                margin = ''
+                mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, item]
+
+                bot_col = 0
+                for cell_data in bot_taker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    bot_col += 1
+                bot_row += 1
+
+                mm2_col = 0
+                for cell_data in mm2_taker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    mm2_col += 1
+                mm2_row += 1
+
+        self.bot_mm2_orders_table.setSortingEnabled(True)
+        self.mm2_orders_table.setSortingEnabled(True)
+
+    def mm2_cancel_order(self):
+        selected_row = self.mm2_orders_table.currentRow()
         print(selected_row)
-        if self.bot_mm2_orders_table.item(selected_row,10) is not None:
-            if self.bot_mm2_orders_table.item(selected_row,0).text() != '':
-                order_uuid = self.bot_mm2_orders_table.item(selected_row,10).text()
+        if self.mm2_orders_table.item(selected_row,10) is not None:
+            if self.mm2_orders_table.item(selected_row,0).text() != '':
+                order_uuid = self.mm2_orders_table.item(selected_row,10).text()
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 msg = ''
                 if 'result' in resp:
@@ -741,9 +777,31 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
-        self.update_mm2_orders_table()
+        self.update_mm2_orders_tables()
 
-    def cancel_all_orders(self):
+    def mm2_cancel_bot_order(self):
+        selected_row = self.bot_mm2_orders_table.currentRow()
+        print(selected_row)
+        if self.bot_mm2_orders_table.item(selected_row,5) is not None:
+            if self.bot_mm2_orders_table.item(selected_row,0).text() != '':
+                order_uuid = self.bot_mm2_orders_table.item(selected_row,5).text()
+                resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
+                msg = ''
+                if 'result' in resp:
+                    if resp['result'] == 'success':
+                        msg = "Order "+order_uuid+" cancelled"
+                    else:
+                        msg = resp
+                else:
+                    msg = resp
+                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+        else:
+            QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+        self.update_mm2_orders_tables()
+
+    def mm2_cancel_all_orders(self):
         if self.bot_mm2_orders_table.item(0,0).text() != '':
             resp = rpclib.cancel_all(self.creds[0], self.creds[1]).json()
             msg = ''
@@ -758,7 +816,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
-        self.update_mm2_orders_table()
+        self.update_mm2_orders_tables()
    
     ## SHOW TRADES
     def show_trades(self):
@@ -1792,6 +1850,9 @@ class Ui(QTabWidget):
         timestamp = int(time.time()/1000)*1000
         time_str = datetime.datetime.fromtimestamp(timestamp)
         self.bot_log_list.addItem(str(time_str)+" Bot stopped")
+        resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if resp == QMessageBox.Yes:
+            self.mm2_cancel_all_orders()
 
     def start_bot_trading(self):
         buys = 0
@@ -1823,7 +1884,7 @@ class Ui(QTabWidget):
     def update_bot_log(self, log_msg, log_result):
         self.bot_log_list.addItem(log_msg)
         self.bot_log_list.addItem(">>> "+str(log_result))
-        self.update_mm2_orders_table()
+        self.update_mm2_orders_tables()
 
     ## TABS
     def update_cachedata(self, prices_dict, balaces_dict):
@@ -1889,14 +1950,18 @@ class Ui(QTabWidget):
 
 
     def prepare_tab(self):
-        self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+        try:
+            self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+            print(self.active_coins)
+            if self.last_price_update < int(time.time()) - 120:
+                self.last_price_update = int(time.time())
+                self.datacache_thread = cachedata_thread(self.creds)
+                self.datacache_thread.trigger.connect(self.update_cachedata)
+                self.datacache_thread.start()
+        except:
+            # if not logged in, no creds
+            pass
         QCoreApplication.processEvents()
-        print(self.active_coins)
-        if self.last_price_update < int(time.time()) - 120:
-            self.last_price_update = int(time.time())
-            self.datacache_thread = cachedata_thread(self.creds)
-            self.datacache_thread.trigger.connect(self.update_cachedata)
-            self.datacache_thread.start()
         if self.authenticated:
             print("authenticated")
             self.stacked_login.setCurrentIndex(1)
