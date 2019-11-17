@@ -62,6 +62,7 @@ if 1 == 0:
         pass
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
+# THREADED OPERATIONS
 
 class bot_trading_thread(QThread):
     trigger = pyqtSignal(str, str)
@@ -164,6 +165,8 @@ class activation_thread(QThread):
                 print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.trigger.emit(coin[0])
 
+# Item Classes
+
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
         self.border = border
@@ -187,10 +190,13 @@ class QR_image(qrcode.image.base.BaseImage):
     def save(self, stream, kind=None):
         pass
 
+# not used - maybe for graphs if mouse position signalling works
 class crosshair_lines(pg.InfiniteLine):
     def __init__(self, *args, **kwargs):
         pg.InfiniteLine.__init__(self, *args, **kwargs)
         self.setCursor(Qt.CrossCursor)
+
+# UI Class
 
 class Ui(QTabWidget):
     def __init__(self):
@@ -204,8 +210,7 @@ class Ui(QTabWidget):
         self.last_price_update = 0
         self.prices_data = {}
         self.balances_data = {}
-        global gui_coins
-        gui_coins = {
+        self.gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
                 "combo": self.btc_combo,
@@ -367,7 +372,7 @@ class Ui(QTabWidget):
                 "combo":self.zexo_combo, 
             },
         }               
-        self.show_login()
+        self.show_login_tab()
 
     ## COMMON
     def saveFileDialog(self):
@@ -378,7 +383,6 @@ class Ui(QTabWidget):
         return fileName
 
     def export_table(self):
-        # get table data
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
         for i in range(self.trades_table.rowCount()):
             row_list = []
@@ -443,7 +447,7 @@ class Ui(QTabWidget):
             selected = combo.itemText(combo.currentIndex())
         return selected
 
-    # Runs whenever activation_thread signals a coin has been activated
+    # Thread callbacks
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
@@ -451,20 +455,20 @@ class Ui(QTabWidget):
         for i in range(self.wallet_combo.count()):
             existing_coin = self.wallet_combo.itemText(i)
             existing_coins.append(existing_coin)
-        for coin in gui_coins:
+        for coin in self.gui_coins:
             if coin in self.active_coins:
-                gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
+                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
                 if coin not in existing_coins:
                     self.wallet_combo.addItem(coin)
             else:
-                gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
+                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
 
     ## LOGIN 
-    def show_login(self):
+    def show_login_tab(self):
         self.stacked_login.setCurrentIndex(0)
         self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         self.username_input.setFocus()
-        print("show_login")
+        print("show_login_tab")
 
     def login(self):
         print("logging in...")
@@ -528,7 +532,7 @@ class Ui(QTabWidget):
                                 pass
                         with open(config_path+self.username+"_MM2.json", 'w') as j:
                             j.write('')
-                        self.show_active()
+                        self.show_activation_tab()
                     else:
                         self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
             elif self.username in settings.value('users'):
@@ -545,26 +549,26 @@ class Ui(QTabWidget):
     def populate_activation_menu(self, display_coins, layout):
         row = 0
         for coin in display_coins:
-            gui_coins[coin]['checkbox'].show()
-            gui_coins[coin]['combo'].show()
-            layout.addWidget(gui_coins[coin]['checkbox'], row, 0, 1, 1)
-            layout.addWidget(gui_coins[coin]['combo'], row, 1, 1, 1)
+            self.gui_coins[coin]['checkbox'].show()
+            self.gui_coins[coin]['combo'].show()
+            layout.addWidget(self.gui_coins[coin]['checkbox'], row, 0, 1, 1)
+            layout.addWidget(self.gui_coins[coin]['combo'], row, 1, 1, 1)
             icon = QIcon()
             icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
-            gui_coins[coin]['checkbox'].setIcon(icon)
+            self.gui_coins[coin]['checkbox'].setIcon(icon)
             row += 1
 
     # ACTIVATE
-    def show_active(self):
-        print("show_active")
+    def show_activation_tab(self):
+        print("show_activation_tab")
         display_coins_erc20 = []
         display_coins_utxo = []
         display_coins_smartchain = []
         search_txt = self.search_activate.text().lower()
         self.update_active()
-        for coin in gui_coins:
-            gui_coins[coin]['checkbox'].hide()
-            gui_coins[coin]['combo'].hide()
+        for coin in self.gui_coins:
+            self.gui_coins[coin]['checkbox'].hide()
+            self.gui_coins[coin]['combo'].hide()
             coin_label_txt = coinslib.coin_api_codes[coin]['name']
             coin_label_api = ""
             if coinslib.coin_api_codes[coin]['binance_id'] != '':
@@ -575,8 +579,8 @@ class Ui(QTabWidget):
                 coin_label_api += "ᵖ"
             if coin_label_api != "":
                 coin_label_api = " ⁽"+coin_label_api+"⁾"
-            gui_coins[coin]['checkbox'].setText(coin_label_txt+coin_label_api)
-            if coin.lower().find(search_txt) > -1 or gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
+            self.gui_coins[coin]['checkbox'].setText(coin_label_txt+coin_label_api)
+            if coin.lower().find(search_txt) > -1 or self.gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
                 if coinslib.coin_activation[coin]['type'] == 'utxo':
                     display_coins_utxo.append(coin)
                 elif coinslib.coin_activation[coin]['type'] == 'erc20':
@@ -597,12 +601,12 @@ class Ui(QTabWidget):
         autoactivate = []
         self.buy_coins = []
         self.sell_coins = []
-        for coin in gui_coins:
+        for coin in self.gui_coins:
             print("---"+coin+"----")
             print(self.buy_coins)
             print(self.sell_coins)
-            combo = gui_coins[coin]['combo']
-            checkbox = gui_coins[coin]['checkbox']
+            combo = self.gui_coins[coin]['combo']
+            checkbox = self.gui_coins[coin]['checkbox']
             if checkbox.isChecked():
                 autoactivate.append(coin)
                 if coin not in self.active_coins:
@@ -626,15 +630,15 @@ class Ui(QTabWidget):
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
-        self.show_active()
+        self.show_activation_tab()
 
     def show_combo_activated(self, coin):
-        gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
+        self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52);padding-left:25px;")
 
     def select_all(self, state, cointype):
-        for coin in gui_coins:
+        for coin in self.gui_coins:
             if coinslib.coin_activation[coin]['type'] == cointype:
-                gui_coins[coin]['checkbox'].setChecked(state)
+                self.gui_coins[coin]['checkbox'].setChecked(state)
 
     def select_all_smart(self):
         state = self.checkBox_all_smartchains.isChecked()
@@ -656,17 +660,17 @@ class Ui(QTabWidget):
             filter_list.append("ᵍ")
         if self.checkBox_paprika_compatible_checkbox.isChecked():
             filter_list.append("ᵖ")
-        for coin in gui_coins:
+        for coin in self.gui_coins:
             include_coin = ['True']
             for apitype in filter_list:
-                if gui_coins[coin]['checkbox'].text().find(apitype) != -1:
+                if self.gui_coins[coin]['checkbox'].text().find(apitype) != -1:
                     include_coin.append('True')
                 else:
                     include_coin.append('False')
             if 'False' not in include_coin:
-                gui_coins[coin]['checkbox'].setChecked(True)
+                self.gui_coins[coin]['checkbox'].setChecked(True)
             else:
-                gui_coins[coin]['checkbox'].setChecked(False)
+                self.gui_coins[coin]['checkbox'].setChecked(False)
 
     ## SHOW ORDERS
     def update_mm2_orders_table(self):
@@ -794,7 +798,7 @@ class Ui(QTabWidget):
 
     ## SHOW ORDERBOOK
 
-    def show_orderbook(self):
+    def show_mm2_orderbook_tab(self):
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1016,7 +1020,7 @@ class Ui(QTabWidget):
 
 
     ## CREATE ORDER - todo: cleanup references to 'buy' - this is setprice/sell!
-    def show_create_sell(self):
+    def show_mm2_trading_tab(self):
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1185,7 +1189,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Created Setprice Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     ## PRICES
-    def show_prices(self):
+    def show_prices_tab(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1193,7 +1197,7 @@ class Ui(QTabWidget):
 
     ## WALLET
     # TODO: Threaded balance/address info get/store
-    def show_wallet(self):
+    def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1300,7 +1304,7 @@ class Ui(QTabWidget):
         pass
 
     ## CONFIG
-    def show_config(self):
+    def show_config_tab(self):
         if self.creds[0] != '':
             self.rpcpass_text_input.setText(self.creds[1])
             self.seed_text_input.setText(self.creds[2])
@@ -1378,7 +1382,7 @@ class Ui(QTabWidget):
                             print(e)
                             pass
                         self.authenticated = False
-                        self.show_login()
+                        self.show_login_tab()
 
                     else:
                         QMessageBox.information(self, 'Password incorrect!', 'Password incorrect!', QMessageBox.Ok, QMessageBox.Ok)
@@ -1401,8 +1405,8 @@ class Ui(QTabWidget):
     def export_logs(self):
         pass
 
-    def update_logs(self):
-        print("update_logs")
+    def show_mm2_logs_tab(self):
+        print("show_mm2_logs_tab")
         with open(script_path+"/bin/mm2_output.log", 'r') as f:
             log_text = f.read()
             lines = f.readlines()
@@ -1412,7 +1416,7 @@ class Ui(QTabWidget):
         pass
 
     ## BINANCE API
-    def show_binance_acct(self):
+    def show_binance_trading_tab(self):
         tickers = self.update_binance_balance_table()
         print(tickers)
         if tickers is not None:
@@ -1755,7 +1759,7 @@ class Ui(QTabWidget):
 
 
     ## BOT TRADES
-    def show_bot_trades(self):
+    def show_bot_trading_tab(self):
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1794,10 +1798,12 @@ class Ui(QTabWidget):
         buys = 0
         sells = 0
         for coin in self.buy_coins:
-            if coin in coinslib.binance_coins:
+            if coin in coinslib.binance_coins and coin in self.active_coins:
+                print("buying "+coin)
                 buys += 1
         for coin in self.sell_coins:
-            if coin in coinslib.binance_coins and coin not in self.buy_coins:
+            if coin in coinslib.binance_coins and coin in self.active_coins and coin not in self.buy_coins:
+                print("selling "+coin)
                 sells += 1
         if buys > 0 and sells > 0:
             print("starting bot")
@@ -1901,47 +1907,47 @@ class Ui(QTabWidget):
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))              
             elif index == 0:
                 # activate
-                print('show_active')
-                self.show_active()
+                print('show_activation_tab')
+                self.show_activation_tab()
             elif index == 1:
                 # order book
-                print('show_orderbook')
-                self.show_orderbook()
+                print('show_mm2_orderbook_tab')
+                self.show_mm2_orderbook_tab()
             elif index == 2:
                 # prices
-                print('show_prices')
-                self.show_prices()
+                print('show_prices_tab')
+                self.show_prices_tab()
             elif index == 3:
                 # wallet
-                print('show_wallet')
-                self.show_wallet()
+                print('show_mm2_wallet_tab')
+                self.show_mm2_wallet_tab()
             elif index == 4:
                 # mm trade
                 print('makerbot_trade')
-                self.show_create_sell()
+                self.show_mm2_trading_tab()
             elif index == 5:
                 # binance acct
                 print('binance_acct')
-                self.show_binance_acct()
+                self.show_binance_trading_tab()
             elif index == 6:
                 # bot trade
                 print('bot_trades')
-                self.show_bot_trades()
+                self.show_bot_trading_tab()
             elif index == 7:
                 # config
-                print('show_config')
-                self.show_config()
+                print('show_config_tab')
+                self.show_config_tab()
             elif index == 8:
                 # logs
-                print('update_logs')
-                self.update_logs()
+                print('show_mm2_logs_tab')
+                self.show_mm2_logs_tab()
         else:
-            print('show_active - login')
+            print('show_activation_tab - login')
             self.stacked_login.setCurrentIndex(0)
             index = self.currentIndex()
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
-            self.show_login()
+            self.show_login_tab()
 
 if __name__ == '__main__':
     

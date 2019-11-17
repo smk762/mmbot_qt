@@ -10077,7 +10077,7 @@
    <sender>orderbook_sell_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_orderbook()</slot>
+   <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1833</x>
@@ -10093,7 +10093,7 @@
    <sender>orderbook_buy_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_orderbook()</slot>
+   <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1682</x>
@@ -10157,7 +10157,7 @@
    <sender>wallet_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_wallet()</slot>
+   <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>259</x>
@@ -10173,7 +10173,7 @@
    <sender>search_activate</sender>
    <signal>textChanged(QString)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_active()</slot>
+   <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1937</x>
@@ -10606,11 +10606,11 @@
   <slot>activate_coins()</slot>
   <slot>update_logs()</slot>
   <slot>export_logs()</slot>
-  <slot>show_active()</slot>
+  <slot>show_activation_tab()</slot>
   <slot>prepare_tab()</slot>
   <slot>send_funds()</slot>
-  <slot>show_wallet()</slot>
-  <slot>show_orderbook()</slot>
+  <slot>show_mm2_wallet_tab()</slot>
+  <slot>show_mm2_orderbook_tab()</slot>
   <slot>generate_seed()</slot>
   <slot>save_config()</slot>
   <slot>orderbook_buy()</slot>
