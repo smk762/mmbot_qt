@@ -6097,21 +6097,6 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_33">
-          <item row="0" column="1">
-           <widget class="QLabel" name="mm2_buy_depth_baserel_lbl">
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>BASE/REL</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QTableWidget" name="mm2_buy_depth_table">
             <property name="sizePolicy">
@@ -6201,6 +6186,11 @@
              <property name="text">
               <string>Price</string>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
              </property>
@@ -6208,6 +6198,11 @@
             <column>
              <property name="text">
               <string>Amount</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
              </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
@@ -6217,21 +6212,29 @@
              <property name="text">
               <string>Value</string>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
              </property>
             </column>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="create_buy_depth_lbl">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="mm2_buy_depth_baserel_lbl">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>Buy / Sell Depth</string>
+             <string>BASE/REL</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -6470,7 +6473,7 @@
                  <number>2</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="create_buy_100pct_btn">
+                 <widget class="QPushButton" name="mm2_buy_100pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6494,7 +6497,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_buy_75pct_btn">
+                 <widget class="QPushButton" name="mm2_buy_75pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6518,7 +6521,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_buy_50pct_btn">
+                 <widget class="QPushButton" name="mm2_buy_50pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6542,7 +6545,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_buy_25pct_btn">
+                 <widget class="QPushButton" name="mm2_buy_25pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6853,7 +6856,7 @@
                  <number>2</number>
                 </property>
                 <item>
-                 <widget class="QPushButton" name="create_sell_100pct_btn">
+                 <widget class="QPushButton" name="mm2_sell_100pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6877,7 +6880,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_sell_75pct_btn">
+                 <widget class="QPushButton" name="mm2_sell_75pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6901,7 +6904,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_sell_50pct_btn">
+                 <widget class="QPushButton" name="mm2_sell_50pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -6925,7 +6928,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="create_sell_25pct_btn">
+                 <widget class="QPushButton" name="mm2_sell_25pct_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                     <horstretch>0</horstretch>
@@ -7065,21 +7068,6 @@
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_57">
-          <item row="0" column="1">
-           <widget class="QLabel" name="mm2_sell_depth_baserel_lbl">
-            <property name="font">
-             <font>
-              <pointsize>14</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>BASE/REL</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QTableWidget" name="mm2_sell_depth_table">
             <property name="sizePolicy">
@@ -7169,6 +7157,11 @@
              <property name="text">
               <string>Price</string>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
              </property>
@@ -7176,6 +7169,11 @@
             <column>
              <property name="text">
               <string>Amount</string>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
              </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
@@ -7185,21 +7183,29 @@
              <property name="text">
               <string>Value</string>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
              <property name="textAlignment">
               <set>AlignCenter</set>
              </property>
             </column>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="create_sell_depth_lbl">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="mm2_sell_depth_baserel_lbl">
             <property name="font">
              <font>
               <pointsize>14</pointsize>
              </font>
             </property>
             <property name="text">
-             <string>Buy / Sell Depth</string>
+             <string>BASE/REL</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -7537,7 +7543,7 @@
           <number>3</number>
          </property>
          <property name="columnCount">
-          <number>11</number>
+          <number>9</number>
          </property>
          <attribute name="horizontalHeaderCascadingSectionResizes">
           <bool>true</bool>
@@ -7604,16 +7610,6 @@
          <column>
           <property name="text">
            <string>Sell Price</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Mkt Price</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Premium</string>
           </property>
          </column>
          <column>
@@ -10723,6 +10719,150 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mm2_sell_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>create_setprice_sell()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1889</x>
+     <y>786</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_100pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>sell_100pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1775</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_25pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>sell_25pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1641</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_50pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>sell_50pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1686</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_sell_75pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>sell_75pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1730</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_buy_50pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_50pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>115</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_buy_25pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_25pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_buy_75pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_75pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>159</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_buy_100pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>buy_100pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>204</x>
+     <y>794</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>996</x>
+     <y>438</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -10774,5 +10914,6 @@
   <slot>mm2_cancel_bot_order()</slot>
   <slot>show_mm2_trading_tab()</slot>
   <slot>combo_box_switch()</slot>
+  <slot>create_setprice_sell()</slot>
  </slots>
 </ui>

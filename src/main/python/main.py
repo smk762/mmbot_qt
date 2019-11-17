@@ -450,6 +450,86 @@ class Ui(QTabWidget):
             selected = combo.itemText(combo.currentIndex())
         return selected
 
+    def update_mm2_orders_tables(self):
+        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
+        self.bot_mm2_orders_table.setSortingEnabled(False)
+        self.mm2_orders_table.setSortingEnabled(False)
+
+        self.clear_table(self.bot_mm2_orders_table)
+        self.clear_table(self.mm2_orders_table)
+
+        if 'maker_orders' in orders['result']:
+            maker_orders = orders['result']['maker_orders']
+            bot_row = 0
+            mm2_row = 0
+            for item in maker_orders:
+                print(guilib.colorize(maker_orders[item],'blue'))
+                role = "Maker"
+                base = maker_orders[item]['base']
+                base_amount = maker_orders[item]['available_amount']
+                rel = maker_orders[item]['rel']
+                rel_amount = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
+                sell_price = maker_orders[item]['price']
+                timestamp = int(maker_orders[item]['created_at']/1000)
+                created_at = datetime.datetime.fromtimestamp(timestamp)
+                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
+
+                buy_price = 1/float(sell_price)
+                mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
+
+                bot_col = 0
+                for cell_data in bot_maker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    bot_col += 1
+                bot_row += 1
+
+                mm2_col = 0
+                for cell_data in mm2_maker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    mm2_col += 1
+                mm2_row += 1
+
+        # todo the bit below - need to see an active taker order in action!
+        if 'taker_orders' in orders['result']:
+            taker_orders = orders['result']['taker_orders']
+            for item in taker_orders:
+                role = "Taker"
+                print(guilib.colorize(taker_orders[item],'cyan'))
+                timestamp = int(taker_orders[item]['created_at'])/1000
+                created_at = datetime.datetime.fromtimestamp(timestamp)
+                base = taker_orders[item]['request']['base']
+                rel = taker_orders[item]['request']['rel']
+                base_amount = taker_orders[item]['request']['base_amount']
+                rel_amount = taker_orders[item]['request']['rel_amount']
+                buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
+                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
+
+                sell_price = 1/float(sell_price)
+                mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
+
+                bot_col = 0
+                for cell_data in bot_taker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    bot_col += 1
+                bot_row += 1
+
+                mm2_col = 0
+                for cell_data in mm2_taker_row:
+                    cell = QTableWidgetItem(str(cell_data))
+                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
+                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
+                    mm2_col += 1
+                mm2_row += 1
+
+        self.bot_mm2_orders_table.setSortingEnabled(True)
+        self.mm2_orders_table.setSortingEnabled(True)
+
     # Thread callbacks
     # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
@@ -676,96 +756,12 @@ class Ui(QTabWidget):
                 self.gui_coins[coin]['checkbox'].setChecked(False)
 
     ## SHOW ORDERS
-    def update_mm2_orders_tables(self):
-        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
-        self.bot_mm2_orders_table.setSortingEnabled(False)
-        self.mm2_orders_table.setSortingEnabled(False)
-
-        self.clear_table(self.bot_mm2_orders_table)
-        self.clear_table(self.mm2_orders_table)
-
-        if 'maker_orders' in orders['result']:
-            maker_orders = orders['result']['maker_orders']
-            bot_row = 0
-            mm2_row = 0
-            for item in maker_orders:
-                print(guilib.colorize(maker_orders[item],'blue'))
-                role = "Maker"
-                base = maker_orders[item]['base']
-                base_amount = maker_orders[item]['available_amount']
-                rel = maker_orders[item]['rel']
-                rel_amount = float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount'])
-                sell_price = maker_orders[item]['price']
-                timestamp = int(maker_orders[item]['created_at']/1000)
-                created_at = datetime.datetime.fromtimestamp(timestamp)
-                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
-
-                buy_price = '-'
-                market_price = '-'
-                margin = '-'
-                mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, market_price, margin, item]
-
-                bot_col = 0
-                for cell_data in bot_maker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    bot_col += 1
-                bot_row += 1
-
-                mm2_col = 0
-                for cell_data in mm2_maker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    mm2_col += 1
-                mm2_row += 1
-
-        # todo the bit below - need to see an active taker order in action!
-        if 'taker_orders' in orders['result']:
-            taker_orders = orders['result']['taker_orders']
-            for item in taker_orders:
-                role = "Taker"
-                print(guilib.colorize(taker_orders[item],'cyan'))
-                timestamp = int(taker_orders[item]['created_at'])/1000
-                created_at = datetime.datetime.fromtimestamp(timestamp)
-                base = taker_orders[item]['request']['base']
-                rel = taker_orders[item]['request']['rel']
-                base_amount = taker_orders[item]['request']['base_amount']
-                rel_amount = taker_orders[item]['request']['rel_amount']
-                buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
-                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
-
-                sell_price = '-'
-                market_price = ''
-                margin = ''
-                mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, market_price, margin, item]
-
-                bot_col = 0
-                for cell_data in bot_taker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.bot_mm2_orders_table.setItem(bot_row,bot_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    bot_col += 1
-                bot_row += 1
-
-                mm2_col = 0
-                for cell_data in mm2_taker_row:
-                    cell = QTableWidgetItem(str(cell_data))
-                    self.mm2_orders_table.setItem(mm2_row,mm2_col,cell)
-                    cell.setTextAlignment(Qt.AlignHCenter|Qt.AlignCenter)
-                    mm2_col += 1
-                mm2_row += 1
-
-        self.bot_mm2_orders_table.setSortingEnabled(True)
-        self.mm2_orders_table.setSortingEnabled(True)
-
     def mm2_cancel_order(self):
         selected_row = self.mm2_orders_table.currentRow()
         print(selected_row)
-        if self.mm2_orders_table.item(selected_row,10) is not None:
+        if self.mm2_orders_table.item(selected_row,8) is not None:
             if self.mm2_orders_table.item(selected_row,0).text() != '':
-                order_uuid = self.mm2_orders_table.item(selected_row,10).text()
+                order_uuid = self.mm2_orders_table.item(selected_row,8).text()
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 msg = ''
                 if 'result' in resp:
@@ -959,6 +955,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+            self.update_mm2_orders_tables()
             index = self.mm2_buy_buy_combo.currentIndex()
             if index != -1:
                 base = self.mm2_buy_buy_combo.itemText(index)
@@ -998,6 +995,18 @@ class Ui(QTabWidget):
 
                 self.mm2_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
                 self.mm2_buy_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+rel)
+
+            if base not in self.balances_data:
+                self.update_balance(base)
+            balance_info = self.balances_data[base]
+            if 'address' in balance_info:
+                address = balance_info['address']
+                balance_text = balance_info['balance']
+                locked_text = balance_info['locked']
+                available_balance = balance_info['available']
+
+                self.mm2_sell_balance_lbl.setText("Available funds: "+str(available_balance)+" "+base)
+                self.mm2_sell_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+base)
 
             self.mm2_buy_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
             self.mm2_sell_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
@@ -1090,38 +1099,38 @@ class Ui(QTabWidget):
         return  bal*pct/100
 
     def sell_25pct(self):
-        val = self.get_bal_pct(mm2_sell_balance_lbl, 25)
+        val = self.get_bal_pct(self.mm2_sell_balance_lbl, 25)
         self.mm2_sell_amount.setValue(val)
 
     def sell_50pct(self):
-        val = self.get_bal_pct(mm2_sell_balance_lbl, 50)
+        val = self.get_bal_pct(self.mm2_sell_balance_lbl, 50)
         self.mm2_sell_amount.setValue(val)
 
     def sell_75pct(self):
-        val = self.get_bal_pct(mm2_sell_balance_lbl, 75)
+        val = self.get_bal_pct(self.mm2_sell_balance_lbl, 75)
         self.mm2_sell_amount.setValue(val)
 
     def sell_100pct(self):
-        val = self.get_bal_pct(mm2_sell_balance_lbl, 100)
+        val = self.get_bal_pct(self.mm2_sell_balance_lbl, 100)
         self.mm2_sell_amount.setValue(val)
 
     def buy_25pct(self):
-        val = self.get_bal_pct(mm2_buy_balance_lbl, 25)
+        val = self.get_bal_pct(self.mm2_buy_balance_lbl, 25)
         self.mm2_buy_amount.setValue(val)
 
     def buy_50pct(self):
-        val = self.get_bal_pct(mm2_buy_balance_lbl, 50)
+        val = self.get_bal_pct(self.mm2_buy_balance_lbl, 50)
         self.mm2_buy_amount.setValue(val)
 
     def buy_75pct(self):
-        val = self.get_bal_pct(mm2_buy_balance_lbl, 75)
+        val = self.get_bal_pct(self.mm2_buy_balance_lbl, 75)
         self.mm2_buy_amount.setValue(val)
 
     def buy_100pct(self):
-        val = self.get_bal_pct(mm2_buy_balance_lbl, 100)
+        val = self.get_bal_pct(self.mm2_buy_balance_lbl, 100)
         self.mm2_buy_amount.setValue(val)
 
-    def create_setprice_buy(self):
+    def create_setprice_buy(self): 
         index = self.mm2_buy_sell_combo.currentIndex()
         rel = self.mm2_buy_sell_combo.itemText(index)
         index = self.mm2_buy_buy_combo.currentIndex()
@@ -1160,6 +1169,7 @@ class Ui(QTabWidget):
         else:
             trade_max = False
         if not cancel_trade:
+            #resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, basevolume, relprice)
             resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
             if 'error' in resp:
                 if resp['error'].find("larger than available") > -1:
@@ -1170,17 +1180,17 @@ class Ui(QTabWidget):
                 trade_val = round(float(relprice)*float(basevolume),8)
                 msg = "Order Submitted.\n"
                 msg += "Buy "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+                self.update_mm2_orders_tables()
             else:
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Buy Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-    
-    def create_setprice(self):
-        index = self.create_sell_combo.currentIndex()
-        base = self.create_sell_combo.itemText(index)
-        index = self.create_buy_combo.currentIndex()
-        rel = self.create_buy_combo.itemText(index)
-        basevolume = self.create_sell_amount.value()
+    def create_setprice_sell(self): 
+        index = self.mm2_sell_sell_combo.currentIndex()
+        base = self.mm2_sell_sell_combo.itemText(index)
+        index = self.mm2_sell_buy_combo.currentIndex()
+        rel = self.mm2_sell_buy_combo.itemText(index)
+        basevolume = self.mm2_sell_amount.value()
         relprice = self.mm2_sell_price.value()
         # detect previous
         cancel_previous = True
@@ -1199,7 +1209,7 @@ class Ui(QTabWidget):
                         existing_timestamp = int(maker_orders[item]['created_at'])/1000
                         existing_created_at = str(datetime.datetime.fromtimestamp(existing_timestamp))
                         msg_title = "Existing order detected!"
-                        msg = "Cancel all previous "+base+"/"+rel+" orders?"
+                        msg = "Cancel all previous "+rel+"/"+base+" orders?"
                         break
                 if msg != '':
                     confirm = QMessageBox.question(self, msg_title, msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
@@ -1207,9 +1217,8 @@ class Ui(QTabWidget):
                         cancel_previous = False
                     elif confirm == QMessageBox.Cancel:
                         cancel_trade = True
-        bal_txt = self.create_order_balance_lbl.text()
-        max_vol = float(bal_txt.split()[2])
-        val = self.create_sell_amount.value()
+        max_vol = float(self.mm2_sell_balance_lbl.text().split()[2])
+        val = self.mm2_sell_amount.value()
         if val == max_vol:
             trade_max = True
         else:
@@ -1225,9 +1234,11 @@ class Ui(QTabWidget):
                 trade_val = round(float(relprice)*float(basevolume),8)
                 msg = "Order Submitted.\n"
                 msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+                self.update_mm2_orders_tables()
             else:
                 msg = resp
-            QMessageBox.information(self, 'Created Setprice Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'Created Setprice Sell Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+
 
     ## PRICES
     def show_prices_tab(self):
