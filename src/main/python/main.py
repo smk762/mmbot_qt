@@ -804,22 +804,23 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            index = self.orderbook_buy_combo.currentIndex()
-            if index != -1:
-                base = self.orderbook_buy_combo.itemText(index)
+            if self.orderbook_buy_combo.currentIndex() != -1:
+                base = self.orderbook_buy_combo.itemText(self.orderbook_buy_combo.currentIndex())
             else:
                 base = ''
-            index = self.orderbook_sell_combo.currentIndex()
-            if index != -1:
-                rel = self.orderbook_sell_combo.itemText(index)
+            if self.orderbook_sell_combo.currentIndex() != -1:
+                rel = self.orderbook_sell_combo.itemText(self.orderbook_sell_combo.currentIndex())
             else:
                 rel = ''
             active_coins_selection = self.active_coins[:]
+
+            # populate combo boxes
             base = self.update_combo(self.orderbook_buy_combo,active_coins_selection,base)
             active_coins_selection.remove(base)
             rel = self.update_combo(self.orderbook_sell_combo,active_coins_selection,rel)
-            self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
 
+            # populate table
+            self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
             self.orderbook_table.setSortingEnabled(False)
             self.clear_table(self.orderbook_table)
@@ -1446,7 +1447,6 @@ class Ui(QTabWidget):
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+asset+" Address")
 
-
     def update_history_graph(self):
         index = self.binance_asset_comboBox.currentIndex()
         asset = self.binance_asset_comboBox.itemText(index)
@@ -1513,7 +1513,6 @@ class Ui(QTabWidget):
             text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
             self.binance_history_graph.addItem(text)
             text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
-
 
     def getDatePrice(self):
         min_delta = 999999999999
@@ -1802,10 +1801,10 @@ class Ui(QTabWidget):
                 print("buying "+coin)
                 buys += 1
         for coin in self.sell_coins:
-            if coin in coinslib.binance_coins and coin in self.active_coins and coin not in self.buy_coins:
+            if coin in coinslib.binance_coins and coin in self.active_coins:
                 print("selling "+coin)
                 sells += 1
-        if buys > 0 and sells > 0:
+        if (buys == 1 and sells == 1 and buy_coins != sell_coins) or (buys > 0 and sells > 0):
             print("starting bot")
             premium = self.margin_input.value()/100
             self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins, premium)
