@@ -34,13 +34,19 @@ def get_paprika_history(coin_id, since='year_ago', quote='usd'):
     timestamp = datetime.datetime.timestamp(now)
     if since == 'day_ago':
         timestamp = timestamp-(24*60*60)
-        interval = '10m'
+        interval = '15m'
     elif since == 'week_ago':
         timestamp = timestamp-(7*24*60*60)
-        interval = '1h'
+        interval = '2h'
     elif since == 'month_ago':
         timestamp = timestamp-(30*24*60*60)
         interval = '6h'
+    elif since == '3_month_ago':
+        timestamp = timestamp-(3*30*24*60*60)
+        interval = '12h'
+    elif since == '6_month_ago':
+        timestamp = timestamp-(6*30*24*60*60)
+        interval = '1d'
     elif since == 'year_ago':
         timestamp = timestamp-(365*24*60*60)
         interval = '1d'

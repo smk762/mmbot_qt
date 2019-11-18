@@ -703,6 +703,7 @@ class Ui(QTabWidget):
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
+        print(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json())
         self.show_activation_tab()
 
     def show_combo_activated(self, coin):
@@ -1229,6 +1230,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+
             self.wallet_recipient.setFocus()
             existing_coins = []
             for i in range(self.wallet_combo.count()):
@@ -1239,6 +1241,7 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
+            print(rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10))
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
             # get balance from cahe, or manually if not available
             if coin not in self.balances_data:
@@ -1453,35 +1456,51 @@ class Ui(QTabWidget):
                     ticker_pairs.append(ticker+"BTC")
             self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
             self.update_binance_orderbook()
+            QCoreApplication.processEvents()
             self.update_orders_table()
-            self.update_history_graph()
-            addr_text = self.get_binance_deposit_addr()
-            self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
-            self.binance_addr_lbl.setText(addr_text)
-            self.binance_addr_coin_lbl.setText("Binance "+tickers[0]+" Address")
+            QCoreApplication.processEvents()
+            self.update_binance_addr()
 
     def update_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
-        addr_text = self.get_binance_deposit_addr()
-        self.update_history_graph()
-        if addr_text == 'Address not found - create it at Binance.com':
-            self.binance_qr_code.setPixmap(qrcode.make('https://www.binance.com/', image_factory=QR_image).pixmap())
-        else:
+        coin = self.binance_asset_comboBox.itemText(index)
+        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], coin)
+        if 'address' in resp:
+            addr_text = resp['address']
             self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
+        else:
+            addr_text = 'Address not found - create it at Binance.com'
+            self.binance_qr_code.setPixmap(qrcode.make('https://www.binance.com/', image_factory=QR_image).pixmap())            
         self.binance_addr_lbl.setText(addr_text)
-        self.binance_addr_coin_lbl.setText("Binance "+asset+" Address")
+        self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
+        QCoreApplication.processEvents()
+        self.update_history_graph()
 
     def update_history_graph(self):
         index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
-        coin_id = coinslib.coin_api_codes[asset]['paprika_id']
+        coin = self.binance_asset_comboBox.itemText(index)
+        index = self.history_quote_combobox.currentIndex()
+        quote = self.history_quote_combobox.itemText(index).lower()
+        if self.history_1yr_btn.isChecked():
+            since = 'year_ago'
+        elif self.history_6mth_btn.isChecked():
+            since = '6_month_ago'
+        elif self.history_3mth_btn.isChecked():
+            since = '3_month_ago'
+        elif self.history_1mth_btn.isChecked():
+            since = 'month_ago'
+        elif self.history_1wk_btn.isChecked():
+            since = 'week_ago'
+        elif self.history_24hr_btn.isChecked():
+            since = 'day_ago'
+        coin_id = coinslib.coin_api_codes[coin]['paprika_id']
         if coin_id != '':
-            history = priceslib.get_paprika_history(coin_id)
+            history = priceslib.get_paprika_history(coin_id, since, quote)
             x = []
             x_str = []
             y = []
             mth_ticks = []
+            val_ticks = []
             self.xy = {}
             last_month = ''
             for item in history:
@@ -1499,9 +1518,6 @@ class Ui(QTabWidget):
             self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
             self.binance_history_graph.setXRange(min(x),max(x), padding=0)
             self.binance_history_graph.clear()
-
-
-            #self.price_curve = pg.PlotCurveItem(
             price_curve = self.binance_history_graph.plot(
                     x,
                     y, 
@@ -1509,32 +1525,37 @@ class Ui(QTabWidget):
                     fillLevel=0, brush=(50,50,200,100),
                 )
             self.binance_history_graph.addItem(price_curve)
-            self.binance_history_graph.setLabel('left', '$USD')
+            if quote == 'usd':
+                self.binance_history_graph.setLabel('left', '$USD')
+            else:
+                self.binance_history_graph.setLabel('left', 'BTC')
             self.binance_history_graph.setLabel('bottom', '', units=None)
             self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
             price_ticks = self.binance_history_graph.getAxis('left')
-            price_ticks.enableAutoSIPrefix(enable=False)
             date_ticks = self.binance_history_graph.getAxis('bottom')    
             date_ticks.setTicks([mth_ticks])
             date_ticks.enableAutoSIPrefix(enable=False)
-            self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
-            self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
-            self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
-            if asset in self.prices_data:
-                btc_price = self.prices_data[asset]['average_btc']
-                usd_price = self.prices_data[asset]['average_usd']
-            elif coinslib.coin_api_codes[asset]['paprika_id'] != '':
-                price = priceslib.get_paprika_price(coinslib.coin_api_codes[asset]['paprika_id']).json()
+            #self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
+            #self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
+            #self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
+            if coin in self.prices_data:
+                btc_price = self.prices_data[coin]['average_btc']
+                usd_price = self.prices_data[coin]['average_usd']
+            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
                 usd_price = float(price['price_usd'])
                 btc_price = float(price['price_btc'])
             elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[asset]['coingecko_id'], 'usd,btc').json()
+                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
                 usd_price = float(price['usd'])
                 btc_price = float(price['btc'])
             else:
                 usd_price = 'No Data'
                 btc_price = 'No Data'
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+            if quote == 'usd':
+                txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+            else:
+                txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: $'+str(btc_price)+'</span></div>'
             text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
             self.binance_history_graph.addItem(text)
             text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
@@ -1597,7 +1618,7 @@ class Ui(QTabWidget):
         index = self.binance_ticker_pair_comboBox.currentIndex()
         self.binance_price_spinbox.setValue(0)
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
-        depth_limit = 10
+        depth_limit = 20
         orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
         self.clear_table(self.binance_orderbook_table)
         self.binance_orderbook_table.setSortingEnabled(False)
@@ -1608,12 +1629,17 @@ class Ui(QTabWidget):
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'bid']
             self.add_row(row, balance_row, self.binance_orderbook_table, QColor(255, 181, 181))
+            if row == 12: 
+                break
             row += 1
+
         for item in orderbook['asks']:
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'ask']
             self.add_row(row, balance_row, self.binance_orderbook_table, QColor(218, 255, 127))
+            if row == 25: 
+                break
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
         self.binance_orderbook_table.sortItems(1)
@@ -1653,14 +1679,6 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.update_orders_table()
 
-    def get_binance_deposit_addr(self):
-        index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
-        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], asset)
-        if 'address' in resp:
-            return resp['address']
-        else:
-            return 'Address not found - create it at Binance.com'
 
     def binance_withdraw(self):
         index = self.binance_asset_comboBox.currentIndex()
@@ -1687,7 +1705,7 @@ class Ui(QTabWidget):
         else:
         '''
         confirm_msg = 'Confirm withdraw:\n\n'
-        confirm_msg += str(amount)+' '+asset+' to '+addr+'\n\n'
+        confirm_msg += str(amount)+' '+coin+' to '+addr+'\n\n'
         confirm_msg += "Check https://www.binance.com/en/fee/schedule for withdrawl fee details\n\n"
         confirm = QMessageBox.question(self, "Confirm withdraw?", confirm_msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
         if confirm == QMessageBox.Yes:
@@ -1695,7 +1713,7 @@ class Ui(QTabWidget):
         else:
             proceed = False
         if proceed:
-            resp = binance_api.withdraw(self.creds[5], self.creds[6], asset, addr, amount)
+            resp = binance_api.withdraw(self.creds[5], self.creds[6], coin, addr, amount)
             print(resp.keys())
             if 'id' in resp:
                 txid = resp['id']

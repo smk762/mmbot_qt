@@ -53,7 +53,7 @@ def cancel_uuid(node_ip, user_pass, order_uuid):
     r = requests.post(node_ip,json=params)
     return r
 
-def coins_needed_for_kick_start(node_ip, user_pass, order_uuid):
+def coins_needed_for_kick_start(node_ip, user_pass):
     params = {'userpass': user_pass,
               'method': 'coins_needed_for_kick_start'}
     r = requests.post(node_ip,json=params)
@@ -156,8 +156,7 @@ def my_swap_status(node_ip, user_pass, swap_uuid):
     return r
 
 def my_tx_history(node_ip, user_pass, coin, limit=10, from_id=''):
-    method_params = {"uuid": swap_uuid,
-                     "coin": coin,
+    method_params = {"coin": coin,
                      "limit": limit,
                      }
     if from_id != '':
