@@ -1499,20 +1499,60 @@ class Ui(QTabWidget):
             x = []
             x_str = []
             y = []
-            mth_ticks = []
+            time_ticks = []
             val_ticks = []
             self.xy = {}
-            last_month = ''
+            last_time = ''
             for item in history:
                 y.append(item['price'])
                 dt = dateutil.parser.parse(item['timestamp'])
                 x.append(int(datetime.datetime.timestamp(dt)))
                 x_str.append(item['timestamp'])
-                month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
-                if month != last_month:
-                    if last_month != '':
-                        mth_ticks.append((int(datetime.datetime.timestamp(dt)),month))
-                    last_month = month
+                if since in ['year_ago']:
+                    month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
+                    if month != last_time:
+                        if last_time != '':
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
+                        last_time = month
+                elif since in ['6_month_ago']:
+                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                    if time_components[2] in ['15']:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                    elif time_components[3] in ['1']:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+                elif since in ['3_month_ago']:
+                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                    if time_components[2] in ['15', '22']:
+                        if time_components[2] != last_time:
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                            last_time = time_components[2]
+                    if time_components[3] in ['1', '8']:
+                        if time_components[3] != last_time:
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+                            last_time = time_components[3]                            
+                elif since in ['month_ago']:
+                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                    if time_components[2] in ['10', '13', '16', '19', '22', '25', '28']:
+                        if time_components[2] != last_time:
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                            last_time = time_components[2]
+                    elif time_components[3] in ['1', '4', '7']:
+                        if time_components[3] != last_time:
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+                            last_time = time_components[3]
+                elif since in ['week_ago']:
+                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                    if time_components[0] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[0]+" "+time_components[2]+" "+time_components[1]))
+                        last_time = time_components[0]
+                elif since in ['day_ago']:
+                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                    hour_components = time_components[3].split(":")
+                    if int(hour_components[0])%2 == 0:
+                        if hour_components[0] != last_time:
+                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]))
+                            last_time = hour_components[0]
+
                 self.xy.update({str(int(datetime.datetime.timestamp(dt))):item['price']})
 
             self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
@@ -1533,7 +1573,7 @@ class Ui(QTabWidget):
             self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
             price_ticks = self.binance_history_graph.getAxis('left')
             date_ticks = self.binance_history_graph.getAxis('bottom')    
-            date_ticks.setTicks([mth_ticks])
+            date_ticks.setTicks([time_ticks])
             date_ticks.enableAutoSIPrefix(enable=False)
             #self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
             #self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
