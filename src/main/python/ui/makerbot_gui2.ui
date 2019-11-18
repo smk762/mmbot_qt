@@ -34,6 +34,9 @@
   <property name="windowTitle">
    <string>Antara Makerbot</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="tabPosition">
    <enum>QTabWidget::South</enum>
   </property>
@@ -41,7 +44,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>7</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5900,7 +5903,7 @@
           </font>
          </property>
          <property name="styleSheet">
-          <string notr="true">background-color: rgb(238, 238, 236);</string>
+          <string notr="true">background-color: rgb(145, 149, 162);</string>
          </property>
          <property name="selectionBehavior">
           <enum>QAbstractItemView::SelectRows</enum>

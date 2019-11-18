@@ -1687,7 +1687,7 @@ class Ui(QTabWidget):
         orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
         self.clear_table(self.binance_orderbook_table)
         self.binance_orderbook_table.setSortingEnabled(False)
-        self.binance_orderbook_table.setRowCount(depth_limit*2)
+        self.binance_orderbook_table.setRowCount(26)
         row = 0
         for item in orderbook['bids']:
             price = float(item[0])
