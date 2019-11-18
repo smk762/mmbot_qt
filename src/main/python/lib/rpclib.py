@@ -156,14 +156,12 @@ def my_swap_status(node_ip, user_pass, swap_uuid):
     return r
 
 def my_tx_history(node_ip, user_pass, coin, limit=10, from_id=''):
-    method_params = {"coin": coin,
-                     "limit": limit,
-                     }
     if from_id != '':
         method_params.update({"from_id":from_id})
     params = {'userpass': user_pass,
               'method': 'my_tx_history',
-              'params': method_params
+              "coin": coin,
+              "limit": limit
                 }
     r = requests.post(node_ip,json=params)
     return r

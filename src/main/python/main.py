@@ -1241,7 +1241,6 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
-            print(rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10))
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
             # get balance from cahe, or manually if not available
             if coin not in self.balances_data:
@@ -1284,6 +1283,32 @@ class Ui(QTabWidget):
                 self.wallet_btc_value.setText("")
 
             self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image).pixmap())
+            # TX history
+            tx_history = rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10).json()
+            row = 0
+            self.clear_table(self.wallet_tx_table)
+            self.wallet_tx_table.setSortingEnabled(False)
+            rows = len(tx_history['result']['transactions'])
+            self.wallet_tx_table.setRowCount(rows)
+            for tx in tx_history['result']['transactions']:
+                print(tx)
+                blockheight = tx['block_height']
+                timestamp = datetime.datetime.fromtimestamp(int(tx['timestamp']/1000)*1000) 
+                my_balance_change = float(tx['my_balance_change'])
+                print(address)
+                print(tx['from'])
+                print(tx['to'])
+                if address != tx['from'][0]:
+                    tx_address = tx['from'][0]
+                elif address != tx['to'][1]:
+                    tx_address = tx['to'][1]
+                else:
+                    tx_address = tx['to'][0]
+                tx_hash = tx['tx_hash']
+                tx_row = [timestamp, blockheight, my_balance_change, tx_address, tx_hash]
+                self.add_row(row, tx_row, self.wallet_tx_table)
+                row += 1
+            self.wallet_tx_table.setSortingEnabled(True)
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -1326,7 +1351,7 @@ class Ui(QTabWidget):
                         balance_text = balance_info['balance']
                         locked_text = balance_info['locked']
                         available_balance = balance_info['available']
-                        self.wallet_balance.setText(balance_text)
+                        self.wallet_balance.setText(str(balance_text))
             else:
                 msg = str(resp)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1944,7 +1969,7 @@ class Ui(QTabWidget):
                              sources]
                 self.add_row(row, price_row, self.prices_table)
                 row += 1
-        self.prices_table.setSortingEnabled(True)
+        
 
 
 
