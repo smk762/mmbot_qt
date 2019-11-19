@@ -44,7 +44,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>8</number>
+   <number>4</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -143,7 +143,7 @@
               </size>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/400/img/400/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/300/img/300/kmd.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -716,9 +716,9 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-351</y>
+                   <y>-309</y>
                    <width>566</width>
-                   <height>910</height>
+                   <height>868</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1084,66 +1084,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="11" column="1">
-                     <widget class="QComboBox" name="commod_combo">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>125</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>30</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>10</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(114, 159, 207)</string>
-                      </property>
-                      <property name="currentText">
-                       <string>View only</string>
-                      </property>
-                      <property name="currentIndex">
-                       <number>0</number>
-                      </property>
-                      <property name="maxVisibleItems">
-                       <number>4</number>
-                      </property>
-                      <item>
-                       <property name="text">
-                        <string>View only</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Sell</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>Buy &amp; sell</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                    <item row="13" column="1">
+                    <item row="12" column="1">
                      <widget class="QComboBox" name="crypto_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1202,7 +1143,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="17" column="0">
+                    <item row="16" column="0">
                      <widget class="QCheckBox" name="checkBox_revs">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1289,7 +1230,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="15" column="0">
+                    <item row="14" column="0">
                      <widget class="QCheckBox" name="checkBox_bots">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1317,7 +1258,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="19" column="1">
+                    <item row="18" column="1">
                      <widget class="QComboBox" name="thc_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1376,7 +1317,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="12" column="0">
+                    <item row="11" column="0">
                      <widget class="QCheckBox" name="checkBox_coqui">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1404,7 +1345,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="12" column="1">
+                    <item row="11" column="1">
                      <widget class="QComboBox" name="coqui_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1699,7 +1640,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="14" column="1">
+                    <item row="13" column="1">
                      <widget class="QComboBox" name="dex_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1817,7 +1758,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="14" column="0">
+                    <item row="13" column="0">
                      <widget class="QCheckBox" name="checkBox_dex">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1873,7 +1814,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="20" column="1">
+                    <item row="19" column="1">
                      <widget class="QComboBox" name="zexo_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1991,35 +1932,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="11" column="0">
-                     <widget class="QCheckBox" name="checkBox_commod">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>11</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>Commod</string>
-                      </property>
-                      <property name="icon">
-                       <iconset>
-                        <normaloff>:/sml/img/32/color/oot.png</normaloff>:/sml/img/32/color/oot.png</iconset>
-                      </property>
-                      <property name="checked">
-                       <bool>false</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="16" column="1">
+                    <item row="15" column="1">
                      <widget class="QComboBox" name="kmdice_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2078,7 +1991,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="20" column="0">
+                    <item row="19" column="0">
                      <widget class="QCheckBox" name="checkBox_zexo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2165,7 +2078,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="19" column="0">
+                    <item row="18" column="0">
                      <widget class="QCheckBox" name="checkBox_thc">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2193,7 +2106,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="18" column="0">
+                    <item row="17" column="0">
                      <widget class="QCheckBox" name="checkBox_supernet">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2308,7 +2221,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="16" column="0">
+                    <item row="15" column="0">
                      <widget class="QCheckBox" name="checkBox_kmdice">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2364,7 +2277,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="17" column="1">
+                    <item row="16" column="1">
                      <widget class="QComboBox" name="revs_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2423,7 +2336,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="18" column="1">
+                    <item row="17" column="1">
                      <widget class="QComboBox" name="supernet_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2482,7 +2395,7 @@
                       </item>
                      </widget>
                     </item>
-                    <item row="13" column="0">
+                    <item row="12" column="0">
                      <widget class="QCheckBox" name="checkBox_crypto">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -2510,7 +2423,7 @@
                       </property>
                      </widget>
                     </item>
-                    <item row="15" column="1">
+                    <item row="14" column="1">
                      <widget class="QComboBox" name="bots_combo">
                       <property name="sizePolicy">
                        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -5396,7 +5309,7 @@
           </size>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/400/img/400/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/300/img/300/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -6081,82 +5994,66 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QLabel" name="mm2_buy_locked_lbl">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>43</y>
-            <width>117</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Locked by swaps:</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="mm2_buy_balance_lbl">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>61</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Balance: </string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="mm2_buy_bal_icon">
-          <property name="geometry">
-           <rect>
-            <x>300</x>
-            <y>10</y>
-            <width>64</width>
-            <height>64</height>
-           </rect>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>64</width>
-            <height>64</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>64</width>
-            <height>64</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mm2_buy_balance_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Balance: </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" rowspan="2">
+           <widget class="QLabel" name="mm2_buy_bal_icon">
+            <property name="minimumSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>64</width>
+              <height>64</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mm2_buy_locked_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Locked by swaps:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="2" column="0">

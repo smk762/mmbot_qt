@@ -327,10 +327,6 @@ class Ui(QTabWidget):
                 "checkbox":self.checkBox_chips, 
                 "combo":self.chips_combo, 
             },
-            "COMMOD":{ 
-                "checkbox":self.checkBox_commod, 
-                "combo":self.commod_combo, 
-            },
             "COQUI":{ 
                 "checkbox":self.checkBox_coqui, 
                 "combo":self.coqui_combo, 
@@ -672,16 +668,12 @@ class Ui(QTabWidget):
         self.buy_coins = []
         self.sell_coins = []
         for coin in self.gui_coins:
-            print("---"+coin+"----")
-            print(self.buy_coins)
-            print(self.sell_coins)
             combo = self.gui_coins[coin]['combo']
             checkbox = self.gui_coins[coin]['checkbox']
             if checkbox.isChecked():
                 autoactivate.append(coin)
                 if coin not in self.active_coins:
                     coins_to_activate.append([coin,combo])
-            print(combo.itemText(combo.currentIndex()))
             if combo.itemText(combo.currentIndex()) == 'Buy':
                 self.buy_coins.append(coin)
             elif combo.itemText(combo.currentIndex()) == 'Sell':
@@ -700,7 +692,7 @@ class Ui(QTabWidget):
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
-        print(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json())
+        print("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
         self.show_activation_tab()
 
     def show_combo_activated(self, coin):
@@ -746,7 +738,6 @@ class Ui(QTabWidget):
     ## SHOW ORDERS
     def mm2_cancel_order(self):
         selected_row = self.mm2_orders_table.currentRow()
-        print(selected_row)
         if self.mm2_orders_table.item(selected_row,8) is not None:
             if self.mm2_orders_table.item(selected_row,0).text() != '':
                 order_uuid = self.mm2_orders_table.item(selected_row,8).text()
@@ -768,7 +759,6 @@ class Ui(QTabWidget):
 
     def mm2_cancel_bot_order(self):
         selected_row = self.bot_mm2_orders_table.currentRow()
-        print(selected_row)
         if self.bot_mm2_orders_table.item(selected_row,5) is not None:
             if self.bot_mm2_orders_table.item(selected_row,0).text() != '':
                 order_uuid = self.bot_mm2_orders_table.item(selected_row,5).text()
@@ -865,7 +855,6 @@ class Ui(QTabWidget):
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
             self.orderbook_table.setSortingEnabled(False)
             self.clear_table(self.orderbook_table)
-            print(pair_book)
             if 'error' in pair_book:
                 pass
             elif 'asks' in pair_book:
@@ -959,11 +948,11 @@ class Ui(QTabWidget):
             self.mm2_buy_amount_lbl.setText("Amount ("+base+")")
             self.mm2_buy_price_lbl.setText("Price ("+rel+")")
             self.mm2_buy_depth_baserel_lbl.setText(rel+"/"+base)
-            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
+            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
             self.mm2_sell_amount_lbl.setText("Amount ("+rel+")")
             self.mm2_sell_price_lbl.setText("Price ("+base+")")
             self.mm2_sell_depth_baserel_lbl.setText(base+"/"+rel)
-            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
+            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
 
             if rel not in self.balances_data:
                 self.update_balance(rel)
@@ -1239,7 +1228,7 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
-            self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/400/img/400/"+coin.lower()+".png\"/></p></body></html>")
+            self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
             # get balance from cahe, or manually if not available
             if coin not in self.balances_data:
                 self.update_balance(coin)
@@ -1289,13 +1278,9 @@ class Ui(QTabWidget):
             rows = len(tx_history['result']['transactions'])
             self.wallet_tx_table.setRowCount(rows)
             for tx in tx_history['result']['transactions']:
-                print(tx)
                 blockheight = tx['block_height']
                 timestamp = datetime.datetime.fromtimestamp(int(tx['timestamp']/1000)*1000) 
                 my_balance_change = float(tx['my_balance_change'])
-                print(address)
-                print(tx['from'])
-                print(tx['to'])
                 if address != tx['from'][0]:
                     tx_address = tx['from'][0]
                 elif address != tx['to'][1]:
@@ -1330,7 +1315,6 @@ class Ui(QTabWidget):
             elif 'tx_hex' in resp:
                 raw_hex = resp['tx_hex']
                 resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], cointag, raw_hex).json()
-                print(resp)
                 if 'tx_hash' in resp:
                     txid = resp['tx_hash']
                     if recipient_addr.startswith('0x'):
@@ -1628,15 +1612,12 @@ class Ui(QTabWidget):
     def getDatePrice(self):
         min_delta = 999999999999
         xpos = self.vLine.getXPos()
-        print(xpos)
         for item in self.xy:
             delta = abs(int(item) - xpos)
             if delta < min_delta:
                 min_delta = delta
                 ref_time = item
                 ref_price = self.xy[str(item)]
-        print("time: "+str(datetime.datetime.fromtimestamp(int(ref_time))))
-        print("price: "+str(ref_price))
 
     def getPrice(self, x):
         min_delta = 999999999999
@@ -1646,8 +1627,6 @@ class Ui(QTabWidget):
                 min_delta = delta
                 ref_time = item
                 ref_price = self.xy[str(item)]
-        print("time: "+str(datetime.datetime.fromtimestamp(int(ref_time))))
-        print("price: "+str(ref_price))
         return ref_price
 
 
@@ -1779,7 +1758,6 @@ class Ui(QTabWidget):
             proceed = False
         if proceed:
             resp = binance_api.withdraw(self.creds[5], self.creds[6], coin, addr, amount)
-            print(resp.keys())
             if 'id' in resp:
                 txid = resp['id']
                 msg += "Sent!\n"
@@ -1815,7 +1793,6 @@ class Ui(QTabWidget):
                 order_id = self.binance_orders_table.item(selected_row,0).text()
                 ticker_pair = self.binance_orders_table.item(selected_row,2).text()
                 resp = binance_api.delete_order(self.creds[5], self.creds[6], ticker_pair, order_id)
-                print(resp)
                 msg = ''
 
                 if "status" in resp:
@@ -1856,8 +1833,6 @@ class Ui(QTabWidget):
     def populate_bot_lists(self):
         self.bot_buy_list.clear()
         self.bot_sell_list.clear()
-        print(self.buy_coins)
-        print(self.sell_coins)
         for buy_coin in self.buy_coins:
             if buy_coin not in self.active_coins:
                 buy_coin = buy_coin+ " (inactive)"
@@ -1888,11 +1863,9 @@ class Ui(QTabWidget):
         sells = 0
         for coin in self.buy_coins:
             if coin in coinslib.binance_coins and coin in self.active_coins:
-                print("buying "+coin)
                 buys += 1
         for coin in self.sell_coins:
             if coin in coinslib.binance_coins and coin in self.active_coins:
-                print("selling "+coin)
                 sells += 1
         if (buys == 1 and sells == 1 and buy_coins != sell_coins) or (buys > 0 and sells > 0):
             print("starting bot")
@@ -1976,7 +1949,6 @@ class Ui(QTabWidget):
     def prepare_tab(self):
         try:
             self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-            print(self.active_coins)
             if self.last_price_update < int(time.time()) - 120:
                 self.last_price_update = int(time.time())
                 self.datacache_thread = cachedata_thread(self.creds)

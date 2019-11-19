@@ -81,15 +81,6 @@ coin_activation = {
       ],
       'type':'smartchain'
    },
-   'COMMOD':{
-      'activate_with':'electrum',
-      'electrum':[
-         {'url':'electrum1.cipig.net:10022'},
-         {'url':'electrum2.cipig.net:10022'},
-         {'url':'electrum3.cipig.net:10022'}
-      ],
-      'type':'smartchain'
-   },
    'COQUI':{
       'activate_with':'electrum',
       'electrum':[
@@ -424,12 +415,6 @@ coin_api_codes = {
       'paprika_id':'',
       'name':'CHIPS'
    },
-   'COMMOD':{
-      'coingecko_id':'',
-      'binance_id':'',
-      'paprika_id':'',
-      'name':'COMMOD'
-   },
    'COQUI':{
       'coingecko_id':'',
       'binance_id':'',
@@ -642,12 +627,8 @@ coin_explorers = {
       'addr_explorer':'https://btch.explorer.dexstats.info/address'
    },
    'CHIPS':{
-      'tx_explorer':'https://chips.explorer.dexstats.info/tx',
-      'addr_explorer':'https://chips.explorer.dexstats.info/address'
-   },
-   'COMMOD':{
-      'tx_explorer':'https://commod.explorer.dexstats.info/tx',
-      'addr_explorer':'https://commod.explorer.dexstats.info/address'
+      'tx_explorer':'',
+      'addr_explorer':''
    },
    'COQUI':{
       'tx_explorer':'https://coqui.explorer.dexstats.info/tx',
