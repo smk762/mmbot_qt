@@ -201,7 +201,9 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi(home+'/mmbot_qt/src/main/python/ui/makerbot_gui2.ui', self) # Load the .ui file
+        uifile = QFile(":/ui/makerbot_gui2.ui")
+        uifile.open(QFile.ReadOnly)
+        uic.loadUi(uifile, self) # Load the .ui file
         self.show() # Show the GUI
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))

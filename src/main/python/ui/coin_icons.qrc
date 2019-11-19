@@ -103,6 +103,9 @@
     <file>img/64/zexo.png</file>
     <file>img/64/zilla.png</file>
   </qresource>
+  <qresource prefix="ui">
+    <file>makerbot_gui2.ui</file>
+  </qresource>
   <qresource prefix="300">
     <file>img/300/awc.png</file>
     <file>img/300/axe.png</file>
