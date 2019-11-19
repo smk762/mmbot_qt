@@ -1,47 +1,172 @@
 <RCC>
-  <qresource prefix="lrg">
-    <file>img/400/placeholder.png</file>
+  <qresource prefix="32">
+    <file>img/32/awc.png</file>
+    <file>img/32/bat.png</file>
+    <file>img/32/bch.png</file>
+    <file>img/32/bet.png</file>
+    <file>img/32/bnb.png</file>
+    <file>img/32/bnb.svg</file>
+    <file>img/32/bots.png</file>
+    <file>img/32/btc.png</file>
+    <file>img/32/btch.png</file>
+    <file>img/32/chain.png</file>
+    <file>img/32/chips.png</file>
+    <file>img/32/coqui.png</file>
+    <file>img/32/crypto.png</file>
+    <file>img/32/dai.png</file>
+    <file>img/32/dash.png</file>
+    <file>img/32/dcr.png</file>
+    <file>img/32/dex.png</file>
+    <file>img/32/dgb.png</file>
+    <file>img/32/doge.png</file>
+    <file>img/32/dsec.png</file>
+    <file>img/32/eth.png</file>
+    <file>img/32/etomic.png</file>
+    <file>img/32/hodl.png</file>
+    <file>img/32/hush.png</file>
+    <file>img/32/jumblr.png</file>
+    <file>img/32/kmd.png</file>
+    <file>img/32/kmdice.png</file>
+    <file>img/32/labs.png</file>
+    <file>img/32/ltc.png</file>
+    <file>img/32/morty.png</file>
+    <file>img/32/mshark.png</file>
+    <file>img/32/omg.png</file>
+    <file>img/32/oot.png</file>
+    <file>img/32/pax.png</file>
+    <file>img/32/pivx.png</file>
+    <file>img/32/placeholder.png</file>
+    <file>img/32/pungo.png</file>
+    <file>img/32/qtum.png</file>
+    <file>img/32/revs.png</file>
+    <file>img/32/rfox.png</file>
+    <file>img/32/rick.png</file>
+    <file>img/32/rvn.png</file>
+    <file>img/32/supernet.png</file>
+    <file>img/32/thc.png</file>
+    <file>img/32/tusd.png</file>
+    <file>img/32/usdc.png</file>
+    <file>img/32/vrsc.png</file>
+    <file>img/32/vtho.png</file>
+    <file>img/32/vtho.svg</file>
+    <file>img/32/zec.png</file>
+    <file>img/32/zexo.png</file>
+    <file>img/32/zilla.png</file>
+  </qresource>
+  <qresource prefix="64">
+    <file>img/64/bat.png</file>
+    <file>img/64/bch.png</file>
+    <file>img/64/bnb.png</file>
+    <file>img/64/btc.png</file>
+    <file>img/64/btch.png</file>
+    <file>img/64/chain.png</file>
+    <file>img/64/chips.png</file>
+    <file>img/64/coqui.png</file>
+    <file>img/64/dai.png</file>
+    <file>img/64/dash.png</file>
+    <file>img/64/dcr.png</file>
+    <file>img/64/dgb.png</file>
+    <file>img/64/doge.png</file>
+    <file>img/64/eth.png</file>
+    <file>img/64/kmd.png</file>
+    <file>img/64/ltc.png</file>
+    <file>img/64/omg.png</file>
+    <file>img/64/oot.png</file>
+    <file>img/64/pax.png</file>
+    <file>img/64/pivx.png</file>
+    <file>img/64/placeholder.png</file>
+    <file>img/64/pungo.png</file>
+    <file>img/64/qtum.png</file>
+    <file>img/64/rvn.png</file>
+    <file>img/64/tusd.png</file>
+    <file>img/64/usdc.png</file>
+    <file>img/64/vrsc.png</file>
+    <file>img/64/vtho.png</file>
+    <file>img/64/zec.png</file>
+    <file>img/64/zilla.png</file>
+  </qresource>
+  <qresource prefix="128">
+    <file>img/128/awc.png</file>
+    <file>img/128/bat.png</file>
+    <file>img/128/bch.png</file>
+    <file>img/128/bet.png</file>
+    <file>img/128/bnb.png</file>
+    <file>img/128/bots.png</file>
+    <file>img/128/btc.png</file>
+    <file>img/128/btch.png</file>
+    <file>img/128/chain.png</file>
+    <file>img/128/chips.png</file>
+    <file>img/128/coqui.png</file>
+    <file>img/128/crypto.png</file>
+    <file>img/128/dai.png</file>
+    <file>img/128/dash.png</file>
+    <file>img/128/dcr.png</file>
+    <file>img/128/dex.png</file>
+    <file>img/128/dgb.png</file>
+    <file>img/128/doge.png</file>
+    <file>img/128/dsec.png</file>
+    <file>img/128/eth.png</file>
+    <file>img/128/etomic.png</file>
+    <file>img/128/hodl.png</file>
+    <file>img/128/hush.png</file>
+    <file>img/128/jumblr.png</file>
+    <file>img/128/kmd.png</file>
+    <file>img/128/kmdice.png</file>
+    <file>img/128/ltc.png</file>
+    <file>img/128/morty.png</file>
+    <file>img/128/mshark.png</file>
+    <file>img/128/omg.png</file>
+    <file>img/128/oot.png</file>
+    <file>img/128/pax.png</file>
+    <file>img/128/pivx.png</file>
+    <file>img/128/placeholder.png</file>
+    <file>img/128/pungo.png</file>
+    <file>img/128/qtum.png</file>
+    <file>img/128/revs.png</file>
+    <file>img/128/rfox.png</file>
+    <file>img/128/rick.png</file>
+    <file>img/128/rvn.png</file>
+    <file>img/128/supernet.png</file>
+    <file>img/128/thc.png</file>
+    <file>img/128/tusd.png</file>
+    <file>img/128/usdc.png</file>
+    <file>img/128/vrsc.png</file>
+    <file>img/128/vtho.png</file>
+    <file>img/128/zec.png</file>
+    <file>img/128/zexo.png</file>
+    <file>img/128/zilla.png</file>
+  </qresource>
+  <qresource prefix="400">
     <file>img/400/bat.png</file>
     <file>img/400/bch.png</file>
+    <file>img/400/bnb.png</file>
     <file>img/400/btc.png</file>
+    <file>img/400/btch.png</file>
+    <file>img/400/chain.png</file>
+    <file>img/400/chips.png</file>
+    <file>img/400/coqui.png</file>
     <file>img/400/dai.png</file>
     <file>img/400/dash.png</file>
+    <file>img/400/dcr.png</file>
     <file>img/400/dgb.png</file>
     <file>img/400/doge.png</file>
     <file>img/400/eth.png</file>
-    <file>img/400/ltc.png</file>
-    <file>img/400/qtum.png</file>
-    <file>img/400/rvn.png</file>
-    <file>img/400/usdc.png</file>
-    <file>img/400/vrsc.png</file>
-    <file>img/400/zec.png</file>
-    <file>img/400/zilla.png</file>
     <file>img/400/kmd.png</file>
     <file>img/400/labs.png</file>
-  </qresource>
-  <qresource prefix="other"/>
-  <qresource prefix="sml">
-    <file>img/32/color/0xbtc.png</file>
-    <file>img/32/color/dgb.png</file>
-    <file>img/32/color/hush.png</file>
-    <file>img/32/color/oot.png</file>
-    <file>img/32/color/pax.png</file>
-    <file>img/32/color/qtum.png</file>
-    <file>img/32/color/usdc.png</file>
-    <file>img/32/color/usdt.png</file>
-    <file>img/32/color/vrc.png</file>
-    <file>img/32/color/zilla.png</file>
-    <file>img/32/color/eth.png</file>
-    <file>img/32/color/kmd.png</file>
-    <file>img/32/color/rvn.png</file>
-    <file>img/32/color/bat.png</file>
-    <file>img/32/color/bch.png</file>
-    <file>img/32/color/btc.png</file>
-    <file>img/32/color/dai.png</file>
-    <file>img/32/color/dash.png</file>
-    <file>img/32/color/doge.png</file>
-    <file>img/32/color/labs.png</file>
-    <file>img/32/color/ltc.png</file>
-    <file>img/32/color/zec.png</file>
+    <file>img/400/ltc.png</file>
+    <file>img/400/omg.png</file>
+    <file>img/400/oot.png</file>
+    <file>img/400/pax.png</file>
+    <file>img/400/pivx.png</file>
+    <file>img/400/placeholder.png</file>
+    <file>img/400/pungo.png</file>
+    <file>img/400/qtum.png</file>
+    <file>img/400/rvn.png</file>
+    <file>img/400/tusd.png</file>
+    <file>img/400/usdc.png</file>
+    <file>img/400/vrsc.png</file>
+    <file>img/400/vtho.png</file>
+    <file>img/400/zec.png</file>
+    <file>img/400/zilla.png</file>
   </qresource>
 </RCC>

@@ -346,15 +346,6 @@ coin_activation = {
       ],
       'type':'smartchain'
    },
-   'WLC':{
-      'activate_with':'electrum',
-      'electrum':[
-         {'url':'electrum1.cipig.net:10014'},
-         {'url':'electrum2.cipig.net:10014'},
-         {'url':'electrum3.cipig.net:10014'}
-      ],
-      'type':'smartchain'
-   },
    'ZEC':{
       'activate_with':'electrum',
       'electrum':[
@@ -601,12 +592,6 @@ coin_api_codes = {
       'paprika_id':'vrsc-verus-coin',
       'name':'Verus Coin'
    },
-   'WLC':{
-      'coingecko_id':'',
-      'binance_id':'',
-      'paprika_id':'',
-      'name':'WLC'
-   },
    'ZEC':{
       'coingecko_id':'zcash',
       'binance_id':'ZEC',
@@ -772,10 +757,6 @@ coin_explorers = {
       'tx_explorer':'https://vrsc.explorer.dexstats.info/tx',
       'addr_explorer':'https://vrsc.explorer.dexstats.info/address'
    },
-   'WLC':{
-      'tx_explorer':'https://wlc.explorer.dexstats.info/tx',
-      'addr_explorer':'https://wlc.explorer.dexstats.info/address'
-   },
    'ZEC':{
       'tx_explorer':'https://explorer.zcha.in/transactions',
       'addr_explorer':''
@@ -793,6 +774,7 @@ coin_explorers = {
 cointags = []
 for ticker in coin_activation:
     cointags.append(ticker)
+print(cointags)
 
 binance_coins = []
 for coin in coin_api_codes:

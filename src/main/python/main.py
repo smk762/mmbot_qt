@@ -201,10 +201,10 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uic.loadUi(script_path+'/ui/makerbot_gui2.ui', self) # Load the .ui file
+        uic.loadUi(home+'/mmbot_qt/src/main/python/ui/makerbot_gui2.ui', self) # Load the .ui file
         self.show() # Show the GUI
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
-        self.setWindowIcon(QIcon(':/sml/img/32/color/kmd.png'))
+        self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
         self.authenticated = False
         self.bot_trading = False
         self.last_price_update = 0
@@ -363,10 +363,6 @@ class Ui(QTabWidget):
                 "checkbox":self.checkBox_thc, 
                 "combo":self.thc_combo, 
             },
-            "WLC":{ 
-                "checkbox":self.checkBox_wlc, 
-                "combo":self.wlc_combo, 
-            },
             "ZEXO":{ 
                 "checkbox":self.checkBox_zexo, 
                 "combo":self.zexo_combo, 
@@ -451,6 +447,7 @@ class Ui(QTabWidget):
 
     def update_combo(self,combo,options,selected):
         combo.clear()
+        options.sort()
         combo.addItems(options)
         if selected in options:
             for i in range(combo.count()):
@@ -627,7 +624,7 @@ class Ui(QTabWidget):
             layout.addWidget(self.gui_coins[coin]['checkbox'], row, 0, 1, 1)
             layout.addWidget(self.gui_coins[coin]['combo'], row, 1, 1, 1)
             icon = QIcon()
-            icon.addPixmap(QPixmap(":/sml/img/32/color/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
+            icon.addPixmap(QPixmap(":/32/img/32/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
             self.gui_coins[coin]['checkbox'].setIcon(icon)
             row += 1
 
@@ -962,10 +959,11 @@ class Ui(QTabWidget):
             self.mm2_buy_amount_lbl.setText("Amount ("+base+")")
             self.mm2_buy_price_lbl.setText("Price ("+rel+")")
             self.mm2_buy_depth_baserel_lbl.setText(rel+"/"+base)
-
+            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
             self.mm2_sell_amount_lbl.setText("Amount ("+rel+")")
             self.mm2_sell_price_lbl.setText("Price ("+base+")")
             self.mm2_sell_depth_baserel_lbl.setText(base+"/"+rel)
+            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
 
             if rel not in self.balances_data:
                 self.update_balance(rel)
@@ -1241,7 +1239,7 @@ class Ui(QTabWidget):
                     self.wallet_combo.addItem(coin)
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
-            self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/lrg/img/400/"+coin.lower()+".png\"/></p></body></html>")
+            self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/400/img/400/"+coin.lower()+".png\"/></p></body></html>")
             # get balance from cahe, or manually if not available
             if coin not in self.balances_data:
                 self.update_balance(coin)
@@ -1603,6 +1601,8 @@ class Ui(QTabWidget):
             #self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
             #self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
             #self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
+            self.binance_history_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+coin.lower()+".png\"/></p></body></html>")
+
             if coin in self.prices_data:
                 btc_price = self.prices_data[coin]['average_btc']
                 usd_price = self.prices_data[coin]['average_usd']
@@ -2039,7 +2039,8 @@ class Ui(QTabWidget):
 
 if __name__ == '__main__':
     
-    app = QApplication(sys.argv) # Create an instance of QtWidgets.QApplication
+    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
     window = Ui() # Create an instance of our class
-    app.exec_() # Start the application
+    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
+    sys.exit(exit_code)
