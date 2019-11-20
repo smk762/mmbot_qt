@@ -1,6 +1,7 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
+import stat
 import json
 import requests
 from os.path import expanduser
@@ -15,7 +16,9 @@ from ui import coin_icons
 import datetime
 import time
 import dateutil.parser
-
+from zipfile import ZipFile 
+import platform
+import subprocess
 
 # will try graphing later with these imports
 import numpy as np
@@ -49,7 +52,7 @@ print("Existing users: " +str(settings.value('users')))
 # TODO: Dropdowns in alpha order. Might need lambda function.
 # TODO: Detect if in activation loop on activate button press. Ignore or add extar coins if checked.
 # Update coins file. TODO: more efficient way if doesnt need to be updated?
-if 1 == 0:
+if not os.path.isfile(config_path+'coins'):
     try:
         print("Downloading latest coins file")
         with open(config_path+"coins", 'w') as f:
@@ -165,6 +168,39 @@ class activation_thread(QThread):
                 print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.trigger.emit(coin[0])
 
+class downloadThread(QThread):
+    download_progress_signal = pyqtSignal(int)                        #Create signal
+
+    def __init__(self, url, filesize, fileobj, buffer):
+        super(downloadThread, self).__init__()
+        self.url = url
+        self.filesize = filesize
+        self.fileobj = fileobj
+        self.buffer = buffer
+
+    def run(self):
+        try:
+            rsp = requests.get(self.url, stream=True)                #Streaming download mode
+            offset = 0
+            for chunk in rsp.iter_content(chunk_size=self.buffer):
+                if not chunk: break
+                self.fileobj.seek(offset)                            #Setting Pointer Position
+                self.fileobj.write(chunk)                            #write file
+                offset = offset + len(chunk)
+                progress = offset / int(self.filesize) * 100
+                self.download_progress_signal.emit(int(progress))        #Sending signal
+            #######################################################################
+            self.fileobj.close()    #Close file
+            print(config_path+"mm2.zip")
+            with ZipFile(config_path+"mm2.zip", 'r') as zip_ref:
+                zip_ref.extractall(config_path)
+            os.chmod(config_path+'mm2',stat.S_IEXEC)
+            self.exit(0)            #Close thread
+
+
+        except Exception as e:
+            print(e)
+
 # Item Classes
 
 class QR_image(qrcode.image.base.BaseImage):
@@ -208,6 +244,7 @@ class Ui(QTabWidget):
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
         self.authenticated = False
+        self.mm2_downloading = False
         self.bot_trading = False
         self.last_price_update = 0
         self.prices_data = {}
@@ -368,6 +405,53 @@ class Ui(QTabWidget):
         }               
         self.show_login_tab()
 
+    ## MM2 management
+    def start_mm2(self, logfile='mm2_output.log'):
+        try:
+            mm2_output = open(config_path+self.username+logfile,'w+')
+            if os.path.isfile(config_path+"mm2"):            
+                subprocess.Popen([config_path+"mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
+                time.sleep(1)
+            else:
+                self.mm2_downloading = False
+                with mm2_output as f:
+                    f.write("\nmm2 binary not found in "+config_path+"!")
+                print(guilib.colorize("\nmm2 binary not found "+config_path+"!", 'red'))
+                msgBox = QMessageBox(QMessageBox.Warning, 'No MM2!', 'Please wait while the MM2 archive is downloaded...', QMessageBox.NoButton)
+                l = msgBox.layout()
+                self.dl_progressBar = QProgressBar()
+                l.addWidget(self.dl_progressBar,l.rowCount(), 0, 1, l.columnCount(), Qt.AlignCenter)
+                msgBox.show()
+                QCoreApplication.processEvents()
+                # get filename for OS
+                operating_system = platform.system()
+                if operating_system == 'Darwin':
+                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Darwin.zip'
+                elif operating_system == 'Linux':
+                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Linux.zip'
+                elif operating_system == 'Win64' or operating_system == 'Windows':
+                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Windows_NT.zip'
+                print(url)
+                dl_size = requests.get(url, stream=True).headers['Content-Length']
+                dl_path = config_path+'mm2.zip'
+                dl_obj = open(dl_path, 'wb')
+                #### Create a download thread
+                self.downloadThread = downloadThread(url, dl_size, dl_obj, buffer=10240)
+                self.downloadThread.download_progress_signal.connect(self.update_dl_progressbar)
+                self.downloadThread.start()
+                while self.downloadThread.isRunning():
+                    time.sleep(2)
+                    QCoreApplication.processEvents()
+
+        except Exception as e:
+            print(e)
+
+    def update_dl_progressbar(self, value):
+        self.dl_progressBar.setValue(value)
+        if value == 100:
+            QMessageBox.information(self, "Progress status", 'Download complete!')
+
+
     ## COMMON
     def saveFileDialog(self):
         filename = ''
@@ -385,7 +469,6 @@ class Ui(QTabWidget):
             if bgcol != ''  :
                 table.item(row,col).setBackground(bgcol)
             col += 1
-
 
     def export_table(self):
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
@@ -592,7 +675,7 @@ class Ui(QTabWidget):
                             os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
                             try:
                                 print("starting mm2")
-                                guilib.start_mm2()
+                                self.start_mm2()
                                 time.sleep(0.6)
                                 version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
                                 self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")

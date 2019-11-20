@@ -9,7 +9,6 @@ import subprocess
 from os.path import expanduser
 from . import coinslib, rpclib, binance_api
 from decimal import Decimal, ROUND_DOWN
-
 import bitcoin
 from bitcoin.wallet import P2PKHBitcoinAddress
 from bitcoin.core import x
@@ -128,20 +127,6 @@ def colorize(string, color):
         else:
                 return colors[color] + str(string) + '\033[0m'
 
-## MM2 management
-def start_mm2(logfile='mm2_output.log'):
-    if os.path.isfile(script_path+"/bin/mm2"):
-        mm2_output = open(script_path+"/bin/"+logfile,'w+')
-
-        subprocess.Popen([script_path+"/bin/mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
-        time.sleep(1)
-    else:
-        with open(script_path+"/bin/"+logfile,'w+') as f:
-            f.write("\nmm2 binary not found in "+script_path+"/bin!")
-            f.write("\nExiting...\n")
-        print(colorize("\nmm2 binary not found in "+script_path+"/bin!", 'red'))
-        print(colorize("See https://developers.komodoplatform.com/basic-docs/atomicdex/atomicdex-setup/get-started-atomicdex.html for install instructions.", 'orange'))
-        print(colorize("Exiting...\n", 'blue'))
 
 def validate_ip(ip):
     ip_regex = '''^(25[0-5]|2[0-4][0-9]|[0-1]?[0-9][0-9]?)\.( 
