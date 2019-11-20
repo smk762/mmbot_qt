@@ -1,0 +1,11 @@
+setuptools
+wheel 
+PyQt5==5.9.2
+fbs
+slick-bitcoinrpc
+dateparser==0.7.2
+requests==2.18.4
+python-bitcoinlib==0.10.2
+PyQRCode==1.2.1
+pyqtgraph==0.10.0
+python-dateutil==2.6.1
