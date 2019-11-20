@@ -1,8 +1,10 @@
 # mmbot_qt
 MarketMaker2 BobBot GUI for pythonQT  
 
-sudo apt-get install python3.6 python3-pip libgnutls28-dev python3-venv python3-dev libpython3-dev libevent-dev libssl-dev libcurl4-openssl-dev 
+sudo apt-get install python3.6 python3-pip libgnutls28-dev python3-venv python3-dev libpython3-dev libevent-dev libssl-dev libcurl4-openssl-dev  
+
 sudo apt-get install ruby ruby-dev rubygems build-essential (for building installer)  
+
 pip3 install -r requirements.txt  
 
 # For Eth address validation and checksum conversion  (pending)
