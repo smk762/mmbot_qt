@@ -5,7 +5,6 @@ import sys
 import json
 import time
 import requests
-import subprocess
 from os.path import expanduser
 from . import coinslib, rpclib, binance_api
 from decimal import Decimal, ROUND_DOWN

@@ -25,13 +25,16 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
 
+os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"  # bigness
+QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+
 pg.setConfigOption('background', (64,64,64))
 pg.setConfigOption('foreground', (78,155,46))
 
 cwd = os.getcwd()
 script_path = sys.path[0]
 home = expanduser("~")
-
 
 # Setup local settings ini.
 # Need to test this on alternative Operating systems.
@@ -2098,6 +2101,11 @@ class Ui(QTabWidget):
 if __name__ == '__main__':
     
     appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    screen_resolution = appctxt.app.desktop().screenGeometry()
+    width, height = screen_resolution.width(), screen_resolution.height()
+    print(screen_resolution)
+    print(width)
+    print(height)
     window = Ui() # Create an instance of our class
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
