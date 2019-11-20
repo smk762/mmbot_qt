@@ -640,14 +640,14 @@ class Ui(QTabWidget):
                     print("decrypting")
                     mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
                     try:
-                        with open(config_path+self.username+"_MM2.json", 'w') as j:
+                        with open(config_path+"MM2.json", 'w') as j:
                             j.write(mm2_json_decrypted.decode())
                         self.authenticated = True
                     except:
                         print("decrypting failed")
                         # did not decode, bad password
                         pass
-            jsonfile = config_path+self.username+"_MM2.json"
+            jsonfile = config_path+"MM2.json"
             try:
                 self.creds = guilib.get_creds(jsonfile)
             except Exception as e:
@@ -672,7 +672,7 @@ class Ui(QTabWidget):
                                 except:
                                     stopped = True
                                     pass
-                            os.environ['MM_CONF_PATH'] = config_path+self.username+"_MM2.json"
+                            os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
                             try:
                                 print("starting mm2")
                                 self.start_mm2()
@@ -681,7 +681,7 @@ class Ui(QTabWidget):
                                 self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
                             except:
                                 pass
-                        with open(config_path+self.username+"_MM2.json", 'w') as j:
+                        with open(config_path+"MM2.json", 'w') as j:
                             j.write('')
                         self.show_activation_tab()
                     else:
@@ -1472,7 +1472,7 @@ class Ui(QTabWidget):
             msg += 'No RPC IP input! \n'
         if msg == '':
             overwrite = True
-            if os.path.isfile(config_path+self.username+"_MM2.json"):
+            if os.path.isfile(config_path+self.username+"_MM2.enc"):
                 confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing settings detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
                 if not confirm == QMessageBox.Yes:
                     overwrite = False
