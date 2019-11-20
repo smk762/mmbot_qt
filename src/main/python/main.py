@@ -25,7 +25,7 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
 
-os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"  # bigness
+os.environ["QT_SCALE_FACTOR"] = "1"  # bigness
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
@@ -751,6 +751,7 @@ class Ui(QTabWidget):
             self.populate_activation_menu(display_coins_utxo, self.utxo_layout)
 
     def activate_coins(self):
+        self.resize(400,400)
         print('Start activate')
         coins_to_activate = []
         autoactivate = []
@@ -1963,7 +1964,7 @@ class Ui(QTabWidget):
             self.bot_trade_thread.trigger.connect(self.update_bot_log)
             self.bot_trade_thread.start()
             self.bot_status_lbl.setText("ACTIVE")
-            self.bot_status_lbl.setStyleSheet('color: rgb(78, 154, 6)')
+            self.bot_status_lbl.setStyleSheet('color: #043409')
             timestamp = int(time.time()/1000)*1000
             time_str = datetime.datetime.fromtimestamp(timestamp)
             self.bot_log_list.addItem(str(time_str)+" Bot started")
@@ -2106,6 +2107,7 @@ if __name__ == '__main__':
     print(screen_resolution)
     print(width)
     print(height)
+
     window = Ui() # Create an instance of our class
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
