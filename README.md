@@ -23,3 +23,9 @@ python3 -m venv venv
 source venv/bin/activate  
 fbs freeze  
 fbs installer  
+
+### remove old pkg
+sudo dpkg --purge mm2-maker-bot
+
+### install new pkg
+sudo dpkg -i target/mm2-maker-bot.deb
