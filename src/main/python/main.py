@@ -409,7 +409,8 @@ class Ui(QTabWidget):
     def start_mm2(self, logfile='mm2_output.log'):
         try:
             mm2_output = open(config_path+self.username+logfile,'w+')
-            if os.path.isfile(config_path+"mm2"):            
+            if os.path.isfile(config_path+"mm2"):
+                os.chdir(config_path)       
                 subprocess.Popen([config_path+"mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
                 time.sleep(1)
             else:
@@ -419,7 +420,7 @@ class Ui(QTabWidget):
                 print(guilib.colorize("\nmm2 binary not found "+config_path+"!", 'red'))
                 msgBox = QMessageBox(QMessageBox.Warning, 'No MM2!', 'Please wait while the MM2 archive is downloaded...', QMessageBox.NoButton)
                 l = msgBox.layout()
-                self.dl_progressBar = QProgressBar()
+                self.dl_progressBar = QProgressBar(self)
                 l.addWidget(self.dl_progressBar,l.rowCount(), 0, 1, l.columnCount(), Qt.AlignCenter)
                 msgBox.show()
                 QCoreApplication.processEvents()
