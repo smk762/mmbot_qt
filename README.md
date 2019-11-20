@@ -17,6 +17,6 @@ Credits for crypto icons: https://github.com/atomiclabs/cryptocurrency-icons
 # Install for build on Linux
 git clone https://github.com/smk762/mmbot_qt  
 cd mmbot_qt  
-python3 -m venv venv 
-source venv/bin/activate
-pip install -r requirements.txt
+python3 -m venv venv   
+source venv/bin/activate  
+pip install -r requirements.txt  
