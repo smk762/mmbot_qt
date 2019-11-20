@@ -2109,6 +2109,7 @@ if __name__ == '__main__':
     print(height)
 
     window = Ui() # Create an instance of our class
+    window.resize(width, height)
     exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
     sys.exit(exit_code)
