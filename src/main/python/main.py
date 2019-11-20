@@ -751,7 +751,7 @@ class Ui(QTabWidget):
             self.populate_activation_menu(display_coins_utxo, self.utxo_layout)
 
     def activate_coins(self):
-        self.resize(400,400)
+        #self.resize()
         print('Start activate')
         coins_to_activate = []
         autoactivate = []
