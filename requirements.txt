@@ -1,9 +1,9 @@
 setuptools
 wheel 
 PyQt5==5.9.2
-fbs
-slick-bitcoinrpc
-pycrypto
+fbs==0.8.4
+slick-bitcoinrpc==0.1.4
+pycrypto==2.6.1
 dateparser==0.7.2
 requests==2.18.4
 python-bitcoinlib==0.10.2
