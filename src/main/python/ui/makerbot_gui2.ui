@@ -710,9 +710,9 @@
                  <property name="geometry">
                   <rect>
                    <x>0</x>
-                   <y>-269</y>
+                   <y>0</y>
                    <width>669</width>
-                   <height>868</height>
+                   <height>748</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -739,7 +739,7 @@
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_labs">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -767,7 +767,7 @@
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="checkBox_kmd">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -802,8 +802,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -854,7 +854,7 @@
                     <item row="3" column="0">
                      <widget class="QCheckBox" name="checkBox_morty">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -882,7 +882,7 @@
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_vrsc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -917,8 +917,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -969,7 +969,7 @@
                     <item row="6" column="0">
                      <widget class="QCheckBox" name="checkBox_zilla">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -997,7 +997,7 @@
                     <item row="5" column="0">
                      <widget class="QCheckBox" name="checkBox_rfox">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1025,7 +1025,7 @@
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="checkBox_rick">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1053,7 +1053,7 @@
                     <item row="7" column="0">
                      <widget class="QCheckBox" name="checkBox_hush">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1088,8 +1088,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1140,7 +1140,7 @@
                     <item row="16" column="0">
                      <widget class="QCheckBox" name="checkBox_revs">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1175,8 +1175,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1227,7 +1227,7 @@
                     <item row="14" column="0">
                      <widget class="QCheckBox" name="checkBox_bots">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1262,8 +1262,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1314,7 +1314,7 @@
                     <item row="11" column="0">
                      <widget class="QCheckBox" name="checkBox_coqui">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1349,8 +1349,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1408,8 +1408,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1467,8 +1467,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1526,8 +1526,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1585,14 +1585,14 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
                        <size>
-                        <width>150</width>
-                        <height>30</height>
+                        <width>16777215</width>
+                        <height>16777215</height>
                        </size>
                       </property>
                       <property name="font">
@@ -1644,8 +1644,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1703,8 +1703,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1755,7 +1755,7 @@
                     <item row="13" column="0">
                      <widget class="QCheckBox" name="checkBox_dex">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1783,7 +1783,7 @@
                     <item row="9" column="0">
                      <widget class="QCheckBox" name="checkBox_btch">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -1818,8 +1818,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1877,8 +1877,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1936,8 +1936,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -1988,7 +1988,7 @@
                     <item row="19" column="0">
                      <widget class="QCheckBox" name="checkBox_zexo">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2023,8 +2023,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2075,7 +2075,7 @@
                     <item row="18" column="0">
                      <widget class="QCheckBox" name="checkBox_thc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2103,7 +2103,7 @@
                     <item row="17" column="0">
                      <widget class="QCheckBox" name="checkBox_supernet">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2138,8 +2138,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2190,7 +2190,7 @@
                     <item row="10" column="0">
                      <widget class="QCheckBox" name="checkBox_chips">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2218,7 +2218,7 @@
                     <item row="15" column="0">
                      <widget class="QCheckBox" name="checkBox_kmdice">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2246,7 +2246,7 @@
                     <item row="8" column="0">
                      <widget class="QCheckBox" name="checkBox_oot">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2281,8 +2281,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2340,8 +2340,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2392,7 +2392,7 @@
                     <item row="12" column="0">
                      <widget class="QCheckBox" name="checkBox_crypto">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2427,8 +2427,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2670,7 +2670,7 @@
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_14">
-                  <item row="1" column="0">
+                  <item row="0" column="0">
                    <layout class="QGridLayout" name="utxo_layout">
                     <property name="sizeConstraint">
                      <enum>QLayout::SetDefaultConstraint</enum>
@@ -2700,8 +2700,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2752,7 +2752,7 @@
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="checkBox_doge">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2784,8 +2784,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2843,8 +2843,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2895,7 +2895,7 @@
                     <item row="8" column="0">
                      <widget class="QCheckBox" name="checkBox_axe">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -2927,8 +2927,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -2979,7 +2979,7 @@
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_dash">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3004,7 +3004,7 @@
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="checkBox_bch">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3036,8 +3036,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3088,7 +3088,7 @@
                     <item row="6" column="0">
                      <widget class="QCheckBox" name="checkBox_zec">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3120,8 +3120,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3179,8 +3179,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3231,7 +3231,7 @@
                     <item row="7" column="0">
                      <widget class="QCheckBox" name="checkBox_qtum">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3256,7 +3256,7 @@
                     <item row="9" column="0">
                      <widget class="QCheckBox" name="checkBox_dgb">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3281,7 +3281,7 @@
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_btc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3312,7 +3312,7 @@
                     <item row="5" column="0">
                      <widget class="QCheckBox" name="checkBox_rvn">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3337,7 +3337,7 @@
                     <item row="3" column="0">
                      <widget class="QCheckBox" name="checkBox_ltc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3369,8 +3369,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3428,8 +3428,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3487,8 +3487,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3652,7 +3652,7 @@
                     <item row="2" column="0">
                      <widget class="QCheckBox" name="checkBox_bat">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3684,8 +3684,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3743,8 +3743,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3802,8 +3802,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3861,8 +3861,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -3913,7 +3913,7 @@
                     <item row="4" column="0">
                      <widget class="QCheckBox" name="checkBox_tusd">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3944,7 +3944,7 @@
                     <item row="5" column="0">
                      <widget class="QCheckBox" name="checkBox_pax">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -3982,8 +3982,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -4034,7 +4034,7 @@
                     <item row="3" column="0">
                      <widget class="QCheckBox" name="checkBox_usdc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -4065,7 +4065,7 @@
                     <item row="6" column="0">
                      <widget class="QCheckBox" name="checkBox_awc">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -4103,8 +4103,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -4162,8 +4162,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -4214,7 +4214,7 @@
                     <item row="7" column="0">
                      <widget class="QCheckBox" name="checkBox_link">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -4252,8 +4252,8 @@
                       </property>
                       <property name="minimumSize">
                        <size>
-                        <width>90</width>
-                        <height>30</height>
+                        <width>0</width>
+                        <height>0</height>
                        </size>
                       </property>
                       <property name="maximumSize">
@@ -4304,7 +4304,7 @@
                     <item row="0" column="0">
                      <widget class="QCheckBox" name="checkBox_eth">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -4335,7 +4335,7 @@
                     <item row="1" column="0">
                      <widget class="QCheckBox" name="checkBox_dai">
                       <property name="sizePolicy">
-                       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
@@ -7891,6 +7891,12 @@
           </property>
           <item row="0" column="0">
            <widget class="QPushButton" name="binance_cancel_selected_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(114, 159, 207);</string>
             </property>
@@ -7901,6 +7907,12 @@
           </item>
           <item row="0" column="2">
            <widget class="QPushButton" name="binance_cancel_all_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(114, 159, 207);</string>
             </property>
@@ -7920,7 +7932,7 @@
             <property name="sizeHint" stdset="0">
              <size>
               <width>20</width>
-              <height>40</height>
+              <height>25</height>
              </size>
             </property>
            </spacer>
@@ -8497,7 +8509,7 @@
     <string>Bot Trading</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_40">
-    <item row="0" column="0" rowspan="3">
+    <item row="0" column="0" rowspan="2">
      <widget class="QFrame" name="frame_40">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -8892,65 +8904,6 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="2" rowspan="3">
-     <widget class="QFrame" name="frame_3">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(189, 189, 189);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_6">
-       <item row="0" column="1">
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="minimumSize">
-          <size>
-           <width>250</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="title">
-          <string>Bot Trades Log</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_45">
-          <item row="1" column="0">
-           <widget class="QListWidget" name="bot_log_list">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="1" column="1">
      <widget class="QFrame" name="frame_45">
       <property name="sizePolicy">
@@ -9198,6 +9151,65 @@
          <property name="alignment">
           <set>Qt::AlignCenter</set>
          </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2" rowspan="2">
+     <widget class="QFrame" name="frame_3">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(189, 189, 189);</string>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="minimumSize">
+          <size>
+           <width>250</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="title">
+          <string>Bot Trades Log</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_45">
+          <item row="1" column="0">
+           <widget class="QListWidget" name="bot_log_list">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>9</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
