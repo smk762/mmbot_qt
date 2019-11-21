@@ -1539,8 +1539,8 @@ class Ui(QTabWidget):
     def show_mm2_logs_tab(self):
         print("show_mm2_logs_tab")
         logfile='mm2_output.log'
-        mm2_output = open(config_path+self.username+logfile,'w+')
-        with open(script_path+"/bin/mm2_output.log", 'r') as f:
+        mm2_output = open(config_path+self.username+logfile,'r')
+        with mm2_output as f:
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.console_logs.verticalScrollBar()
