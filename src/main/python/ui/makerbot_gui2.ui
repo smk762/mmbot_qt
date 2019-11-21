@@ -9987,7 +9987,7 @@
        </size>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(136, 138, 133);</string>
+       <string notr="true">background-color: rgb(114, 159, 207);</string>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
