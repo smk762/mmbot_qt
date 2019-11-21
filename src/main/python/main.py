@@ -212,6 +212,10 @@ class QR_image(qrcode.image.base.BaseImage):
         self.width = width
         self.box_size = box_size
         size = (width + border * 2) * box_size
+        print(self.border)
+        print(self.width)
+        print(self.box_size)
+        print(size)
         self._image = QImage(size, size, QImage.Format_RGB16)
         self._image.fill(Qt.white)
 
@@ -1354,7 +1358,7 @@ class Ui(QTabWidget):
                 btc_price = 'No Data'
             if btc_price != 'No Data':
                 self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-                self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" ₿")
+                self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
             else:
                 self.wallet_usd_value.setText("")
                 self.wallet_btc_value.setText("")
