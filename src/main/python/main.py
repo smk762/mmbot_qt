@@ -1934,13 +1934,13 @@ class Ui(QTabWidget):
             if buy_coin not in self.active_coins:
                 buy_coin = buy_coin+ " (inactive)"
             elif buy_coin not in coinslib.binance_coins:
-                buy_coin = buy_coin+ " (not on Binance, mm2 only)"
+                buy_coin = buy_coin+ " (not on Binance)"
             self.bot_buy_list.addItem(buy_coin)
         for sell_coin in self.sell_coins:
             if sell_coin not in self.active_coins:
                 sell_coin = sell_coin+ " (inactive)"
             elif sell_coin not in coinslib.binance_coins:
-                sell_coin = sell_coin+ " (not on Binance, mm2 only)"
+                sell_coin = sell_coin+ " (not on Binance)"
             self.bot_sell_list.addItem(sell_coin)
 
     def stop_bot_trading(self):
