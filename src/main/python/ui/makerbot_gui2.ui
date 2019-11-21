@@ -38,7 +38,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -737,14 +737,27 @@
                    <widget class="QWidget" name="scrollAreaWidgetContents_3">
                     <property name="geometry">
                      <rect>
-                      <x>0</x>
+                      <x>-27</x>
                       <y>0</y>
-                      <width>298</width>
+                      <width>325</width>
                       <height>748</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_13">
-                     <item row="0" column="0">
+                     <item row="0" column="2">
+                      <spacer name="verticalSpacer_17">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="0" column="1">
                       <layout class="QGridLayout" name="smartchains_layout">
                        <property name="sizeConstraint">
                         <enum>QLayout::SetDefaultConstraint</enum>
@@ -1081,7 +1094,7 @@
                        <item row="7" column="0">
                         <widget class="QCheckBox" name="checkBox_hush">
                          <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                            <horstretch>0</horstretch>
                            <verstretch>0</verstretch>
                           </sizepolicy>
@@ -2506,6 +2519,19 @@
                        </item>
                       </layout>
                      </item>
+                     <item row="0" column="0">
+                      <spacer name="verticalSpacer_18">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
                     </layout>
                    </widget>
                   </widget>
@@ -2696,12 +2722,12 @@
                      <rect>
                       <x>0</x>
                       <y>0</y>
-                      <width>311</width>
-                      <height>590</height>
+                      <width>323</width>
+                      <height>576</height>
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_14">
-                     <item row="0" column="0">
+                     <item row="0" column="1">
                       <layout class="QGridLayout" name="utxo_layout">
                        <property name="sizeConstraint">
                         <enum>QLayout::SetDefaultConstraint</enum>
@@ -3569,6 +3595,32 @@
                        </item>
                       </layout>
                      </item>
+                     <item row="0" column="2">
+                      <spacer name="verticalSpacer_11">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="0" column="0">
+                      <spacer name="verticalSpacer_19">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
                     </layout>
                    </widget>
                   </widget>
@@ -3660,7 +3712,7 @@
                      </rect>
                     </property>
                     <layout class="QGridLayout" name="gridLayout">
-                     <item row="0" column="0">
+                     <item row="0" column="1">
                       <layout class="QGridLayout" name="erc20_layout" rowstretch="0,0,0,0,0,0,0,0">
                        <property name="sizeConstraint">
                         <enum>QLayout::SetDefaultConstraint</enum>
@@ -4389,6 +4441,32 @@
                         </widget>
                        </item>
                       </layout>
+                     </item>
+                     <item row="0" column="2">
+                      <spacer name="verticalSpacer_16">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item row="0" column="0">
+                      <spacer name="verticalSpacer_26">
+                       <property name="orientation">
+                        <enum>Qt::Vertical</enum>
+                       </property>
+                       <property name="sizeHint" stdset="0">
+                        <size>
+                         <width>20</width>
+                         <height>40</height>
+                        </size>
+                       </property>
+                      </spacer>
                      </item>
                     </layout>
                    </widget>
@@ -5679,75 +5757,7 @@
          </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QTableWidget" name="wallet_tx_table">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(145, 149, 162);</string>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <attribute name="horizontalHeaderDefaultSectionSize">
-          <number>298</number>
-         </attribute>
-         <attribute name="horizontalHeaderHighlightSections">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="horizontalHeaderMinimumSectionSize">
-          <number>298</number>
-         </attribute>
-         <attribute name="verticalHeaderHighlightSections">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderMinimumSectionSize">
-          <number>20</number>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Time</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Block</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Amount</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Address</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Transaction ID</string>
-          </property>
-         </column>
-        </widget>
-       </item>
       </layout>
-      <zorder>wallet_tx_table</zorder>
       <zorder>frame_53</zorder>
       <zorder>frame_18</zorder>
      </widget>
