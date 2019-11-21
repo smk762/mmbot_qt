@@ -772,7 +772,7 @@ class Ui(QTabWidget):
                 self.buy_coins.append(coin)
             elif combo.itemText(combo.currentIndex()) == 'Sell':
                 self.sell_coins.append(coin)
-            elif combo.itemText(combo.currentIndex()) == 'Buy & sell':
+            elif combo.itemText(combo.currentIndex()) == 'Buy/Sell':
                 self.buy_coins.append(coin)
                 self.sell_coins.append(coin)
             activate_list = {
