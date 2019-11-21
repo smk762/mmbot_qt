@@ -1364,7 +1364,7 @@ class Ui(QTabWidget):
                 self.wallet_btc_value.setText("")
 
             self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image).pixmap())
-            # TX history
+            '''
             tx_history = rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10).json()
             row = 0
             self.clear_table(self.wallet_tx_table)
@@ -1386,6 +1386,7 @@ class Ui(QTabWidget):
                 self.add_row(row, tx_row, self.wallet_tx_table)
                 row += 1
             self.wallet_tx_table.setSortingEnabled(True)
+            '''
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -1537,6 +1538,8 @@ class Ui(QTabWidget):
 
     def show_mm2_logs_tab(self):
         print("show_mm2_logs_tab")
+        logfile='mm2_output.log'
+        mm2_output = open(config_path+self.username+logfile,'w+')
         with open(script_path+"/bin/mm2_output.log", 'r') as f:
             log_text = f.read()
             lines = f.readlines()
