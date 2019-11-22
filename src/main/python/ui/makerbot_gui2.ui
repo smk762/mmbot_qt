@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -108,7 +108,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -192,7 +192,7 @@ background-color: rgb(116, 120, 134);</string>
                     <enum>QFrame::Raised</enum>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_27">
-                    <item row="1" column="1">
+                    <item row="1" column="0">
                      <widget class="QLineEdit" name="password_input">
                       <property name="styleSheet">
                        <string notr="true">background-color: rgb(238, 238, 236);</string>
@@ -200,54 +200,24 @@ background-color: rgb(116, 120, 134);</string>
                       <property name="echoMode">
                        <enum>QLineEdit::Password</enum>
                       </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                      <property name="placeholderText">
+                       <string>Enter Password</string>
+                      </property>
                      </widget>
                     </item>
                     <item row="0" column="0">
-                     <widget class="QLabel" name="username_lbl">
-                      <property name="font">
-                       <font>
-                        <pointsize>14</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>&amp;Username</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                      </property>
-                      <property name="buddy">
-                       <cstring>username_input</cstring>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="0" column="1">
                      <widget class="QLineEdit" name="username_input">
                       <property name="styleSheet">
                        <string notr="true">background-color: rgb(238, 238, 236);</string>
                       </property>
-                     </widget>
-                    </item>
-                    <item row="1" column="0">
-                     <widget class="QLabel" name="password_lbl">
-                      <property name="font">
-                       <font>
-                        <pointsize>14</pointsize>
-                       </font>
-                      </property>
-                      <property name="layoutDirection">
-                       <enum>Qt::RightToLeft</enum>
-                      </property>
-                      <property name="text">
-                       <string>Password</string>
-                      </property>
                       <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                       <set>Qt::AlignCenter</set>
                       </property>
-                      <property name="buddy">
-                       <cstring>password_input</cstring>
+                      <property name="placeholderText">
+                       <string>Enter Username</string>
                       </property>
                      </widget>
                     </item>
@@ -297,8 +267,8 @@ background-color: rgb(116, 120, 134);</string>
                 </layout>
                </widget>
               </item>
-              <item row="0" column="2">
-               <spacer name="horizontalSpacer_3">
+              <item row="0" column="0">
+               <spacer name="horizontalSpacer">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -313,8 +283,8 @@ background-color: rgb(116, 120, 134);</string>
                 </property>
                </spacer>
               </item>
-              <item row="0" column="0">
-               <spacer name="horizontalSpacer">
+              <item row="0" column="2">
+               <spacer name="horizontalSpacer_3">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -7944,7 +7914,7 @@ background-color: rgb(116, 120, 134);</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>340</width>
+           <width>360</width>
            <height>16777215</height>
           </size>
          </property>
@@ -8576,7 +8546,7 @@ background-color: rgb(116, 120, 134);</string>
          </property>
          <property name="maximumSize">
           <size>
-           <width>340</width>
+           <width>360</width>
            <height>16777215</height>
           </size>
          </property>
@@ -8589,179 +8559,8 @@ background-color: rgb(116, 120, 134);</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QLabel" name="binance_balances_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>18</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Binance Balances</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="binance_balances_table">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(238, 238, 236);</string>
-            </property>
-            <attribute name="horizontalHeaderDefaultSectionSize">
-             <number>80</number>
-            </attribute>
-            <attribute name="horizontalHeaderMinimumSectionSize">
-             <number>80</number>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderDefaultSectionSize">
-             <number>25</number>
-            </attribute>
-            <attribute name="verticalHeaderMinimumSectionSize">
-             <number>25</number>
-            </attribute>
-            <column>
-             <property name="text">
-              <string>Coin</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Balance</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Available</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Locked</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="0" column="3">
-        <widget class="QFrame" name="frame_36">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>420</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">background-color: rgb(116, 120, 134);</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_8">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QLabel" name="binance_addr_coin_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>18</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Binance Address</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="binance_addr_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="binance_qr_code">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
+         <layout class="QGridLayout" name="gridLayout_84">
+          <item row="4" column="0">
            <widget class="QFrame" name="frame_35">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -8890,10 +8689,173 @@ background-color: rgb(116, 120, 134);</string>
             </layout>
            </widget>
           </item>
+          <item row="3" column="0">
+           <widget class="QFrame" name="frame_67">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_83">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="binance_qr_code_link">
+               <property name="text">
+                <string/>
+               </property>
+               <property name="icon">
+                <iconset resource="coin_icons.qrc">
+                 <normaloff>:/32/img/32/qr.png</normaloff>:/32/img/32/qr.png</iconset>
+               </property>
+               <property name="iconSize">
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="binance_addr_lbl">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+               <property name="textInteractionFlags">
+                <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="binance_balances_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>18</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Binance Balances</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QTableWidget" name="binance_balances_table">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>80</number>
+            </attribute>
+            <attribute name="horizontalHeaderMinimumSectionSize">
+             <number>80</number>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderDefaultSectionSize">
+             <number>25</number>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>25</number>
+            </attribute>
+            <column>
+             <property name="text">
+              <string>Coin</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Balance</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Available</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Locked</string>
+             </property>
+            </column>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="binance_addr_coin_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Binance Balances</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" colspan="4">
+       <item row="1" column="0" colspan="3">
         <widget class="QFrame" name="frame_32">
          <property name="maximumSize">
           <size>
@@ -11141,8 +11103,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1833</x>
-     <y>47</y>
+     <x>1778</x>
+     <y>67</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11157,8 +11119,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1682</x>
-     <y>47</y>
+     <x>1625</x>
+     <y>67</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11173,8 +11135,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>generate_seed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>371</x>
-     <y>333</y>
+     <x>158</x>
+     <y>269</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11189,8 +11151,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1705</x>
-     <y>725</y>
+     <x>1871</x>
+     <y>862</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11205,8 +11167,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1931</x>
-     <y>46</y>
+     <x>1890</x>
+     <y>66</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11221,8 +11183,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>259</x>
-     <y>48</y>
+     <x>1889</x>
+     <y>849</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -11237,8 +11199,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1937</x>
-     <y>64</y>
+     <x>1872</x>
+     <y>82</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11253,8 +11215,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>41</y>
+     <x>980</x>
+     <y>790</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11269,8 +11231,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>38</y>
+     <x>763</x>
+     <y>738</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11285,8 +11247,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>108</x>
-     <y>40</y>
+     <x>763</x>
+     <y>709</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11317,8 +11279,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1056</x>
-     <y>768</y>
+     <x>1019</x>
+     <y>854</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -11333,8 +11295,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_utxo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1034</x>
-     <y>173</y>
+     <x>997</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -11349,8 +11311,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_mm2_trading_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>713</y>
+     <x>397</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11365,8 +11327,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>show_mm2_trading_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>336</x>
-     <y>747</y>
+     <x>397</x>
+     <y>810</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11381,8 +11343,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>create_setprice_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>338</x>
-     <y>770</y>
+     <x>397</x>
+     <y>859</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11413,8 +11375,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1359</x>
-     <y>52</y>
+     <x>1301</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11429,8 +11391,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1549</x>
-     <y>52</y>
+     <x>1491</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11445,8 +11407,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1747</x>
-     <y>52</y>
+     <x>1689</x>
+     <y>90</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11461,8 +11423,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_binance_addr()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>214</x>
-     <y>439</y>
+     <x>1781</x>
+     <y>485</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11477,8 +11439,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>binance_withdraw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>352</x>
-     <y>500</y>
+     <x>1880</x>
+     <y>545</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11493,8 +11455,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_binance_orderbook()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1793</x>
-     <y>735</y>
+     <x>276</x>
+     <y>463</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11509,8 +11471,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_binance_price_val()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1799</x>
-     <y>189</y>
+     <x>285</x>
+     <y>244</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11525,8 +11487,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>binance_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1816</x>
-     <y>828</y>
+     <x>186</x>
+     <y>554</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11541,8 +11503,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>binance_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1917</x>
-     <y>828</y>
+     <x>276</x>
+     <y>554</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11557,8 +11519,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>start_bot_trading()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>126</x>
-     <y>817</y>
+     <x>102</x>
+     <y>880</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11573,8 +11535,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>stop_bot_trading()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>297</x>
-     <y>817</y>
+     <x>259</x>
+     <y>880</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11589,8 +11551,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>mm2_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1001</x>
-     <y>384</y>
+     <x>1561</x>
+     <y>442</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11605,8 +11567,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>mm2_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1190</x>
-     <y>389</y>
+     <x>1266</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11621,8 +11583,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>mm2_cancel_bot_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>632</x>
-     <y>384</y>
+     <x>923</x>
+     <y>442</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11637,8 +11599,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>mm2_cancel_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>776</x>
-     <y>389</y>
+     <x>853</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11653,8 +11615,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1906</x>
-     <y>713</y>
+     <x>1877</x>
+     <y>771</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11669,8 +11631,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1906</x>
-     <y>747</y>
+     <x>1877</x>
+     <y>810</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11701,8 +11663,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>create_setprice_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1889</x>
-     <y>786</y>
+     <x>1877</x>
+     <y>859</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11717,8 +11679,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>sell_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1775</x>
-     <y>794</y>
+     <x>1722</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11733,8 +11695,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>sell_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1641</x>
-     <y>794</y>
+     <x>1573</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11749,8 +11711,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>sell_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1686</x>
-     <y>794</y>
+     <x>1623</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11765,8 +11727,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>sell_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1730</x>
-     <y>794</y>
+     <x>1672</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11781,8 +11743,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>buy_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>115</x>
-     <y>794</y>
+     <x>143</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11797,8 +11759,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>buy_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>70</x>
-     <y>794</y>
+     <x>93</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11813,8 +11775,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>buy_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>159</x>
-     <y>794</y>
+     <x>192</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11829,8 +11791,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>buy_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>204</x>
-     <y>794</y>
+     <x>242</x>
+     <y>866</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11845,8 +11807,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>726</y>
+     <x>111</x>
+     <y>788</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11861,8 +11823,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>805</y>
+     <x>111</x>
+     <y>868</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11877,8 +11839,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>674</y>
+     <x>111</x>
+     <y>736</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11893,8 +11855,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>700</y>
+     <x>111</x>
+     <y>762</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11909,8 +11871,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>778</y>
+     <x>111</x>
+     <y>840</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11925,8 +11887,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>752</y>
+     <x>111</x>
+     <y>814</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11941,8 +11903,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>78</x>
-     <y>648</y>
+     <x>111</x>
+     <y>710</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11957,8 +11919,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>binance_cancel_selected_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1014</x>
-     <y>501</y>
+     <x>766</x>
+     <y>553</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11973,8 +11935,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>binance_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1417</x>
-     <y>501</y>
+     <x>1183</x>
+     <y>553</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11989,8 +11951,8 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1670</x>
-     <y>173</y>
+     <x>1606</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12005,12 +11967,28 @@ background-color: rgb(177, 179, 186);</string>
    <slot>select_all_smart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>397</x>
-     <y>173</y>
+     <x>389</x>
+     <y>200</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
      <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_qr_code_link</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_qr_popup()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1870</x>
+     <y>429</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>468</y>
     </hint>
    </hints>
   </connection>
@@ -12067,5 +12045,6 @@ background-color: rgb(177, 179, 186);</string>
   <slot>combo_box_switch()</slot>
   <slot>create_setprice_sell()</slot>
   <slot>update_history_graph()</slot>
+  <slot>show_qr_popup()</slot>
  </slots>
 </ui>

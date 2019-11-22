@@ -208,6 +208,7 @@ class downloadThread(QThread):
 
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
+        print(qrcode.image.base.BaseImage)
         self.border = border
         self.width = width
         self.box_size = box_size
@@ -1363,7 +1364,7 @@ class Ui(QTabWidget):
                 self.wallet_usd_value.setText("")
                 self.wallet_btc_value.setText("")
 
-            self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image).pixmap())
+            self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
             '''
             tx_history = rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10).json()
             row = 0
@@ -1571,14 +1572,29 @@ class Ui(QTabWidget):
         resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], coin)
         if 'address' in resp:
             addr_text = resp['address']
-            self.binance_qr_code.setPixmap(qrcode.make(addr_text, image_factory=QR_image).pixmap())
         else:
             addr_text = 'Address not found - create it at Binance.com'
-            self.binance_qr_code.setPixmap(qrcode.make('https://www.binance.com/', image_factory=QR_image).pixmap())            
+
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
         QCoreApplication.processEvents()
         self.update_history_graph()
+
+    def show_qr_popup(self):
+        coin = self.binance_addr_coin_lbl.text().split()[1]
+        addr_txt = self.binance_addr_lbl.text()
+        qr_img = qrcode.make(addr_txt, image_factory=QR_image)
+        self.qr_lbl = QLabel(self)
+        self.qr_lbl.setText(addr_txt)
+        self.qr_img_lbl = QLabel(self)
+        self.qr_img_lbl.setPixmap(qr_img.pixmap())
+        msgBox = QMessageBox(QMessageBox.NoIcon, "Binance "+coin+" Address QR Code ", addr_txt)
+        l = msgBox.layout()
+        l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
+        l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
+        msgBox.addButton("Close", QMessageBox.NoRole)
+        print("show msgbox")
+        msgBox.exec()
 
     def update_history_graph(self):
         index = self.binance_asset_comboBox.currentIndex()

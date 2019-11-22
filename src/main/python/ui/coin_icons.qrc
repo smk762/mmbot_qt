@@ -1,6 +1,7 @@
 <RCC>
   <qresource prefix="32">
     <file>img/32/awc.png</file>
+    <file>img/32/qr.png</file>
     <file>img/32/axe.png</file>
     <file>img/32/bat.png</file>
     <file>img/32/bch.png</file>
