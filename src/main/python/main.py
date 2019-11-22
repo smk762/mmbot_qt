@@ -1287,32 +1287,6 @@ class Ui(QTabWidget):
                 self.wallet_btc_value.setText("")
 
             self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
-<<<<<<< HEAD
-=======
-            '''
-            tx_history = rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10).json()
-            row = 0
-            self.clear_table(self.wallet_tx_table)
-            self.wallet_tx_table.setSortingEnabled(False)
-            rows = len(tx_history['result']['transactions'])
-            self.wallet_tx_table.setRowCount(rows)
-            for tx in tx_history['result']['transactions']:
-                blockheight = tx['block_height']
-                timestamp = datetime.datetime.fromtimestamp(int(tx['timestamp']/1000)*1000) 
-                my_balance_change = float(tx['my_balance_change'])
-                if address != tx['from'][0]:
-                    tx_address = tx['from'][0]
-                elif address != tx['to'][1]:
-                    tx_address = tx['to'][1]
-                else:
-                    tx_address = tx['to'][0]
-                tx_hash = tx['tx_hash']
-                tx_row = [timestamp, blockheight, my_balance_change, tx_address, tx_hash]
-                self.add_row(row, tx_row, self.wallet_tx_table)
-                row += 1
-            self.wallet_tx_table.setSortingEnabled(True)
-            '''
->>>>>>> 88dd9349fa025172898474553a95e044c783d160
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -1517,11 +1491,7 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
-<<<<<<< HEAD
         print("show Binance QR code msgbox")
-=======
-        print("show msgbox")
->>>>>>> 88dd9349fa025172898474553a95e044c783d160
         msgBox.exec()
 
     def update_history_graph(self):
