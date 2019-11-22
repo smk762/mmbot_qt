@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>7</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -108,7 +108,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
