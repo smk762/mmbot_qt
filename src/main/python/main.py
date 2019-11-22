@@ -49,12 +49,7 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
-# TODO: set row count at table population based on num records to insert.
-# TODO: more images for activate and wallet page
-# TODO: Periodic threaded price/balance updates to cache.
-# TODO: Dropdowns in alpha order. Might need lambda function.
-# TODO: Detect if in activation loop on activate button press. Ignore or add extar coins if checked.
-# Update coins file. TODO: more efficient way if doesnt need to be updated?
+
 if not os.path.isfile(config_path+'coins'):
     try:
         print("Downloading latest coins file")
@@ -131,7 +126,6 @@ class cachedata_thread(QThread):
     def __del__(self):
         self.wait()
 
-    # creds[1] to emit signal for buttton stylesheet change
     def run(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
@@ -162,7 +156,6 @@ class activation_thread(QThread):
     def __del__(self):
         self.wait()
 
-    # creds[1] to emit signal for buttton stylesheet change
     def run(self):
         active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         for coin in self.coins:
@@ -170,39 +163,6 @@ class activation_thread(QThread):
                 r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
                 print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.trigger.emit(coin[0])
-
-class downloadThread(QThread):
-    download_progress_signal = pyqtSignal(int)                        #Create signal
-
-    def __init__(self, url, filesize, fileobj, buffer):
-        super(downloadThread, self).__init__()
-        self.url = url
-        self.filesize = filesize
-        self.fileobj = fileobj
-        self.buffer = buffer
-
-    def run(self):
-        try:
-            rsp = requests.get(self.url, stream=True)                #Streaming download mode
-            offset = 0
-            for chunk in rsp.iter_content(chunk_size=self.buffer):
-                if not chunk: break
-                self.fileobj.seek(offset)                            #Setting Pointer Position
-                self.fileobj.write(chunk)                            #write file
-                offset = offset + len(chunk)
-                progress = offset / int(self.filesize) * 100
-                self.download_progress_signal.emit(int(progress))        #Sending signal
-            #######################################################################
-            self.fileobj.close()    #Close file
-            print(config_path+"mm2.zip")
-            with ZipFile(config_path+"mm2.zip", 'r') as zip_ref:
-                zip_ref.extractall(config_path)
-            os.chmod(config_path+'mm2',stat.S_IEXEC)
-            self.exit(0)            #Close thread
-
-
-        except Exception as e:
-            print(e)
 
 # Item Classes
 
@@ -213,10 +173,6 @@ class QR_image(qrcode.image.base.BaseImage):
         self.width = width
         self.box_size = box_size
         size = (width + border * 2) * box_size
-        print(self.border)
-        print(self.width)
-        print(self.box_size)
-        print(size)
         self._image = QImage(size, size, QImage.Format_RGB16)
         self._image.fill(Qt.white)
 
@@ -243,12 +199,14 @@ class crosshair_lines(pg.InfiniteLine):
 # UI Class
 
 class Ui(QTabWidget):
-    def __init__(self):
+    def __init__(self, ctx):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         uifile = QFile(":/ui/makerbot_gui2.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) # Load the .ui file
+        self.ctx = ctx # app context
         self.show() # Show the GUI
+        self.mm2_bin = self.ctx.get_resource('mm2')
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
         self.authenticated = False
@@ -417,42 +375,11 @@ class Ui(QTabWidget):
     def start_mm2(self, logfile='mm2_output.log'):
         try:
             mm2_output = open(config_path+self.username+logfile,'w+')
-            if os.path.isfile(config_path+"mm2"):
-                os.chdir(config_path)       
-                subprocess.Popen([config_path+"mm2"], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
-                time.sleep(1)
-            else:
-                self.mm2_downloading = False
-                with mm2_output as f:
-                    f.write("\nmm2 binary not found in "+config_path+"!")
-                print(guilib.colorize("\nmm2 binary not found "+config_path+"!", 'red'))
-                msgBox = QMessageBox(QMessageBox.Warning, 'No MM2!', 'Please wait while the MM2 archive is downloaded...', QMessageBox.NoButton)
-                l = msgBox.layout()
-                self.dl_progressBar = QProgressBar(self)
-                l.addWidget(self.dl_progressBar,l.rowCount(), 0, 1, l.columnCount(), Qt.AlignCenter)
-                msgBox.show()
-                QCoreApplication.processEvents()
-                # get filename for OS
-                operating_system = platform.system()
-                if operating_system == 'Darwin':
-                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Darwin.zip'
-                elif operating_system == 'Linux':
-                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Linux.zip'
-                elif operating_system == 'Win64' or operating_system == 'Windows':
-                    url = 'https://github.com/KomodoPlatform/atomicDEX-API/releases/download/2.0.1417/mm2-1019c60b7-Windows_NT.zip'
-                print(url)
-                dl_size = requests.get(url, stream=True).headers['Content-Length']
-                dl_path = config_path+'mm2.zip'
-                dl_obj = open(dl_path, 'wb')
-                #### Create a download thread
-                self.downloadThread = downloadThread(url, dl_size, dl_obj, buffer=10240)
-                self.downloadThread.download_progress_signal.connect(self.update_dl_progressbar)
-                self.downloadThread.start()
-                while self.downloadThread.isRunning():
-                    time.sleep(2)
-                    QCoreApplication.processEvents()
-
+            print(self.mm2_bin)
+            subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
+            time.sleep(1)
         except Exception as e:
+            QMessageBox.information(self, "Progress status", 'No mm2!')
             print(e)
 
     def update_dl_progressbar(self, value):
@@ -580,7 +507,6 @@ class Ui(QTabWidget):
                 self.add_row(mm2_row, mm2_maker_row, self.mm2_orders_table)
                 mm2_row += 1
 
-        # todo the bit below - need to see an active taker order in action!
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
@@ -608,7 +534,6 @@ class Ui(QTabWidget):
         self.mm2_orders_table.setSortingEnabled(True)
 
     # Thread callbacks
-    # TODO: use this to update other dropdown comboboxes. Careful with buy/sell tabs!
     def update_active(self):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         existing_coins = []
@@ -747,7 +672,6 @@ class Ui(QTabWidget):
                     display_coins_erc20.append(coin)
                 elif coinslib.coin_activation[coin]['type'] == 'smartchain':
                     display_coins_smartchain.append(coin)
-            # TODO: lambda sort by coin_api_codes['name']
             display_coins_erc20.sort()
             display_coins_utxo.sort()
             display_coins_smartchain.sort()
@@ -756,7 +680,6 @@ class Ui(QTabWidget):
             self.populate_activation_menu(display_coins_utxo, self.utxo_layout)
 
     def activate_coins(self):
-        #self.resize()
         print('Start activate')
         coins_to_activate = []
         autoactivate = []
@@ -776,6 +699,7 @@ class Ui(QTabWidget):
             elif combo.itemText(combo.currentIndex()) == 'Buy/Sell':
                 self.buy_coins.append(coin)
                 self.sell_coins.append(coin)
+            # TODO: use this to reactivte next load
             activate_list = {
                 "autoactivate":autoactivate,
                 "buy_coins":self.buy_coins,
@@ -788,6 +712,8 @@ class Ui(QTabWidget):
         self.activate_thread.trigger.connect(self.update_active)
         self.activate_thread.start()
         print("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
+        print("Buy coins: "+str(self.buy_coins))
+        print("Sell coins: "+str(self.sell_coins))
         self.show_activation_tab()
 
     def show_combo_activated(self, coin):
@@ -1305,7 +1231,6 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
 
     ## WALLET
-    # TODO: Threaded balance/address info get/store
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
@@ -1324,7 +1249,6 @@ class Ui(QTabWidget):
             index = self.wallet_combo.currentIndex()
             coin = self.wallet_combo.itemText(index)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
-            # get balance from cahe, or manually if not available
             if coin not in self.balances_data:
                 self.update_balance(coin)
             balance_info = self.balances_data[coin]
@@ -1333,12 +1257,10 @@ class Ui(QTabWidget):
                 balance_text = balance_info['balance']
                 locked_text = balance_info['locked']
                 available_balance = balance_info['available']
-            # set block explorer
             if coinslib.coin_explorers[coin]['addr_explorer'] != '':
                 self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'>"+address+"</href>")
             else:
                 self.wallet_address.setText(address)
-            # update labels
             self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
             self.wallet_balance.setText(str(balance_text))
             self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
@@ -1365,6 +1287,8 @@ class Ui(QTabWidget):
                 self.wallet_btc_value.setText("")
 
             self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
+<<<<<<< HEAD
+=======
             '''
             tx_history = rpclib.my_tx_history(self.creds[0], self.creds[1], coin, 10).json()
             row = 0
@@ -1388,6 +1312,7 @@ class Ui(QTabWidget):
                 row += 1
             self.wallet_tx_table.setSortingEnabled(True)
             '''
+>>>>>>> 88dd9349fa025172898474553a95e044c783d160
 
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
@@ -1518,7 +1443,6 @@ class Ui(QTabWidget):
 
                     else:
                         QMessageBox.information(self, 'Password incorrect!', 'Password incorrect!', QMessageBox.Ok, QMessageBox.Ok)
-                        # todo password change option.
                         pass
         else:
             QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1552,7 +1476,7 @@ class Ui(QTabWidget):
     ## BINANCE API
     def show_binance_trading_tab(self):
         tickers = self.update_binance_balance_table()
-        print(tickers)
+        print("Binance Tickers: "+str(tickers))
         if tickers is not None:
             self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
             ticker_pairs = []
@@ -1593,7 +1517,11 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
+<<<<<<< HEAD
+        print("show Binance QR code msgbox")
+=======
         print("show msgbox")
+>>>>>>> 88dd9349fa025172898474553a95e044c783d160
         msgBox.exec()
 
     def update_history_graph(self):
@@ -1769,8 +1697,6 @@ class Ui(QTabWidget):
                 self.binance_balances_table.setSortingEnabled(True)
             return tickers
 
-    # TODO: dynamic column header update
-    # TODO: Improve available pairs selection
     def update_binance_orderbook(self):
         index = self.binance_ticker_pair_comboBox.currentIndex()
         self.binance_price_spinbox.setValue(0)
@@ -1963,7 +1889,7 @@ class Ui(QTabWidget):
         print("stopping bot")
         self.bot_trade_thread.stop()
         self.bot_status_lbl.setText("STOPPED")
-        self.bot_status_lbl.setStyleSheet('color: rgb(164, 0, 0)')
+        self.bot_status_lbl.setStyleSheet("color: rgb(164, 0, 0);\nbackground-color: rgb(177, 179, 186);")
         timestamp = int(time.time()/1000)*1000
         time_str = datetime.datetime.fromtimestamp(timestamp)
         self.bot_log_list.addItem(str(time_str)+" Bot stopped")
@@ -1987,7 +1913,7 @@ class Ui(QTabWidget):
             self.bot_trade_thread.trigger.connect(self.update_bot_log)
             self.bot_trade_thread.start()
             self.bot_status_lbl.setText("ACTIVE")
-            self.bot_status_lbl.setStyleSheet('color: #043409')
+            self.bot_status_lbl.setStyleSheet('color: #043409;\nbackground-color: rgb(166, 215, 166);')
             timestamp = int(time.time()/1000)*1000
             time_str = datetime.datetime.fromtimestamp(timestamp)
             self.bot_log_list.addItem(str(time_str)+" Bot started")
@@ -2124,15 +2050,13 @@ class Ui(QTabWidget):
 
 if __name__ == '__main__':
     
-    appctxt = ApplicationContext()       # 1. Instantiate ApplicationContext
+    appctxt = ApplicationContext()
     screen_resolution = appctxt.app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
-    print(screen_resolution)
-    print(width)
-    print(height)
-
-    window = Ui() # Create an instance of our class
+    print("Screen width: "+str(width))
+    print("Screen height: "+str(height))
+    window = Ui(appctxt)
     window.resize(width, height)
-    exit_code = appctxt.app.exec_()      # 2. Invoke appctxt.app.exec_()
+    exit_code = appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
     sys.exit(exit_code)
