@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>0</number>
+   <number>7</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5347,7 +5347,7 @@ background-color: rgb(116, 120, 134);</string>
              <string notr="true">background-color: rgb(238, 238, 236);</string>
             </property>
             <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
@@ -6141,6 +6141,9 @@ background-color: rgb(116, 120, 134);</string>
                <property name="frameShadow">
                 <enum>QFrame::Sunken</enum>
                </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
                <property name="editTriggers">
                 <set>QAbstractItemView::NoEditTriggers</set>
                </property>
@@ -6856,7 +6859,7 @@ background-color: rgb(116, 120, 134);</string>
              <bool>true</bool>
             </property>
             <property name="rowCount">
-             <number>3</number>
+             <number>10</number>
             </property>
             <property name="columnCount">
              <number>9</number>
@@ -6885,6 +6888,13 @@ background-color: rgb(116, 120, 134);</string>
             <attribute name="verticalHeaderMinimumSectionSize">
              <number>20</number>
             </attribute>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
             <row/>
             <row/>
             <row/>
@@ -6930,7 +6940,7 @@ background-color: rgb(116, 120, 134);</string>
             </column>
             <column>
              <property name="text">
-              <string>UUID</string>
+              <string>Order UUID</string>
              </property>
             </column>
            </widget>
@@ -7193,7 +7203,7 @@ background-color: rgb(116, 120, 134);</string>
              <string notr="true">background-color: rgb(238, 238, 236);</string>
             </property>
             <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustIgnored</enum>
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
             <property name="editTriggers">
              <set>QAbstractItemView::NoEditTriggers</set>
@@ -7211,7 +7221,7 @@ background-color: rgb(116, 120, 134);</string>
              <bool>true</bool>
             </property>
             <property name="rowCount">
-             <number>32</number>
+             <number>10</number>
             </property>
             <property name="columnCount">
              <number>10</number>
@@ -7240,28 +7250,6 @@ background-color: rgb(116, 120, 134);</string>
             <attribute name="verticalHeaderMinimumSectionSize">
              <number>20</number>
             </attribute>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
             <row/>
             <row/>
             <row/>
@@ -7837,6 +7825,9 @@ background-color: rgb(116, 120, 134);</string>
                <property name="frameShadow">
                 <enum>QFrame::Sunken</enum>
                </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
                <property name="editTriggers">
                 <set>QAbstractItemView::NoEditTriggers</set>
                </property>
@@ -8346,7 +8337,7 @@ background-color: rgb(116, 120, 134);</string>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>1777777</height>
+              <height>16777215</height>
              </size>
             </property>
             <property name="font">
@@ -8356,6 +8347,9 @@ background-color: rgb(116, 120, 134);</string>
             </property>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(238, 238, 236);</string>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
             </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SingleSelection</enum>
@@ -9033,8 +9027,14 @@ background-color: rgb(116, 120, 134);</string>
             <property name="styleSheet">
              <string notr="true">background-color: rgb(238, 238, 236);</string>
             </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="rowCount">
+             <number>10</number>
+            </property>
             <attribute name="horizontalHeaderDefaultSectionSize">
-             <number>80</number>
+             <number>85</number>
             </attribute>
             <attribute name="horizontalHeaderMinimumSectionSize">
              <number>80</number>
@@ -9048,6 +9048,16 @@ background-color: rgb(116, 120, 134);</string>
             <attribute name="verticalHeaderMinimumSectionSize">
              <number>25</number>
             </attribute>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
+            <row/>
             <column>
              <property name="text">
               <string>Coin</string>
@@ -9873,22 +9883,37 @@ background-color: rgb(177, 179, 186);</string>
             </column>
             <column>
              <property name="text">
-              <string>Pair</string>
+              <string>Sell Coin</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Price</string>
+              <string>Sell Vol</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Qty</string>
+              <string>Buy Coin</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Order uuid</string>
+              <string>Buy Vol</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Buy Price</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sell Price</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Order UUID</string>
              </property>
             </column>
            </widget>

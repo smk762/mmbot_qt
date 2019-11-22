@@ -112,7 +112,7 @@ class bot_trading_thread(QThread):
                                         else:
                                             msg = resp
                                         self.trigger.emit(log_msg, str(msg))
-            time.sleep(120)
+            time.sleep(1200)
 
     def stop(self):
         self.terminate()
@@ -482,6 +482,10 @@ class Ui(QTabWidget):
 
         self.clear_table(self.bot_mm2_orders_table)
         self.clear_table(self.mm2_orders_table)
+        row_count = len(orders['result']['maker_orders'])+len(orders['result']['taker_orders'])
+        self.bot_mm2_orders_table.setRowCount(row_count)
+        self.mm2_orders_table.setRowCount(row_count)
+
 
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
@@ -499,7 +503,7 @@ class Ui(QTabWidget):
                 created_at = datetime.datetime.fromtimestamp(timestamp)
                 buy_price = 1/float(sell_price)
 
-                bot_maker_row = [created_at, role, base+"/"+rel, base_amount, sell_price, item]
+                bot_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
                 mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
 
                 self.add_row(bot_row, bot_maker_row, self.bot_mm2_orders_table)
@@ -521,7 +525,7 @@ class Ui(QTabWidget):
                 buy_price = float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount'])
                 sell_price = 1/float(sell_price)
 
-                bot_taker_row = [created_at, role, rel+"/"+base, base_amount, buy_price, item]
+                bot_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
                 mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
 
                 self.add_row(bot_row, bot_taker_row, self.bot_mm2_orders_table)
@@ -531,7 +535,9 @@ class Ui(QTabWidget):
 
 
         self.bot_mm2_orders_table.setSortingEnabled(True)
+        self.bot_mm2_orders_table.resizeColumnsToContents()
         self.mm2_orders_table.setSortingEnabled(True)
+        self.mm2_orders_table.resizeColumnsToContents()
 
     # Thread callbacks
     def update_active(self):
@@ -818,9 +824,12 @@ class Ui(QTabWidget):
    
     def show_mm2_trades(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
+        print(swaps_info)
         row = 0
         self.mm2_trades_table.setSortingEnabled(False)
         self.clear_table(self.mm2_trades_table)
+        row_count = len(swaps_info['result']['swaps'])
+        self.mm2_trades_table.setRowCount(row_count)
         for swap in swaps_info['result']['swaps']:
             for event in swap['events']:
                 event_type = event['event']['type']
@@ -847,6 +856,7 @@ class Ui(QTabWidget):
 
             row += 1
             self.mm2_trades_table.setSortingEnabled(True)
+            self.mm2_trades_table.resizeColumnsToContents()
 
     ## SHOW ORDERBOOK
 
@@ -875,6 +885,8 @@ class Ui(QTabWidget):
             self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
             pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
             self.orderbook_table.setSortingEnabled(False)
+            row_count = len(pair_book['asks']) 
+            self.orderbook_table.setRowCount(row_count)
             self.clear_table(self.orderbook_table)
             if 'error' in pair_book:
                 pass
@@ -890,6 +902,7 @@ class Ui(QTabWidget):
                     self.add_row(row, asks_row, self.orderbook_table)
                     row += 1
             self.orderbook_table.setSortingEnabled(True)
+            self.orderbook_table.resizeColumnsToContents()
 
     def update_orderbook_combos(self, base, rel):
         pass
@@ -926,7 +939,7 @@ class Ui(QTabWidget):
                     elif 'result' in resp:
                         trade_val = round(float(selected_price)*float(vol),8)
                         msg = "Order Submitted.\n"
-                        msg += "Buying "+str(trade_val)+" "+rel +"\nfor\n"+" "+str(vol)+" "+base
+                        msg += "Buying "+str(vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel
                     else:
                         msg = resp
                     QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -1003,8 +1016,10 @@ class Ui(QTabWidget):
             self.mm2_sell_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
 
             buy_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
-            self.mm2_buy_depth_table.setSortingEnabled(False)
-            self.clear_table(self.mm2_buy_depth_table)
+            self.mm2_sell_depth_table.setSortingEnabled(False)
+            row_count = len(buy_pair_book['asks'])
+            self.mm2_sell_depth_table.setRowCount(row_count)
+            self.clear_table(self.mm2_sell_depth_table)
             if 'error' in buy_pair_book:
                 pass
             elif 'asks' in buy_pair_book:
@@ -1015,13 +1030,16 @@ class Ui(QTabWidget):
                     val = float(item['price'])*float(item['maxvolume'])
                     value = round(val, 8)
                     depth_row = [price, volume, value]
-                    self.add_row(row, depth_row, self.mm2_buy_depth_table)
+                    self.add_row(row, depth_row, self.mm2_sell_depth_table)
                     row += 1
-            self.mm2_buy_depth_table.setSortingEnabled(True)
+            self.mm2_sell_depth_table.setSortingEnabled(True)
+            self.mm2_sell_depth_table.resizeColumnsToContents()
 
             sell_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
-            self.mm2_sell_depth_table.setSortingEnabled(False)
-            self.clear_table(self.mm2_sell_depth_table)
+            self.mm2_buy_depth_table.setSortingEnabled(False)
+            row_count = len(sell_pair_book['asks'])
+            self.mm2_buy_depth_table.setRowCount(row_count)
+            self.clear_table(self.mm2_buy_depth_table)
             if 'error' in sell_pair_book:
                 pass
             elif 'asks' in sell_pair_book:
@@ -1032,9 +1050,10 @@ class Ui(QTabWidget):
                     val = float(item['price'])*float(item['maxvolume'])
                     value = round(val, 8)
                     depth_row = [price, volume, value]
-                    self.add_row(row, depth_row, self.mm2_sell_depth_table)
+                    self.add_row(row, depth_row, self.mm2_buy_depth_table)
                     row += 1
-            self.mm2_sell_depth_table.setSortingEnabled(True)
+            self.mm2_buy_depth_table.setSortingEnabled(True)
+            self.mm2_buy_depth_table.resizeColumnsToContents()
         pass
 
     def combo_box_switch(self):
@@ -1650,9 +1669,9 @@ class Ui(QTabWidget):
             tickers = []
             if 'balances' in acct_info:
                 self.clear_table(self.binance_balances_table)
+                row_count = len(acct_info['balances'])
+                self.binance_balances_table.setRowCount(row_count)
                 self.binance_balances_table.setSortingEnabled(False)
-                rows = len(acct_info['balances'])
-                self.binance_balances_table.setRowCount(rows)
                 row = 0
                 for item in acct_info['balances']:
                     coin = item['asset']
@@ -1665,25 +1684,26 @@ class Ui(QTabWidget):
                     self.add_row(row, balance_row, self.binance_balances_table)
                     row += 1
                 self.binance_balances_table.setSortingEnabled(True)
+                self.binance_balances_table.resizeColumnsToContents()
             return tickers
 
     def update_binance_orderbook(self):
         index = self.binance_ticker_pair_comboBox.currentIndex()
         self.binance_price_spinbox.setValue(0)
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
-        depth_limit = 20
+        depth_limit = 10
         orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
         self.clear_table(self.binance_orderbook_table)
+        row_count = len(orderbook['bids'])+len(orderbook['asks'])
+        print(row_count)
+        self.binance_orderbook_table.setRowCount(20)
         self.binance_orderbook_table.setSortingEnabled(False)
-        self.binance_orderbook_table.setRowCount(26)
         row = 0
         for item in orderbook['bids']:
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'bid']
             self.add_row(row, balance_row, self.binance_orderbook_table, QColor(255, 181, 181))
-            if row == 12: 
-                break
             row += 1
 
         for item in orderbook['asks']:
@@ -1691,11 +1711,11 @@ class Ui(QTabWidget):
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'ask']
             self.add_row(row, balance_row, self.binance_orderbook_table, QColor(218, 255, 127))
-            if row == 25: 
-                break
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
         self.binance_orderbook_table.sortItems(1)
+        self.binance_orderbook_table.resizeColumnsToContents()
+
         base = ticker_pair.replace("BTC","")
         self.binance_sell_btn.setText("Sell "+base)
         self.binance_buy_btn.setText("Buy "+base)
@@ -1780,7 +1800,8 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Binance API key error!', str(open_orders['msg']), QMessageBox.Ok, QMessageBox.Ok)
         self.clear_table(self.binance_orders_table)
         self.binance_orders_table.setSortingEnabled(False)
-        self.binance_orders_table.setRowCount(len(open_orders))
+        row_count = len(open_orders)
+        self.binance_orders_table.setRowCount(row_count)
         row = 0
         for item in open_orders:
             order_id = item['orderId']
@@ -1794,6 +1815,7 @@ class Ui(QTabWidget):
             self.add_row(row, balance_row, self.binance_orders_table)
             row += 1
         self.binance_orders_table.setSortingEnabled(True)
+        self.binance_orders_table.resizeColumnsToContents()
 
     def binance_cancel_selected_order(self):
         selected_row = self.binance_orders_table.currentRow()
@@ -1893,6 +1915,9 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
 
     def update_bot_log(self, log_msg, log_result):
+        print("updating bot log")
+        print(log_msg)
+        print(log_result)
         self.bot_log_list.addItem(log_msg)
         self.bot_log_list.addItem(">>> "+str(log_result))
         self.update_mm2_orders_tables()
@@ -1903,54 +1928,55 @@ class Ui(QTabWidget):
         self.prices_data = prices_dict
         self.balances_data = balaces_dict
         self.prices_table.setSortingEnabled(False)
+        row_count = len(self.prices_data)
+        self.prices_table.setRowCount(row_count)
         self.clear_table(self.prices_table)
         row = 0
         for item in self.prices_data:
-            if item in self.active_coins:
-                coin = item
-                try:
-                    api_btc_price = str(round(self.prices_data[item]["average_btc"],8))+" ₿"
-                except:
-                    api_btc_price = "-"
-                try:
-                    mm2_btc_price = str(round(self.prices_data[item]["mm2_btc_price"],8))+" ₿"
-                except:
-                    mm2_btc_price = "-"
-                try:
-                    delta_btc_price = str(round(self.prices_data[item]["mm2_btc_price"]-self.prices_data[item]["average_btc"],8))+" ₿"
-                except:
-                    delta_btc_price = "-"
-                try:
-                    api_kmd_price = round(self.prices_data[item]["kmd_price"],6)
-                except:
-                    api_kmd_price = "-"
-                try:
-                    mm2_kmd_price = round(self.prices_data[item]["mm2_kmd_price"],6)
-                except:
-                    mm2_kmd_price = "-"
-                try:
-                    delta_kmd_price = round(self.prices_data[item]["mm2_kmd_price"]-self.prices_data[item]["kmd_price"],6)
-                except:
-                    delta_kmd_price = "-"
-                try:
-                    api_usd_price = "$"+str(round(self.prices_data[item]["average_usd"],4))+" USD"
-                except:
-                    api_usd_price = "-"
-                try:
-                    mm2_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"],4))+" USD"
-                except:
-                    mm2_usd_price = "-"
-                try:
-                    delta_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"]-self.prices_data[item]["average_usd"],4))+" USD"
-                except:
-                    delta_usd_price = "-"
-                sources = self.prices_data[item]["sources"]
-                price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
-                             api_kmd_price, mm2_kmd_price, delta_kmd_price,
-                             api_usd_price, mm2_usd_price, delta_usd_price,
-                             sources]
-                self.add_row(row, price_row, self.prices_table)
-                row += 1
+            coin = item
+            try:
+                api_btc_price = str(round(self.prices_data[item]["average_btc"],8))+" BTC"
+            except:
+                api_btc_price = "-"
+            try:
+                mm2_btc_price = str(round(self.prices_data[item]["mm2_btc_price"],8))+" BTC"
+            except:
+                mm2_btc_price = "-"
+            try:
+                delta_btc_price = str(round(self.prices_data[item]["mm2_btc_price"]-self.prices_data[item]["average_btc"],8))+" BTC"
+            except:
+                delta_btc_price = "-"
+            try:
+                api_kmd_price = round(self.prices_data[item]["kmd_price"],6)
+            except:
+                api_kmd_price = "-"
+            try:
+                mm2_kmd_price = round(self.prices_data[item]["mm2_kmd_price"],6)
+            except:
+                mm2_kmd_price = "-"
+            try:
+                delta_kmd_price = round(self.prices_data[item]["mm2_kmd_price"]-self.prices_data[item]["kmd_price"],6)
+            except:
+                delta_kmd_price = "-"
+            try:
+                api_usd_price = "$"+str(round(self.prices_data[item]["average_usd"],4))+" USD"
+            except:
+                api_usd_price = "-"
+            try:
+                mm2_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"],4))+" USD"
+            except:
+                mm2_usd_price = "-"
+            try:
+                delta_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"]-self.prices_data[item]["average_usd"],4))+" USD"
+            except:
+                delta_usd_price = "-"
+            sources = self.prices_data[item]["sources"]
+            price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
+                         api_kmd_price, mm2_kmd_price, delta_kmd_price,
+                         api_usd_price, mm2_usd_price, delta_usd_price,
+                         sources]
+            self.add_row(row, price_row, self.prices_table)
+            row += 1
         
 
 
