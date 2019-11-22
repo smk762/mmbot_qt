@@ -263,8 +263,6 @@ def withdraw(api_key, api_secret, asset, addr, amount):
 
 def round_to_step(coin, qty):
     stepsize = binance_pairs[coin]['stepSize']
-    # check https://api.binance.com/api/v1/exchangeInfo for stepsize for coin
-    #Under Symbols Filters LOT_SIZE
     return int(float(qty)/float(stepSize))*float(stepSize)
 
 def get_exchange_info():
@@ -293,6 +291,26 @@ def get_exchange_info():
             binance_pairs.append(symbol)
             if quoteAsset not in quoteAssets:
                 quoteAssets.append(quoteAsset)
+
+    for base in base_asset_info:
+        available_symbols = []
+        for rel in quoteAssets:
+            if base+rel in binance_pairs:
+                symbol = base+rel
+                available_symbols.append(symbol)
+            elif rel+base in binance_pairs:
+                symbol = rel+base
+                available_symbols.append(symbol)
+            else:
+                for quote in quoteAssets:
+                    if base+quote in quoteAssets:
+                        symbol = rel+base
+                        available_symbols.append(symbol)
+                    elif quote+base in quoteAssets:
+                        symbol = base+rel
+                        available_symbols.append(symbol)
+        base_asset_info[base].update({'available_pairs':available_symbols})
+
     return binance_pairs, base_asset_info, quoteAssets
 
 
@@ -300,4 +318,3 @@ exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
 quoteAssets = exch_info[2]
-
