@@ -201,7 +201,7 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uifile = QFile(":/ui/makerbot_gui3.ui")
+        uifile = QFile(":/ui/makerbot_gui2.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) # Load the .ui file
         self.ctx = ctx # app context
@@ -218,7 +218,7 @@ class Ui(QTabWidget):
         self.gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
-                "combo": self.btc_combo,
+                "combo": self.btc_combo,    
             },
             "ETH": {
                 "checkbox": self.checkBox_eth, 
