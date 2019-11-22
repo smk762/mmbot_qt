@@ -261,7 +261,43 @@ def withdraw(api_key, api_secret, asset, addr, amount):
     r = requests.post(url, headers=headers, params=params)
     return r.json()
 
-def round_to_step(coin, qty, stepSize):
+def round_to_step(coin, qty):
+    stepsize = binance_pairs[coin]['stepSize']
     # check https://api.binance.com/api/v1/exchangeInfo for stepsize for coin
     #Under Symbols Filters LOT_SIZE
     return int(float(qty)/float(stepSize))*float(stepSize)
+
+def get_exchange_info():
+    resp = requests.get("https://api.binance.com/api/v1/exchangeInfo").json()
+    binance_pairs = []
+    base_asset_info = {}
+    quoteAssets = []
+    for item in resp['symbols']:
+        symbol = item['symbol']
+        status = item['status']
+        baseAsset = item['baseAsset']
+        quoteAsset = item['quoteAsset']
+        for filter_types in item['filters']:
+            if filter_types['filterType'] == 'LOT_SIZE':
+                minQty = filter_types['minQty']
+                maxQty = filter_types['maxQty']
+                stepSize = filter_types['stepSize']
+        if status == "TRADING":
+            base_asset_info.update({
+                baseAsset:{
+                    'minQty':minQty,
+                    'maxQty':maxQty,
+                    'stepSize':stepSize
+                }
+            })
+            binance_pairs.append(symbol)
+            if quoteAsset not in quoteAssets:
+                quoteAssets.append(quoteAsset)
+    return binance_pairs, base_asset_info, quoteAssets
+
+
+exch_info = get_exchange_info()
+binance_pairs = exch_info[0]
+base_asset_info = exch_info[1]
+quoteAssets = exch_info[2]
+

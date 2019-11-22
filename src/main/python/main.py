@@ -108,10 +108,11 @@ class bot_trading_thread(QThread):
                                             else:
                                                 msg = resp
                                         elif 'result' in resp:
-                                            msg = "New order submitted (previous "+base+"/"+rel+" orders cancelled)."
+                                            uuid = resp['result']['uuid']
+                                            msg = "New order "+uuid+" submitted (previous "+base+"/"+rel+" orders cancelled)."
                                         else:
                                             msg = resp
-                                        self.trigger.emit(log_msg, str(msg))
+                                        self.trigger.emit(uuid, log_msg, str(msg))
             time.sleep(1200)
 
     def stop(self):
@@ -475,24 +476,37 @@ class Ui(QTabWidget):
             selected = combo.itemText(combo.currentIndex())
         return selected
 
+    def check_order_swaps(self, order_uuid):
+        order_info = rpclib.order_status(self.creds[0], self.creds[1], order_uuid).json()
+        print(guilib.colorize("=============",'green'))
+        print(guilib.colorize("UUID: "+str(order_uuid),'green'))
+        print(guilib.colorize("Started Swaps: "+str(order_info['order']['started_swaps']),'green'))
+        for swap in order_info['order']['started_swaps']:
+            swaps_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap).json()
+            event_types = []
+            for event in swaps_info['result']['events']:
+                event_types.append(event['event']['type'])
+            if 'Finished' not in event_types:
+                print(swap+" still in progress")
+
+        
+        #print(guilib.colorize(maker_orders[item],'blue'))
+
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         self.bot_mm2_orders_table.setSortingEnabled(False)
         self.mm2_orders_table.setSortingEnabled(False)
-
         self.clear_table(self.bot_mm2_orders_table)
         self.clear_table(self.mm2_orders_table)
         row_count = len(orders['result']['maker_orders'])+len(orders['result']['taker_orders'])
         self.bot_mm2_orders_table.setRowCount(row_count)
         self.mm2_orders_table.setRowCount(row_count)
-
-
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
             bot_row = 0
             mm2_row = 0
             for item in maker_orders:
-                print(guilib.colorize(maker_orders[item],'blue'))
+                self.check_order_swaps(item)
                 role = "Maker"
                 base = maker_orders[item]['base']
                 base_amount = maker_orders[item]['available_amount']
@@ -824,7 +838,7 @@ class Ui(QTabWidget):
    
     def show_mm2_trades(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
-        print(swaps_info)
+        #print(guilib.colorize(swaps_info, 'yellow'))
         row = 0
         self.mm2_trades_table.setSortingEnabled(False)
         self.clear_table(self.mm2_trades_table)
