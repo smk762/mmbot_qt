@@ -12,7 +12,7 @@ from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api
 import qrcode
 import random
-from ui import coin_icons
+from ui import resources
 import datetime
 import time
 import dateutil.parser
@@ -201,7 +201,7 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uifile = QFile(":/ui/makerbot_gui2.ui")
+        uifile = QFile(":/ui/makerbot_gui3.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) # Load the .ui file
         self.ctx = ctx # app context
