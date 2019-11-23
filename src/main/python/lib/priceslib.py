@@ -70,30 +70,35 @@ def get_btc_price(api_key, cointag):
         return 0
 
 def get_kmd_mm2_price(node_ip, user_pass, coin):
-    print("getting kmd mm2 prices")
-    kmd_orders = rpclib.orderbook(node_ip, user_pass, coin, 'KMD').json()
-    kmd_value = 0
-    min_kmd_value = 999999999999999999
-    total_kmd_value = 0
-    max_kmd_value = 0
-    kmd_volume = 0
-    print(kmd_orders)
-    num_asks = len(kmd_orders['asks'])
-    for asks in kmd_orders['asks']:
-        kmd_value = float(asks['maxvolume']) * float(asks['price'])
-        if kmd_value < min_kmd_value:
-            min_kmd_value = kmd_value
-        elif kmd_value > max_kmd_value:
-            max_kmd_value = kmd_value
-        total_kmd_value += kmd_value
-        kmd_volume += float(asks['maxvolume'])
-    if num_asks > 0:
-        median_kmd_value = total_kmd_value/kmd_volume
-    else:
+    try:
+        print("getting kmd mm2 prices")
+        kmd_orders = rpclib.orderbook(node_ip, user_pass, coin, 'KMD').json()
+        kmd_value = 0
+        min_kmd_value = 999999999999999999
+        total_kmd_value = 0
+        max_kmd_value = 0
+        kmd_volume = 0
+        num_asks = len(kmd_orders['asks'])
+        for asks in kmd_orders['asks']:
+            kmd_value = float(asks['maxvolume']) * float(asks['price'])
+            if kmd_value < min_kmd_value:
+                min_kmd_value = kmd_value
+            elif kmd_value > max_kmd_value:
+                max_kmd_value = kmd_value
+            total_kmd_value += kmd_value
+            kmd_volume += float(asks['maxvolume'])
+        if num_asks > 0:
+            median_kmd_value = total_kmd_value/kmd_volume
+        else:
+            min_kmd_value = 'No Data'
+            median_kmd_value = 'No Data'
+            max_kmd_value = 'No Data'
+        return min_kmd_value, median_kmd_value, max_kmd_value
+    except:
         min_kmd_value = 'No Data'
         median_kmd_value = 'No Data'
         max_kmd_value = 'No Data'
-    return min_kmd_value, median_kmd_value, max_kmd_value
+        return min_kmd_value, median_kmd_value, max_kmd_value
 
 def get_prices_data(node_ip, user_pass, coins_list):
     print("getting prices data")

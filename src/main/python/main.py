@@ -98,7 +98,7 @@ class bot_trading_thread(QThread):
                                             rel_price = base_btc_price/rel_btc_price
                                             trade_price = rel_price+rel_price*self.premium
                                             trade_val = round(float(rel_price)*float(available_balance),8)
-                                            timestamp = int(time.time()/1000)*1000
+                                            timestamp = int(time.time())
                                             time_str = datetime.datetime.fromtimestamp(timestamp)
                                             prefix = str(time_str)+" (MM2): "
                                             log_msg = prefix+" [Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_val)+" "+rel
@@ -109,6 +109,7 @@ class bot_trading_thread(QThread):
                                                 else:
                                                     msg = resp
                                             elif 'result' in resp:
+                                                print(resp)
                                                 uuid = resp['result']['uuid']
                                                 msg = "New order "+uuid+" submitted (previous "+base+"/"+rel+" orders cancelled)."
                                             else:
@@ -129,24 +130,29 @@ class cachedata_thread(QThread):
         self.wait()
 
     def run(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
-        balances_data = {}
-        for coin in active_coins:
-            balances_data[coin] = {}
-            balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
-            if 'address' in balance_info:
-                address = balance_info['address']
-                balance = round(float(balance_info['balance']),8)
-                locked = round(float(balance_info['locked_by_swaps']),8)
-                available = balance - locked
-                balances_data[coin].update({
-                    'address':address,
-                    'balance':balance,
-                    'locked':locked,
-                    'available':available
-                })
-        self.trigger.emit(prices_data, balances_data)
+        while True:
+            try:
+                active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
+                prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1],active_coins)
+                balances_data = {}
+                for coin in active_coins:
+                    balances_data[coin] = {}
+                    balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
+                    if 'address' in balance_info:
+                        address = balance_info['address']
+                        balance = round(float(balance_info['balance']),8)
+                        locked = round(float(balance_info['locked_by_swaps']),8)
+                        available = balance - locked
+                        balances_data[coin].update({
+                            'address':address,
+                            'balance':balance,
+                            'locked':locked,
+                            'available':available
+                        })
+                self.trigger.emit(prices_data, balances_data)
+                time.sleep(120)
+            except:
+                pass
 
 class activation_thread(QThread):
     trigger = pyqtSignal(str)
@@ -214,6 +220,8 @@ class Ui(QTabWidget):
         self.authenticated = False
         self.mm2_downloading = False
         self.bot_trading = False
+
+
         self.last_price_update = 0
         self.prices_data = {}
         self.balances_data = {}
@@ -486,6 +494,7 @@ class Ui(QTabWidget):
         return selected
 
     def check_mm_order_swaps(self, order_uuid):
+        # TODO: log msg on swap start
         order_info = rpclib.order_status(self.creds[0], self.creds[1], order_uuid).json()
         print(guilib.colorize("=============",'green'))
         print(guilib.colorize("UUID: "+str(order_uuid),'green'))
@@ -509,18 +518,24 @@ class Ui(QTabWidget):
                         finish_time = event['timestamp']
                         if not failed:
                             log_msg = "Swap "+swap+" has completed!"
+                            self.bot_mm_completed_swaps.append(swap)
                         else:
                             log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
                         self.update_trading_log("mm2", log_msg)
                 if 'Finished' not in event_types:
-                    print(swap+" still in progress")
-                elif swap not in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps and not failed:
+                    log_msg = "Swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+" in progress at event: "+str(event_types[-1])+"..."
+                    self.update_trading_log("bot", log_msg)
+                elif swap in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps and not failed:
                     if int(time.time()) < int(finish_time)/1000 - 1200:
                         self.bot_mm_completed_swaps.append(swap)
-                        if bot_mode_comboBox.itemText(combo.currentIndex()) == 'Marketmaker & Binance':
+                        print(self.creds[8])
+                        if self.creds[8] == 'Marketmaker & Binance':
                             log_msg = "Initiating Binance countertrade for swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+"..."
                             self.update_trading_log("bot", log_msg)
+                            self.bot_countertrade_swaps.append(swap)
                             self.start_binance_countertrade(base, rel, base_amount, rel_amount)
+                print("bot_mm_completed_swaps"+str(self.bot_mm_completed_swaps))
+                print("bot_countertrade_swaps"+str(self.bot_countertrade_swaps))
 
     def start_binance_countertrade(base, rel, base_amount, rel_amount):
         # replenish base, liquidate rel
@@ -610,6 +625,7 @@ class Ui(QTabWidget):
         
 
     def update_mm2_orders_tables(self):
+        print('update_mm2_orders_tables')
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         self.bot_mm2_orders_table.setSortingEnabled(False)
         self.mm2_orders_table.setSortingEnabled(False)
@@ -623,7 +639,6 @@ class Ui(QTabWidget):
             bot_row = 0
             mm2_row = 0
             for item in maker_orders:
-                self.check_mm_order_swaps(item)
                 role = "Maker"
                 base = maker_orders[item]['base']
                 base_amount = maker_orders[item]['available_amount']
@@ -724,7 +739,7 @@ class Ui(QTabWidget):
             except Exception as e:
                 print("get_creds failed")
                 print(e)
-                self.creds = ['','','','','','','','']
+                self.creds = ['','','','','','','','','']
                 pass
             if self.authenticated:            
                 if self.username in settings.value('users'):
@@ -754,7 +769,10 @@ class Ui(QTabWidget):
                                 pass
                         with open(config_path+"MM2.json", 'w') as j:
                             j.write('')
-                        self.show_activation_tab()
+                        self.show_activation_tab()                        
+                        self.datacache_thread = cachedata_thread(self.creds)
+                        self.datacache_thread.trigger.connect(self.update_cachedata)
+                        self.datacache_thread.start()
                     else:
                         self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
             elif self.username in settings.value('users'):
@@ -1566,21 +1584,21 @@ class Ui(QTabWidget):
                     else:
                         txid_str = txid
                     if coinslib.coin_explorers[cointag]['tx_explorer'] != '':
-                        msg = "Sent! \n<a href='"+coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</href>"
+                        msg = "Sent! \n<a href='"+coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</a>"
                     else:
                         msg = "Sent! \nTXID: ["+txid_str+"]"
 
-                    self.update_balance(cointag)
-                    balance_info = self.balances_data[cointag]
-                    if 'address' in balance_info:
-                        address = balance_info['address']
-                        balance_text = balance_info['balance']
-                        locked_text = balance_info['locked']
-                        available_balance = balance_info['available']
-                        self.wallet_balance.setText(str(balance_text))
             else:
                 msg = str(resp)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.update_balance(cointag)
+            balance_info = self.balances_data[cointag]
+            if 'address' in balance_info:
+                address = balance_info['address']
+                balance_text = balance_info['balance']
+                locked_text = balance_info['locked']
+                available_balance = balance_info['available']
+                self.wallet_balance.setText(str(balance_text))
         pass
 
     ## CONFIG
@@ -1593,6 +1611,12 @@ class Ui(QTabWidget):
             self.binance_key_text_input.setText(self.creds[5])
             self.binance_secret_text_input.setText(self.creds[6])
             self.margin_input.setValue(float(self.creds[7]))
+            print(self.creds)
+            if self.creds[8] == "Marketmaker & Binance":
+                self.bot_mode_comboBox.setCurrentIndex(1)
+            else:
+                self.bot_mode_comboBox.setCurrentIndex(0)
+
             if self.creds[4] == '127.0.0.1':
                 self.checkbox_local_only.setChecked(True)
             else:
@@ -1623,6 +1647,8 @@ class Ui(QTabWidget):
         binance_secret = self.binance_secret_text_input.text()
         margin = self.margin_input.text()
         netid = self.netid_input.text()
+        index = self.bot_mode_comboBox.currentIndex()
+        bot_mode = self.bot_mode_comboBox.itemText(index)
         if passphrase == '':
             msg += 'No seed phrase input! \n'
         if rpc_password == '':
@@ -1650,6 +1676,7 @@ class Ui(QTabWidget):
                         data.update({"bn_key":binance_key})
                         data.update({"bn_secret":binance_secret})
                         data.update({"margin":margin})
+                        data.update({"bot_mode":bot_mode})
                         enc_data = enc.encrypt_mm2_json(json.dumps(data), passwd)
                         with open(config_path+self.username+"_MM2.enc", 'w') as j:
                             j.write(bytes.decode(enc_data))
@@ -2099,7 +2126,8 @@ class Ui(QTabWidget):
 
 
     ## BOT TRADES
-    def show_bot_trading_tab(self):
+    def show_bot_trading_tab(self):     
+        self.update_mm2_orders_tables()
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -2153,7 +2181,7 @@ class Ui(QTabWidget):
         self.bot_trade_thread.stop()
         self.bot_status_lbl.setText("STOPPED")
         self.bot_status_lbl.setStyleSheet("color: rgb(164, 0, 0);\nbackground-color: rgb(177, 179, 186);")
-        timestamp = int(time.time()/1000)*1000
+        timestamp = int(time.time())
         time_str = datetime.datetime.fromtimestamp(timestamp)
         self.trading_logs_list.addItem(str(time_str)+" Bot stopped")
         resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -2177,7 +2205,7 @@ class Ui(QTabWidget):
             self.bot_trade_thread.start()
             self.bot_status_lbl.setText("ACTIVE")
             self.bot_status_lbl.setStyleSheet('color: #043409;\nbackground-color: rgb(166, 215, 166);')
-            timestamp = int(time.time()/1000)*1000
+            timestamp = int(time.time())
             time_str = datetime.datetime.fromtimestamp(timestamp)
             self.trading_logs_list.addItem(str(time_str)+" Bot started")
         else:
@@ -2196,12 +2224,13 @@ class Ui(QTabWidget):
 
     def update_trading_log(self, sender, log_msg, log_result=''):
         print("updating trading log")
-        timestamp = int(time.time()/1000)*1000
+        timestamp = int(time.time())
         time_str = datetime.datetime.fromtimestamp(timestamp)
         prefix = str(time_str)+" ("+sender+"): "
         log_msg = prefix+log_msg
         print(log_msg)
         print(log_result)
+        self.update_mm2_orders_tables()
         self.trading_logs_list.addItem(log_msg)
         if log_result != '':
             self.trading_logs_list.addItem(">>> "+str(log_result))
@@ -2209,12 +2238,22 @@ class Ui(QTabWidget):
     ## TABS
     def update_cachedata(self, prices_dict, balaces_dict):
         print("updating cache data from thread")
+        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
+        if 'maker_orders' in orders['result']:
+            maker_orders = orders['result']['maker_orders']
+            for item in maker_orders:
+                self.check_mm_order_swaps(item)
+        if 'taker_orders' in orders['result']:
+            taker_orders = orders['result']['taker_orders']
+            for item in taker_orders:
+                self.check_mm_order_swaps(item)
         self.prices_data = prices_dict
         self.balances_data = balaces_dict
         self.prices_table.setSortingEnabled(False)
         row_count = len(self.prices_data)
         self.prices_table.setRowCount(row_count)
         self.clear_table(self.prices_table)
+        self.update_mm2_orders_tables()
         row = 0
         for item in self.prices_data:
             coin = item
@@ -2238,11 +2277,6 @@ class Ui(QTabWidget):
     def prepare_tab(self):
         try:
             self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-            if self.last_price_update < int(time.time()) - 120:
-                self.last_price_update = int(time.time())
-                self.datacache_thread = cachedata_thread(self.creds)
-                self.datacache_thread.trigger.connect(self.update_cachedata)
-                self.datacache_thread.start()
         except:
             # if not logged in, no creds
             pass

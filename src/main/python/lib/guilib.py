@@ -40,6 +40,7 @@ def get_creds(mm2_json_file):
         with open(mm2_json_file) as j:
             try:
                 mm2json = json.load(j)
+                print(mm2json)
                 if 'gui' in mm2json:
                     gui = mm2json['gui']
                 else:
@@ -74,6 +75,10 @@ def get_creds(mm2_json_file):
                     rpc_ip = mm2json['rpc_allow_ip']
                 else:
                     rpc_ip = '127.0.0.1'
+                if 'bot_mode' in mm2json:
+                    bot_mode = mm2json['bot_mode']
+                else:
+                    bot_mode = ''
                 rpc_url = "http://"+rpc_ip+":7783"
                 MM2_json_exists = True
             except Exception as e:
@@ -88,6 +93,7 @@ def get_creds(mm2_json_file):
                 bn_key = ''
                 bn_secret = ''
                 margin = 0
+                bot_mode = ''
     except Exception as e:
         print("MM2json didnt open")
         print(e)
@@ -100,8 +106,9 @@ def get_creds(mm2_json_file):
         bn_key = ''
         bn_secret = ''
         margin = 0
+        bot_mode = ''
         pass
-    return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin
+    return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin, bot_mode
 
 def colorize(string, color):
         colors = {

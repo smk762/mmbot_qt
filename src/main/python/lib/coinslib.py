@@ -656,7 +656,7 @@ coin_explorers = {
    },
    'DOGE':{
       'tx_explorer':'https://live.blockcypher.com/doge/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://live.blockcypher.com/doge/address'
    },
    'ETH':{
       'tx_explorer':'https://etherscan.io/tx',
@@ -684,7 +684,7 @@ coin_explorers = {
    },
    'LTC':{
       'tx_explorer':'https://live.blockcypher.com/ltc/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://live.blockcypher.com/ltc/address'
    },
    'MORTY':{
       'tx_explorer':'https://morty.explorer.dexstats.info/tx',

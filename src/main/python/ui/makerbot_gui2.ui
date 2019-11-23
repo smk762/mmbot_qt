@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -12475,6 +12475,22 @@ background-color: rgb(177, 179, 186);</string>
     <hint type="sourcelabel">
      <x>1677</x>
      <y>769</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>459</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wallet_send_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>send_funds()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1779</x>
+     <y>850</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
