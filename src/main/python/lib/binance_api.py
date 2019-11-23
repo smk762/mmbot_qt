@@ -148,6 +148,55 @@ def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     r = requests.post(url, headers=headers, params=params)
     return r.json()
 
+
+
+def create_buy_order_at_market(api_key, api_secret, ticker_pair, qty):
+    path = '/api/v3/order'
+    timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+    params = {
+        'symbol': ticker_pair,
+        'side': 'BUY',
+        'type': 'MARKET',
+        'timeInForce': 'GTC',
+        'quantity': qty,
+        'recvWindow': 5000,
+        'timestamp': timestamp
+    }
+
+    query_string = urlencode(params)
+    params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+
+    url = urljoin(base_url, path)
+    r = requests.post(url, headers=headers, params=params)
+    return r.json()
+
+def create_sell_order_at_market(api_key, api_secret, ticker_pair, qty):
+    print("Selling "+str(qty)+" "+ticker_pair+" at "+str(price))
+    path = '/api/v3/order'
+    timestamp = int(time.time() * 1000)
+    headers = {
+        'X-MBX-APIKEY': api_key
+    }
+    params = {
+        'symbol': ticker_pair,
+        'side': 'SELL',
+        'type': 'MARKET',
+        'timeInForce': 'GTC',
+        'quantity': qty,
+        'recvWindow': 5000,
+        'timestamp': timestamp
+    }
+    query_string = urlencode(params)
+    params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
+    url = urljoin(base_url, path)
+    r = requests.post(url, headers=headers, params=params)
+    return r.json()
+
+
+
 def get_account_info(api_key, api_secret):
     path = '/api/v3/account'
     timestamp = int(time.time() * 1000)

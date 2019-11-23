@@ -92,27 +92,28 @@ class bot_trading_thread(QThread):
                             if rel in self.active_coins:
                                 if base != rel:
                                     if rel in coinslib.binance_coins:
-                                        base_btc_price = priceslib.get_btc_price(self.creds[5], base)
-                                        rel_btc_price = priceslib.get_btc_price(self.creds[5], rel)
-                                        rel_price = base_btc_price/rel_btc_price
-                                        trade_price = rel_price+rel_price*self.premium
-                                        trade_val = round(float(rel_price)*float(available_balance),8)
-                                        timestamp = int(time.time()/1000)*1000
-                                        time_str = datetime.datetime.fromtimestamp(timestamp)
-                                        prefix = str(time_str)+" (MM2): "
-                                        log_msg = prefix+" [Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_val)+" "+rel
-                                        resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, available_balance, trade_price, True, True).json()
-                                        if 'error' in resp:
-                                            if resp['error'].find("larger than available") > -1:
-                                                msg = "Insufficient funds to complete "+base+"/"+rel+" order."
+                                        if available_balance > 0:
+                                            base_btc_price = priceslib.get_btc_price(self.creds[5], base)
+                                            rel_btc_price = priceslib.get_btc_price(self.creds[5], rel)
+                                            rel_price = base_btc_price/rel_btc_price
+                                            trade_price = rel_price+rel_price*self.premium
+                                            trade_val = round(float(rel_price)*float(available_balance),8)
+                                            timestamp = int(time.time()/1000)*1000
+                                            time_str = datetime.datetime.fromtimestamp(timestamp)
+                                            prefix = str(time_str)+" (MM2): "
+                                            log_msg = prefix+" [Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_val)+" "+rel
+                                            resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, available_balance, trade_price, True, True).json()
+                                            if 'error' in resp:
+                                                if resp['error'].find("larger than available") > -1:
+                                                    msg = "Insufficient funds to complete "+base+"/"+rel+" order."
+                                                else:
+                                                    msg = resp
+                                            elif 'result' in resp:
+                                                uuid = resp['result']['uuid']
+                                                msg = "New order "+uuid+" submitted (previous "+base+"/"+rel+" orders cancelled)."
                                             else:
                                                 msg = resp
-                                        elif 'result' in resp:
-                                            uuid = resp['result']['uuid']
-                                            msg = "New order "+uuid+" submitted (previous "+base+"/"+rel+" orders cancelled)."
-                                        else:
-                                            msg = resp
-                                        self.trigger.emit(uuid, log_msg, str(msg))
+                                            self.trigger.emit(uuid, log_msg, str(msg))
             time.sleep(1200)
 
     def stop(self):
@@ -484,50 +485,128 @@ class Ui(QTabWidget):
             selected = combo.itemText(combo.currentIndex())
         return selected
 
-    def check_order_swaps(self, order_uuid):
+    def check_mm_order_swaps(self, order_uuid):
         order_info = rpclib.order_status(self.creds[0], self.creds[1], order_uuid).json()
         print(guilib.colorize("=============",'green'))
         print(guilib.colorize("UUID: "+str(order_uuid),'green'))
         print(guilib.colorize("Started Swaps: "+str(order_info['order']['started_swaps']),'green'))
         for swap in order_info['order']['started_swaps']:
+            failed = False
             swaps_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap).json()
-            event_types = []
-            for event in swaps_info['result']['events']:
-                event_types.append(event['event']['type'])
-            if event['event']['type'] == 'Finished':
-                finish_time = event['timestamp'] 
-            if 'Finished' not in event_types:
-                print(swap+" still in progress")
-            elif swap not in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps:
-                if int(time.time()) < int(finish_time)/1000 - 1200:
-                    self.bot_mm_completed_swaps.append(swap)
-                    if bot_mode_comboBox.itemText(combo.currentIndex()) == 'Marketmaker & Binance':
-                        self.start_binance_countertrade()
+            print(swaps_info['result'])
+            if 'my_info' in swaps_info['result']:
+                base = swaps_info['result']['my_info']['my_coin']
+                rel = swaps_info['result']['my_info']['other_coin']
+                base_amount = swaps_info['result']['my_info']['my_amount']
+                rel_amount = swaps_info['result']['my_info']['other_amount']
+                event_types = []
+                for event in swaps_info['result']['events']:
+                    event_types.append(event['event']['type'])
+                    if event['event']['type'] in rpclib.error_events: 
+                        failed = True
+                        fail_event = event['event']['type']
+                    if event['event']['type'] == 'Finished':
+                        finish_time = event['timestamp']
+                        if not failed:
+                            log_msg = "Swap "+swap+" has completed!"
+                        else:
+                            log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
+                        self.update_trading_log("mm2", log_msg)
+                if 'Finished' not in event_types:
+                    print(swap+" still in progress")
+                elif swap not in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps and not failed:
+                    if int(time.time()) < int(finish_time)/1000 - 1200:
+                        self.bot_mm_completed_swaps.append(swap)
+                        if bot_mode_comboBox.itemText(combo.currentIndex()) == 'Marketmaker & Binance':
+                            log_msg = "Initiating Binance countertrade for swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+"..."
+                            self.update_trading_log("bot", log_msg)
+                            self.start_binance_countertrade(base, rel, base_amount, rel_amount)
 
-    def start_binance_countertrades(base, rel):
-        available_pairs = binance_api.base_asset_info[base]['']
-        if base+rel in available_pairs:
-            symbol = base+rel
-        if rel+base in available_pairs:
-            symbol = rel+base
+    def start_binance_countertrade(base, rel, base_amount, rel_amount):
+        # replenish base, liquidate rel
+        available_base_pairs = binance_api.base_asset_info[base]['available_pairs']
+        available_rel_pairs = binance_api.base_asset_info[rel]['available_pairs']
+        if base in binance_api.quoteAssets:
+            # check if direct rel trade possible
+            for symbol in available_rel_pairs:
+                if binance_api.binance_pair_info[symbol]['quoteAsset'] == base:
+                    selected_base_symbol = symbol
+                    selected_rel_symbol = symbol
+                    print("Direct trade symbol found (base quote): "+symbol)
+        elif rel in binance_api.quoteAssets:
+            # check if direct base trade possible
+            for symbol in available_base_pairs:
+                if binance_api.binance_pair_info[symbol]['quoteAsset'] == rel:
+                    selected_base_symbol = symbol
+                    selected_rel_symbol = symbol
+                    print("Direct trade symbol found (rel quote): "+symbol)
         else:
-            # select best pair somehow
-            # which does user have balance in?
-            # which has best rate?
-            pass
+            # no common pair, check for common quote asset
+            print("No common trade symbol, checking for common quote asset...")
+            for base_symbol in available_base_pairs:
+                base_quoteAsset = binance_api.binance_pair_info[base_symbol]['quoteAsset']
+                base_baseAsset = binance_api.binance_pair_info[base_symbol]['baseAsset']
+                for rel_symbol in available_rel_pairs:
+                    rel_quoteAsset = binance_api.binance_pair_info[rel_symbol]['quoteAsset']
+                    rel_baseAsset = binance_api.binance_pair_info[rel_symbol]['baseAsset']
+                    if rel_quoteAsset == base_quoteAsset:
+                        selected_rel_symbol = rel_symbol
+                        selected_base_symbol = base_symbol
+                        print("Indirect trade symbols found:")
+                        print("selected_base_symbol: "+selected_base_symbol)
+                        print("selected_rel_symbol: "+selected_rel_symbol)
+                        break
+                if selected_base_symbol != '':
+                    break
+        if selected_base_symbol == '':
+            print("No indirect trade symbols found... what now?")
 
-        # binance or stablecoin pair?
-        if base == 'BTC':
-            pass
-            # sell rel for BTC pair
-        elif rel == 'BTC':
-            pass
-            # buy base for BTC pair
+        elif selected_base_symbol == selected_rel_symbol:
+            if binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == base:
+                # sell base_amount of base
+                resp = binance_api.create_sell_order_at_market(api_key, api_secret, selected_base_symbol, base_amount)
+                log_msg = "Binance countertrade sell order submitted! "+str(base_amount)+" "+base+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+                # buy rel ammount of rel
+                resp = binance_api.create_buy_order_at_market(api_key, api_secret, selected_base_symbol, rel_amount)
+                log_msg = "Binance countertrade buy order submitted! "+str(rel_amount)+" "+rel+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+
+            elif binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == rel:
+                # buy base_amount of base
+                resp = binance_api.create_buy_order_at_market(api_key, api_secret, selected_base_symbol, base_amount)
+                log_msg = "Binance countertrade buy order submitted! "+str(base_amount)+" "+base+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+                # sell rel amount of rel
+                resp = binance_api.create_sell_order_at_market(api_key, api_secret, selected_base_symbol, rel_amount)
+                log_msg = "Binance countertrade sell order submitted! "+str(rel_amount)+" "+rel+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
         else:
-            pass
-            # sell rel for BTC pair
+            # Indirect base trade...
+            if binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == base:
+                # sell base_amount of base
+                resp = binance_api.create_sell_order_at_market(api_key, api_secret, selected_base_symbol, base_amount)
+                log_msg = "Binance countertrade sell order submitted! "+str(base_amount)+" "+base+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+            else:
+                # buy base_amount of base
+                resp = binance_api.create_buy_order_at_market(api_key, api_secret, selected_base_symbol, base_amount)
+                log_msg = "Binance countertrade buy order submitted! "+str(base_amount)+" "+base+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
 
-            # buy base for BTC pair
+            # Indirect rel trade...
+            if binance_api.binance_pair_info[selected_rel_symbol]['quoteAsset'] == rel:
+                # sell rel_amount of rel
+                resp = binance_api.create_sell_order_at_market(api_key, api_secret, selected_rel_symbol, rel_amount)
+                log_msg = "Binance countertrade sell order submitted! "+str(rel_amount)+" "+rel+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+            else:
+                # buy rel amount of rel
+                resp = binance_api.create_buy_order_at_market(api_key, api_secret, selected_rel_symbol, rel_amount)
+                log_msg = "Binance countertrade buy order submitted! "+str(rel_amount)+" "+rel+" at market"
+                self.update_trading_log('Bot', log_msg, str(resp))
+        self.update_orders_table()
+
         
 
     def update_mm2_orders_tables(self):
@@ -544,7 +623,7 @@ class Ui(QTabWidget):
             bot_row = 0
             mm2_row = 0
             for item in maker_orders:
-                self.check_order_swaps(item)
+                self.check_mm_order_swaps(item)
                 role = "Maker"
                 base = maker_orders[item]['base']
                 base_amount = maker_orders[item]['available_amount']
@@ -690,12 +769,30 @@ class Ui(QTabWidget):
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     def populate_activation_menu(self, display_coins, layout):
+        with open(config_path+self.username+"_coins.json", 'r') as j:
+            user_coins = json.loads(j.read())
+            user_autoactivate = user_coins['autoactivate']
+            user_buy_coins = user_coins['buy_coins']
+            user_sell_coins = user_coins['sell_coins']
         row = 0
         for coin in display_coins:
             self.gui_coins[coin]['checkbox'].show()
             self.gui_coins[coin]['combo'].show()
             layout.addWidget(self.gui_coins[coin]['checkbox'], row, 0, 1, 1)
             layout.addWidget(self.gui_coins[coin]['combo'], row, 1, 1, 1)
+            if coin in user_autoactivate:
+                self.gui_coins[coin]['checkbox'].setChecked(True)
+            else:
+                self.gui_coins[coin]['checkbox'].setChecked(False)
+            if coin in user_buy_coins and coin in user_sell_coins:
+                self.gui_coins[coin]['combo'].setCurrentIndex(3)
+            elif coin in user_buy_coins:
+                self.gui_coins[coin]['combo'].setCurrentIndex(1)
+            elif coin in user_sell_coins:
+                self.gui_coins[coin]['combo'].setCurrentIndex(2)
+            else:
+                self.gui_coins[coin]['combo'].setCurrentIndex(0)
+
             icon = QIcon()
             icon.addPixmap(QPixmap(":/32/img/32/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)
             self.gui_coins[coin]['checkbox'].setIcon(icon)
@@ -843,7 +940,7 @@ class Ui(QTabWidget):
         selected_row = self.bot_mm2_orders_table.currentRow()
         if self.bot_mm2_orders_table.item(selected_row,5) is not None:
             if self.bot_mm2_orders_table.item(selected_row,0).text() != '':
-                order_uuid = self.bot_mm2_orders_table.item(selected_row,5).text()
+                order_uuid = self.bot_mm2_orders_table.item(selected_row,8).text()
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                 msg = ''
                 if 'result' in resp:
@@ -1860,6 +1957,7 @@ class Ui(QTabWidget):
         order_type = self.binance_orderbook_table.item(selected_row,3).text()
         self.binance_price_spinbox.setValue(float(price))
 
+    # TODO: monitor binance orders periodically, and add log entries when appropriate.
     def binance_buy(self):
         qty = '{:.8f}'.format(self.binance_qty_spinbox.value())
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
@@ -2096,7 +2194,7 @@ class Ui(QTabWidget):
         self.trading_logs_list.addItem(">>> "+str(log_result))
         self.update_mm2_orders_tables()
 
-    def update_trading_log(self, sender, log_msg, log_result):
+    def update_trading_log(self, sender, log_msg, log_result=''):
         print("updating trading log")
         timestamp = int(time.time()/1000)*1000
         time_str = datetime.datetime.fromtimestamp(timestamp)
@@ -2105,7 +2203,8 @@ class Ui(QTabWidget):
         print(log_msg)
         print(log_result)
         self.trading_logs_list.addItem(log_msg)
-        self.trading_logs_list.addItem(">>> "+str(log_result))
+        if log_result != '':
+            self.trading_logs_list.addItem(">>> "+str(log_result))
 
     ## TABS
     def update_cachedata(self, prices_dict, balaces_dict):
