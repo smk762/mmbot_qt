@@ -268,6 +268,7 @@ def round_to_step(coin, qty):
 def get_exchange_info():
     resp = requests.get("https://api.binance.com/api/v1/exchangeInfo").json()
     binance_pairs = []
+    binance_pair_info = {}
     base_asset_info = {}
     quoteAssets = []
     for item in resp['symbols']:
@@ -288,33 +289,42 @@ def get_exchange_info():
                     'stepSize':stepSize
                 }
             })
+            binance_pair_info.update({
+                symbol:{
+                    'baseAsset':baseAsset,
+                    'quoteAsset':quoteAsset
+                }
+            })
             binance_pairs.append(symbol)
             if quoteAsset not in quoteAssets:
                 quoteAssets.append(quoteAsset)
 
     for base in base_asset_info:
-        available_symbols = []
+        available_pairs = []
         for rel in quoteAssets:
             if base+rel in binance_pairs:
                 symbol = base+rel
-                available_symbols.append(symbol)
+                available_pairs.append(symbol)
             elif rel+base in binance_pairs:
                 symbol = rel+base
-                available_symbols.append(symbol)
+                available_pairs.append(symbol)
             else:
                 for quote in quoteAssets:
                     if base+quote in quoteAssets:
                         symbol = rel+base
-                        available_symbols.append(symbol)
+                        available_pairs.append(symbol)
                     elif quote+base in quoteAssets:
                         symbol = base+rel
-                        available_symbols.append(symbol)
-        base_asset_info[base].update({'available_pairs':available_symbols})
-
-    return binance_pairs, base_asset_info, quoteAssets
+                        available_pairs.append(symbol)
+        available_pairs.sort()
+        base_asset_info[base].update({'available_pairs':available_pairs})
+    binance_pairs.sort()
+    quoteAssets.sort()
+    return binance_pairs, base_asset_info, quoteAssets, binance_pair_info
 
 
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
 quoteAssets = exch_info[2]
+binance_pair_info = exch_info[3]

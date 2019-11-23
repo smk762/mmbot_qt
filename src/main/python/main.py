@@ -66,7 +66,7 @@ os.environ['MM_COINS_PATH'] = config_path+"coins"
 # THREADED OPERATIONS
 
 class bot_trading_thread(QThread):
-    trigger = pyqtSignal(str, str)
+    trigger = pyqtSignal(str, str, str)
     def __init__(self, creds, sell_coins, buy_coins, active_coins, premium):
         QThread.__init__(self)
         self.creds = creds
@@ -216,6 +216,9 @@ class Ui(QTabWidget):
         self.last_price_update = 0
         self.prices_data = {}
         self.balances_data = {}
+        self.bot_order_uuids = []
+        self.bot_mm_completed_swaps = []
+        self.bot_countertrade_swaps = []
         self.gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
@@ -397,12 +400,17 @@ class Ui(QTabWidget):
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","All Files (*);;Text Files (*.csv)", options=options)
         return fileName
 
-    def add_row(self, row, row_data, table, bgcol=''):
+    def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
         for cell_data in row_data:
             cell = QTableWidgetItem(str(cell_data))
             table.setItem(row,col,cell)
-            cell.setTextAlignment(Qt.AlignCenter)  
+            if align == '':
+                cell.setTextAlignment(Qt.AlignCenter|Qt.AlignVCenter)  
+            elif align == 'left':
+                cell.setTextAlignment(Qt.AlignLeft|Qt.AlignVCenter)  
+            elif align == 'right':
+                cell.setTextAlignment(Qt.AlignRight|Qt.AlignVCenter)  
             if bgcol != ''  :
                 table.item(row,col).setBackground(bgcol)
             col += 1
@@ -486,11 +494,41 @@ class Ui(QTabWidget):
             event_types = []
             for event in swaps_info['result']['events']:
                 event_types.append(event['event']['type'])
+            if event['event']['type'] == 'Finished':
+                finish_time = event['timestamp'] 
             if 'Finished' not in event_types:
                 print(swap+" still in progress")
+            elif swap not in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps:
+                if int(time.time()) < int(finish_time)/1000 - 1200:
+                    self.bot_mm_completed_swaps.append(swap)
+                    if bot_mode_comboBox.itemText(combo.currentIndex()) == 'Marketmaker & Binance':
+                        self.start_binance_countertrade()
 
+    def start_binance_countertrades(base, rel):
+        available_pairs = binance_api.base_asset_info[base]['']
+        if base+rel in available_pairs:
+            symbol = base+rel
+        if rel+base in available_pairs:
+            symbol = rel+base
+        else:
+            # select best pair somehow
+            # which does user have balance in?
+            # which has best rate?
+            pass
+
+        # binance or stablecoin pair?
+        if base == 'BTC':
+            pass
+            # sell rel for BTC pair
+        elif rel == 'BTC':
+            pass
+            # buy base for BTC pair
+        else:
+            pass
+            # sell rel for BTC pair
+
+            # buy base for BTC pair
         
-        #print(guilib.colorize(maker_orders[item],'blue'))
 
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -758,6 +796,7 @@ class Ui(QTabWidget):
 
     def select_all_api(self):
         filter_list = []
+        #TODO: confirm Binance compatibility on load.
         if self.checkBox_binance_compatible_checkbox.isChecked():
             filter_list.append("ᵇ")
         if self.checkBox_gecko_compatible_checkbox.isChecked():
@@ -791,6 +830,8 @@ class Ui(QTabWidget):
                         msg = resp
                 else:
                     msg = resp
+                log_msg = "Cancelling mm2 order "+order_uuid+"..."
+                self.update_trading_log("mm2", log_msg, str(resp))
                 QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
             else:
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
@@ -812,7 +853,9 @@ class Ui(QTabWidget):
                         msg = resp
                 else:
                     msg = resp
-                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+                QMessageBox.information(self, 'MM2 Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+                log_msg = "Cancelling mm2 order "+order_uuid+"..."
+                self.update_trading_log("mm2", log_msg, str(resp))
             else:
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
@@ -825,13 +868,14 @@ class Ui(QTabWidget):
             msg = ''
             if 'result' in resp:
                 if resp['result'] == 'success':
-                    msg = "Order "+order_uuid+" cancelled"
+                    msg = "All your mm2 orders have been cancelled"
                 else:
                     msg = resp
             else:
                 msg = resp
-            msg = "All your orders have been cancelled"
-            QMessageBox.information(self, 'Orders Cancelled', msg, QMessageBox.Ok, QMessageBox.Ok)
+            log_msg = "Cancelling all mm2 orders..."
+            QMessageBox.information(self, 'MM2 Orders Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            self.update_trading_log("mm2", log_msg, str(resp))
         else:
             QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
         self.update_mm2_orders_tables()
@@ -930,6 +974,7 @@ class Ui(QTabWidget):
         selected_row = self.orderbook_table.currentRow()
         if selected_row != -1:
             selected_price = self.orderbook_table.item(selected_row,3).text()
+            selected_max_vol = self.orderbook_table.item(selected_row,2).text()
             if selected_price != '':
 
                 if rel not in self.balances_data:
@@ -940,23 +985,26 @@ class Ui(QTabWidget):
                     balance_text = balance_info['balance']
                     locked_text = balance_info['locked']
                     available_balance = balance_info['available']
-
                     max_vol = available_balance/float(selected_price)*0.99
+                    if max_vol > float(selected_max_vol):
+                        max_vol = float(selected_max_vol)
                 vol, ok = QInputDialog.getDouble(self, 'Enter Volume', 'Enter volume '+base+' to buy at '+selected_price+' (max. '+str(max_vol)+'): ', QLineEdit.Password)
                 if ok:
+                    trade_val = round(float(selected_price)*float(vol),8)
                     resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, vol, selected_price).json()
+                    log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel
                     if 'error' in resp:
                         if resp['error'].find("larger than available") > -1:
                             msg = "Insufficient funds to complete order."
                         else:
                             msg = resp
                     elif 'result' in resp:
-                        trade_val = round(float(selected_price)*float(vol),8)
                         msg = "Order Submitted.\n"
                         msg += "Buying "+str(vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel
                     else:
                         msg = resp
                     QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+                    self.update_trading_log('mm2', log_msg, str(resp))
             else:
                 msg = "No order selected!"
                 QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -973,34 +1021,39 @@ class Ui(QTabWidget):
         else:
             self.update_mm2_orders_tables()
             self.show_mm2_trades()
-            index = self.mm2_buy_buy_combo.currentIndex()
-            if index != -1:
-                base = self.mm2_buy_buy_combo.itemText(index)
-            else:
-                base = ''
             index = self.mm2_buy_sell_combo.currentIndex()
             if index != -1:
-                rel = self.mm2_buy_sell_combo.itemText(index)
+                base = self.mm2_buy_sell_combo.itemText(index)
+            else:
+                base = ''
+            index = self.mm2_buy_buy_combo.currentIndex()
+            if index != -1:
+                rel = self.mm2_buy_buy_combo.itemText(index)
             else:
                 rel = ''
             active_coins_selection = self.active_coins[:]
-            base = self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,base)
+            base = self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,base)
             active_coins_selection.remove(base)
-            rel = self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,rel)
+            rel = self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,rel)
 
             active_coins_selection = self.active_coins[:]
-            self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,rel)
-            active_coins_selection.remove(rel)
             self.update_combo(self.mm2_sell_buy_combo,active_coins_selection,base)
+            active_coins_selection.remove(base)
+            self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,rel)
             # Update labels
-            self.mm2_buy_amount_lbl.setText("Amount ("+base+")")
+            self.mm2_buy_buy_amount_lbl.setText("Amount ("+rel+")")
+            self.mm2_buy_sell_amount_lbl.setText("Amount ("+base+")")
             self.mm2_buy_price_lbl.setText("Price ("+rel+")")
-            self.mm2_buy_depth_baserel_lbl.setText(rel+"/"+base)
-            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-            self.mm2_sell_amount_lbl.setText("Amount ("+rel+")")
+
+            self.mm2_sell_buy_amount_lbl.setText("Amount ("+base+")")
+            self.mm2_sell_sell_amount_lbl.setText("Amount ("+rel+")")
             self.mm2_sell_price_lbl.setText("Price ("+base+")")
+
             self.mm2_sell_depth_baserel_lbl.setText(base+"/"+rel)
-            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
+            self.mm2_buy_depth_baserel_lbl.setText(rel+"/"+base)
+
+            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
+            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
 
             if rel not in self.balances_data:
                 self.update_balance(rel)
@@ -1011,8 +1064,8 @@ class Ui(QTabWidget):
                 locked_text = balance_info['locked']
                 available_balance = balance_info['available']
 
-                self.mm2_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
-                self.mm2_buy_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+rel)
+                self.mm2_sell_balance_lbl.setText("Available funds: "+str(available_balance)+" "+rel)
+                self.mm2_sell_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+rel)
 
             if base not in self.balances_data:
                 self.update_balance(base)
@@ -1023,11 +1076,11 @@ class Ui(QTabWidget):
                 locked_text = balance_info['locked']
                 available_balance = balance_info['available']
 
-                self.mm2_sell_balance_lbl.setText("Available funds: "+str(available_balance)+" "+base)
-                self.mm2_sell_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+base)
+                self.mm2_buy_balance_lbl.setText("Available funds: "+str(available_balance)+" "+base)
+                self.mm2_buy_locked_lbl.setText("Locked by swaps: "+str(locked_text)+" "+base)
 
-            self.mm2_buy_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
-            self.mm2_sell_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
+            self.mm2_sell_depth_table.setHorizontalHeaderLabels(['Price '+base, 'Volume '+rel, 'Value '+base])
+            self.mm2_buy_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
 
             buy_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
             self.mm2_sell_depth_table.setSortingEnabled(False)
@@ -1070,26 +1123,86 @@ class Ui(QTabWidget):
             self.mm2_buy_depth_table.resizeColumnsToContents()
         pass
 
-    def combo_box_switch(self):
-        index = self.mm2_sell_buy_combo.currentIndex()
-        if index != -1:
-            base = self.mm2_sell_buy_combo.itemText(index)
+    def update_buy_amounts(self, trigger=''):
+        if trigger == '':
+            sent_by = self.sender().objectName()
         else:
-            base = ''
+            sent_by = trigger
+        print("update buy amounts (trigger: "+sent_by+")")
+        mm2_buy_price_val = self.mm2_buy_price.value()
+        mm2_buy_sell_amount_val = self.mm2_buy_sell_amount.value()
+        mm2_buy_buy_amount_val = self.mm2_buy_buy_amount.value()
+        if sent_by == 'mm2_buy_price':
+            if mm2_buy_price_val != 0:
+                if mm2_buy_buy_amount_val != 0:
+                    mm2_buy_sell_amount_val = mm2_buy_buy_amount_val/mm2_buy_price_val
+                    self.mm2_buy_sell_amount.setValue(mm2_buy_sell_amount_val)
+                elif mm2_buy_sell_amount_val != 0:
+                    mm2_buy_buy_amount_val = mm2_buy_sell_amount_val*mm2_buy_price_val
+                    self.mm2_buy_buy_amount.setValue(mm2_buy_buy_amount_val)
+        elif sent_by == 'mm2_buy_sell_amount':
+            if mm2_buy_sell_amount_val != 0:
+                if mm2_buy_price_val != 0:
+                    mm2_buy_buy_amount_val = mm2_buy_sell_amount_val*mm2_buy_price_val
+                    self.mm2_buy_buy_amount.setValue(mm2_buy_buy_amount_val)
+        elif sent_by == 'mm2_buy_buy_amount':
+            if mm2_buy_buy_amount_val != 0:
+                if mm2_buy_price_val != 0:                
+                    mm2_buy_sell_amount_val = mm2_buy_buy_amount_val/mm2_buy_price_val
+                    self.mm2_buy_sell_amount.setValue(mm2_buy_sell_amount_val)
+
+    def update_sell_amounts(self, trigger=''):
+        if trigger == '':
+            sent_by = self.sender().objectName()
+        else:
+            sent_by = trigger
+        print("update sell amounts (trigger: "+sent_by+")")
+        mm2_sell_price_val = self.mm2_sell_price.value()
+        mm2_sell_sell_amount_val = self.mm2_sell_sell_amount.value()
+        mm2_sell_buy_amount_val = self.mm2_sell_buy_amount.value()
+        if sent_by == 'mm2_sell_price':
+            if mm2_sell_price_val != 0:
+                if mm2_sell_buy_amount_val != 0:
+                    mm2_sell_sell_amount_val = mm2_sell_buy_amount_val/mm2_sell_price_val
+                    self.mm2_sell_sell_amount.setValue(mm2_sell_sell_amount_val)
+                elif mm2_sell_sell_amount_val != 0:
+                    mm2_sell_buy_amount_val = mm2_sell_sell_amount_val*mm2_sell_price_val
+                    self.mm2_sell_buy_amount.setValue(mm2_sell_buy_amount_val)
+        elif sent_by == 'mm2_sell_sell_amount':
+            if mm2_sell_sell_amount_val != 0:
+                if mm2_sell_price_val != 0:
+                    mm2_sell_buy_amount_val = mm2_sell_sell_amount_val*mm2_sell_price_val
+                    self.mm2_sell_buy_amount.setValue(mm2_sell_buy_amount_val)
+        elif sent_by == 'mm2_sell_buy_amount':
+            if mm2_sell_buy_amount_val != 0:
+                if mm2_sell_price_val != 0:                
+                    mm2_sell_sell_amount_val = mm2_sell_buy_amount_val/mm2_sell_price_val
+                    self.mm2_sell_sell_amount.setValue(mm2_sell_sell_amount_val)
+
+    def combo_box_switch(self):
         index = self.mm2_sell_sell_combo.currentIndex()
         if index != -1:
-            rel = self.mm2_sell_sell_combo.itemText(index)
+            base = self.mm2_sell_sell_combo.itemText(index)
+        else:
+            base = ''
+        index = self.mm2_sell_buy_combo.currentIndex()
+        if index != -1:
+            rel = self.mm2_sell_buy_combo.itemText(index)
         else:
             rel = ''
+
         active_coins_selection = self.active_coins[:]
-        self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,rel)
+        self.update_combo(self.mm2_sell_buy_combo,active_coins_selection,rel)
+
         active_coins_selection.remove(rel)
-        self.update_combo(self.mm2_sell_buy_combo,active_coins_selection,base)
-        
+        self.update_combo(self.mm2_sell_sell_combo,active_coins_selection,base)
+
         active_coins_selection = self.active_coins[:]
-        base = self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,base)
+        self.update_combo(self.mm2_buy_buy_combo,active_coins_selection,base)
+
         active_coins_selection.remove(base)
-        rel = self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,rel)
+        self.update_combo(self.mm2_buy_sell_combo,active_coins_selection,rel)
+
         self.show_mm2_trading_tab()
 
     def populate_buy_order_vals(self):
@@ -1099,6 +1212,7 @@ class Ui(QTabWidget):
         else:
             selected_price = float(val)
         self.mm2_buy_price.setValue(selected_price)
+        self.update_buy_amounts('mm2_buy_price')
 
     def populate_sell_order_vals(self):
         val = self.get_cell_val(self.mm2_sell_depth_table, 0)
@@ -1107,6 +1221,7 @@ class Ui(QTabWidget):
         else:
             selected_price = float(val)
         self.mm2_sell_price.setValue(selected_price)
+        self.update_sell_amounts('mm2_sell_price')
 
     def get_bal_pct(self, bal_lbl, pct):
         bal = float(bal_lbl.text().split()[2])
@@ -1114,42 +1229,50 @@ class Ui(QTabWidget):
 
     def sell_25pct(self):
         val = self.get_bal_pct(self.mm2_sell_balance_lbl, 25)
-        self.mm2_sell_amount.setValue(val)
+        self.mm2_sell_sell_amount.setValue(val)
+        self.update_sell_amounts('mm2_sell_sell_amount')
 
     def sell_50pct(self):
         val = self.get_bal_pct(self.mm2_sell_balance_lbl, 50)
-        self.mm2_sell_amount.setValue(val)
+        self.mm2_sell_sell_amount.setValue(val)
+        self.update_sell_amounts('mm2_sell_sell_amount')
 
     def sell_75pct(self):
         val = self.get_bal_pct(self.mm2_sell_balance_lbl, 75)
-        self.mm2_sell_amount.setValue(val)
+        self.mm2_sell_sell_amount.setValue(val)
+        self.update_sell_amounts('mm2_sell_sell_amount')
 
     def sell_100pct(self):
         val = self.get_bal_pct(self.mm2_sell_balance_lbl, 100)
-        self.mm2_sell_amount.setValue(val)
+        self.mm2_sell_sell_amount.setValue(val)
+        self.update_sell_amounts('mm2_sell_sell_amount')
 
     def buy_25pct(self):
         val = self.get_bal_pct(self.mm2_buy_balance_lbl, 25)
-        self.mm2_buy_amount.setValue(val)
+        self.mm2_buy_sell_amount.setValue(val)
+        self.update_buy_amounts('mm2_buy_sell_amount')
 
     def buy_50pct(self):
         val = self.get_bal_pct(self.mm2_buy_balance_lbl, 50)
-        self.mm2_buy_amount.setValue(val)
+        self.mm2_buy_sell_amount.setValue(val)
+        self.update_buy_amounts('mm2_buy_sell_amount')
 
     def buy_75pct(self):
         val = self.get_bal_pct(self.mm2_buy_balance_lbl, 75)
-        self.mm2_buy_amount.setValue(val)
+        self.mm2_buy_sell_amount.setValue(val)
+        self.update_buy_amounts('mm2_buy_sell_amount')
 
     def buy_100pct(self):
         val = self.get_bal_pct(self.mm2_buy_balance_lbl, 100)
-        self.mm2_buy_amount.setValue(val)
+        self.mm2_buy_sell_amount.setValue(val)
+        self.update_buy_amounts('mm2_buy_sell_amount')
 
     def create_setprice_buy(self): 
         index = self.mm2_buy_sell_combo.currentIndex()
-        rel = self.mm2_buy_sell_combo.itemText(index)
+        base = self.mm2_buy_sell_combo.itemText(index)
         index = self.mm2_buy_buy_combo.currentIndex()
-        base = self.mm2_buy_buy_combo.itemText(index)
-        basevolume = self.mm2_buy_amount.value()
+        rel = self.mm2_buy_buy_combo.itemText(index)
+        basevolume = self.mm2_buy_sell_amount.value()
         relprice = self.mm2_buy_price.value()
         # detect previous
         cancel_previous = True
@@ -1176,36 +1299,37 @@ class Ui(QTabWidget):
                         cancel_previous = False
                     elif confirm == QMessageBox.Cancel:
                         cancel_trade = True
-        max_vol = float(self.mm2_buy_balance_lbl.text().split()[2])
-        val = self.mm2_buy_amount.value()
+        max_vol = float(self.mm2_sell_balance_lbl.text().split()[2])
+        val = self.mm2_buy_sell_amount.value()
         if val == max_vol:
             trade_max = True
         else:
             trade_max = False
         if not cancel_trade:
-            #resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, basevolume, relprice)
             resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
+            trade_val = round(float(relprice)*float(basevolume),8)
+            log_msg = "Buy "+str(trade_val)+" "+rel+" for "+" "+str(basevolume)+" "+base
             if 'error' in resp:
                 if resp['error'].find("larger than available") > -1:
                     msg = "Insufficient funds to complete order."
                 else:
                     msg = resp
             elif 'result' in resp:
-                trade_val = round(float(relprice)*float(basevolume),8)
-                msg = "Order Submitted.\n"
-                msg += "Buy "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
+                msg = "Buy order Submitted.\n"
+                msg += "Buy "+str(trade_val)+" "+rel+"\nfor\n"+" "+str(basevolume)+" "+base
                 self.update_mm2_orders_tables()
                 self.show_mm2_trades()
             else:
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Buy Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            self.update_trading_log('mm2', log_msg, str(resp))
 
     def create_setprice_sell(self): 
-        index = self.mm2_sell_sell_combo.currentIndex()
-        base = self.mm2_sell_sell_combo.itemText(index)
         index = self.mm2_sell_buy_combo.currentIndex()
         rel = self.mm2_sell_buy_combo.itemText(index)
-        basevolume = self.mm2_sell_amount.value()
+        index = self.mm2_sell_sell_combo.currentIndex()
+        base = self.mm2_sell_sell_combo.itemText(index)
+        basevolume = self.mm2_sell_sell_amount.value()
         relprice = self.mm2_sell_price.value()
         # detect previous
         cancel_previous = True
@@ -1232,36 +1356,31 @@ class Ui(QTabWidget):
                         cancel_previous = False
                     elif confirm == QMessageBox.Cancel:
                         cancel_trade = True
-        max_vol = float(self.mm2_sell_balance_lbl.text().split()[2])
-        val = self.mm2_sell_amount.value()
+        max_vol = float(self.mm2_buy_balance_lbl.text().split()[2])
+        val = self.mm2_sell_sell_amount.value()
         if val == max_vol:
             trade_max = True
         else:
             trade_max = False
         if not cancel_trade:
             resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, basevolume, relprice, trade_max, cancel_previous).json()
+            trade_val = round(float(relprice)*float(basevolume),8)
+            log_msg = "Sell "+str(basevolume)+" "+base+" for "+" "+str(trade_val)+" "+rel
             if 'error' in resp:
                 if resp['error'].find("larger than available") > -1:
                     msg = "Insufficient funds to complete order."
                 else:
                     msg = resp
             elif 'result' in resp:
-                trade_val = round(float(relprice)*float(basevolume),8)
-                msg = "Order Submitted.\n"
+                msg = "Sell order Submitted.\n"
                 msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+" "+str(trade_val)+" "+rel
                 self.update_mm2_orders_tables()
                 self.show_mm2_trades()
             else:
                 msg = resp
             QMessageBox.information(self, 'Created Setprice Sell Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
+            self.update_trading_log('mm2', log_msg, str(resp))
 
-
-    ## PRICES
-    def show_prices_tab(self):
-        if len(self.active_coins) < 1:
-            msg = 'Please activate at least one coin. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
 
     ## WALLET
     def show_mm2_wallet_tab(self):
@@ -1698,6 +1817,7 @@ class Ui(QTabWidget):
                     self.add_row(row, balance_row, self.binance_balances_table)
                     row += 1
                 self.binance_balances_table.setSortingEnabled(True)
+                self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
                 self.binance_balances_table.resizeColumnsToContents()
             return tickers
 
@@ -1745,12 +1865,17 @@ class Ui(QTabWidget):
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
         index = self.binance_ticker_pair_comboBox.currentIndex()
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
+        baseAsset = binance_api.binance_pair_info[ticker_pair]['baseAsset']
+        quoteAsset = binance_api.binance_pair_info[ticker_pair]['quoteAsset']
         resp = binance_api.create_buy_order(self.creds[5], self.creds[6], ticker_pair, qty, price)
+        log_msg = "Buy order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
         if 'orderId' in resp:
-            msg = "Order submitted!"
-            QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+            print(resp)
+            msg = "Buy order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
+            QMessageBox.information(self, 'Buy Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'Buy Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.update_trading_log('Binance', log_msg, str(resp))
         self.update_orders_table()
 
     def binance_sell(self):
@@ -1758,12 +1883,17 @@ class Ui(QTabWidget):
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
         index = self.binance_ticker_pair_comboBox.currentIndex()
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
+        baseAsset = binance_api.binance_pair_info[ticker_pair]['baseAsset']
+        quoteAsset = binance_api.binance_pair_info[ticker_pair]['quoteAsset']
         resp = binance_api.create_sell_order(self.creds[5], self.creds[6], ticker_pair, qty, price)
+        log_msg = "Sell order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
         if 'orderId' in resp:
-            msg = "Order submitted!"
+            print(resp)
+            msg = "Sell order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
             QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.update_trading_log('Binance', log_msg, str(resp))
         self.update_orders_table()
 
 
@@ -1810,6 +1940,7 @@ class Ui(QTabWidget):
 
     def update_orders_table(self):
         open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
+        print(open_orders)
         if 'msg' in open_orders:
             QMessageBox.information(self, 'Binance API key error!', str(open_orders['msg']), QMessageBox.Ok, QMessageBox.Ok)
         self.clear_table(self.binance_orders_table)
@@ -1839,7 +1970,6 @@ class Ui(QTabWidget):
                 ticker_pair = self.binance_orders_table.item(selected_row,2).text()
                 resp = binance_api.delete_order(self.creds[5], self.creds[6], ticker_pair, order_id)
                 msg = ''
-
                 if "status" in resp:
                     if resp["status"] == "CANCELED":
                         msg = "Order "+order_id+" cancelled"
@@ -1847,6 +1977,8 @@ class Ui(QTabWidget):
                         msg = resp
                 else:
                     msg = resp
+                log_msg = "Cancelling Binance order "+str(order_id)+" ("+ticker_pair+")"
+                self.update_trading_log("Binance", log_msg, str(resp))
                 QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
             else:
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
@@ -1860,7 +1992,9 @@ class Ui(QTabWidget):
         for item in open_orders:
             order_ids.append([item['orderId'],item['symbol']])
         for order_id in order_ids:
-            binance_api.delete_order(self.creds[5], self.creds[6], order_id[1], order_id[0])
+            resp = binance_api.delete_order(self.creds[5], self.creds[6], order_id[1], order_id[0])
+            log_msg = "Cancelling Binance order "+str(order_id[0])+" ("+order_id[1]+")"
+            self.update_trading_log("Binance", log_msg, str(resp))
             time.sleep(0.05)
             self.update_orders_table()
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
@@ -1876,20 +2010,45 @@ class Ui(QTabWidget):
             self.populate_bot_lists()
 
     def populate_bot_lists(self):
-        self.bot_buy_list.clear()
-        self.bot_sell_list.clear()
+        print("populating buy list")
+        self.clear_table(self.bot_buy_list)
+        self.bot_buy_list.setSortingEnabled(False)
+        row_count = len(self.buy_coins)
+        self.bot_buy_list.setRowCount(row_count)
+        row = 0
         for buy_coin in self.buy_coins:
             if buy_coin not in self.active_coins:
-                buy_coin = buy_coin+ " (inactive)"
+                pairs = "(inactive)"
             elif buy_coin not in coinslib.binance_coins:
-                buy_coin = buy_coin+ " (not on Binance)"
-            self.bot_buy_list.addItem(buy_coin)
+                pairs = "(not on Binance)"
+            else:
+                pairs = ", ".join(binance_api.base_asset_info[buy_coin]['available_pairs'])
+            buy_row = [buy_coin, pairs]
+            print(buy_row)
+            self.add_row(row, buy_row, self.bot_buy_list, '', 'left')
+            row += 1
+        self.bot_buy_list.setSortingEnabled(True)
+        self.bot_buy_list.resizeColumnsToContents()
+
+        print("populating sell list")
+        self.clear_table(self.bot_sell_list)
+        self.bot_sell_list.setSortingEnabled(False)
+        row_count = len(self.sell_coins)
+        self.bot_sell_list.setRowCount(row_count)
+        row = 0
         for sell_coin in self.sell_coins:
             if sell_coin not in self.active_coins:
-                sell_coin = sell_coin+ " (inactive)"
+                pairs = "(inactive)"
             elif sell_coin not in coinslib.binance_coins:
-                sell_coin = sell_coin+ " (not on Binance)"
-            self.bot_sell_list.addItem(sell_coin)
+                pairs = "(not on Binance)"
+            else:
+                pairs = ", ".join(binance_api.base_asset_info[sell_coin]['available_pairs'])
+            sell_row = [sell_coin, pairs]
+            self.add_row(row, sell_row, self.bot_sell_list, '', 'left')
+            row += 1
+        self.bot_sell_list.setSortingEnabled(True)
+        self.bot_sell_list.resizeColumnsToContents()
+
 
     def stop_bot_trading(self):
         print("stopping bot")
@@ -1898,7 +2057,7 @@ class Ui(QTabWidget):
         self.bot_status_lbl.setStyleSheet("color: rgb(164, 0, 0);\nbackground-color: rgb(177, 179, 186);")
         timestamp = int(time.time()/1000)*1000
         time_str = datetime.datetime.fromtimestamp(timestamp)
-        self.bot_log_list.addItem(str(time_str)+" Bot stopped")
+        self.trading_logs_list.addItem(str(time_str)+" Bot stopped")
         resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if resp == QMessageBox.Yes:
             self.mm2_cancel_all_orders()
@@ -1922,19 +2081,31 @@ class Ui(QTabWidget):
             self.bot_status_lbl.setStyleSheet('color: #043409;\nbackground-color: rgb(166, 215, 166);')
             timestamp = int(time.time()/1000)*1000
             time_str = datetime.datetime.fromtimestamp(timestamp)
-            self.bot_log_list.addItem(str(time_str)+" Bot started")
+            self.trading_logs_list.addItem(str(time_str)+" Bot started")
         else:
             msg = 'Please activate at least one sell coin and at least one different buy coin (Binance compatible). '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
 
-    def update_bot_log(self, log_msg, log_result):
+    def update_bot_log(self, uuid, log_msg, log_result):
         print("updating bot log")
         print(log_msg)
         print(log_result)
-        self.bot_log_list.addItem(log_msg)
-        self.bot_log_list.addItem(">>> "+str(log_result))
+        self.bot_order_uuids.append(uuid)
+        self.trading_logs_list.addItem(log_msg)
+        self.trading_logs_list.addItem(">>> "+str(log_result))
         self.update_mm2_orders_tables()
+
+    def update_trading_log(self, sender, log_msg, log_result):
+        print("updating trading log")
+        timestamp = int(time.time()/1000)*1000
+        time_str = datetime.datetime.fromtimestamp(timestamp)
+        prefix = str(time_str)+" ("+sender+"): "
+        log_msg = prefix+log_msg
+        print(log_msg)
+        print(log_result)
+        self.trading_logs_list.addItem(log_msg)
+        self.trading_logs_list.addItem(">>> "+str(log_result))
 
     ## TABS
     def update_cachedata(self, prices_dict, balaces_dict):
@@ -1953,47 +2124,17 @@ class Ui(QTabWidget):
             except:
                 api_btc_price = "-"
             try:
-                mm2_btc_price = str(round(self.prices_data[item]["mm2_btc_price"],8))+" BTC"
-            except:
-                mm2_btc_price = "-"
-            try:
-                delta_btc_price = str(round(self.prices_data[item]["mm2_btc_price"]-self.prices_data[item]["average_btc"],8))+" BTC"
-            except:
-                delta_btc_price = "-"
-            try:
                 api_kmd_price = round(self.prices_data[item]["kmd_price"],6)
             except:
                 api_kmd_price = "-"
             try:
-                mm2_kmd_price = round(self.prices_data[item]["mm2_kmd_price"],6)
-            except:
-                mm2_kmd_price = "-"
-            try:
-                delta_kmd_price = round(self.prices_data[item]["mm2_kmd_price"]-self.prices_data[item]["kmd_price"],6)
-            except:
-                delta_kmd_price = "-"
-            try:
                 api_usd_price = "$"+str(round(self.prices_data[item]["average_usd"],4))+" USD"
             except:
                 api_usd_price = "-"
-            try:
-                mm2_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"],4))+" USD"
-            except:
-                mm2_usd_price = "-"
-            try:
-                delta_usd_price = "$"+str(round(self.prices_data[item]["mm2_usd_price"]-self.prices_data[item]["average_usd"],4))+" USD"
-            except:
-                delta_usd_price = "-"
             sources = self.prices_data[item]["sources"]
-            price_row = [coin, api_btc_price, mm2_btc_price, delta_btc_price,
-                         api_kmd_price, mm2_kmd_price, delta_kmd_price,
-                         api_usd_price, mm2_usd_price, delta_usd_price,
-                         sources]
+            price_row = [coin, api_btc_price, api_kmd_price, api_usd_price, sources]
             self.add_row(row, price_row, self.prices_table)
             row += 1
-        
-
-
 
     def prepare_tab(self):
         try:
@@ -2023,30 +2164,26 @@ class Ui(QTabWidget):
                 print('show_mm2_orderbook_tab')
                 self.show_mm2_orderbook_tab()
             elif index == 2:
-                # prices
-                print('show_prices_tab')
-                self.show_prices_tab()
-            elif index == 3:
                 # wallet
                 print('show_mm2_wallet_tab')
                 self.show_mm2_wallet_tab()
-            elif index == 4:
+            elif index == 3:
                 # mm trade
                 print('makerbot_trade')
                 self.show_mm2_trading_tab()
-            elif index == 5:
+            elif index == 4:
                 # binance acct
                 print('binance_acct')
                 self.show_binance_trading_tab()
-            elif index == 6:
+            elif index == 5:
                 # bot trade
                 print('bot_trades')
                 self.show_bot_trading_tab()
-            elif index == 7:
+            elif index == 6:
                 # config
                 print('show_config_tab')
                 self.show_config_tab()
-            elif index == 8:
+            elif index == 7:
                 # logs
                 print('show_mm2_logs_tab')
                 self.show_mm2_logs_tab()
