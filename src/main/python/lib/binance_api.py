@@ -160,7 +160,6 @@ def create_buy_order_at_market(api_key, api_secret, ticker_pair, qty):
         'symbol': ticker_pair,
         'side': 'BUY',
         'type': 'MARKET',
-        'timeInForce': 'GTC',
         'quantity': qty,
         'recvWindow': 5000,
         'timestamp': timestamp
@@ -174,7 +173,6 @@ def create_buy_order_at_market(api_key, api_secret, ticker_pair, qty):
     return r.json()
 
 def create_sell_order_at_market(api_key, api_secret, ticker_pair, qty):
-    print("Selling "+str(qty)+" "+ticker_pair+" at "+str(price))
     path = '/api/v3/order'
     timestamp = int(time.time() * 1000)
     headers = {
@@ -184,7 +182,6 @@ def create_sell_order_at_market(api_key, api_secret, ticker_pair, qty):
         'symbol': ticker_pair,
         'side': 'SELL',
         'type': 'MARKET',
-        'timeInForce': 'GTC',
         'quantity': qty,
         'recvWindow': 5000,
         'timestamp': timestamp
@@ -231,10 +228,7 @@ def get_order(api_key, api_secret, ticker_pair, order_id):
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
     if r.status_code == 200:
-        data = r.json()
-        print(json.dumps(data, indent=2))
-    else:
-        raise BinanceException(status_code=r.status_code, data=r.json())
+        return r.json()
 
 def delete_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'
@@ -310,8 +304,8 @@ def withdraw(api_key, api_secret, asset, addr, amount):
     r = requests.post(url, headers=headers, params=params)
     return r.json()
 
-def round_to_step(coin, qty):
-    stepsize = binance_pairs[coin]['stepSize']
+def round_to_step(symbol, qty):
+    stepSize = binance_pair_info[symbol]['stepSize']
     return int(float(qty)/float(stepSize))*float(stepSize)
 
 def get_exchange_info():
@@ -341,7 +335,10 @@ def get_exchange_info():
             binance_pair_info.update({
                 symbol:{
                     'baseAsset':baseAsset,
-                    'quoteAsset':quoteAsset
+                    'quoteAsset':quoteAsset,
+                    'minQty':minQty,
+                    'maxQty':maxQty,
+                    'stepSize':stepSize
                 }
             })
             binance_pairs.append(symbol)
