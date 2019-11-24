@@ -306,7 +306,7 @@ def withdraw(api_key, api_secret, asset, addr, amount):
 
 def round_to_step(symbol, qty):
     stepSize = binance_pair_info[symbol]['stepSize']
-    return int(float(qty)/float(stepSize))*float(stepSize)
+    return round(float(qty)/float(stepSize))*float(stepSize)
 
 def get_exchange_info():
     resp = requests.get("https://api.binance.com/api/v1/exchangeInfo").json()

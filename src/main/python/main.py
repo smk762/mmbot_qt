@@ -86,9 +86,6 @@ class bot_trading_thread(QThread):
                 maker_orders = orders['result']['maker_orders']
                 for order_uuid in maker_orders:
                     order_info = rpclib.order_status(self.creds[0], self.creds[1], order_uuid).json()
-                    print(guilib.colorize("=============",'green'))
-                    print(guilib.colorize("UUID: "+str(order_uuid),'green'))
-                    print(guilib.colorize("Started Swaps: "+str(order_info['order']['started_swaps']),'green'))
                     if len(order_info['order']['started_swaps']) == 0:
                         resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], order_uuid).json()
                         print(resp)
@@ -112,6 +109,7 @@ class bot_trading_thread(QThread):
                                             base_btc_price = priceslib.get_btc_price(self.creds[5], base)
                                             rel_btc_price = priceslib.get_btc_price(self.creds[5], rel)
                                             rel_price = base_btc_price/rel_btc_price
+                                            print("premium: "+str(self.premium))
                                             trade_price = rel_price+rel_price*self.premium
                                             trade_val = round(float(rel_price)*float(available_balance),8)
                                             timestamp = int(time.time())
@@ -528,46 +526,47 @@ class Ui(QTabWidget):
     def check_mm_order_swaps(self, order_uuid):
         # TODO: log msg on swap start
         order_info = rpclib.order_status(self.creds[0], self.creds[1], order_uuid).json()
-        print(guilib.colorize("=============",'green'))
-        print(guilib.colorize("UUID: "+str(order_uuid),'green'))
-        print(guilib.colorize("Started Swaps: "+str(order_info['order']['started_swaps']),'green'))
-        for swap in order_info['order']['started_swaps']:
-            if swap not in self.bot_mm_completed_swaps:
-                failed = False
-                swaps_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap).json()
-                if 'my_info' in swaps_info['result']:
-                    base = swaps_info['result']['my_info']['my_coin']
-                    rel = swaps_info['result']['my_info']['other_coin']
-                    base_amount = swaps_info['result']['my_info']['my_amount']
-                    rel_amount = swaps_info['result']['my_info']['other_amount']
-                    event_types = []
-                    for event in swaps_info['result']['events']:
-                        event_types.append(event['event']['type'])
-                        if event['event']['type'] in rpclib.error_events: 
-                            failed = True
-                            fail_event = event['event']['type']
-                        if event['event']['type'] == 'Finished':
-                            finish_time = event['timestamp']
-                            if not failed:
-                                log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
-                                self.bot_mm_completed_swaps.append(swap)
-                            else:
-                                log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
-                            self.update_trading_log("mm2", log_msg)
-                    if 'Finished' not in event_types:
-                        log_msg = "Swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+" in progress at event: "+str(event_types[-1])+"..."
-                        self.update_trading_log("bot", log_msg)
-                    elif swap in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps and not failed:
-                        print("check time for bot countertrade")
-                        print(time.time())
-                        print(int(finish_time)/1000 - 1200)
-                        if int(time.time()) < int(finish_time)/1000 + 1800:
-                            print(self.creds[8])
-                            if self.creds[8] == 'Marketmaker & Binance':
-                                log_msg = "Initiating Binance countertrade for swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+"..."
-                                self.update_trading_log("bot", log_msg)
-                                self.bot_countertrade_swaps.append(swap)
-                                self.start_binance_countertrade(base, rel, round(float(base_amount), 8), round(float(rel_amount),8))
+        if len(order_info['order']['started_swaps']):
+            print(guilib.colorize("=============",'green'))
+            print(guilib.colorize("MM2 ORDER UUID: "+str(order_uuid),'green'))
+            print(guilib.colorize("Started Swaps: "+str(order_info['order']['started_swaps']),'green'))
+            for swap in order_info['order']['started_swaps']:
+                if swap not in self.bot_mm_completed_swaps:
+                    failed = False
+                    swaps_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap).json()
+                    if 'my_info' in swaps_info['result']:
+                        base = swaps_info['result']['my_info']['my_coin']
+                        rel = swaps_info['result']['my_info']['other_coin']
+                        base_amount = swaps_info['result']['my_info']['my_amount']
+                        rel_amount = swaps_info['result']['my_info']['other_amount']
+                        event_types = []
+                        for event in swaps_info['result']['events']:
+                            event_types.append(event['event']['type'])
+                            if event['event']['type'] in rpclib.error_events: 
+                                failed = True
+                                fail_event = event['event']['type']
+                            if event['event']['type'] == 'Finished':
+                                finish_time = event['timestamp']
+                                if not failed:
+                                    log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
+                                    self.bot_mm_completed_swaps.append(swap)
+                                else:
+                                    log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
+                                self.update_trading_log("mm2", log_msg)
+                        if 'Finished' not in event_types:
+                            log_msg = "Swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+" in progress at event: "+str(event_types[-1])+"..."
+                            self.update_trading_log("bot", log_msg)
+                        elif swap in self.bot_mm_completed_swaps and swap not in self.bot_countertrade_swaps and not failed:
+                            print("check time for bot countertrade")
+                            print(time.time())
+                            print(int(finish_time)/1000 - 1200)
+                            if int(time.time()) < int(finish_time)/1000 + 1800:
+                                print(self.creds[8])
+                                if self.creds[8] == 'Marketmaker & Binance':
+                                    log_msg = "Initiating Binance countertrade for swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+"..."
+                                    self.update_trading_log("bot", log_msg)
+                                    self.bot_countertrade_swaps.append(swap)
+                                    self.start_binance_countertrade(base, rel, round(float(base_amount), 8), round(float(rel_amount),8))
 
     def check_binance_orders(self):
         for orderId in self.binance_countertrade_orderIDs:
@@ -2311,6 +2310,11 @@ class Ui(QTabWidget):
         self.trading_logs_list.addItem(log_msg)
         if log_result != '':
             self.trading_logs_list.addItem(">>> "+str(log_result))
+
+    def recover_swap(self):
+        uuid = self.swap_recover_uuid.text()
+        resp = rpclib.recover_stuck_swap(self.creds[0], self.creds[1], uuid).json()
+        QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     ## TABS
     def update_cachedata(self, prices_dict, balaces_dict, binance_balance_dict):
