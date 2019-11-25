@@ -1789,6 +1789,7 @@ class Ui(QTabWidget):
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.console_logs.verticalScrollBar()
+            self.console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
             self.console_logs.setPlainText(log_text)
             self.scrollbar.setValue(10000)
         pass
@@ -2288,8 +2289,12 @@ class Ui(QTabWidget):
         print(log_msg)
         print(log_result)
         self.bot_order_uuids.append(uuid)
-        self.trading_logs_list.addItem(log_msg)
-        self.trading_logs_list.addItem(">>> "+str(log_result))
+        log_row = QListWidgetItem(log_msg)
+        log_row.setForeground(QColor('#00137F'))
+        self.trading_logs_list.addItem(log_row)
+        log_row = QListWidgetItem(">>> "+str(log_result))
+        log_row.setForeground(QColor('#7F0000'))
+        self.trading_logs_list.addItem(log_row)
         self.update_mm2_orders_tables()
 
     def update_trading_log(self, sender, log_msg, log_result=''):
@@ -2301,9 +2306,13 @@ class Ui(QTabWidget):
         print(log_msg)
         print(log_result)
         self.update_mm2_orders_tables()
-        self.trading_logs_list.addItem(log_msg)
+        log_row = QListWidgetItem(log_msg)
+        log_row.setForeground(QColor('#00137F'))
+        self.trading_logs_list.addItem(log_row)
         if log_result != '':
-            self.trading_logs_list.addItem(">>> "+str(log_result))
+            log_row = QListWidgetItem(">>> "+str(log_result))
+            log_row.setForeground(QColor('#7F0000'))
+            self.trading_logs_list.addItem(log_row)
 
     def recover_swap(self):
         uuid = self.swap_recover_uuid.text()
