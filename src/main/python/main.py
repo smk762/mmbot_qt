@@ -229,7 +229,10 @@ class Ui(QTabWidget):
         uic.loadUi(uifile, self) # Load the .ui file
         self.ctx = ctx # app context
         self.show() # Show the GUI
-        self.mm2_bin = self.ctx.get_resource('mm2')
+        try:
+            self.mm2_bin = self.ctx.get_resource('mm2')
+        except:
+            self.mm2_bin = self.ctx.get_resource('mm2.exe')
         self.coins_file = self.ctx.get_resource('coins')
         self.qss_file = self.ctx.get_resource('Darkeum.qss')
         with open(self.qss_file, 'r') as file:
