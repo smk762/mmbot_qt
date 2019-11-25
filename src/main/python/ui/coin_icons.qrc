@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="ui">
+    <file>makerbot_gui_dark.ui</file>
     <file>makerbot_gui2.ui</file>
   </qresource>
   <qresource prefix="32">

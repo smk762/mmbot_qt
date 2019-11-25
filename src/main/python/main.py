@@ -49,8 +49,6 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
-os.environ['MM_COINS_PATH'] = config_path+"coins"
-
 # THREADED OPERATIONS
 
 class bot_trading_thread(QThread):
@@ -226,13 +224,18 @@ class crosshair_lines(pg.InfiniteLine):
 class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
-        uifile = QFile(":/ui/makerbot_gui2.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) # Load the .ui file
         self.ctx = ctx # app context
         self.show() # Show the GUI
         self.mm2_bin = self.ctx.get_resource('mm2')
         self.coins_file = self.ctx.get_resource('coins')
+        self.qss_file = self.ctx.get_resource('Darkeum.qss')
+        with open(self.qss_file, 'r') as file:
+            qss = file.read()
+            self.setStyleSheet(qss)
+
         os.environ['MM_COINS_PATH'] = self.coins_file
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
@@ -755,7 +758,7 @@ class Ui(QTabWidget):
             existing_coins.append(existing_coin)
         for coin in self.gui_coins:
             if coin in self.active_coins:
-                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(138, 226, 52)")
+                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(78, 154, 6)")
                 if coin not in existing_coins:
                     self.wallet_combo.addItem(coin)
             else:
@@ -2028,14 +2031,14 @@ class Ui(QTabWidget):
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'bid']
-            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(255, 181, 181))
+            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(164, 0, 0))
             row += 1
 
         for item in orderbook['asks']:
             price = float(item[0])
             volume = float(item[1])
             balance_row = [ticker_pair, price, volume, 'ask']
-            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(218, 255, 127))
+            self.add_row(row, balance_row, self.binance_orderbook_table, QColor(78, 154, 6))
             row += 1
         self.binance_orderbook_table.setSortingEnabled(True)
         self.binance_orderbook_table.sortItems(1)
