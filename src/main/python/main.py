@@ -49,18 +49,6 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
 
-
-if not os.path.isfile(config_path+'coins'):
-    try:
-        print("Downloading latest coins file")
-        with open(config_path+"coins", 'w') as f:
-            r = requests.get("https://raw.githubusercontent.com/jl777/coins/master/coins")
-            if r.status_code == 200:
-                f.write(json.dumps(r.json()))
-            else:
-                print("coins update failed: "+str(r.status_code))
-    except:
-        pass
 os.environ['MM_COINS_PATH'] = config_path+"coins"
 
 # THREADED OPERATIONS
@@ -244,6 +232,8 @@ class Ui(QTabWidget):
         self.ctx = ctx # app context
         self.show() # Show the GUI
         self.mm2_bin = self.ctx.get_resource('mm2')
+        self.coins_file = self.ctx.get_resource('coins')
+        os.environ['MM_COINS_PATH'] = self.coins_file
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
         self.authenticated = False
@@ -1580,34 +1570,35 @@ class Ui(QTabWidget):
             balance_text = balance_info['balance']
             locked_text = balance_info['locked']
             available_balance = balance_info['available']
-        if coinslib.coin_explorers[coin]['addr_explorer'] != '' and coin != '':
-            self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'>"+address+"</href>")
-        else:
-            self.wallet_address.setText(address)
-        self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
-        self.wallet_balance.setText(str(balance_text))
-        self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
-        if coin in self.prices_data:
-            btc_price = self.prices_data[coin]['average_btc']
-            usd_price = self.prices_data[coin]['average_usd']
-        elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
-            price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
-            usd_price = float(price['price_usd'])
-            btc_price = float(price['price_btc'])
-        elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-            price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-            usd_price = float(price['usd'])
-            btc_price = float(price['btc'])
-        else:
-            usd_price = 'No Data'
-            btc_price = 'No Data'
-        if btc_price != 'No Data':
-            self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-            self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
-        else:
-            self.wallet_usd_value.setText("")
-            self.wallet_btc_value.setText("")
-        self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
+        if coin != '':
+            if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'>"+address+"</href>")
+            else:
+                self.wallet_address.setText(address)
+            self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
+            self.wallet_balance.setText(str(balance_text))
+            self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
+            if coin in self.prices_data:
+                btc_price = self.prices_data[coin]['average_btc']
+                usd_price = self.prices_data[coin]['average_usd']
+            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+                usd_price = float(price['price_usd'])
+                btc_price = float(price['price_btc'])
+            elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
+                usd_price = float(price['usd'])
+                btc_price = float(price['btc'])
+            else:
+                usd_price = 'No Data'
+                btc_price = 'No Data'
+            if btc_price != 'No Data':
+                self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
+                self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
+            else:
+                self.wallet_usd_value.setText("")
+                self.wallet_btc_value.setText("")
+            self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
 
     ## WALLET
     def show_mm2_wallet_tab(self):
