@@ -762,7 +762,7 @@ class Ui(QTabWidget):
                 if coin not in existing_coins:
                     self.wallet_combo.addItem(coin)
             else:
-                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(114, 159, 207)")
+                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(52, 101, 164)")
 
     ## LOGIN 
     def show_login_tab(self):
@@ -1575,7 +1575,7 @@ class Ui(QTabWidget):
             available_balance = balance_info['available']
         if coin != '':
             if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'>"+address+"</href>")
+                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
             else:
                 self.wallet_address.setText(address)
             self.wallet_balance_lbl.setText(str(coin+" BALANCE"))

@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>7</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -6247,6 +6247,9 @@ color: rgb(0, 0, 0);</string>
               <pointsize>14</pointsize>
               <italic>false</italic>
              </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(238, 238, 236);</string>
             </property>
             <property name="text">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
