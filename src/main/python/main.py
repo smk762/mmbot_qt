@@ -20,6 +20,11 @@ from zipfile import ZipFile
 import platform
 import subprocess
 
+if platform.system() == 'Windows':
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
+
 # will try graphing later with these imports
 import numpy as np
 import pyqtgraph as pg
