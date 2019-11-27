@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>7</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -834,7 +834,7 @@ color: rgb(0, 0, 0);</string>
                           <property name="geometry">
                            <rect>
                             <x>0</x>
-                            <y>-12</y>
+                            <y>0</y>
                             <width>545</width>
                             <height>728</height>
                            </rect>
@@ -10076,7 +10076,7 @@ color: rgb(0, 0, 0);</string>
              </font>
             </property>
             <property name="text">
-             <string>MM2 Orders</string>
+             <string>Open MM2 Orders</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -10326,37 +10326,77 @@ color: rgb(0, 0, 0);</string>
             <row/>
             <column>
              <property name="text">
-              <string>OrderID</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Side</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Pair</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Price</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Qty</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Filled</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Time</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Order UUID</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Base</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Rel</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Base Spent</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Rel Recieved</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Swap UUID</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Rel Amount</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Base Amount</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Binance OrderID</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Symbol</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Trade Type</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Coin</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Trade Amount</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Status</string>
              </property>
             </column>
            </widget>
@@ -10378,7 +10418,7 @@ color: rgb(0, 0, 0);</string>
              <string/>
             </property>
             <property name="text">
-             <string>Binance Orders</string>
+             <string>Binance Countertrade Orders</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -10575,6 +10615,18 @@ color: rgb(0, 0, 0);</string>
           </item>
           <item row="2" column="1">
            <widget class="QLabel" name="bot_status_lbl">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -11180,6 +11232,63 @@ color: rgb(0, 0, 0);</string>
                     <string>Marketmaker &amp; Binance</string>
                    </property>
                   </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_36">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeType">
+                   <enum>QSizePolicy::MinimumExpanding</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lbl_countertrade_timeout">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Bot Countertrade Timeout (min)</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>netid_input</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="countertrade_timeout_input">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="maximum">
+                   <number>1440</number>
+                  </property>
+                  <property name="value">
+                   <number>30</number>
+                  </property>
                  </widget>
                 </item>
                 <item>
@@ -11822,7 +11931,7 @@ color: rgb(0, 0, 0);</string>
              </font>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(186, 189, 182);</string>
+             <string notr="true"/>
             </property>
             <property name="readOnly">
              <bool>true</bool>

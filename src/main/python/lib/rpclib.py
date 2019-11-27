@@ -268,3 +268,21 @@ def cancel_pair(node_ip, user_pass, base, rel):
                     },}
     r = requests.post(node_ip,json=params)
     return r
+
+def get_mm2_balances(node_ip, user_pass, active_coins):
+    balances_data = {}
+    for coin in active_coins:
+        balances_data[coin] = {}
+        balance_info = my_balance(node_ip, user_pass, coin).json()
+        if 'address' in balance_info:
+            address = balance_info['address']
+            balance = round(float(balance_info['balance']),8)
+            locked = round(float(balance_info['locked_by_swaps']),8)
+            available = balance - locked
+            balances_data[coin].update({
+                'address':address,
+                'balance':balance,
+                'locked':locked,
+                'available':available
+            })
+    return balances_data

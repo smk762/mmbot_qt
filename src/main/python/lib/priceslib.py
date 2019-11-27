@@ -7,14 +7,14 @@ from statistics import mean
 import datetime
 
 def get_forex(base='USD'):
-    print("getting forex")
+    #print("getting forex")
     url = 'https://api.exchangerate-api.com/v4/latest/'+base
     r = requests.get(url)
     return r
 
 # TODO: parse https://api.coingecko.com/api/v3/coins/list for supported coins api-codes
 def gecko_fiat_prices(coin_ids, fiat):
-    print("getting gecko api prices")
+    #print("getting gecko api prices")
     url = 'https://api.coingecko.com/api/v3/simple/price'
     params = dict(ids=str(coin_ids),vs_currencies=fiat)
     r = requests.get(url=url, params=params)
@@ -22,7 +22,7 @@ def gecko_fiat_prices(coin_ids, fiat):
 
 # TODO: parse https://api.coinpaprika.com/v1/coins for supported coins api-codes
 def get_paprika_price(coin_id):
-    print("getting paprika api prices")
+    #print("getting paprika api prices")
     url = 'https://api.coinpaprika.com/v1/ticker/'+coin_id
     r = requests.get(url)
     return r
@@ -51,13 +51,12 @@ def get_paprika_history(coin_id, since='year_ago', quote='usd'):
         timestamp = timestamp-(365*24*60*60)
         interval = '1d'
     url = "https://api.coinpaprika.com/v1/tickers/"+coin_id+"/historical?start="+str(int(timestamp))+"&quote="+quote+"&interval="+interval
-    print(url)
-    print("getting paprika api history")
+    #print("getting paprika api history")
     r = requests.get(url)
     return r.json()
 
 def get_btc_price(api_key, cointag):
-    print("getting binance btc price for "+cointag)
+    #print("getting binance btc price for "+cointag)
     if cointag == 'BTC':
         return 1
     if cointag == 'BCH':
@@ -71,7 +70,7 @@ def get_btc_price(api_key, cointag):
 
 def get_kmd_mm2_price(node_ip, user_pass, coin):
     try:
-        print("getting kmd mm2 prices")
+        #print("getting kmd mm2 price for "+coin)
         kmd_orders = rpclib.orderbook(node_ip, user_pass, coin, 'KMD').json()
         kmd_value = 0
         min_kmd_value = 999999999999999999
@@ -246,3 +245,11 @@ def get_prices_data(node_ip, user_pass, coins_list):
         prices_data[coin].update({'sources':sources})
 
     return prices_data
+
+def get_trade_price_val(creds, base, rel, balance):
+    base_btc_price = get_btc_price(creds[5], base)
+    rel_btc_price = get_btc_price(creds[5], rel)
+    rel_price = base_btc_price/rel_btc_price
+    trade_price = rel_price+rel_price*float(creds[7])/100
+    trade_val = round(float(rel_price)*float(balance),8)
+    return trade_price, trade_val

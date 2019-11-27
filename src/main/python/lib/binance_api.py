@@ -374,3 +374,20 @@ binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
+
+def get_binance_balances(key, secret):
+    binance_balances = {}
+    acct_info = get_account_info(key, secret)
+    if 'balances' in acct_info:
+        for item in acct_info['balances']:
+            coin = item['asset']
+            available = float(item['free'])
+            locked = float(item['locked'])
+            balance = locked + available
+            binance_balances.update({coin:{
+                    'available':available,
+                    'locked':locked,
+                    'total':balance,
+                }
+            })
+    return binance_balances
