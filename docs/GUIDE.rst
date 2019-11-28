@@ -119,6 +119,28 @@ Bot Trading
     :align: center
     :alt: Bot Trading tab
     
+This is where the magic happens. Any coins that were activated as "Buy", Sell" or "Buy/Sell" will be listed in the left hand panels, along with the available compatible Binance pairs (e.g. for DOGE: DOGEBTC, DOGEBNB, DOGEUSDT).
+
+Marketmaker trade prices are calculated using the market API price quotes, plus the premium percentage set in the `Config`_ tab.
+
+If your "Bot Mode" in the Config tab is set to "Marketmaker only", the bot will create an order for all coin combinations on the Buy and Sell lists. 
+
+If your "Bot Mode" is set to "Marketmaker and Binance" (and you have valid API keys), each completed Marketmaker swap will trigger a countertrade on Binance (at market). 
+
+If a direct trade is possible (e.g. a Marketmaker trade of BTC for ETH, then a Binance ETHBTC trade) it will be submitted - assuming enough funds are available on Binance. 
+
+If no direct trade is possible, two indirect trades via a common quote asset will be submitted. For example:
+
+# Marketmaker trade selling 3 ZEC for 1 LTC is completed, with a 5% over market trade premium.
+# A Binance ZECBNB trade is submitted, buying back the 3 ZEC for 3.5 BNB
+# A Binance LTCBNB trade is submitted, selling 1 LTC for 3.7 BNB
+
+On completion of the countertrades, your sum of your Marketmaker/Binance balances for ZEC and LTC should be the same as before the swap, and your 5% trade premium will be expressed as the additional 0.2 BNB added to your Binance account. 
+
+The same could apply to whichever common quote asset is used. Quote assets include BTC, BNB, ETH, and a variety of stablecoins such as PAX, USDC, USDT, USDS, TUSD and BUSD.
+
+Bot orders are periodically cancelled and resubmitted to reflect changes in prices as time goes on. The default timeout is 30 minutes, but this can be changed in the config tab. If a swap is in progress when the bot loop restarts, the associated order will not cancel until the swap has completed.
+
 Config
 ------
 
@@ -126,6 +148,21 @@ Config
     :align: center
     :alt: Config tab
     
+In this tab you will need to generate a wallet seed, and set your RPC password, IP address, and NetID, or else the Marketmaker will not run. Binance API keys inputs are optional. Below is a brief description of the settings.
+
+* Wallet Seed: This is what unlocks the funds in your addresses. **Make sure to back it up offline!**
+* RPC Password: This is required to authenticate any AtomicDEX API methods that are sumbitted. It can be any string of standard charactors.
+* RPC IP Address: By default this is set to the local host (127.0.0.1) but it is possible to run the MarketMaker binary on an external server and connect to it remotely. This is advanced usage, requiring aditional setup on the remote server and can potentially increase the attack surface you expose to hackers. Leave it as the default unles you are confident you know what you are doing.
+* Binance API Key/Binance Secret Key: These can be created in your Binance account. Using some Binance API methods also require you to set whitelisted IP addresses. The Antara MarketMaker app will let you know if the API keys are valid for the IP address you are using and the account you are trying to access when running the app.
+* NetID: Changing this setting can allow for an alternative/private trading network. During beta testing, "9999" is used for the AtomicDEX mobile app and most public trades, but if you'd like to trade directly with someone else running this app, you can both set the NetID to a different value for "private" trading.
+* Bot Operation: If your "Bot Mode" in the Config tab is set to "Marketmaker only", the bot will create an order for all coin combinations on the Buy and Sell lists. If your "Bot Mode" is set to "Marketmaker and Binance" (and you have valid Binance API keys), each completed Marketmaker swap will trigger a countertrade on Binance (at market).
+* Bot Countertrade Timeout: This is the time in minutes that the Bot loop runs for before cancelling existing orders and resubmitting them with updated prices. The default is 30 minutes (an enforced minumum of 10 minutes will be applied).
+* Trade Premium: The percentage over average market price which you would like to apply to any orders the bot submits to the MarketMaker orderbook.
+
+After changing any of the above values, you need to click the "Save Settings" button and re-enter your password to update the encrypted file which stores your settings, then log in again to restart the MarketMaker binary.
+
+At the bottom of the screen is an input to allow for recovery of stuck funds in the event of a failed MarketMaker swap (this sometimes happens if one of the parties in the trade goes offline before it completes). Generally failed swaps will automatically return any funds in transit after a few hours, but if there is a problem you can input the swap UUID here and click the "Recover Stuck Swap" button to kickstart the refund.
+
 Logs
 ----
 
@@ -133,3 +170,14 @@ Logs
     :align: center
     :alt: Logs tab
     
+The top panel in this tab displays all stdout console logs from the MarketMaker binary which may be useful for debugging purposes. 
+
+The bottom panel shows a log of bot trading operations such as placing or cancelling orders, and periodically shows the current event of an in progress swap. Once a swap has completed, it will also be written to this log panel. If a bot submitted method returns an error, the error response is also shown here (e.g. attempting to place an order with insufficient funds).
+
+Support
+-------
+
+If you have any questions or problems you can:
+
+* Join the Komodo Discord server for support at https://discord.gg/RRZ8hzc
+* Submit an issue to the Gitub repository at https://github.com/smk762/mmbot_qt/issues
