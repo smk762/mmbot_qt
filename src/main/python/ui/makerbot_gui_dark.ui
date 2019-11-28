@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5240,7 +5240,7 @@ color: rgb(0, 0, 0);</string>
   </widget>
   <widget class="QWidget" name="tab_orderbook">
    <attribute name="title">
-    <string>Orderbook</string>
+    <string>Market</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_23">
     <item row="0" column="0">
@@ -6458,7 +6458,7 @@ color: rgb(0, 0, 0);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_66">
              <item row="0" column="1">
-              <widget class="QPushButton" name="export_trade_table_btn">
+              <widget class="QPushButton" name="export_mm2_trade_table_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
                  <horstretch>0</horstretch>
@@ -6652,7 +6652,7 @@ color: rgb(0, 0, 0);</string>
             </column>
             <column>
              <property name="text">
-              <string>UUID</string>
+              <string>Swap UUID</string>
              </property>
             </column>
            </widget>
@@ -10269,16 +10269,6 @@ color: rgb(0, 0, 0);</string>
             </column>
             <column>
              <property name="text">
-              <string>Base Spent</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Rel Recieved</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Swap UUID</string>
              </property>
             </column>
@@ -13007,6 +12997,22 @@ color: rgb(0, 0, 0);</string>
     <hint type="destinationlabel">
      <x>959</x>
      <y>459</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>export_mm2_trade_table_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>export_table()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>959</x>
+     <y>998</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
     </hint>
    </hints>
   </connection>

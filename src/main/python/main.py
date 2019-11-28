@@ -108,9 +108,10 @@ class bot_trading_thread(QThread):
                                                 base_amount = swaps_info['result']['my_info']['my_amount']
                                                 rel_amount = swaps_info['result']['my_info']['other_amount']
                                             log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
-
                                         else:
-                                            log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
+                                            for i in range(self.mm2_trades_table.rowCount()):
+                                                if self.mm2_trades_table.item(i,2).text() != 'Failed' and self.mm2_trades_table.item(i,9).text() == swap:
+                                                    log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
                                 swap_stages.append("Swap "+swap+" is at stage "+event_types[-1]+".")
                         if len(order_info['order']['started_swaps']) == finished:
                             resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
@@ -191,7 +192,81 @@ class activation_thread(QThread):
                 print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.activate.emit(coin[0])
 
-# Item Classes
+
+
+class graph_history_thread(QThread):
+    get_history = pyqtSignal(str, str, list, list, list)
+    def __init__(self, coin, coin_id, quote, since):
+        QThread.__init__(self)
+        self.coin = coin
+        self.coin_id = coin_id
+        self.quote = quote
+        self.since = since
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        history = priceslib.get_paprika_history(self.coin_id, self.since, self.quote)
+        x = []
+        x_str = []
+        y = []
+        time_ticks = []
+        val_ticks = []
+        self.xy = {}
+        last_time = ''
+        for item in history:
+            y.append(item['price'])
+            dt = dateutil.parser.parse(item['timestamp'])
+            x.append(int(datetime.datetime.timestamp(dt)))
+            x_str.append(item['timestamp'])
+            if self.since in ['year_ago']:
+                month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
+                if month != last_time:
+                    if last_time != '':
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
+                    last_time = month
+            elif self.since in ['6_month_ago']:
+                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                if time_components[2] in ['15']:
+                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                elif time_components[3] in ['1']:
+                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+            elif self.since in ['3_month_ago']:
+                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                if time_components[2] in ['15', '22']:
+                    if time_components[2] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                        last_time = time_components[2]
+                if time_components[3] in ['1', '8']:
+                    if time_components[3] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+                        last_time = time_components[3]                            
+            elif self.since in ['month_ago']:
+                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                if time_components[2] in ['10', '13', '16', '19', '22', '25', '28']:
+                    if time_components[2] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
+                        last_time = time_components[2]
+                elif time_components[3] in ['1', '4', '7']:
+                    if time_components[3] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
+                        last_time = time_components[3]
+            elif self.since in ['week_ago']:
+                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                if time_components[0] != last_time:
+                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[0]+" "+time_components[2]+" "+time_components[1]))
+                    last_time = time_components[0]
+            elif self.since in ['day_ago']:
+                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
+                hour_components = time_components[3].split(":")
+                if int(hour_components[0])%2 == 0:
+                    if hour_components[0] != last_time:
+                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]))
+                        last_time = hour_components[0]
+
+            self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
+# Item Classes 
 
 class QR_image(qrcode.image.base.BaseImage):
     def __init__(self, border, width, box_size):
@@ -468,6 +543,7 @@ class Ui(QTabWidget):
             col += 1
 
     def export_table(self):
+        #TODO: add sender
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
         for i in range(self.mm2_trades_table.rowCount()):
             row_list = []
@@ -582,22 +658,21 @@ class Ui(QTabWidget):
                                 base_amount = float(swaps_info['result']['my_info']['my_amount'])
                                 rel_amount = float(swaps_info['result']['my_info']['other_amount'])
                                 swap_result = self.get_mm2_swap_events(swaps_info['result']['events'])
-                                if swap_result[0]:
-                                    log_msg = "Swap "+swap+" has failed at event "+swap_result[1]+"!"
-                                elif 'Finished' not in swap_result[3]:
-                                    log_msg = "Swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+" in progress at event: "+str(swap_result[3][-1])+"..."
-
-                                else:
-                                    log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
-                                    completed = True
-                                self.update_trading_log("bot", log_msg)
+                                for i in range(self.mm2_trades_table.rowCount()):
+                                    if self.mm2_trades_table.item(i,9).text() == swap and self.mm2_trades_table.item(i,2).text() != swap_result:
+                                        if swap_result[0]:
+                                            log_msg = "Swap "+swap+" has failed at event "+swap_result[1]+"!"
+                                        elif 'Finished' not in swap_result[3]:
+                                            log_msg = "Swap ["+swap+"]: "+str(base_amount)+" "+base+" for "+str(rel_amount)+" "+rel+" in progress at event: "+str(swap_result[3][-1])+"..."
+                                        else:
+                                            log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
+                                            completed = True
+                                        self.update_trading_log("bot", log_msg)
                                 if completed:
                                     self.bot_swap_history[mm2_order_uuid].update({
                                             "mm2_rel":rel,
                                             "mm2_base":base,
                                             "bot_mode":self.creds[8],
-                                            "mm2_rel_recieved":float(0),
-                                            "mm2_base_spent":float(0),
                                             "time":get_time_str()
                                     })
                                     self.bot_swap_history[mm2_order_uuid]["mm2_swaps"].update({
@@ -606,12 +681,6 @@ class Ui(QTabWidget):
                                                 "mm2_swap_base_amount":base_amount,
                                                 "binance_countertrades":{},
                                             }
-                                    })
-                                    rel_total_amount = float(self.bot_swap_history[mm2_order_uuid]["mm2_rel_recieved"]) + rel_amount,
-                                    base_total_amount = float(self.bot_swap_history[mm2_order_uuid]["mm2_base_spent"]) + base_amount,
-                                    self.bot_swap_history[mm2_order_uuid].update({
-                                        "mm2_rel_recieved":rel_total_amount,
-                                        "mm2_base_spent":base_total_amount,
                                     })
                                     if int(time.time()) < int(swap_result[2])/1000 + self.countertrade_delay_limit*60:
                                         if self.bot_swap_history[mm2_order_uuid]["bot_mode"] == 'Marketmaker & Binance':
@@ -633,6 +702,7 @@ class Ui(QTabWidget):
                                 print(guilib.colorize("No info in "+swap+" yet", 'blue'))
                         else:
                             print(guilib.colorize("Swap "+swap+" was already completed", 'blue'))
+                    QCoreApplication.processEvents()
                 else:
                     print(guilib.colorize("No swaps for "+mm2_order_uuid, 'blue'))
             else:
@@ -670,12 +740,12 @@ class Ui(QTabWidget):
                         resp = binance_api.get_order(self.creds[5], self.creds[6], symbol, orderId)
                         # print(guilib.colorize(resp, 'cyan'))
                         if 'status' in resp:
-                            if resp['status'] == 'FILLED' and status != 'FILLED':
+                            if resp['status'] == 'FILLED' and status != 'BINANCE COUNTERTRADE COMPLETE':
                                 binance_orderId = resp['orderId']
                                 log_msg = "Binance countertrade complete! OrderID ["+str(resp['orderId'])+"]: "+resp['side']+" "+str(resp['executedQty'])+" "+str(resp['symbol'])
                                 self.update_trading_log("Bot", log_msg)
                                 self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId].update({
-                                        "status":"FILLED"
+                                        "status":"BINANCE COUNTERTRADE COMPLETE"
                                 })
                                 print(guilib.colorize(self.bot_swap_history[mm2_mm2_order_uuid],'green'))
                                 self.write_bot_swap_history()
@@ -687,7 +757,7 @@ class Ui(QTabWidget):
                                     # TODO: submit new order
                                 else:
                                     print("no status in result")
-                            elif status != 'FILLED':
+                            elif resp['status'] != 'FILLED':
                                 print("Binance trade not filled yet")    
                         else:
                             print("no status in binance order result")
@@ -704,8 +774,6 @@ class Ui(QTabWidget):
             if 'mm2_base' in self.bot_swap_history[mm2_mm2_order_uuid]:
                 base = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_base']
                 rel = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_rel']
-                mm2_base_spent = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_base_spent']
-                mm2_rel_recieved = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_rel_recieved']
                 time = self.bot_swap_history[mm2_mm2_order_uuid]['time']
                 if len(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']) > 0:
                     for swap in self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']:
@@ -717,7 +785,7 @@ class Ui(QTabWidget):
                         coin = '-'
                         mm2_swap_rel_amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_rel_amount']),8)
                         mm2_swap_base_amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_base_amount']),8)
-                        countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_base_spent, mm2_rel_recieved, swap, mm2_swap_rel_amount, mm2_swap_base_amount, orderId, symbol, trade_type, coin, amount, status]
+                        countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
                         self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                         row += 1
                         for orderId in self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
@@ -728,7 +796,7 @@ class Ui(QTabWidget):
                             coin = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['coin']
                             amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['amount']),8)
                             status = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
-                            countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_base_spent, mm2_rel_recieved, swap, mm2_swap_rel_amount, mm2_swap_base_amount, orderId, symbol, trade_type, coin, amount, status]
+                            countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
                             self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                             row += 1
         self.bot_binance_orders_table.setSortingEnabled(True)
@@ -1268,8 +1336,8 @@ class Ui(QTabWidget):
             trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
             self.add_row(row, trade_row, self.mm2_trades_table)
             row += 1
-            self.mm2_trades_table.setSortingEnabled(True)
-            self.mm2_trades_table.resizeColumnsToContents()
+        self.mm2_trades_table.setSortingEnabled(True)
+        self.mm2_trades_table.resizeColumnsToContents()
 
     ## SHOW ORDERBOOK
 
@@ -2037,113 +2105,57 @@ class Ui(QTabWidget):
         elif self.history_24hr_btn.isChecked():
             since = 'day_ago'
         coin_id = coinslib.coin_api_codes[coin]['paprika_id']
-        if coin_id != '':
-            history = priceslib.get_paprika_history(coin_id, since, quote)
-            x = []
-            x_str = []
-            y = []
-            time_ticks = []
-            val_ticks = []
-            self.xy = {}
-            last_time = ''
-            for item in history:
-                y.append(item['price'])
-                dt = dateutil.parser.parse(item['timestamp'])
-                x.append(int(datetime.datetime.timestamp(dt)))
-                x_str.append(item['timestamp'])
-                if since in ['year_ago']:
-                    month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
-                    if month != last_time:
-                        if last_time != '':
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
-                        last_time = month
-                elif since in ['6_month_ago']:
-                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                    if time_components[2] in ['15']:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                    elif time_components[3] in ['1']:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-                elif since in ['3_month_ago']:
-                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                    if time_components[2] in ['15', '22']:
-                        if time_components[2] != last_time:
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                            last_time = time_components[2]
-                    if time_components[3] in ['1', '8']:
-                        if time_components[3] != last_time:
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-                            last_time = time_components[3]                            
-                elif since in ['month_ago']:
-                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                    if time_components[2] in ['10', '13', '16', '19', '22', '25', '28']:
-                        if time_components[2] != last_time:
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                            last_time = time_components[2]
-                    elif time_components[3] in ['1', '4', '7']:
-                        if time_components[3] != last_time:
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-                            last_time = time_components[3]
-                elif since in ['week_ago']:
-                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                    if time_components[0] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[0]+" "+time_components[2]+" "+time_components[1]))
-                        last_time = time_components[0]
-                elif since in ['day_ago']:
-                    time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                    hour_components = time_components[3].split(":")
-                    if int(hour_components[0])%2 == 0:
-                        if hour_components[0] != last_time:
-                            time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]))
-                            last_time = hour_components[0]
+        if coin_id != '':            
+            self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote, since)
+            self.draw_graph_thread.get_history.connect(self.draw_history_graph)
+            self.draw_graph_thread.start()
 
-                self.xy.update({str(int(datetime.datetime.timestamp(dt))):item['price']})
-
-            self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
-            self.binance_history_graph.setXRange(min(x),max(x), padding=0)
-            self.binance_history_graph.clear()
-            price_curve = self.binance_history_graph.plot(
-                    x,
-                    y, 
-                    pen={'color':(78,155,46)},
-                    fillLevel=0, brush=(50,50,200,100),
-                )
-            self.binance_history_graph.addItem(price_curve)
-            if quote == 'usd':
-                self.binance_history_graph.setLabel('left', '$USD')
-            else:
-                self.binance_history_graph.setLabel('left', 'BTC')
-            self.binance_history_graph.setLabel('bottom', '', units=None)
-            self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
-            price_ticks = self.binance_history_graph.getAxis('left')
-            date_ticks = self.binance_history_graph.getAxis('bottom')    
-            date_ticks.setTicks([time_ticks])
-            date_ticks.enableAutoSIPrefix(enable=False)
-            #self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
-            #self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
-            #self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
-            self.binance_history_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+coin.lower()+".png\"/></p></body></html>")
-
-            if coin in self.prices_data:
-                btc_price = self.prices_data[coin]['average_btc']
-                usd_price = self.prices_data[coin]['average_usd']
-            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
-                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
-                usd_price = float(price['price_usd'])
-                btc_price = float(price['price_btc'])
-            elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-                usd_price = float(price['usd'])
-                btc_price = float(price['btc'])
-            else:
-                usd_price = 'No Data'
-                btc_price = 'No Data'
-            if quote == 'usd':
-                txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
-            else:
-                txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: $'+str(btc_price)+'</span></div>'
-            text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
-            self.binance_history_graph.addItem(text)
-            text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
+    def draw_history_graph(self, coin, quote, x, y, time_ticks):
+        self.binance_history_graph.clear()
+        self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
+        self.binance_history_graph.setXRange(min(x),max(x), padding=0)
+        if quote == 'usd':
+            self.binance_history_graph.setLabel('left', '$USD')
+        else:
+            self.binance_history_graph.setLabel('left', 'BTC')
+        self.binance_history_graph.setLabel('bottom', '', units=None)
+        self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
+        price_ticks = self.binance_history_graph.getAxis('left')
+        date_ticks = self.binance_history_graph.getAxis('bottom')    
+        date_ticks.setTicks([time_ticks])
+        date_ticks.enableAutoSIPrefix(enable=False)
+        #self.vLine = crosshair_lines(pen={'color':(78,155,46)}, angle=90, movable=False)
+        #self.vLine.sigPositionChangeFinished.connect(self.getDatePrice)
+        #self.binance_history_graph.addItem(self.vLine, ignoreBounds=True)
+        self.binance_history_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+coin.lower()+".png\"/></p></body></html>")
+        if coin in self.prices_data:
+            btc_price = self.prices_data[coin]['average_btc']
+            usd_price = self.prices_data[coin]['average_usd']
+        elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+            price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+            usd_price = float(price['price_usd'])
+            btc_price = float(price['price_btc'])
+        elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+            price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
+            usd_price = float(price['usd'])
+            btc_price = float(price['btc'])
+        else:
+            usd_price = 'No Data'
+            btc_price = 'No Data'
+        if quote == 'usd':
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+        else:
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: $'+str(btc_price)+'</span></div>'
+        text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
+        self.binance_history_graph.addItem(text)
+        text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
+        price_curve = self.binance_history_graph.plot(
+                x,
+                y, 
+                pen={'color':(78,155,46)},
+                fillLevel=0, brush=(50,50,200,100),
+            )
+        self.binance_history_graph.addItem(price_curve)
 
     def getDatePrice(self):
         min_delta = 999999999999
@@ -2273,7 +2285,7 @@ class Ui(QTabWidget):
 
     def binance_withdraw(self):
         index = self.binance_asset_comboBox.currentIndex()
-        asset = self.binance_asset_comboBox.itemText(index)
+        coin = self.binance_asset_comboBox.itemText(index)
         addr = self.binance_withdraw_addr_lineEdit.text()
         amount = self.binance_withdraw_amount_spinbox.value()
         msg = ''

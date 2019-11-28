@@ -306,7 +306,7 @@ QComboBox::drop-down
 
 QComboBox::down-arrow
 {
-    image: url(://arrow-down.png);
+    image: url(:/ui/img/other/arrow-down.png);
     width: 8px;
     height: 8px;
 }
@@ -405,7 +405,7 @@ QSpinBox::down-arrow,
 QDoubleSpinBox::down-arrow,
 QDateTimeEdit::down-arrow
 {
-    image: url(://arrow-down.png);
+    image: url(:/ui/img/other/arrow-down.png);
     width: 7px;
 
 }
@@ -415,7 +415,7 @@ QSpinBox::up-arrow,
 QDoubleSpinBox::up-arrow,
 QDateTimeEdit::up-arrow
 {
-    image: url(://arrow-up.png);
+    image: url(:/ui/img/other/arrow-up.png);
     width: 7px;
 
 }
@@ -515,8 +515,8 @@ QCheckBox::indicator
 
 QCheckBox::indicator:checked
 {
-    image:url(://checkbox.png);
-    border: 1px solid #607cff;
+    image:url(:/ui/img/other/checkbox.png);
+    border: 1px solid #07B22A;
 
 }
 
@@ -1065,7 +1065,7 @@ QScrollBar::sub-line:horizontal
 
 QScrollBar::right-arrow:horizontal
 {
-    image: url(://arrow-right.png);
+    image: url(:/ui/img/other/arrow-right.png);
     width: 6px;
     height: 6px;
 
@@ -1074,7 +1074,7 @@ QScrollBar::right-arrow:horizontal
 
 QScrollBar::left-arrow:horizontal
 {
-    image: url(://arrow-left.png);
+    image: url(:/ui/img/other/arrow-left.png);
     width: 6px;
     height: 6px;
 
@@ -1130,7 +1130,7 @@ QScrollBar::sub-line:vertical
 
 QScrollBar::up-arrow:vertical
 {
-    image: url(://arrow-up.png);
+    image: url(:/ui/img/other/arrow-up.png);
     width: 6px;
     height: 6px;
 
@@ -1139,7 +1139,7 @@ QScrollBar::up-arrow:vertical
 
 QScrollBar::down-arrow:vertical
 {
-    image: url(://arrow-down.png);
+    image: url(:/ui/img/other/arrow-down.png);
     width: 6px;
     height: 6px;
 
