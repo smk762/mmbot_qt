@@ -17,7 +17,7 @@ Activate
 --------
 
 If not already logged in, you will see the screen below:
-.. image:: img/activate.jpg
+.. image:: img/activate_login.jpg
     :width: 200px
     :align: center
     :height: 100px
