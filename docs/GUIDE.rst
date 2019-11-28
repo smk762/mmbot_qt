@@ -22,7 +22,7 @@ If not already logged in, you will see the screen below:
 .. image:: img/activate_login.png
     :align: center
     :alt: Activate (login) tab
-    
+
 Enter a username and password. If the username is not recognised, you will be given the option to add a new user. Your username will be used as a prefix for some config files, so dont use any troublesome chars. The first time you login, the app will redirect you to the `config`_ tab for initial setup and wallet seed generation. 
 
 **Make sure to backup your seed!** - If you forget the password or your hard drive fails, it will not be recoverable.
@@ -32,12 +32,13 @@ Your password will be used as an encryption key for storing sensitive data local
 .. image:: img/activate_coins.png
     :align: center
     :alt: Activate (coins) tab
-    
- Coins are grouped into 3 categories:
- 
- * Komodo Smartchains (e.g. Labs)
- * UTXO based coins (e.g. Bitcoin)
- * ETH/ERC20 (e.g. Ethereum)
+
+
+Coins are grouped into 3 categories:
+
+* Komodo Smartchains (e.g. Labs)
+* UTXO based coins (e.g. Bitcoin)
+* ETH/ERC20 (e.g. Ethereum)
 
 Each coin option may also have superscript indicators to show if they are Binance\ :sup:`(b)` compatible, or supported by CoinPaprika\ :sup:`(p)` or CoinGecko\ :sup:`(g)` price feed APIs.
 
