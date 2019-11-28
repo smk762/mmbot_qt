@@ -4,9 +4,9 @@ Anatara Makerbot Overview
 The Antara Makerbot includes a number of tabbed pages as summraised below.
 
 * `Activate`_: For authentication, loading coins and selecting which trade
-* Market: Displays average market prices from API data, and view/purchase of available trades on the MarketMaker orderbook.
+* `Market`_: Displays average market prices from API data, and view/purchase of available trades on the MarketMaker orderbook.
 * `Wallet`_: Simple interface for sending, recieving and viewing the balances of activated coins.
-* Marketmaker Trade: Shows depth and allows manual order placement of selected pairs via Marketmaker, and shows tables of pending orders and completd swaps.
+* `Marketmaker Trade`_: Shows depth and allows manual order placement of selected pairs via Marketmaker, and shows tables of pending orders and completd swaps.
 * `Binance Trade`_: Shows Binance balances, open orders, and allows manual order placement for selected pairs.
 * `Bot Trading`_: Allows automated order placement of activated coin pairs on Marketmaker, and optional "at market" countertrades on completion via Binance.
 * `Config`_: Sets the parameters (e.g. seed phrase) for Marketmaker, Bot trading (e.g. trading premium) and Binance API keys (optional).
