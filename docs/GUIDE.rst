@@ -131,9 +131,9 @@ If a direct trade is possible (e.g. a Marketmaker trade of BTC for ETH, then a B
 
 If no direct trade is possible, two indirect trades via a common quote asset will be submitted. For example:
 
-# Marketmaker trade selling 3 ZEC for 1 LTC is completed, with a 5% over market trade premium.
-# A Binance ZECBNB trade is submitted, buying back the 3 ZEC for 3.5 BNB
-# A Binance LTCBNB trade is submitted, selling 1 LTC for 3.7 BNB
+1. Marketmaker trade selling 3 ZEC for 1 LTC is completed, with a 5% over market trade premium.
+2. A Binance ZECBNB trade is submitted, buying back the 3 ZEC for 3.5 BNB
+3. A Binance LTCBNB trade is submitted, selling 1 LTC for 3.7 BNB
 
 On completion of the countertrades, your sum of your Marketmaker/Binance balances for ZEC and LTC should be the same as before the swap, and your 5% trade premium will be expressed as the additional 0.2 BNB added to your Binance account. 
 
