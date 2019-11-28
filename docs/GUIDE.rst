@@ -33,7 +33,6 @@ Your password will be used as an encryption key for storing sensitive data local
     :align: center
     :alt: Activate (coins) tab
 
-
 Coins are grouped into 3 categories:
 
 * Komodo Smartchains (e.g. Labs)
@@ -46,7 +45,7 @@ Checkboxes at the top of each section (and the top left of the page) can assist 
 
 Beside each coin is a drop down menu with the following options:
 
-* View: Coins can be traded manually, and appears in the `wallet`_ tab
+* View: Coins can be traded manually, and appear in the `Wallet`_ tab
 * Buy: Same capabilites as the "View" option, but also set as a coin to "Buy" when the bot is running.
 * Sell: Same capabilites as the "View" option, but also set as a coin to "Sell" when the bot is running.
 * Buy/Sell: Same capabilites as the "View" option, but also set as a coin to "Buy" and "Sell" when the bot is running.
@@ -60,5 +59,48 @@ Market
 
 .. image:: img/market.png
     :align: center
-    :alt: Activate (login) tab
+    :alt: Market tab
+    
+
+Wallet
+------
+
+.. image:: img/wallet.png
+    :align: center
+    :alt: Wallet tab
+
+Marketmaker Trade
+-----------------
+
+.. image:: img/mm_trade.png
+    :align: center
+    :alt: Marketmaker Trade tab
+
+Binance Trade
+-------------
+
+.. image:: img/bin_trade.png
+    :align: center
+    :alt: Binance Trade tab
+
+Bot Trading
+-----------
+
+.. image:: img/bot_trade.png
+    :align: center
+    :alt: Bot Trading tab
+    
+Config
+------
+
+.. image:: img/config.png
+    :align: center
+    :alt: Config tab
+    
+Logs
+----
+
+.. image:: img/logs.png
+    :align: center
+    :alt: Logs tab
     
