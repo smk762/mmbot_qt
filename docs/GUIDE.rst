@@ -1,5 +1,6 @@
 Anatara Makerbot Overview
 =========================
+
 The Antara Makerbot includes a number of tabbed pages as below:
 - Activate: For authentication, loading coins and selecting which trade
 - Market: Displays average market prices from API data, and view/purchase of available trades on the MarketMaker orderbook.
@@ -14,6 +15,7 @@ Each tab and it's capabilities will be described in detail below.
 
 Activate
 --------
+
 If not already logged in, you will see the screen below:
 .. image:: img/activate.jpg
     :width: 200px
