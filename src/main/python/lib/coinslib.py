@@ -387,7 +387,7 @@ coin_api_codes = {
    },
    'BCH':{
       'coingecko_id':'bitcoin-cash',
-      'binance_id':'BCHABC',
+      'binance_id':'BCH',
       'paprika_id':'bch-bitcoin-cash',
       'name':'Bitcoin Cash'
    },

@@ -8,6 +8,7 @@ import hashlib
 import requests
 import sys
 from urllib.parse import urljoin, urlencode
+from . import coinslib
 
 # Get and set config
 cwd = os.getcwd()
@@ -311,6 +312,7 @@ def round_to_step(symbol, qty):
 def get_exchange_info():
     resp = requests.get("https://api.binance.com/api/v1/exchangeInfo").json()
     binance_pairs = []
+    supported_binance_pairs = []
     binance_pair_info = {}
     base_asset_info = {}
     quoteAssets = []
@@ -364,9 +366,16 @@ def get_exchange_info():
                         available_pairs.append(symbol)
         available_pairs.sort()
         base_asset_info[base].update({'available_pairs':available_pairs})
+    for base in coinslib.coin_activation:
+        if base in base_asset_info:
+            supported_binance_pairs += base_asset_info[base]['available_pairs']
+    supported_binance_pairs = list(set(supported_binance_pairs))
     binance_pairs.sort()
+    supported_binance_pairs.sort()
+    print(supported_binance_pairs)
     quoteAssets.sort()
-    return binance_pairs, base_asset_info, quoteAssets, binance_pair_info
+    return binance_pairs, base_asset_info, quoteAssets, binance_pair_info, supported_binance_pairs
+
 
 
 exch_info = get_exchange_info()
@@ -374,6 +383,7 @@ binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
+supported_binance_pairs = exch_info[4]
 
 def get_binance_balances(key, secret):
     binance_balances = {}

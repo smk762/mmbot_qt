@@ -59,8 +59,6 @@ def get_btc_price(api_key, cointag):
     #print("getting binance btc price for "+cointag)
     if cointag == 'BTC':
         return 1
-    if cointag == 'BCH':
-        btc_price = binance_api.get_price(api_key, 'BCHABCBTC')
     else:
         btc_price = binance_api.get_price(api_key, cointag+'BTC')
     if 'price' in btc_price:

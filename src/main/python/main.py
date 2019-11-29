@@ -192,8 +192,6 @@ class activation_thread(QThread):
                 print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.activate.emit(coin[0])
 
-
-
 class graph_history_thread(QThread):
     get_history = pyqtSignal(str, str, list, list, list)
     def __init__(self, coin, coin_id, quote, since):
@@ -484,6 +482,94 @@ class Ui(QTabWidget):
         }               
         self.show_login_tab()
 
+    #inactive functions 
+    def update_dl_progressbar(self, value):
+        self.dl_progressBar.setValue(value)
+        if value == 100:
+            QMessageBox.information(self, "Progress status", 'Download complete!')
+
+    ## MM2 management
+    def start_mm2(self, logfile='mm2_output.log'):
+        try:
+            mm2_output = open(config_path+self.username+logfile,'w+')
+            subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
+            time.sleep(1)
+        except Exception as e:
+            QMessageBox.information(self, "Progress status", 'No mm2!')
+            print(e)
+
+    def launch_mm2(self):         
+        if self.username in settings.value('users'):
+            self.bot_swap_history = dict(self.get_bot_swap_history())
+            self.username_input.setText('')
+            self.password_input.setText('')
+            self.stacked_login.setCurrentIndex(1)
+            if self.creds[0] != '':
+                version = ''
+                stopped = False
+                while version == '':
+                    if not stopped:
+                        try:
+                            print("stopping mm2 (if running)")
+                            rpclib.stop_mm2(self.creds[0], self.creds[1])
+                        except:
+                            stopped = True
+                            pass
+                    os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
+                    try:
+                        print("starting mm2")
+                        self.start_mm2()
+                        time.sleep(0.6)
+                        version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                        self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
+                    except:
+                        pass
+                with open(config_path+"MM2.json", 'w') as j:
+                    j.write('')
+                self.show_activation_tab()                        
+                self.datacache_thread = cachedata_thread(self.creds)
+                self.datacache_thread.update_data.connect(self.update_cachedata)
+                self.datacache_thread.start()
+            else:
+                self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+
+    def decrypt_creds(self):
+        # create .enc if new user
+        if not os.path.isfile(config_path+self.username+"_MM2.enc"):
+            with open(config_path+self.username+"_MM2.enc", 'w') as f:
+                f.write('')
+        # decrypt
+        else:
+            with open(config_path+self.username+"_MM2.enc", 'r') as f:
+                encrypted_mm2_json = f.read()
+            if encrypted_mm2_json != '':
+                print("decrypting")
+                mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
+                try:
+                    with open(config_path+"MM2.json", 'w') as j:
+                        j.write(mm2_json_decrypted.decode())
+                    self.authenticated = True
+                except:
+                    print("decrypting failed")
+                    # did not decode, bad password
+                    pass
+        jsonfile = config_path+"MM2.json"
+        try:
+            self.creds = guilib.get_creds(jsonfile)
+        except Exception as e:
+            print("get_creds failed")
+            print(e)
+            self.creds = ['','','','','','','','','','']
+            pass
+
+    ## File operations
+    def saveFileDialog(self):
+        filename = ''
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","Text Files (*.csv)", options=options)
+        return fileName
+
     def get_bot_swap_history(self):
         bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
         if not os.path.isfile(bot_swap_jsonfile):
@@ -503,30 +589,7 @@ class Ui(QTabWidget):
         with open(bot_swap_jsonfile, 'w') as f:
             f.write(json.dumps(self.bot_swap_history))
 
-    ## MM2 management
-    def start_mm2(self, logfile='mm2_output.log'):
-        try:
-            mm2_output = open(config_path+self.username+logfile,'w+')
-            subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
-            time.sleep(1)
-        except Exception as e:
-            QMessageBox.information(self, "Progress status", 'No mm2!')
-            print(e)
-
-    def update_dl_progressbar(self, value):
-        self.dl_progressBar.setValue(value)
-        if value == 100:
-            QMessageBox.information(self, "Progress status", 'Download complete!')
-
-
-    ## COMMON
-    def saveFileDialog(self):
-        filename = ''
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","All Files (*);;Text Files (*.csv)", options=options)
-        return fileName
-
+    #table functions
     def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
         for cell_data in row_data:
@@ -574,6 +637,30 @@ class Ui(QTabWidget):
                 col += 1
             row += 1
 
+    def get_cell_val(self, table, column):
+        if table.currentRow() != -1:
+            if table.item(table.currentRow(),column).text() != '':
+                return float(table.item(table.currentRow(),column).text())
+            else:
+                return 0
+        else:
+            return 0
+
+    # selection menu operations
+    def update_combo(self,combo,options,selected):
+        combo.clear()
+        options.sort()
+        combo.addItems(options)
+        if selected in options:
+            for i in range(combo.count()):
+                if combo.itemText(i) == selected:
+                    combo.setCurrentIndex(i)
+        else:
+            combo.setCurrentIndex(0)
+            selected = combo.itemText(combo.currentIndex())
+        return selected
+
+
     def update_balance(self, coin):
         print("updating balance in main thread")
         self.balances_data[coin] = {}
@@ -589,28 +676,6 @@ class Ui(QTabWidget):
                 'locked':locked,
                 'available':available
             })
-
-    def get_cell_val(self, table, column):
-        if table.currentRow() != -1:
-            if table.item(table.currentRow(),column).text() != '':
-                return float(table.item(table.currentRow(),column).text())
-            else:
-                return 0
-        else:
-            return 0
-
-    def update_combo(self,combo,options,selected):
-        combo.clear()
-        options.sort()
-        combo.addItems(options)
-        if selected in options:
-            for i in range(combo.count()):
-                if combo.itemText(i) == selected:
-                    combo.setCurrentIndex(i)
-        else:
-            combo.setCurrentIndex(0)
-            selected = combo.itemText(combo.currentIndex())
-        return selected
 
     def get_mm2_mm2_order_uuids(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -673,14 +738,15 @@ class Ui(QTabWidget):
                                             "mm2_rel":rel,
                                             "mm2_base":base,
                                             "bot_mode":self.creds[8],
-                                            "time":get_time_str()
-                                    })
-                                    self.bot_swap_history[mm2_order_uuid]["mm2_swaps"].update({
-                                            swap: {
-                                                "mm2_swap_rel_amount":rel_amount,
-                                                "mm2_swap_base_amount":base_amount,
-                                                "binance_countertrades":{},
+                                            "time":get_time_str(),
+                                            "mm2_swaps": {
+                                                swap: {
+                                                    "mm2_swap_rel_amount":rel_amount,
+                                                    "mm2_swap_base_amount":base_amount,
+                                                    "binance_countertrades":{},
+                                                }
                                             }
+
                                     })
                                     if int(time.time()) < int(swap_result[2])/1000 + self.countertrade_delay_limit*60:
                                         if self.bot_swap_history[mm2_order_uuid]["bot_mode"] == 'Marketmaker & Binance':
@@ -694,15 +760,12 @@ class Ui(QTabWidget):
                                         else:
                                             print("Bot mode: "+self.bot_swap_history[mm2_order_uuid]["bot_mode"]+" (not countertrading)")
                                     else:
-                                        print("Time now: "+str(time.time()))
-                                        print("Finish Time: "+str(int(finish_time)/1000))
-                                        print("Difference: "+str(int(finish_time)/1000-time.time()))
-                                        print("Countertrade delay limit: "+str(self.countertrade_delay_limit))
+                                        print("Countertrade delay limit: ("+str(self.countertrade_delay_limit)+" min) expired - not countertrading.")
                             else:
-                                print(guilib.colorize("No info in "+swap+" yet", 'blue'))
+                                print(guilib.colorize("No info in swap ["+swap+"] yet.", 'blue'))
                         else:
-                            print(guilib.colorize("Swap "+swap+" was already completed", 'blue'))
-                    QCoreApplication.processEvents()
+                            print(guilib.colorize("Swap ["+swap+"] was already completed", 'blue'))
+                        QCoreApplication.processEvents()
                 else:
                     print(guilib.colorize("No swaps for "+mm2_order_uuid, 'blue'))
             else:
@@ -761,6 +824,7 @@ class Ui(QTabWidget):
                                 print("Binance trade not filled yet")    
                         else:
                             print("no status in binance order result")
+                    QCoreApplication.processEvents()
             else:
                 print("no swaps yet in "+mm2_mm2_order_uuid)
         self.populate_countertrade_table(row_count)
@@ -802,8 +866,7 @@ class Ui(QTabWidget):
         self.bot_binance_orders_table.setSortingEnabled(True)
         self.bot_binance_orders_table.resizeColumnsToContents()
 
-    def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_mm2_order_uuid, swap):
-        # replenish base, liquidate rel
+    def get_binance_countertrade_symbols(self, base, rel, base_amount, rel_amount):
         available_base_pairs = binance_api.base_asset_info[base]['available_pairs']
         available_rel_pairs = binance_api.base_asset_info[rel]['available_pairs']
         selected_base_symbol = ''
@@ -838,22 +901,27 @@ class Ui(QTabWidget):
                         print('quoteAsset_balance: '+str(quoteAsset_balance))
                         print('rel_symbol_market_price: '+str(rel_symbol_market_price))
                         print('base_symbol_market_price: '+str(base_symbol_market_price))
+                        # TODO: fix this - quote asset is only required for buy side! Sell side req sell asset baalance!
                         base_quote_req = float(base_amount)*float(base_symbol_market_price)
                         rel_quote_req = float(rel_amount)*float(rel_symbol_market_price)
                         print('rel_quote_req: '+str(rel_quote_req))
                         print('base_quote_req: '+str(base_quote_req))
                         if rel_quote_req < quoteAsset_balance and base_quote_req < quoteAsset_balance:
-                            selected_rel_symbol = rel_symbol
-                            selected_base_symbol = base_symbol
                             print("=============================")
                             print("Indirect trade symbols found!")
-                            print("selected_base_symbol: "+selected_base_symbol)
-                            print("selected_rel_symbol: "+selected_rel_symbol)
-                            break
+                            print("selected_base_symbol: "+base_symbol)
+                            print("selected_rel_symbol: "+rel_symbol)
+                            return rel_symbol, base_symbol
                         else:
                             print("Not enough "+base_quoteAsset+" balance to cointertrade!")
                 if selected_base_symbol != '':
-                    break
+                    return "", ""
+
+    def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_mm2_order_uuid, swap):
+        # replenish base, liquidate rel
+        countertrade_symbols = self.get_binance_countertrade_symbols(self, base, rel, base_amount, rel_amount)
+        selected_rel_symbol = countertrade_symbols[0]
+        selected_base_symbol = countertrade_symbols[1]
         if selected_base_symbol != '':
             base_amount = round(float(binance_api.round_to_step(selected_base_symbol, base_amount)), 8)
             rel_amount = round(float(binance_api.round_to_step(selected_rel_symbol, rel_amount)), 8)
@@ -866,7 +934,6 @@ class Ui(QTabWidget):
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, rel_amount)
                     if 'orderId' in resp:
                         self.update_bot_swap_history(mm2_mm2_order_uuid, selected_rel_symbol, resp['orderId'], "buy", rel, rel_amount, swap)
-
                 # Direct rel trade...
                 elif binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == rel:
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, base_amount)
@@ -900,6 +967,31 @@ class Ui(QTabWidget):
             print("No selected_base_symbol")
         self.update_orders_table()
 
+    def prepare_maker_row(self, maker_orders, item):
+        role = "Maker"
+        base = maker_orders[item]['base']
+        base_amount = round(float(maker_orders[item]['available_amount']),8)
+        rel = maker_orders[item]['rel']
+        rel_amount = round(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount']),8)
+        sell_price = round(float(maker_orders[item]['price']),8)
+        timestamp = int(maker_orders[item]['created_at']/1000)
+        created_at = datetime.datetime.fromtimestamp(timestamp)
+        buy_price = round(float(1/float(sell_price)),8)
+        return [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
+
+    def prepare_taker_row(self, taker_orders, item):
+        role = "Taker"
+        print(guilib.colorize("taker_orders: "+str(taker_orders[item]),'cyan'))
+        timestamp = int(taker_orders[item]['created_at'])/1000
+        created_at = datetime.datetime.fromtimestamp(timestamp)
+        base = taker_orders[item]['request']['base']
+        rel = taker_orders[item]['request']['rel']
+        base_amount = round(float(taker_orders[item]['request']['base_amount']),8)
+        rel_amount = round(float(taker_orders[item]['request']['rel_amount']),8)
+        buy_price = round(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount']),8)
+        sell_price = round(float(1/float(sell_price)),8)
+        return [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
+
     def update_mm2_orders_tables(self):
         print('update_mm2_orders_tables')
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -915,47 +1007,20 @@ class Ui(QTabWidget):
             bot_row = 0
             mm2_row = 0
             for item in maker_orders:
-                role = "Maker"
-                base = maker_orders[item]['base']
-                base_amount = round(float(maker_orders[item]['available_amount']),8)
-
-                rel = maker_orders[item]['rel']
-                rel_amount = round(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount']),8)
-                sell_price = round(float(maker_orders[item]['price']),8)
-                timestamp = int(maker_orders[item]['created_at']/1000)
-                created_at = datetime.datetime.fromtimestamp(timestamp)
-                buy_price = round(float(1/float(sell_price)),8)
-
-                bot_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
-                mm2_maker_row = [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
-
-                self.add_row(bot_row, bot_maker_row, self.bot_mm2_orders_table)
+                maker_row = self.prepare_maker_row(maker_orders, item)
+                self.add_row(bot_row, maker_row, self.bot_mm2_orders_table)
                 bot_row += 1
-                self.add_row(mm2_row, mm2_maker_row, self.mm2_orders_table)
+                self.add_row(mm2_row, maker_row, self.mm2_orders_table)
                 mm2_row += 1
 
         if 'taker_orders' in orders['result']:
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
-                role = "Taker"
-                print(guilib.colorize("taker_orders: "+taker_orders[item],'cyan'))
-                timestamp = int(taker_orders[item]['created_at'])/1000
-                created_at = datetime.datetime.fromtimestamp(timestamp)
-                base = taker_orders[item]['request']['base']
-                rel = taker_orders[item]['request']['rel']
-                base_amount = round(float(taker_orders[item]['request']['base_amount']),8)
-                rel_amount = round(float(taker_orders[item]['request']['rel_amount']),8)
-                buy_price = round(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount']),8)
-                sell_price = round(float(1/float(sell_price)),8)
-
-                bot_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
-                mm2_taker_row = [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
-
-                self.add_row(bot_row, bot_taker_row, self.bot_mm2_orders_table)
+                taker_row = self.prepare_taker_row(taker_orders, item)
+                self.add_row(bot_row, taker_row, self.bot_mm2_orders_table)
                 bot_row += 1
-                self.add_row(mm2_row, mm2_taker_row, self.mm2_orders_table)
+                self.add_row(mm2_row, taker_row, self.mm2_orders_table)
                 mm2_row += 1
-
 
         self.bot_mm2_orders_table.setSortingEnabled(True)
         self.bot_mm2_orders_table.resizeColumnsToContents()
@@ -991,67 +1056,9 @@ class Ui(QTabWidget):
         if self.username == '' or self.password == '' and not self.authenticated:
             QMessageBox.information(self, 'Login failed!', 'username and password fields can not be blank!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
-            # create .enc if new user
-            if not os.path.isfile(config_path+self.username+"_MM2.enc"):
-                with open(config_path+self.username+"_MM2.enc", 'w') as f:
-                    f.write('')
-            # decrypt
-            else:
-                with open(config_path+self.username+"_MM2.enc", 'r') as f:
-                    encrypted_mm2_json = f.read()
-                if encrypted_mm2_json != '':
-                    print("decrypting")
-                    mm2_json_decrypted = enc.decrypt_mm2_json(encrypted_mm2_json, self.password)
-                    try:
-                        with open(config_path+"MM2.json", 'w') as j:
-                            j.write(mm2_json_decrypted.decode())
-                        self.authenticated = True
-                    except:
-                        print("decrypting failed")
-                        # did not decode, bad password
-                        pass
-            jsonfile = config_path+"MM2.json"
-            try:
-                self.creds = guilib.get_creds(jsonfile)
-            except Exception as e:
-                print("get_creds failed")
-                print(e)
-                self.creds = ['','','','','','','','','','']
-                pass
-            if self.authenticated:            
-                if self.username in settings.value('users'):
-                    self.bot_swap_history = dict(self.get_bot_swap_history())
-                    self.username_input.setText('')
-                    self.password_input.setText('')
-                    self.stacked_login.setCurrentIndex(1)
-                    if self.creds[0] != '':
-                        version = ''
-                        stopped = False
-                        while version == '':
-                            if not stopped:
-                                try:
-                                    print("stopping mm2 (if running)")
-                                    rpclib.stop_mm2(self.creds[0], self.creds[1])
-                                except:
-                                    stopped = True
-                                    pass
-                            os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
-                            try:
-                                print("starting mm2")
-                                self.start_mm2()
-                                time.sleep(0.6)
-                                version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
-                                self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
-                            except:
-                                pass
-                        with open(config_path+"MM2.json", 'w') as j:
-                            j.write('')
-                        self.show_activation_tab()                        
-                        self.datacache_thread = cachedata_thread(self.creds)
-                        self.datacache_thread.update_data.connect(self.update_cachedata)
-                        self.datacache_thread.start()
-                    else:
-                        self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+            self.decrypt_creds()
+            if self.authenticated:   
+                self.launch_mm2()
             elif self.username in settings.value('users'):
                 QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
             else:
@@ -1854,13 +1861,12 @@ class Ui(QTabWidget):
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
             self.wallet_recipient.setFocus()
-            existing_coins = []
-            for i in range(self.wallet_combo.count()):
-                existing_coin = self.wallet_combo.itemText(i)
-                existing_coins.append(existing_coin)
-            for coin in self.active_coins:
-                if coin not in existing_coins:
-                    self.wallet_combo.addItem(coin)
+
+            if self.wallet_combo.currentIndex() != -1:
+                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
+            else:
+                selected = self.wallet_combo.itemText(0)
+            self.update_combo(self.wallet_combo,self.active_coins,selected)
             self.update_wallet_balance()
 
 
@@ -2046,11 +2052,7 @@ class Ui(QTabWidget):
         print("Binance Tickers: "+str(tickers))
         if tickers is not None:
             self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
-            ticker_pairs = []
-            for ticker in tickers:
-                if ticker != "BTC":
-                    ticker_pairs.append(ticker+"BTC")
-            self.update_combo(self.binance_ticker_pair_comboBox,ticker_pairs,ticker_pairs[0])
+            self.update_combo(self.binance_ticker_pair_comboBox, binance_api.supported_binance_pairs, binance_api.supported_binance_pairs[0])
             self.update_binance_orderbook()
             QCoreApplication.processEvents()
             self.update_orders_table()
@@ -2112,8 +2114,15 @@ class Ui(QTabWidget):
 
     def draw_history_graph(self, coin, quote, x, y, time_ticks):
         self.binance_history_graph.clear()
-        self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
+        price_curve = self.binance_history_graph.plot(
+                x,
+                y, 
+                pen={'color':(78,155,46)},
+                fillLevel=0, brush=(50,50,200,100),
+            )
         self.binance_history_graph.setXRange(min(x),max(x), padding=0)
+        self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
+        self.binance_history_graph.addItem(price_curve)
         if quote == 'usd':
             self.binance_history_graph.setLabel('left', '$USD')
         else:
@@ -2149,13 +2158,6 @@ class Ui(QTabWidget):
         text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
         self.binance_history_graph.addItem(text)
         text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
-        price_curve = self.binance_history_graph.plot(
-                x,
-                y, 
-                pen={'color':(78,155,46)},
-                fillLevel=0, brush=(50,50,200,100),
-            )
-        self.binance_history_graph.addItem(price_curve)
 
     def getDatePrice(self):
         min_delta = 999999999999
@@ -2406,8 +2408,6 @@ class Ui(QTabWidget):
         for buy_coin in self.buy_coins:
             if buy_coin not in self.active_coins:
                 pairs = "(inactive)"
-            if buy_coin == 'BCH':
-                buy_coin = 'BCHABC'
             elif buy_coin not in coinslib.binance_coins:
                 pairs = "(not on Binance)"
             else:
@@ -2428,8 +2428,6 @@ class Ui(QTabWidget):
         for sell_coin in self.sell_coins:
             if sell_coin not in self.active_coins:
                 pairs = "(inactive)"
-            if sell_coin == 'BCH':
-                sell_coin = 'BCHABC'
             elif sell_coin not in coinslib.binance_coins:
                 pairs = "(not on Binance)"
             else:
