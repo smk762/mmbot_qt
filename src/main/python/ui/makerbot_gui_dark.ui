@@ -5873,45 +5873,7 @@ color: rgb(0, 0, 0);</string>
              <property name="spacing">
               <number>3</number>
              </property>
-             <item row="5" column="0">
-              <widget class="QRadioButton" name="history_1wk_btn">
-               <property name="text">
-                <string>1 Week</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QRadioButton" name="history_1mth_btn">
-               <property name="text">
-                <string>1 Month</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QRadioButton" name="history_24hr_btn">
-               <property name="text">
-                <string>&amp;24 Hours</string>
-               </property>
-              </widget>
-             </item>
              <item row="2" column="0">
-              <widget class="QRadioButton" name="history_6mth_btn">
-               <property name="text">
-                <string>&amp;6 Month</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QRadioButton" name="history_1yr_btn">
-               <property name="text">
-                <string>&amp;1 Year</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
               <widget class="QComboBox" name="history_timespan_combobox">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207);</string>
@@ -5951,13 +5913,6 @@ color: rgb(0, 0, 0);</string>
                </item>
               </widget>
              </item>
-             <item row="3" column="0">
-              <widget class="QRadioButton" name="history_3mth_btn">
-               <property name="text">
-                <string>&amp;3 Month</string>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="0">
               <widget class="QFrame" name="frame_2">
                <property name="frameShape">
@@ -5971,13 +5926,13 @@ color: rgb(0, 0, 0);</string>
                  <number>0</number>
                 </property>
                 <property name="topMargin">
-                 <number>0</number>
+                 <number>9</number>
                 </property>
                 <property name="rightMargin">
                  <number>0</number>
                 </property>
                 <property name="bottomMargin">
-                 <number>0</number>
+                 <number>9</number>
                 </property>
                 <property name="spacing">
                  <number>0</number>
@@ -6007,7 +5962,7 @@ color: rgb(0, 0, 0);</string>
                </layout>
               </widget>
              </item>
-             <item row="9" column="0">
+             <item row="3" column="0">
               <widget class="QComboBox" name="history_coin_combobox">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207);</string>
@@ -6017,7 +5972,7 @@ color: rgb(0, 0, 0);</string>
                </property>
               </widget>
              </item>
-             <item row="10" column="0">
+             <item row="4" column="0">
               <widget class="QComboBox" name="history_quote_combobox">
                <property name="styleSheet">
                 <string notr="true">background-color: rgb(114, 159, 207);</string>
@@ -12087,7 +12042,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1306</x>
-     <y>788</y>
+     <y>931</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -12119,7 +12074,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1889</x>
-     <y>831</y>
+     <y>986</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -12198,8 +12153,8 @@ color: rgb(0, 0, 0);</string>
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>813</x>
-     <y>519</y>
+     <x>978</x>
+     <y>590</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -12215,7 +12170,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1019</x>
-     <y>836</y>
+     <y>996</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -12247,7 +12202,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>397</x>
-     <y>758</y>
+     <y>918</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12263,7 +12218,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>397</x>
-     <y>802</y>
+     <y>962</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12279,7 +12234,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>397</x>
-     <y>846</y>
+     <y>1006</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12359,7 +12314,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>467</y>
+     <y>952</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12375,7 +12330,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>527</y>
+     <y>1013</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12391,7 +12346,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>445</y>
+     <y>929</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12423,7 +12378,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>239</x>
-     <y>536</y>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12439,7 +12394,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>536</y>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12454,8 +12409,8 @@ color: rgb(0, 0, 0);</string>
    <slot>start_bot_trading()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>123</x>
-     <y>862</y>
+     <x>138</x>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12471,7 +12426,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>359</x>
-     <y>862</y>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12487,7 +12442,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1581</x>
-     <y>433</y>
+     <y>513</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12503,7 +12458,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1266</x>
-     <y>422</y>
+     <y>502</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12519,7 +12474,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>983</x>
-     <y>433</y>
+     <y>513</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12535,7 +12490,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>853</x>
-     <y>422</y>
+     <y>502</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12551,7 +12506,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1877</x>
-     <y>771</y>
+     <y>962</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12567,7 +12522,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1877</x>
-     <y>758</y>
+     <y>918</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12599,7 +12554,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1877</x>
-     <y>846</y>
+     <y>1006</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12614,8 +12569,8 @@ color: rgb(0, 0, 0);</string>
    <slot>sell_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1718</x>
-     <y>848</y>
+     <x>1704</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12630,8 +12585,8 @@ color: rgb(0, 0, 0);</string>
    <slot>sell_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1572</x>
-     <y>848</y>
+     <x>1569</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12646,8 +12601,8 @@ color: rgb(0, 0, 0);</string>
    <slot>sell_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1621</x>
-     <y>848</y>
+     <x>1614</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12662,8 +12617,8 @@ color: rgb(0, 0, 0);</string>
    <slot>sell_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1669</x>
-     <y>848</y>
+     <x>1659</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12678,8 +12633,8 @@ color: rgb(0, 0, 0);</string>
    <slot>buy_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>143</x>
-     <y>848</y>
+     <x>137</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12694,8 +12649,8 @@ color: rgb(0, 0, 0);</string>
    <slot>buy_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>93</x>
-     <y>848</y>
+     <x>90</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12710,8 +12665,8 @@ color: rgb(0, 0, 0);</string>
    <slot>buy_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>192</x>
-     <y>848</y>
+     <x>183</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12726,8 +12681,8 @@ color: rgb(0, 0, 0);</string>
    <slot>buy_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>242</x>
-     <y>848</y>
+     <x>230</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12743,7 +12698,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>810</x>
-     <y>536</y>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12759,7 +12714,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1205</x>
-     <y>536</y>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12807,7 +12762,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1888</x>
-     <y>426</y>
+     <y>911</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12822,8 +12777,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_sell_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1677</x>
-     <y>803</y>
+     <x>1713</x>
+     <y>977</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12838,8 +12793,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_buy_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>803</y>
+     <x>239</x>
+     <y>977</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12854,8 +12809,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_sell_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1677</x>
-     <y>734</y>
+     <x>1713</x>
+     <y>908</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12870,8 +12825,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_buy_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>734</y>
+     <x>239</x>
+     <y>908</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12886,8 +12841,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_buy_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>200</x>
-     <y>769</y>
+     <x>239</x>
+     <y>943</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12902,8 +12857,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_sell_amounts()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1677</x>
-     <y>769</y>
+     <x>1713</x>
+     <y>943</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12918,8 +12873,8 @@ color: rgb(0, 0, 0);</string>
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1779</x>
-     <y>850</y>
+     <x>1889</x>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12934,8 +12889,8 @@ color: rgb(0, 0, 0);</string>
    <slot>recover_swap()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1272</x>
-     <y>850</y>
+     <x>1344</x>
+     <y>1022</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12952,6 +12907,54 @@ color: rgb(0, 0, 0);</string>
     <hint type="sourcelabel">
      <x>959</x>
      <y>998</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>history_coin_combobox</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_history_graph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>969</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>history_quote_combobox</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_history_graph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>997</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>history_timespan_combobox</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_history_graph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>941</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>

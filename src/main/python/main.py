@@ -204,8 +204,12 @@ class graph_history_thread(QThread):
     def __del__(self):
         self.wait()
 
-    def run(self):
-        history = priceslib.get_paprika_history(self.coin_id, self.since, self.quote)
+    def run(self): 
+        if self.quote == 'KMD':
+            kmd_btc_price =priceslib.get_paprika_price(coinslib.coin_api_codes['KMD']['paprika_id']).json()['price_btc']
+            history = priceslib.get_paprika_history(self.coin_id, self.since, 'BTC')
+        else:
+            history = priceslib.get_paprika_history(self.coin_id, self.since, self.quote)
         x = []
         x_str = []
         y = []
@@ -214,7 +218,10 @@ class graph_history_thread(QThread):
         self.xy = {}
         last_time = ''
         for item in history:
-            y.append(item['price'])
+            if self.quote == 'KMD':
+                y.append(float(item['price'])/float(kmd_btc_price))
+            else:
+                y.append(item['price'])
             dt = dateutil.parser.parse(item['timestamp'])
             x.append(int(datetime.datetime.timestamp(dt)))
             x_str.append(item['timestamp'])
@@ -263,7 +270,7 @@ class graph_history_thread(QThread):
                         time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]))
                         last_time = hour_components[0]
 
-            self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
+        self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
 # Item Classes 
 
 class QR_image(qrcode.image.base.BaseImage):
@@ -1393,14 +1400,19 @@ class Ui(QTabWidget):
             self.orderbook_table.resizeColumnsToContents()
 
     def update_history_graph(self):
+        print("update_history_graph")
         index = self.history_quote_combobox.currentIndex()
         if index == -1:
             index = 0
         quote = self.history_quote_combobox.itemText(index)
+
         index = self.history_coin_combobox.currentIndex()
         if index == -1:
-            self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
-        coin = self.history_coin_combobox.itemText(index)
+            coin = self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
+        else:
+            coin = self.history_coin_combobox.itemText(index)
+        print(coin)
+
         index = self.history_timespan_combobox.currentIndex()
         if index == -1:
             index = 0
@@ -1419,12 +1431,13 @@ class Ui(QTabWidget):
         elif timespan == '24 Hrs':
             since = 'day_ago'
         coin_id = coinslib.coin_api_codes[coin]['paprika_id']
-        if coin_id != '':            
-            self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote, since)
-            self.draw_graph_thread.get_history.connect(self.draw_history_graph)
-            self.draw_graph_thread.start()
+        self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote, since)
+        self.draw_graph_thread.get_history.connect(self.draw_history_graph)
+        self.draw_graph_thread.start()
+
 
     def draw_history_graph(self, coin, quote, x, y, time_ticks):
+        print('drawing graph')
         self.binance_history_graph.clear()
         price_curve = self.binance_history_graph.plot(
                 x,
@@ -1435,7 +1448,9 @@ class Ui(QTabWidget):
         self.binance_history_graph.setXRange(min(x),max(x), padding=0)
         self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
         self.binance_history_graph.addItem(price_curve)
-        if quote == 'usd':
+        if quote == 'USD':
+            self.binance_history_graph.setLabel('left', '$USD')
+        elif quote == 'KMD':
             self.binance_history_graph.setLabel('left', '$USD')
         else:
             self.binance_history_graph.setLabel('left', 'BTC')
@@ -1463,8 +1478,10 @@ class Ui(QTabWidget):
         else:
             usd_price = 'No Data'
             btc_price = 'No Data'
-        if quote == 'usd':
+        if quote == 'USD':
             txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
+        if quote == 'KMD':
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current KMD Price: '+str(btc_price)+'</span></div>'
         else:
             txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: $'+str(btc_price)+'</span></div>'
         text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
