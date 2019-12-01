@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="ui">
+    <file>img/other/switch-arrow.png</file>
     <file>img/other/arrow-up.png</file>
     <file>img/other/arrow-right.png</file>
     <file>img/other/arrow-down.png</file>
