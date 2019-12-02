@@ -755,16 +755,13 @@ coin_explorers = {
 cointags = []
 for ticker in coin_activation:
     cointags.append(ticker)
-print(cointags)
 
 binance_coins = []
 for coin in coin_api_codes:
     if coin == 'BTC' or coin_api_codes[coin]['binance_id'] != '':
         binance_coins.append(coin)
-print(binance_coins)
 
 paprika_coins = []
 for coin in coin_api_codes:
     if coin == 'BTC' or coin_api_codes[coin]['paprika_id'] != '':
         paprika_coins.append(coin)
-print(paprika_coins)
