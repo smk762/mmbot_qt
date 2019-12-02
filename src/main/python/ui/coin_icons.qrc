@@ -41,7 +41,6 @@
     <file>img/32/kmdice.png</file>
     <file>img/32/kmd.png</file>
     <file>img/32/jumblr.png</file>
-    <file>img/32/hush.png</file>
     <file>img/32/hodl.png</file>
     <file>img/32/etomic.png</file>
     <file>img/32/eth.png</file>
@@ -54,6 +53,7 @@
     <file>img/32/dai.png</file>
     <file>img/32/crypto.png</file>
     <file>img/32/coqui.png</file>
+    <file>img/32/hush.png</file>
     <file>img/32/chips.png</file>
     <file>img/32/chain.png</file>
     <file>img/32/btch.png</file>
@@ -94,13 +94,13 @@
     <file>img/64/labs.png</file>
     <file>img/64/kmdice.png</file>
     <file>img/64/kmd.png</file>
-    <file>img/64/hush.png</file>
     <file>img/64/eth.png</file>
     <file>img/64/doge.png</file>
     <file>img/64/dgb.png</file>
     <file>img/64/dex.png</file>
     <file>img/64/dcr.png</file>
     <file>img/64/dash.png</file>
+    <file>img/64/hush.png</file>
     <file>img/64/dai.png</file>
     <file>img/64/crypto.png</file>
     <file>img/64/coqui.png</file>
@@ -142,8 +142,8 @@
     <file>img/300/labs.png</file>
     <file>img/300/kmdice.png</file>
     <file>img/300/kmd.png</file>
-    <file>img/300/hush.png</file>
     <file>img/300/eth.png</file>
+    <file>img/300/hush.png</file>
     <file>img/300/doge.png</file>
     <file>img/300/dgb.png</file>
     <file>img/300/dex.png</file>
