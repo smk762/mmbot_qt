@@ -1095,11 +1095,17 @@ class Ui(QTabWidget):
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     def populate_activation_menu(self, display_coins, layout):
-        with open(config_path+self.username+"_coins.json", 'r') as j:
-            user_coins = json.loads(j.read())
-            user_autoactivate = user_coins['autoactivate']
-            user_buy_coins = user_coins['buy_coins']
-            user_sell_coins = user_coins['sell_coins']
+        if os.path.exists(config_path+self.username+"_coins.json"):
+            with open(config_path+self.username+"_coins.json", 'r') as j:
+                user_coins = json.loads(j.read())
+                user_autoactivate = user_coins['autoactivate']
+                user_buy_coins = user_coins['buy_coins']
+                user_sell_coins = user_coins['sell_coins']
+        else:
+            user_autoactivate = []
+            user_buy_coins = []
+            user_sell_coins = []
+
         row = 0
         for coin in display_coins:
             self.gui_coins[coin]['checkbox'].show()
