@@ -3,7 +3,8 @@ wheel
 PyQt5==5.9.2
 fbs==0.8.4
 slick-bitcoinrpc==0.1.4
-pycryptodome==3.9.4  
+#pycryptodome==3.9.4  
+cryptography==2.8
 dateparser==0.7.2
 requests==2.18.4
 python-bitcoinlib==0.10.2
