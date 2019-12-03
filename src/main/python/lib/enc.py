@@ -3,9 +3,9 @@
 import string
 import random
 import base64
-from Crypto.Cipher import AES
-from Crypto import Random
-from Crypto.Protocol.KDF import PBKDF2
+from Cryptodome.Cipher import AES
+from Cryptodome import Random
+from Cryptodome.Protocol.KDF import PBKDF2
 
 BLOCK_SIZE = 16
 pad = lambda s: s + (BLOCK_SIZE - len(s) % BLOCK_SIZE) * chr(BLOCK_SIZE - len(s) % BLOCK_SIZE)
