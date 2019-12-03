@@ -541,7 +541,7 @@ class Ui(QTabWidget):
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
                     except:
                         pass
-                with open(config_path+"MM2.json", 'w') as j:
+                with open(config_path+"MM2.json", 'w+') as j:
                     j.write('')
                 self.show_activation_tab()                        
                 self.datacache_thread = cachedata_thread(self.creds)
