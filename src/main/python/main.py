@@ -556,6 +556,9 @@ class Ui(QTabWidget):
         if not os.path.isfile(config_path+self.username+"_MM2.enc"):
             with open(config_path+self.username+"_MM2.enc", 'w') as f:
                 f.write('')
+        if not os.path.isfile(config_path+"MM2.json"):
+            with open(config_path+"MM2.json", 'w') as f:
+                f.write('')
         # decrypt
         else:
             with open(config_path+self.username+"_MM2.enc", 'r') as f:
