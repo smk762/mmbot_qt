@@ -29,3 +29,8 @@ sudo dpkg --purge mm2-maker-bot
 
 ### install new pkg
 sudo dpkg -i target/mm2-maker-bot.deb
+
+
+### Mac Build
+install python 3.6
+pip3 install -r requirements.txt
