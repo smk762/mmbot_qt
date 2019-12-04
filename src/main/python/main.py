@@ -52,10 +52,13 @@ ini_file = settings.fileName()
 config_path = settings.fileName().replace("AntaraMakerbot.ini", "")
 
 os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
+
+'''
 os.environ['MM_LOG'] = config_path+"_bin_logfile.log"
 if os.path.exists(config_path+"_bin_logfile.log"):
     with open(config_path+"_bin_logfile.log", 'w+') as f:
         f.write('')
+        '''
 
 if settings.value('users') is None:
     settings.setValue("users", [])
@@ -2064,7 +2067,7 @@ class Ui(QTabWidget):
     def show_mm2_logs_tab(self):
         print("show_mm2_logs_tab")
         logfile='mm2_output.log'
-        mm2_output = open(config_path+self.username+logfile,'r')
+        mm2_output = open(config_path+self.username+"_"+logfile,'r')
         with mm2_output as f:
             log_text = f.read()
             lines = f.readlines()
