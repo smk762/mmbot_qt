@@ -51,6 +51,12 @@ settings = QSettings()
 ini_file = settings.fileName()
 config_path = settings.fileName().replace("AntaraMakerbot.ini", "")
 
+os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
+os.environ['MM_LOG'] = config_path+self.username+"_bin_"+logfile
+if os.path.exists(config_path+self.username+"_bin_"+logfile):
+    with open(config_path+self.username+"_bin_"+logfile, 'w+') as f:
+        f.write('')
+
 if settings.value('users') is None:
     settings.setValue("users", [])
 print("Existing users: " +str(settings.value('users')))
@@ -533,8 +539,6 @@ class Ui(QTabWidget):
                         except:
                             stopped = True
                             pass
-                    os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
-                    os.environ['MM_LOG'] = config_path+self.username+"_bin_"+logfile
                     try:
                         print("starting mm2")
                         self.start_mm2()
