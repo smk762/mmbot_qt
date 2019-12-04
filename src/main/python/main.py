@@ -1,3 +1,4 @@
+#!/bin/
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
@@ -508,7 +509,7 @@ class Ui(QTabWidget):
     ## MM2 management
     def start_mm2(self, logfile='mm2_output.log'):
         try:
-            mm2_output = open(config_path+self.username+logfile,'w+')
+            mm2_output = open(config_path+self.username+"_"+logfile,'w+')
             subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
             time.sleep(1)
         except Exception as e:
@@ -533,6 +534,7 @@ class Ui(QTabWidget):
                             stopped = True
                             pass
                     os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
+                    os.environ['MM_LOG'] = config_path+self.username+"_bin_"+logfile
                     try:
                         print("starting mm2")
                         self.start_mm2()
