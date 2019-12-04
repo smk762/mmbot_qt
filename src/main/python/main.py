@@ -2025,6 +2025,7 @@ class Ui(QTabWidget):
                         data.update({"margin":margin})
                         data.update({"countertrade_timeout":countertrade_timeout})
                         data.update({"bot_mode":bot_mode})
+                        data.update({"dbdir":config_path+"DB"})
                         enc_data = enc.encrypt_mm2_json(json.dumps(data), passwd)
                         with open(config_path+self.username+"_MM2.enc", 'w') as j:
                             j.write(bytes.decode(enc_data))
