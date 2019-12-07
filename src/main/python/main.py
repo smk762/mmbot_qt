@@ -24,6 +24,8 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
 
+home = expanduser("~")
+
 # Attempt to suppress console window in windows version. TODO: not working, find another way.
 if platform.system() == 'Windows':
     startupinfo = subprocess.STARTUPINFO()
@@ -2326,17 +2328,17 @@ class Ui(QTabWidget):
 
     def stop_bot_trading(self):
         self.bot_trade_thread.stop()
+        bot_order_count = self.bot_mm2_orders_table.rowCount()
+        if bot_order_count > 0:
+            resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if resp == QMessageBox.Yes:
+                self.mm2_cancel_all_orders()
         self.bot_status_lbl.setText("STOPPED")
         self.bot_status_lbl.setStyleSheet("color: rgb(164, 0, 0);\nbackground-color: rgb(177, 179, 186);")
         log_msg = get_time_str()+" Bot stopped"
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#267F00'))
         self.trading_logs_list.addItem(log_row)
-        bot_order_count = self.bot_mm2_orders_table.rowCount()
-        if bot_order_count > 0:
-            resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if resp == QMessageBox.Yes:
-                self.mm2_cancel_all_orders()
 
     def start_bot_trading(self):
         buys = 0
