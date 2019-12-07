@@ -28,7 +28,9 @@ OS specific mm2 binaries are also required to be placed in the `mmbot_qt/src/mai
 
 If all went according to plan, you should now be able to execute `fbs run` to load the app.
 
-Follow the guide to create a user, setup seed etc, log back in and activate some coins. If anything goes wrong, it should be traceable in the console.
+Follow the readme at https://github.com/smk762/mmbot_qt/blob/style/docs/README.rst to create a user, setup seed etc, log back in and activate some coins. 
+
+If anything goes wrong, it should be traceable in the console.
 
 If all goes well, you can freeze the app with `fbs freeze`, which will create a portable version in the mmbot_qt/target folder.
 
