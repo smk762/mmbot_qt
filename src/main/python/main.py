@@ -56,6 +56,17 @@ if settings.value('users') is None:
 def get_time_str():
     return str(datetime.datetime.fromtimestamp(int(time.time())))
 
+# https://en.bitcoin.it/wiki/Proper_Money_Handling_%28JSON-RPC%29
+def JSONtoAmount(value):
+    return long(round(value * 1e8))
+def AmountToJSON(amount):
+    return float(amount / 1e8)
+
+def ETH_JSONtoAmount(value):
+    return long(round(value * 1e18))
+def ETH_AmountToJSON(amount):
+    return float(amount / 1e18)
+
 # THREADED OPERATIONS
 
 # Bot trading loop
@@ -708,7 +719,7 @@ class Ui(QTabWidget):
             })
 
     # parse out user order uuids as a list
-    def get_mm2_mm2_order_uuids(self):
+    def get_mm2_order_uuids(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
         mm2_order_uuids = []
         if 'maker_orders' in orders['result']:
@@ -736,7 +747,7 @@ class Ui(QTabWidget):
         return failed, fail_event, finished, event_types
 
     def check_mm_bot_order_swaps(self):
-        for mm2_order_uuid in self.get_mm2_mm2_order_uuids():
+        for mm2_order_uuid in self.get_mm2_order_uuids():
             order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
             if "order" in order_info:
                 if 'started_swaps' in order_info['order']:
@@ -803,13 +814,13 @@ class Ui(QTabWidget):
         self.update_mm2_trades_table()
 
     # update bot swap history json when Binance trade initiated.
-    def update_bot_swap_history(self, mm2_mm2_order_uuid, selected_symbol, binance_orderId, order_type, coin, amount, swap):
+    def update_bot_swap_history(self, mm2_order_uuid, selected_symbol, binance_orderId, order_type, coin, amount, swap):
         log_msg = "Binance countertrade "+order_type+" order submitted! "
         resp = str(amount)+" "+coin+" at market via ["+selected_symbol+"]"
         self.update_trading_log('Bot', log_msg, str(resp))
-        if "binance_countertrades" not in self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]:
-            self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"] = {}
-        self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"].update({
+        if "binance_countertrades" not in self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]:
+            self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"] = {}
+        self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"].update({
             str(binance_orderId): {
                 "symbol":selected_symbol,
                 "type":order_type,
@@ -822,13 +833,13 @@ class Ui(QTabWidget):
     # check if binance trade is complete
     def check_binance_bot_counterorders(self):
         row_count = 0
-        for mm2_mm2_order_uuid in self.bot_swap_history:
-            if len(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']) > 0:
-                for swap in self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']:
-                    for orderId in self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
+        for mm2_order_uuid in self.bot_swap_history:
+            if len(self.bot_swap_history[mm2_order_uuid]['mm2_swaps']) > 0:
+                for swap in self.bot_swap_history[mm2_order_uuid]['mm2_swaps']:
+                    for orderId in self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
                         row_count += 1
-                        symbol = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['symbol']
-                        status = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
+                        symbol = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['symbol']
+                        status = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
                         resp = binance_api.get_order(self.creds[5], self.creds[6], symbol, orderId)
                         if 'status' in resp:
                             if resp['status'] == 'FILLED' and status != 'BINANCE COUNTERTRADE COMPLETE':
@@ -836,16 +847,16 @@ class Ui(QTabWidget):
                                 binance_orderId = resp['orderId']
                                 log_msg = "Binance countertrade complete! OrderID ["+str(resp['orderId'])+"]: "+resp['side']+" "+str(resp['executedQty'])+" "+str(resp['symbol'])
                                 self.update_trading_log("Bot", log_msg)
-                                self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId].update({
+                                self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId].update({
                                         "status":"BINANCE COUNTERTRADE COMPLETE"
                                 })
                                 self.write_bot_swap_history()
-                                order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_mm2_order_uuid).json()
+                                order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
                                 if len(order_info['order']['started_swaps']) == 0:
                                     # cancel mm2 bot order once countertrade complete (if no other trades in progress)
-                                    resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_mm2_order_uuid).json()
-                                    log_msg = get_time_str()+" (Bot): MM2 order uuid ["+mm2_mm2_order_uuid+"] "+base+"/"+rel+" cancelled after countertrade"
-                                    self.update_bot_log(mm2_mm2_order_uuid, log_msg, str(resp))
+                                    resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
+                                    log_msg = get_time_str()+" (Bot): MM2 order uuid ["+mm2_order_uuid+"] "+base+"/"+rel+" cancelled after countertrade"
+                                    self.update_bot_log(mm2_order_uuid, log_msg, str(resp))
                     QCoreApplication.processEvents()
         self.populate_countertrade_table(row_count)
 
@@ -855,33 +866,33 @@ class Ui(QTabWidget):
         self.clear_table(self.bot_binance_orders_table)
         self.bot_mm2_orders_table.setRowCount(row_count)
         row = 0
-        for mm2_mm2_order_uuid in self.bot_swap_history:
-            if 'mm2_base' in self.bot_swap_history[mm2_mm2_order_uuid]:
-                base = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_base']
-                rel = self.bot_swap_history[mm2_mm2_order_uuid]['mm2_rel']
-                time = self.bot_swap_history[mm2_mm2_order_uuid]['time']
-                if len(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']) > 0:
-                    for swap in self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps']:
+        for mm2_order_uuid in self.bot_swap_history:
+            if 'mm2_base' in self.bot_swap_history[mm2_order_uuid]:
+                base = self.bot_swap_history[mm2_order_uuid]['mm2_base']
+                rel = self.bot_swap_history[mm2_order_uuid]['mm2_rel']
+                time = self.bot_swap_history[mm2_order_uuid]['time']
+                if len(self.bot_swap_history[mm2_order_uuid]['mm2_swaps']) > 0:
+                    for swap in self.bot_swap_history[mm2_order_uuid]['mm2_swaps']:
                         orderId = '-'
                         symbol = '-'
                         trade_type = '-'
                         amount = '-'
                         status = 'MM2 TRADE COMPLETE'
                         coin = '-'
-                        mm2_swap_rel_amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_rel_amount']),8)
-                        mm2_swap_base_amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_base_amount']),8)
-                        countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
+                        mm2_swap_rel_amount = round(float(self.bot_swap_history[mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_rel_amount']),8)
+                        mm2_swap_base_amount = round(float(self.bot_swap_history[mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_base_amount']),8)
+                        countertrade_row = [time, mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
                         self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                         row += 1
-                        for orderId in self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
+                        for orderId in self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
                             mm2_swap_rel_amount = '-'
                             mm2_swap_base_amount = '-'
-                            symbol = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['symbol']
-                            trade_type = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['type']
-                            coin = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['coin']
-                            amount = round(float(self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['amount']),8)
-                            status = self.bot_swap_history[mm2_mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
-                            countertrade_row = [time, mm2_mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
+                            symbol = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['symbol']
+                            trade_type = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['type']
+                            coin = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['coin']
+                            amount = round(float(self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['amount']),8)
+                            status = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
+                            countertrade_row = [time, mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
                             self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                             row += 1
         self.bot_binance_orders_table.setSortingEnabled(True)
@@ -930,7 +941,7 @@ class Ui(QTabWidget):
                         else:
                             print("Not enough "+base_quoteAsset+" balance to cointertrade!")
 
-    def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_mm2_order_uuid, swap):
+    def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_order_uuid, swap):
         # replenish base, liquidate rel
         countertrade_symbols = self.get_binance_countertrade_symbols(self, base, rel, base_amount, rel_amount)
         selected_rel_symbol = countertrade_symbols[0]
@@ -943,37 +954,37 @@ class Ui(QTabWidget):
                 if binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == base:
                     resp = binance_api.create_sell_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, base_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_base_symbol, resp['orderId'], "sell", base, base_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_base_symbol, resp['orderId'], "sell", base, base_amount, swap)
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, rel_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_rel_symbol, resp['orderId'], "buy", rel, rel_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_rel_symbol, resp['orderId'], "buy", rel, rel_amount, swap)
                 # Direct rel trade...
                 elif binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == rel:
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, base_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_base_symbol, resp['orderId'], "buy", base, base_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_base_symbol, resp['orderId'], "buy", base, base_amount, swap)
                     resp = binance_api.create_sell_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, rel_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_rel_symbol, resp['orderId'], "sell", rel, rel_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_rel_symbol, resp['orderId'], "sell", rel, rel_amount, swap)
             else:
                 # Indirect base trade...
                 if binance_api.binance_pair_info[selected_base_symbol]['quoteAsset'] == base:
                     resp = binance_api.create_sell_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, base_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_base_symbol, resp['orderId'], "sell", base, base_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_base_symbol, resp['orderId'], "sell", base, base_amount, swap)
                 else:
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_base_symbol, base_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_base_symbol, resp['orderId'], "buy", base, base_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_base_symbol, resp['orderId'], "buy", base, base_amount, swap)
                 # Indirect rel trade...
                 if binance_api.binance_pair_info[selected_rel_symbol]['quoteAsset'] == rel:
                     resp = binance_api.create_buy_order_at_market(self.creds[5], self.creds[6], selected_rel_symbol, rel_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_rel_symbol, resp['orderId'], "buy", rel, rel_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_rel_symbol, resp['orderId'], "buy", rel, rel_amount, swap)
                 else:
                     resp = binance_api.create_sell_order_at_market(self.creds[5], self.creds[6], selected_rel_symbol, rel_amount)
                     if 'orderId' in resp:
-                        self.update_bot_swap_history(mm2_mm2_order_uuid, selected_rel_symbol, resp['orderId'], "sell", rel, rel_amount, swap)
+                        self.update_bot_swap_history(mm2_order_uuid, selected_rel_symbol, resp['orderId'], "sell", rel, rel_amount, swap)
         self.update_binance_orders_table()
 
     # get table row values for maker orders
@@ -2321,9 +2332,11 @@ class Ui(QTabWidget):
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#267F00'))
         self.trading_logs_list.addItem(log_row)
-        resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if resp == QMessageBox.Yes:
-            self.mm2_cancel_all_orders()
+        bot_order_count = self.bot_mm2_orders_table.rowCount()
+        if bot_order_count > 0:
+            resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if resp == QMessageBox.Yes:
+                self.mm2_cancel_all_orders()
 
     def start_bot_trading(self):
         buys = 0
