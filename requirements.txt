@@ -12,3 +12,7 @@ PyQRCode==1.2.1
 qrcode==6.1
 pyqtgraph==0.10.0
 python-dateutil==2.6.1
+fastapi==0.44.1
+uvicorn==0.10.8
+pydantic==1.2
+python-multipart==0.0.5

@@ -348,6 +348,7 @@ class Ui(QTabWidget):
             self.mm2_bin = self.ctx.get_resource('mm2')
         except:
             self.mm2_bin = self.ctx.get_resource('mm2.exe')
+        self.bot_api = self.ctx.get_resource('serve_bot.py')
         # define coins file path and set envornment variable for mm2 launch
         self.coins_file = self.ctx.get_resource('coins')
         os.environ['MM_COINS_PATH'] = self.coins_file
@@ -562,7 +563,19 @@ class Ui(QTabWidget):
                         time.sleep(0.6)
                         version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
-                    except:
+                        logfile='bot_api_output.log'
+                        try:
+                            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
+                            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+                            time.sleep(2)
+                            requests.post('http://127.0.0.1:8000/set_creds?ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+self.creds[5]+'&secret='+self.creds[6])
+                        except Exception as e:
+                            print('bot not start')
+                            print(e)
+
+                    except Exception as e:
+                        print('mm2 not start')
+                        print(e)
                         pass
                 # purge MM2.json cleartext
                 with open(config_path+"MM2.json", 'w+') as j:
@@ -2342,7 +2355,6 @@ class Ui(QTabWidget):
         self.trading_logs_list.addItem(log_row)
 
     def start_bot_trading(self):
-        #botlib.start_mm2_bot_loop(self.creds, self.buy_coins, self.sell_coins)
         buys = 0
         sells = 0
         for coin in self.buy_coins:
