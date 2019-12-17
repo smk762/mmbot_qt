@@ -108,7 +108,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -8064,16 +8064,6 @@ color: rgb(0, 0, 0);</string>
             </column>
             <column>
              <property name="text">
-              <string>Sell Coin</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Sell Vol</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>Buy Coin</string>
              </property>
             </column>
@@ -8085,6 +8075,16 @@ color: rgb(0, 0, 0);</string>
             <column>
              <property name="text">
               <string>Buy Price</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sell Coin</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>Sell Vol</string>
              </property>
             </column>
             <column>
@@ -9788,7 +9788,12 @@ color: rgb(0, 0, 0);</string>
             </column>
             <column>
              <property name="text">
-              <string>Order UUID</string>
+              <string>MM2 Order UUID</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>MM2 Swap UUID</string>
              </property>
             </column>
             <column>
@@ -9799,11 +9804,6 @@ color: rgb(0, 0, 0);</string>
             <column>
              <property name="text">
               <string>Rel</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Swap UUID</string>
              </property>
             </column>
             <column>
@@ -11614,7 +11614,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1863</x>
-     <y>82</y>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11629,8 +11629,8 @@ color: rgb(0, 0, 0);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>59</y>
+     <x>957</x>
+     <y>889</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11645,8 +11645,8 @@ color: rgb(0, 0, 0);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>56</y>
+     <x>740</x>
+     <y>840</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11661,8 +11661,8 @@ color: rgb(0, 0, 0);</string>
    <slot>login()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>58</y>
+     <x>740</x>
+     <y>809</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11677,8 +11677,8 @@ color: rgb(0, 0, 0);</string>
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>978</x>
-     <y>590</y>
+     <x>1143</x>
+     <y>617</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11710,7 +11710,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>997</x>
-     <y>200</y>
+     <y>227</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -11774,7 +11774,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>952</y>
+     <y>979</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11790,7 +11790,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>1013</y>
+     <y>1040</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11806,7 +11806,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>929</y>
+     <y>956</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11838,7 +11838,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>239</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11854,7 +11854,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11870,7 +11870,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>138</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11886,7 +11886,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>359</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11902,7 +11902,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1581</x>
-     <y>513</y>
+     <y>540</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11917,8 +11917,8 @@ color: rgb(0, 0, 0);</string>
    <slot>mm2_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1590</x>
-     <y>502</y>
+     <x>1452</x>
+     <y>902</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11934,7 +11934,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>983</x>
-     <y>513</y>
+     <y>540</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11949,8 +11949,8 @@ color: rgb(0, 0, 0);</string>
    <slot>mm2_cancel_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>853</x>
-     <y>502</y>
+     <x>940</x>
+     <y>902</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11966,7 +11966,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>810</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11982,7 +11982,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1205</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11998,7 +11998,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1606</x>
-     <y>200</y>
+     <y>227</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12014,7 +12014,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>389</x>
-     <y>200</y>
+     <y>227</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12062,7 +12062,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1344</x>
-     <y>1022</y>
+     <y>1049</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12077,8 +12077,8 @@ color: rgb(0, 0, 0);</string>
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1202</x>
-     <y>1011</y>
+     <x>1878</x>
+     <y>464</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12093,8 +12093,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>87</x>
-     <y>969</y>
+     <x>120</x>
+     <y>1008</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12109,8 +12109,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>87</x>
-     <y>997</y>
+     <x>120</x>
+     <y>1036</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12125,8 +12125,8 @@ color: rgb(0, 0, 0);</string>
    <slot>update_history_graph()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>87</x>
-     <y>941</y>
+     <x>120</x>
+     <y>980</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12141,8 +12141,8 @@ color: rgb(0, 0, 0);</string>
    <slot>combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>153</x>
-     <y>616</y>
+     <x>1308</x>
+     <y>1006</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12157,8 +12157,8 @@ color: rgb(0, 0, 0);</string>
    <slot>combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>320</x>
-     <y>616</y>
+     <x>1092</x>
+     <y>1006</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12189,8 +12189,8 @@ color: rgb(0, 0, 0);</string>
    <slot>bal_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>350</x>
-     <y>951</y>
+     <x>1318</x>
+     <y>1039</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12205,8 +12205,8 @@ color: rgb(0, 0, 0);</string>
    <slot>bal_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>88</x>
-     <y>951</y>
+     <x>1060</x>
+     <y>1039</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12221,8 +12221,8 @@ color: rgb(0, 0, 0);</string>
    <slot>bal_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>263</x>
-     <y>951</y>
+     <x>1232</x>
+     <y>1039</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12237,8 +12237,8 @@ color: rgb(0, 0, 0);</string>
    <slot>bal_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>175</x>
-     <y>951</y>
+     <x>1146</x>
+     <y>1039</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12253,8 +12253,8 @@ color: rgb(0, 0, 0);</string>
    <slot>mm2_price_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>849</y>
+     <x>370</x>
+     <y>947</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12269,8 +12269,8 @@ color: rgb(0, 0, 0);</string>
    <slot>mm2_buy_amount_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>909</y>
+     <x>370</x>
+     <y>1007</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12285,8 +12285,8 @@ color: rgb(0, 0, 0);</string>
    <slot>mm2_sell_amount_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>247</x>
-     <y>879</y>
+     <x>370</x>
+     <y>977</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12301,8 +12301,8 @@ color: rgb(0, 0, 0);</string>
    <slot>create_mm2_setprice()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>220</x>
-     <y>992</y>
+     <x>246</x>
+     <y>1045</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>

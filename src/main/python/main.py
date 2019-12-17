@@ -1,4 +1,4 @@
-#!/bin/
+#!/usr/bin/env python3
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
@@ -10,7 +10,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api
+from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api, botlib
 import qrcode
 import random
 from ui import resources
@@ -152,6 +152,7 @@ class bot_trading_thread(QThread):
                             for rel in self.buy_coins:
                                 if rel in self.active_coins:
                                     if base != rel and rel in coinslib.binance_coins:
+                                        mm2_order_uuid = ''
                                         #proceed with swap if both coins are binance compatible
                                         trade_price_val = priceslib.get_trade_price_val(self.creds, base, rel, available_balance)
                                         log_msg = get_time_str()+" (Bot): [MM2 Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_price_val[1])+" "+rel
@@ -166,7 +167,6 @@ class bot_trading_thread(QThread):
                                             msg = "New "+base+"/"+rel+" order "+resp['result']['uuid']+" submitted"
                                         else:
                                             msg = resp
-                                            mm2_order_uuid = ''
                                         # emit signal for log message update
                                         self.trigger.emit(mm2_order_uuid, log_msg, str(msg))
             # wait 20 min. TODO: there is config option to change this, need to find acceptable range (10 min minimum?).
@@ -883,7 +883,7 @@ class Ui(QTabWidget):
                         coin = '-'
                         mm2_swap_rel_amount = round(float(self.bot_swap_history[mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_rel_amount']),8)
                         mm2_swap_base_amount = round(float(self.bot_swap_history[mm2_order_uuid]['mm2_swaps'][swap]['mm2_swap_base_amount']),8)
-                        countertrade_row = [time, mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
+                        countertrade_row = [time, mm2_order_uuid, swap, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, orderId, symbol, trade_type, coin, amount, status]
                         self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                         row += 1
                         for orderId in self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"]:
@@ -894,7 +894,7 @@ class Ui(QTabWidget):
                             coin = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['coin']
                             amount = round(float(self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['amount']),8)
                             status = self.bot_swap_history[mm2_order_uuid]["mm2_swaps"][swap]["binance_countertrades"][orderId]['status']
-                            countertrade_row = [time, mm2_order_uuid, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, swap, orderId, symbol, trade_type, coin, amount, status]
+                            countertrade_row = [time, mm2_order_uuid, swap, base, rel, mm2_swap_rel_amount, mm2_swap_base_amount, orderId, symbol, trade_type, coin, amount, status]
                             self.add_row(row, countertrade_row, self.bot_binance_orders_table)
                             row += 1
         self.bot_binance_orders_table.setSortingEnabled(True)
@@ -945,7 +945,7 @@ class Ui(QTabWidget):
 
     def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_order_uuid, swap):
         # replenish base, liquidate rel
-        countertrade_symbols = self.get_binance_countertrade_symbols(self, base, rel, base_amount, rel_amount)
+        countertrade_symbols = self.get_binance_countertrade_symbols(base, rel, base_amount, rel_amount)
         selected_rel_symbol = countertrade_symbols[0]
         selected_base_symbol = countertrade_symbols[1]
         if selected_base_symbol != '':
@@ -1000,7 +1000,7 @@ class Ui(QTabWidget):
         timestamp = int(maker_orders[item]['created_at']/1000)
         created_at = datetime.datetime.fromtimestamp(timestamp)
         buy_price = round(float(1/float(sell_price)),8)
-        return [created_at, role, base, base_amount, rel, rel_amount, buy_price, sell_price, item]
+        return [created_at, role, rel, rel_amount, buy_price, base, base_amount, sell_price, item]
 
     # get table row values for taker orders
     def prepare_taker_row(self, taker_orders, item):
@@ -1013,7 +1013,7 @@ class Ui(QTabWidget):
         rel_amount = round(float(taker_orders[item]['request']['rel_amount']),8)
         buy_price = round(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount']),8)
         sell_price = round(float(1/float(buy_price)),8)
-        return [created_at, role, rel, rel_amount, base, base_amount, buy_price, sell_price, item]
+        return [created_at, role, base, base_amount, buy_price, rel, rel_amount, sell_price, item]
 
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -1804,6 +1804,7 @@ class Ui(QTabWidget):
             self.update_trading_log('mm2', log_msg, str(resp))
 
     def update_wallet_balance(self):
+        address = ''
         # set wallet page image
         index = self.wallet_combo.currentIndex()
         coin = self.wallet_combo.itemText(index)
@@ -1819,7 +1820,7 @@ class Ui(QTabWidget):
             locked_text = round(float(balance_info['locked']),8)
             available_balance = round(float(balance_info['available']),8)
         # add hyperlink if explorer url in coinslib
-        if coin != '':
+        if coin != '' and address != '':
             if coinslib.coin_explorers[coin]['addr_explorer'] != '':
                 self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
             else:
@@ -2341,6 +2342,7 @@ class Ui(QTabWidget):
         self.trading_logs_list.addItem(log_row)
 
     def start_bot_trading(self):
+        #botlib.start_mm2_bot_loop(self.creds, self.buy_coins, self.sell_coins)
         buys = 0
         sells = 0
         for coin in self.buy_coins:

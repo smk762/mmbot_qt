@@ -40,7 +40,6 @@ def get_creds(mm2_json_file):
         with open(mm2_json_file) as j:
             try:
                 mm2json = json.load(j)
-                print(mm2json)
                 if 'gui' in mm2json:
                     gui = mm2json['gui']
                 else:
