@@ -92,30 +92,38 @@ def get_mm2_pair_orderbook(mm2_ip, mm2_rpc_pass, base, rel):
     orderbook = rpclib.orderbook(mm2_ip, mm2_rpc_pass, base, rel).json()
     asks = []
     bids = []
-    for order in orderbook['asks']:
-        ask = {
-            "base": base,
-            "rel": rel,
-            "price": order['price'],
-            "max_volume":order['maxvolume'],
-            "age":order['age']
-        }
-        asks.append(ask)
-    for order in orderbook['bids']:
-        bid = {
-            "base": base,
-            "rel": rel,
-            "price": order['price'],
-            "max_volume":order['maxvolume'],
-            "age":order['age']
-        }
-        bids.append(bid)
     orderbook_pair = {
         base+rel: {
             "asks":asks,
             "bids":bids
         }
     }
+    if 'asks' in orderbook:
+        for order in orderbook['asks']:
+            ask = {
+                "base": base,
+                "rel": rel,
+                "price": order['price'],
+                "max_volume":order['maxvolume'],
+                "age":order['age']
+            }
+            asks.append(ask)
+    if 'bids' in orderbook:
+        for order in orderbook['bids']:
+            bid = {
+                "base": base,
+                "rel": rel,
+                "price": order['price'],
+                "max_volume":order['maxvolume'],
+                "age":order['age']
+            }
+            bids.append(bid)
+        orderbook_pair = {
+            base+rel: {
+                "asks":asks,
+                "bids":bids
+            }
+        }
     return orderbook_pair
 
 def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
@@ -135,6 +143,7 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_p
         "binance": {},
         "binance_quote_assets": {}
     }
+    print(balances_data)
     binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
     for coin in active_coins:
         # get binance balance
@@ -143,18 +152,24 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_p
             balances_data["binance"].update({coin:available})
         # get mm2 balance        
         balance_info = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
-        balance = balance_info['balance']
-        locked = balance_info['locked_by_swaps']
-        available = float(balance) - float(locked)
-        balances_data["mm2"].update({coin:available})
-        if coin in prices_data['binance']:
-            quoteassets += list(prices_data['binance'][coin].keys())
+        if 'balance' in balance_info:
+            balance = balance_info['balance']
+            locked = balance_info['locked_by_swaps']
+            available = float(balance) - float(locked)
+            balances_data["mm2"].update({coin:available})
+        else:
+            print(balance_info)
+        if 'binance' in prices_data:
+            if coin in prices_data['binance']:
+                quoteassets += list(prices_data['binance'][coin].keys())
     quoteassets = list(set(quoteassets))
+    print(balances_data)
     for coin in quoteassets:
         if coin in prices_data['binance'] and coin not in balances_data and coin in binance_balances:
             available = binance_balances[coin]['available']
             balances_data["binance_quote_assets"].update({coin:available})
     print("balances loop completed")
+    print(balances_data)
     return balances_data
     # TODO: test this with API keys active
 

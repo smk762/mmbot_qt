@@ -192,6 +192,9 @@ class balances_update_thread(object):
 
 ### API CALLS
 
+
+# TODO: add https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
+
 app = FastAPI()
 @app.get("/")
 async def root():
@@ -218,7 +221,6 @@ async def all_balances():
     """
     Returns MM2 and CEX balances
     """
-    global balances_data
     return balances_data
 
 @app.post("/strategies/create")

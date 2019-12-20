@@ -338,7 +338,7 @@ class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
         # Load the User interface from file
-        uifile = QFile(":/ui/makerbot_gui_dark_v3.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark_v3a.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) 
         self.ctx = ctx 
@@ -647,6 +647,30 @@ class Ui(QTabWidget):
             f.write(json.dumps(self.bot_swap_history))
 
     #table functions
+
+
+    def populate_table(self, data, table):
+        url = "http://dragonhound.tech/api/"
+        r = requests.get(url+endpoint)
+        if r.status_code == 200:
+            data = r.json()
+            headers = list(data[0].keys())
+            row = 0
+            col_count = len(headers)
+            table.setColumnCount(col_count)
+            row_count = len(data)
+            table.setRowCount(row_count)
+            table.setHorizontalHeaderLabels(headers)
+            table.setSortingEnabled(False)
+            print(headers)
+            self.clear_table(table)
+            for item in data:
+                row_data = list(item.values())
+                self.add_row(row, row_data, table)
+                row += 1
+            table.setSortingEnabled(True)
+            table.resizeColumnsToContents()
+
     def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
         for cell_data in row_data:
@@ -2446,6 +2470,37 @@ class Ui(QTabWidget):
             self.add_row(row, price_row, self.prices_table)
             row += 1
 
+    def show_balances_tab(self):
+        balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
+        self.clear_table(self.balances_table)
+        self.balances_table.setSortingEnabled(False)
+        bn_coins = list(balances_data['binance'].keys())
+        table_coins = list(set(bn_coins + self.active_coins))
+        row_count = len(table_coins)
+        self.balances_table.setRowCount(row_count)
+        row = 0
+        for coin in table_coins:
+            if coin in balances_data['mm2']: 
+                mm2_bal = balances_data['mm2'][coin]
+            else:
+                mm2_bal = 0
+            if coin in balances_data['binance']:
+                bn_bal = balances_data['binance'][coin]
+            else:
+                bn_bal = 0
+            total_bal = mm2_bal + bn_bal
+            balance_row = [coin, mm2_bal, bn_bal, total_bal, '-', '-']
+            self.add_row(row, balance_row, self.balances_table)
+            row += 1
+        self.balances_table.setSortingEnabled(True)
+        self.balances_table.resizeColumnsToContents()
+        print(balances_data)
+        pass
+
+    def show_strategies_tab(self):
+        pass
+
+
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
         try:
@@ -2487,9 +2542,17 @@ class Ui(QTabWidget):
                 self.show_bot_trading_tab()
             elif index == 6:
                 # config
+                print('show_strategies_tab')
+                self.show_strategies_tab()
+            elif index == 7:
+                # config
+                print('show_balances_tab')
+                self.show_balances_tab()
+            elif index == 8:
+                # config
                 print('show_config_tab')
                 self.show_config_tab()
-            elif index == 7:
+            elif index == 9:
                 # logs
                 print('show_mm2_logs_tab')
                 self.show_mm2_logs_tab()
