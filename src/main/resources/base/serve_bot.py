@@ -127,10 +127,11 @@ def colorize(string, color):
     else:
         return colors[color] + str(string) + '\033[0m'
 
-balances_data = ''
-prices_data = ''
-bot_data = ''
-orderbook_data = ''
+balances_data = {}
+prices_data = {}
+bot_data = {}
+orderbook_data = {}
+addresses_data = {}
 
 ### THREAD Classes
 
@@ -177,7 +178,7 @@ class orderbook_update_thread(object):
 
 
 class balances_update_thread(object):
-    def __init__(self, interval=60):                  # 20 min, TODO: change to var
+    def __init__(self, interval=30):                  # 20 min, TODO: change to var
         self.interval = interval
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
@@ -189,6 +190,17 @@ class balances_update_thread(object):
             balances_data = botlib.balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path)
             time.sleep(self.interval)
 
+class addresses_thread(object):
+    def __init__(self):                  # 20 min, TODO: change to var
+        thread = Thread(target=self.run, args=())
+        thread.daemon = True                            # Daemonize thread
+        thread.start()                                  # Start the execution
+
+    def run(self):
+        while True:
+            global addresses_data
+            addresses_data = botlib.get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret)
+
 
 ### API CALLS
 
@@ -199,6 +211,10 @@ app = FastAPI()
 @app.get("/")
 async def root():
     return {"message": "Welcome to Antara Markerbot API. See /docs for all methods"}
+
+@app.get("/api_version")
+async def api_version():
+    return {"version": "0.0.1"}
 
 # Get creds from app
 @app.post("/set_creds")
@@ -222,6 +238,13 @@ async def all_balances():
     Returns MM2 and CEX balances
     """
     return balances_data
+
+@app.get("/all_addresses")
+async def all_addresses():
+    """
+    Returns MM2 and CEX balances
+    """
+    return addresses_data
 
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 
@@ -317,14 +340,21 @@ async def coin_prices(base, rel):
         "message": base+"/"+rel+" price data found",
         "binance_prices": prices
     }
-    
     return prices
+
+@app.get("/all_prices")
+async def all_prices():
+    resp = {
+        "response": "success",
+        "message": "All prices data found",
+        "price_data": prices_data,
+    }
+    return resp
 
 @app.get("/prices/{coin}")
 async def coin_prices(coin):
     coin = coin.upper()
     if coin == 'ALL':
-
         resp = {
             "response": "success",
             "message": coin+" price data found",
@@ -493,8 +523,7 @@ def main():
 
 if __name__ == "__main__":
     format = "%(asctime)s: %(message)s"
-    logging.basicConfig(format=format, level=logging.INFO,
-                        datefmt="%H:%M:%S")
+    logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
     uvicorn.run(app, host="127.0.0.1", port=8000)
 '''
 method: start_trade strategy: marketmaking``margin: 10 tickers_base: [BTC, KMD] tickers_rel: [VRSC]

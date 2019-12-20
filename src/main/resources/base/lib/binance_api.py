@@ -378,7 +378,6 @@ def get_exchange_info():
     return binance_pairs, base_asset_info, quoteAssets, binance_pair_info, supported_binance_pairs
 
 
-
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
@@ -402,3 +401,20 @@ def get_binance_balances(key, secret):
                 }
             })
     return binance_balances
+
+
+def get_binance_addresses(key, secret):
+    binance_addresses = {}
+    acct_info = get_account_info(key, secret)
+    if 'balances' in acct_info:
+        for item in acct_info['balances']:
+            coin = item['asset']
+            resp = get_deposit_addr(key, secret, coin)
+            if 'address' in resp:
+                addr_text = resp['address']
+            else:
+                addr_text = 'Address not found - create it at Binance.com'
+            address = addr_text
+            binance_addresses.update({coin:address})
+    return binance_addresses
+

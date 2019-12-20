@@ -24,6 +24,14 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
 
+'''
+# TODOS #
+ - create tablification scripts for data returned from api or mm2.
+ - remove code deprecated by API
+ - autoactivate coins needing kickstart
+
+'''
+
 home = expanduser("~")
 
 # Attempt to suppress console window in windows version. TODO: not working, find another way.
@@ -70,133 +78,6 @@ def ETH_AmountToJSON(amount):
     return float(amount / 1e18)
 
 # THREADED OPERATIONS
-
-# Bot trading loop
-class bot_trading_thread(QThread):
-    trigger = pyqtSignal(str, str, str)
-    check_status =  pyqtSignal(str)
-
-    def __init__(self, creds, sell_coins, buy_coins, active_coins):
-        QThread.__init__(self)
-        self.creds = creds
-        self.sell_coins = sell_coins
-        self.buy_coins = buy_coins
-        self.active_coins = active_coins
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):        
-        while True:   
-            # get existing pending orders
-            orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()   
-            if 'maker_orders' in orders['result']:
-                maker_orders = orders['result']['maker_orders']
-                # check order status
-                for mm2_order_uuid in maker_orders:
-                    self.check_status.emit(mm2_order_uuid)
-                    base = maker_orders[mm2_order_uuid]['base']
-                    rel = maker_orders[mm2_order_uuid]['rel']
-                    order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
-                    # cancel order if no swaps matching
-                    if len(order_info['order']['started_swaps']) == 0:
-                        resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
-                        log_msg = get_time_str()+" (Bot): MM2 order uuid ["+mm2_order_uuid+"] "+base+"/"+rel+" cancelled"
-                        self.trigger.emit(mm2_order_uuid, log_msg, str(resp))
-                    else:
-                        # check swap status
-                        finished = 0
-                        for swap in order_info['order']['started_swaps']:
-                            failed = False
-                            swap_stages = []
-                            swaps_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap).json()
-                            # scan for events, and log swap event stage
-                            if 'events' in swaps_info['result']:
-                                event_types = []
-                                for event in swaps_info['result']['events']:
-                                    event_types.append(event['event']['type'])
-                                    if event['event']['type'] in rpclib.error_events: 
-                                        failed = True
-                                        fail_event = event['event']['type']
-                                    if event['event']['type'] == 'Finished':
-                                        finished += 1
-                                        if not failed:                                            
-                                            if 'my_info' in swaps_info['result']:
-                                                base_amount = swaps_info['result']['my_info']['my_amount']
-                                                rel_amount = swaps_info['result']['my_info']['other_amount']
-                                            log_msg = "Swap "+swap+" has completed! Recieved "+str(rel_amount)+" "+rel+" for "+str(base_amount)+" "+base
-                                        else:
-                                            for i in range(self.mm2_trades_table.rowCount()):
-                                                if self.mm2_trades_table.item(i,2).text() != 'Failed' and self.mm2_trades_table.item(i,9).text() == swap:
-                                                    log_msg = "Swap "+swap+" has failed at event "+fail_event+"!"
-                                swap_stages.append("Swap "+swap+" is at stage "+event_types[-1]+".")
-                        # cancel previous order if all started swaps have completed.
-                        if len(order_info['order']['started_swaps']) == finished:
-                            resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
-                            log_msg = get_time_str()+" (Bot): MM2 order uuid ["+mm2_order_uuid+"] "+base+"/"+rel+" cancelled"
-                            self.trigger.emit(mm2_order_uuid, log_msg, str(resp))
-                        else:
-                            log_msg = get_time_str()+" (Bot): MM2 order uuid ["+mm2_order_uuid+"] "+base+"/"+rel+" not cancelled, swap(s) in progress!"
-                            resp = "| ".join(swap_stages)
-                        self.trigger.emit(mm2_order_uuid, log_msg, str(resp))
-
-            # iterate over activated coins marked for "Sell"
-            for base in self.sell_coins:
-                if base in self.active_coins:
-                    # check available balance for trade
-                    balance_info = rpclib.my_balance(self.creds[0], self.creds[1], base).json()
-                    if 'address' in balance_info:
-                        available_balance = float(balance_info['balance']) - float(balance_info['locked_by_swaps'])
-                        # iterate over activated coins marked for "Buy"
-                        if available_balance > 0 and base in coinslib.binance_coins:
-                            for rel in self.buy_coins:
-                                if rel in self.active_coins:
-                                    if base != rel and rel in coinslib.binance_coins:
-                                        mm2_order_uuid = ''
-                                        #proceed with swap if both coins are binance compatible
-                                        trade_price_val = priceslib.get_trade_price_val(self.creds, base, rel, available_balance)
-                                        log_msg = get_time_str()+" (Bot): [MM2 Create Order] Sell "+str(available_balance)+" "+base+" for "+str(trade_price_val[1])+" "+rel
-                                        resp = rpclib.setprice(self.creds[0], self.creds[1], base, rel, available_balance, trade_price_val[0], True, False).json()
-                                        if 'error' in resp:
-                                            if resp['error'].find("larger than available") > -1:
-                                                msg = "Insufficient funds to complete "+base+"/"+rel+" order."
-                                            else:
-                                                msg = resp
-                                        elif 'result' in resp:
-                                            mm2_order_uuid = resp['result']['uuid']
-                                            msg = "New "+base+"/"+rel+" order "+resp['result']['uuid']+" submitted"
-                                        else:
-                                            msg = resp
-                                        # emit signal for log message update
-                                        self.trigger.emit(mm2_order_uuid, log_msg, str(msg))
-            # wait 20 min. TODO: there is config option to change this, need to find acceptable range (10 min minimum?).
-            time.sleep(1200)
-
-    def stop(self):
-        self.terminate()
-
-# request and cache external balance and pricing data in thread
-class cachedata_thread(QThread):
-    update_data = pyqtSignal(dict, dict, dict)
-    def __init__(self, creds):
-        QThread.__init__(self)
-        self.creds = creds
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        while True:
-            try:
-                binance_balances = binance_api.get_binance_balances(self.creds[5], self.creds[6])
-                active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-                prices_data = priceslib.get_prices_data(self.creds[0], self.creds[1], active_coins)
-                mm2_balances = rpclib.get_mm2_balances(self.creds[0], self.creds[1], active_coins)                
-                self.update_data.emit(prices_data, mm2_balances, binance_balances)
-                time.sleep(60)
-            except Exception as e:
-                print(e)
-                pass
 
 # Process coin activation in thread
 class activation_thread(QThread):
@@ -348,6 +229,7 @@ class Ui(QTabWidget):
             self.mm2_bin = self.ctx.get_resource('mm2')
         except:
             self.mm2_bin = self.ctx.get_resource('mm2.exe')
+        # define local bot api script
         self.bot_api = self.ctx.get_resource('serve_bot.py')
         # define coins file path and set envornment variable for mm2 launch
         self.coins_file = self.ctx.get_resource('coins')
@@ -363,7 +245,6 @@ class Ui(QTabWidget):
         self.authenticated = False
         self.mm2_downloading = False
         self.bot_trading = False
-        # TODO: set countertrade_delay_limit as an option in config. This will enforce that only recent mm2 trades initiate a matching binance countertrade.
         self.countertrade_delay_limit = 1800
 
         self.last_price_update = 0
@@ -539,10 +420,18 @@ class Ui(QTabWidget):
             QMessageBox.information(self, "Progress status", 'No mm2!')
             print(e)
 
+    def start_api(self, logfile='bot_api_output.log'):        
+        try:
+            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
+            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+            time.sleep(2)
+            requests.post('http://127.0.0.1:8000/set_creds?ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+self.creds[5]+'&secret='+self.creds[6])
+        except Exception as e:
+            print('bot not start')
+            print(e)
 
     def launch_mm2(self):         
         if self.username in settings.value('users'):
-            self.bot_swap_history = dict(self.get_bot_swap_history())
             self.username_input.setText('')
             self.password_input.setText('')
             # hide login page, show activation page
@@ -563,28 +452,24 @@ class Ui(QTabWidget):
                         time.sleep(0.6)
                         version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
-                        logfile='bot_api_output.log'
-                        try:
-                            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-                            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
-                            time.sleep(2)
-                            requests.post('http://127.0.0.1:8000/set_creds?ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+self.creds[5]+'&secret='+self.creds[6])
-                        except Exception as e:
-                            print('bot not start')
-                            print(e)
-
                     except Exception as e:
                         print('mm2 not start')
                         print(e)
-                        pass
+                    try:
+                        self.start_api()
+                        time.sleep(0.6)
+                        version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
+                        print(version)
+                        self.api_version_lbl.setText("Makerbot API version: "+version+" ")
+                    except Exception as e:
+                        print('bot not start')
+                        print(e)
+                        # TODO: MESSAGEBOX AND EXIT
                 # purge MM2.json cleartext
                 with open(config_path+"MM2.json", 'w+') as j:
                     j.write('')
                 self.show_activation_tab()
                 # start data caching loop in other thread
-                self.datacache_thread = cachedata_thread(self.creds)
-                self.datacache_thread.update_data.connect(self.update_cachedata)
-                self.datacache_thread.start()
             else:
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
 
@@ -628,32 +513,33 @@ class Ui(QTabWidget):
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","Text Files (*.csv)", options=options)
         return fileName
 
-    def get_bot_swap_history(self):
-        bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
-        if not os.path.isfile(bot_swap_jsonfile):
+    ''' DEPRECATED? This info will be in 'API strategies sessions' data
+        def get_bot_swap_history(self):
+            bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
+            if not os.path.isfile(bot_swap_jsonfile):
+                with open(bot_swap_jsonfile, 'w') as f:
+                    f.write(str({}))
+            with open(bot_swap_jsonfile, 'r') as f:
+                try:
+                    bot_swap_history = json.loads(f.read())
+                except:
+                    bot_swap_history = {}
+            return bot_swap_history
+
+        def write_bot_swap_history(self):
+            print("writing_bot_swap_history")
+            bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
             with open(bot_swap_jsonfile, 'w') as f:
-                f.write(str({}))
-        with open(bot_swap_jsonfile, 'r') as f:
-            try:
-                bot_swap_history = json.loads(f.read())
-            except:
-                bot_swap_history = {}
-        return bot_swap_history
+                f.write(json.dumps(self.bot_swap_history))
 
-    def write_bot_swap_history(self):
-        print("writing_bot_swap_history")
-        bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
-        with open(bot_swap_jsonfile, 'w') as f:
-            f.write(json.dumps(self.bot_swap_history))
+    '''
 
-    #table functions
-
-
-    def populate_table(self, data, table):
-        url = "http://dragonhound.tech/api/"
+    #table functions (for future reference)
+    def populate_table(self, endpoint, table):
+        url = "http://127.0.0.1:8000/"
         r = requests.get(url+endpoint)
         if r.status_code == 200:
-            data = r.json()
+            data = r.json()['table_data']
             headers = list(data[0].keys())
             row = 0
             col_count = len(headers)
@@ -687,7 +573,7 @@ class Ui(QTabWidget):
             col += 1
 
     def export_table(self):
-        #TODO: add sender
+        #TODO: add sender, get headers dynamically
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
         for i in range(self.mm2_trades_table.rowCount()):
             row_list = []
@@ -740,22 +626,6 @@ class Ui(QTabWidget):
             combo.setCurrentIndex(0)
             selected = combo.itemText(combo.currentIndex())
         return selected
-
-    # sometimes we need to update the balance for a coin if its if not already cached, or something like a withdraw just happened.
-    def update_balance(self, coin):
-        self.balances_data[coin] = {}
-        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
-        if 'address' in balance_info:
-            address = balance_info['address']
-            balance = round(float(balance_info['balance']),8)
-            locked = round(float(balance_info['locked_by_swaps']),8)
-            available = balance - locked
-            self.balances_data[coin].update({
-                'address':address,
-                'balance':balance,
-                'locked':locked,
-                'available':available
-            })
 
     # parse out user order uuids as a list
     def get_mm2_order_uuids(self):
@@ -1550,8 +1420,6 @@ class Ui(QTabWidget):
             selected_max_vol = self.orderbook_table.item(selected_row,2).text()
             if selected_price != '':
 
-                if rel not in self.balances_data:
-                    self.update_balance(rel)
                 balance_info = self.balances_data[rel]
                 if 'address' in balance_info:
                     address = balance_info['address']
@@ -1624,8 +1492,6 @@ class Ui(QTabWidget):
             self.mm2_send_order_btn.setText("Sell "+base)
 
             # get balances
-            if rel not in self.balances_data:
-                self.update_balance(rel)
             balance_info = self.balances_data[rel]
             if 'address' in balance_info:
                 address = balance_info['address']
@@ -1634,8 +1500,6 @@ class Ui(QTabWidget):
                 available_balance = round(float(balance_info['available']),8)
                 self.mm2_sell_balance_lbl.setText("Available: "+str(available_balance)+" "+rel)
                 self.mm2_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
-            if base not in self.balances_data:
-                self.update_balance(base)
             balance_info = self.balances_data[base]
             if 'address' in balance_info:
                 address = balance_info['address']
@@ -1847,9 +1711,6 @@ class Ui(QTabWidget):
         coin = self.wallet_combo.itemText(index)
         self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
         # get wallet balance for slected coin
-        if coin not in self.balances_data:
-            QCoreApplication.processEvents()
-            self.update_balance(coin)
         balance_info = self.balances_data[coin]
         if 'address' in balance_info:
             address = balance_info['address']
@@ -1945,9 +1806,7 @@ class Ui(QTabWidget):
             else:
                 msg = str(resp)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
-            # update balance after withdrawl 
-            # TODO: this might need a delay...
-            self.update_balance(cointag)
+            # TODO: update balance after withdrawl 
             balance_info = self.balances_data[cointag]
             if 'address' in balance_info:
                 address = balance_info['address']
@@ -2436,12 +2295,12 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     # once cachedata thred returns data, update balances, logs and tables as required.
-    def update_cachedata(self, prices_dict, balaces_dict, binance_balance_dict):
+    def update_cachedata(self, prices_dict, balaces_dict):
         print("updating cache data from thread")
-        self.binance_balances = binance_balance_dict
         self.check_mm_bot_order_swaps()
         self.check_binance_bot_counterorders()
         self.prices_data = prices_dict
+        print(self.prices_data['average'])
         self.balances_data = balaces_dict
         self.prices_table.setSortingEnabled(False)
         row_count = len(self.prices_data)
@@ -2451,54 +2310,56 @@ class Ui(QTabWidget):
         self.update_wallet_balance()
         self.update_mm2_trades_table()
         row = 0
-        for item in self.prices_data:
-            coin = item
-            try:
-                api_btc_price = str(round(self.prices_data[item]["average_btc"],8))+" BTC"
-            except:
-                api_btc_price = "-"
-            try:
-                api_kmd_price = round(self.prices_data[item]["kmd_price"],6)
-            except:
-                api_kmd_price = "-"
-            try:
-                api_usd_price = "$"+str(round(self.prices_data[item]["average_usd"],4))+" USD"
-            except:
-                api_usd_price = "-"
-            sources = self.prices_data[item]["sources"]
-            price_row = [coin, api_btc_price, api_kmd_price, api_usd_price, sources]
-            self.add_row(row, price_row, self.prices_table)
-            row += 1
+        if 'average' in self.prices_data:
+            for coin in self.prices_data['average']:
+                try:
+                    api_btc_price = str(round(self.prices_data['average'][coin]["average_btc"],8))+" BTC"
+                except:
+                    api_btc_price = "-"
+                try:
+                    api_usd_price = "$"+str(round(self.prices_data['average'][coin]["average_usd"],4))+" USD"
+                except:
+                    api_usd_price = "-"
+                usd_sources = self.prices_data['average'][coin]["usd_sources"]
+                btc_sources = self.prices_data['average'][coin]["btc_sources"]
+                price_row = [coin, api_btc_price, api_usd_price, btc_sources, usd_sources]
+                self.add_row(row, price_row, self.prices_table)
+                row += 1
 
     def show_balances_tab(self):
         balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
         self.clear_table(self.balances_table)
         self.balances_table.setSortingEnabled(False)
-        bn_coins = list(balances_data['binance'].keys())
-        table_coins = list(set(bn_coins + self.active_coins))
-        row_count = len(table_coins)
-        self.balances_table.setRowCount(row_count)
-        row = 0
-        for coin in table_coins:
-            if coin in balances_data['mm2']: 
-                mm2_bal = balances_data['mm2'][coin]
-            else:
-                mm2_bal = 0
-            if coin in balances_data['binance']:
-                bn_bal = balances_data['binance'][coin]
-            else:
-                bn_bal = 0
-            total_bal = mm2_bal + bn_bal
-            balance_row = [coin, mm2_bal, bn_bal, total_bal, '-', '-']
-            self.add_row(row, balance_row, self.balances_table)
-            row += 1
-        self.balances_table.setSortingEnabled(True)
-        self.balances_table.resizeColumnsToContents()
-        print(balances_data)
-        pass
+        if 'binance' in balances_data:
+            bn_coins = list(balances_data['binance'].keys())
+            table_coins = list(set(bn_coins + self.active_coins))
+            row_count = len(table_coins)
+            self.balances_table.setRowCount(row_count)
+            row = 0
+            for coin in table_coins:
+                if coin in balances_data['mm2']: 
+                    mm2_bal = balances_data['mm2'][coin]
+                else:
+                    mm2_bal = 0
+                if coin in balances_data['binance']:
+                    bn_bal = balances_data['binance'][coin]
+                else:
+                    bn_bal = 0
+                total_bal = mm2_bal + bn_bal
+                balance_row = [coin, mm2_bal, bn_bal, total_bal, '-', '-']
+                self.add_row(row, balance_row, self.balances_table)
+                row += 1
+            self.balances_table.setSortingEnabled(True)
+            self.balances_table.resizeColumnsToContents()
+            print(balances_data)
 
     def show_strategies_tab(self):
         pass
+
+    def show_prices_tab(self):
+        print(self.prices_data)
+        priced_coins = list(self.prices_data.keys())
+        print(priced_coins)
 
 
     # runs each time the tab is changed to populate the items on that tab
@@ -2550,9 +2411,13 @@ class Ui(QTabWidget):
                 self.show_balances_tab()
             elif index == 8:
                 # config
+                print('show_prices_tab')
+                self.show_prices_tab()
+            elif index == 9:
+                # config
                 print('show_config_tab')
                 self.show_config_tab()
-            elif index == 9:
+            elif index == 10:
                 # logs
                 print('show_mm2_logs_tab')
                 self.show_mm2_logs_tab()

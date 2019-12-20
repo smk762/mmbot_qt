@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>7</number>
+   <number>9</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5803,17 +5803,17 @@ color: rgb(0, 0, 0);</string>
             </column>
             <column>
              <property name="text">
-              <string>KMD Price (ave)</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
               <string>USD Price (ave)</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Sources</string>
+              <string>BTC Price Sources</string>
+             </property>
+            </column>
+            <column>
+             <property name="text">
+              <string>USD Price Sources</string>
              </property>
             </column>
            </widget>
@@ -10201,6 +10201,87 @@ color: rgb(0, 0, 0);</string>
     </item>
    </layout>
   </widget>
+  <widget class="QWidget" name="tab_prices">
+   <attribute name="title">
+    <string>Prices</string>
+   </attribute>
+   <layout class="QGridLayout" name="gridLayout_75">
+    <item row="0" column="0">
+     <widget class="QFrame" name="frame_48">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_74">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>Update</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>14</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Prices</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTableWidget" name="balances_table_2">
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>135</number>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Coin</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>MM2 Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Binance Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Total Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>USD Value</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>BTC Value</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QWidget" name="tab_config">
    <attribute name="title">
     <string>Config</string>
@@ -10296,6 +10377,29 @@ color: rgb(0, 0, 0);</string>
              </size>
             </property>
            </spacer>
+          </item>
+          <item>
+           <widget class="QLabel" name="api_version_lbl">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+              <pointsize>9</pointsize>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>Makerbot version:</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="mm2_version_lbl">
@@ -11190,45 +11294,6 @@ color: rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="lbl_logs">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>62</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
-            </property>
-            <property name="text">
-             <string>Antara Marketmaker Console Logs</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="5">
            <widget class="QPushButton" name="btn_update_logs">
             <property name="sizePolicy">
@@ -11289,6 +11354,45 @@ color: rgb(0, 0, 0);</string>
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="lbl_logs">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>62</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>16</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="text">
+             <string>Antara Marketmaker Console Logs</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

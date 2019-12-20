@@ -129,6 +129,22 @@ def my_balance(node_ip, user_pass, cointag):
     r = requests.post(node_ip, json=params)
     return r
 
+def all_balances(node_ip, user_pass):
+  balances = []
+  active_coins = check_active_coins(node_ip, user_pass)
+  for coin in active_coins:
+    resp = my_balance(node_ip, user_pass, coin).json()
+    balances.append(resp)
+    time.sleep(0.03)
+  return balances
+
+def all_addresses(node_ip, user_pass):
+  addresses = {}
+  balances = all_balances(node_ip, user_pass)
+  for item in balances:
+    addresses.update({item['coin']:item['address']})
+  return addresses
+
 def my_orders(node_ip, user_pass):
     params = {'userpass': user_pass, 'method': 'my_orders',}
     r = requests.post(node_ip, json=params)
