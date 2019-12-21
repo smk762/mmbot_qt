@@ -140,10 +140,15 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_p
         if 'balance' in item:
             address = item['address']
             coin = item['coin']
-            balance = item['balance']
+            total = item['balance']
             locked = item['locked_by_swaps']
-            available = float(balance) - float(locked)
-            balances_data["mm2"].update({coin:available})
+            available = float(total) - float(locked)
+            balances_data["mm2"].update({coin: {
+                "total":total,
+                "locked":locked,
+                "available":available,
+                }                
+            })
         else:
             print(item)
 
@@ -159,7 +164,7 @@ def get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret):
     mm2_addr = rpclib.all_addresses(mm2_ip, mm2_rpc_pass)
     addresses = {
         'binance': bn_addr ,
-        'marketmaker': mm2_addr
+        'mm2': mm2_addr
     }
     return addresses
 

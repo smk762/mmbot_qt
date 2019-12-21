@@ -973,6 +973,7 @@ class Ui(QTabWidget):
             else:
                 self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(52, 101, 164)")
 
+
     ## LOGIN 
     def show_login_tab(self):
         self.stacked_login.setCurrentIndex(0)
@@ -1704,19 +1705,95 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Created Setprice Sell Order', str(msg), QMessageBox.Ok, QMessageBox.Ok)
             self.update_trading_log('mm2', log_msg, str(resp))
 
-    def update_wallet_balance(self):
-        address = ''
+
+    ## WALLET
+    def show_mm2_wallet_tab(self):
+        if len(self.active_coins) < 1:
+            msg = 'Please activate at least one coin. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            self.wallet_recipient.setFocus()
+            if self.wallet_combo.currentIndex() != -1:
+                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
+            else:
+                selected = self.wallet_combo.itemText(0)
+            self.update_combo(self.wallet_combo,self.active_coins,selected)
+            balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
+            self.update_wallet_balance(balances_data)
+            self.update_mm2_balance_table(balances_data)
+
+    def show_mm2_qr_popup(self):
+        index = self.wallet_combo.currentIndex()
+        coin = self.wallet_combo.itemText(index)
+        addr_txt = self.wallet_address.text()
+        qr_img = qrcode.make(addr_txt, image_factory=QR_image)
+        self.qr_lbl = QLabel(self)
+        self.qr_lbl.setText(addr_txt)
+        self.qr_img_lbl = QLabel(self)
+        self.qr_img_lbl.setPixmap(qr_img.pixmap())
+        msgBox = QMessageBox(QMessageBox.NoIcon, "MM2 "+coin+" Address QR Code ", addr_txt)
+        l = msgBox.layout()
+        l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
+        l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
+        msgBox.addButton("Close", QMessageBox.NoRole)
+        msgBox.exec()
+
+    def update_mm2_balance_table(self, balances_data):        
+        self.clear_table(self.mm2_balances_table)
+        self.mm2_balances_table.setSortingEnabled(False)
+        row_count = len(self.active_coins)
+        self.mm2_balances_table.setRowCount(row_count)
+        row = 0
+        for coin in self.active_coins:
+            if coin in balances_data['mm2']:
+                mm2_bal = balances_data['mm2'][coin]['total']
+                balance_row = [coin, mm2_bal, '-', '-']
+                print(balance_row)
+                self.add_row(row, balance_row, self.mm2_balances_table)
+                row += 1
+            else:
+                # TODO: make this non blocking
+                #bal_info = requests.get('http://127.0.0.1:8000/mm2_balance/'+coin).json()
+                #mm2_bal = bal_info['balance']
+                mm2_bal = "Loading..."
+                balance_row = [coin, mm2_bal, '-', '-']
+                print(balance_row)
+                self.add_row(row, balance_row, self.mm2_balances_table)
+                row += 1
+
+        self.mm2_balances_table.setSortingEnabled(True)
+        self.mm2_balances_table.resizeColumnsToContents()
+
+    def update_wallet_balance(self, balances_data):
         # set wallet page image
         index = self.wallet_combo.currentIndex()
         coin = self.wallet_combo.itemText(index)
+        addresses = requests.get('http://127.0.0.1:8000/all_addresses').json()
+        print(addresses)
+        if 'mm2' in addresses:
+            if coin in addresses['mm2']:
+                address = addresses['mm2'][coin]
+        else: 
+            print("get addr manually")
+            bal_info = requests.get('http://127.0.0.1:8000/mm2_balance/'+coin).json()
+            print(bal_info)
+            address = bal_info['address']
+            balance = bal_info['balance']
+            locked = bal_info['locked_by_swaps']
+            available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
         self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
         # get wallet balance for slected coin
-        balance_info = self.balances_data[coin]
-        if 'address' in balance_info:
-            address = balance_info['address']
-            balance_text = round(float(balance_info['balance']),8)
-            locked_text = round(float(balance_info['locked']),8)
-            available_balance = round(float(balance_info['available']),8)
+        print("bal_data: "+str(balances_data))
+        if coin in balances_data['mm2']:
+            balance = balances_data['mm2'][coin]['total']
+            locked = balances_data['mm2'][coin]['locked']
+            available = balances_data['mm2'][coin]['available']
+        else:
+            print("get balance manually")
+        available_text = round(float(available),8)
+        balance_text = round(float(balance),8)
+        locked_text = round(float(locked),8)
         # add hyperlink if explorer url in coinslib
         if coin != '' and address != '':
             if coinslib.coin_explorers[coin]['addr_explorer'] != '':
@@ -1724,7 +1801,6 @@ class Ui(QTabWidget):
             else:
                 self.wallet_address.setText(address)
             # create qr code and populate balances
-            self.wallet_qr_code.setPixmap(qrcode.make(address, image_factory=QR_image, box_size=4).pixmap())
             self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
             self.wallet_balance.setText(str(balance_text))
             self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
@@ -1750,22 +1826,6 @@ class Ui(QTabWidget):
             else:
                 self.wallet_usd_value.setText("")
                 self.wallet_btc_value.setText("")
-
-    ## WALLET
-    def show_mm2_wallet_tab(self):
-        if len(self.active_coins) < 1:
-            msg = 'Please activate at least one coin. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            self.wallet_recipient.setFocus()
-
-            if self.wallet_combo.currentIndex() != -1:
-                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
-            else:
-                selected = self.wallet_combo.itemText(0)
-            self.update_combo(self.wallet_combo,self.active_coins,selected)
-            self.update_wallet_balance()
 
     # process withdrawl from wallet tab
     def send_funds(self):
@@ -1988,6 +2048,7 @@ class Ui(QTabWidget):
         msgBox.addButton("Close", QMessageBox.NoRole)
         print("show Binance QR code msgbox")
         msgBox.exec()
+
 
     def update_binance_balance_table(self):
         #TODO: thread this

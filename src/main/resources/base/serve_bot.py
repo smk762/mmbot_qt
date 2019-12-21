@@ -241,10 +241,12 @@ async def all_balances():
 
 @app.get("/all_addresses")
 async def all_addresses():
-    """
-    Returns MM2 and CEX balances
-    """
     return addresses_data
+
+@app.get("/mm2_balance/{coin}")
+async def mm2_balance(coin):
+    resp = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
+    return resp
 
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 

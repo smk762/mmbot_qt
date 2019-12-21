@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>9</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5581,428 +5581,6 @@ color: rgb(0, 0, 0);</string>
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QFrame" name="frame_12">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_39">
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="prices_update_btn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>Update Prices</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="prices_header_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Coin API Prices&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <spacer name="verticalSpacer_16">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QFrame" name="frame_57">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_20">
-          <item row="0" column="0">
-           <widget class="QTableWidget" name="prices_table">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QAbstractScrollArea::AdjustToContents</enum>
-            </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="showDropIndicator" stdset="0">
-             <bool>false</bool>
-            </property>
-            <property name="dragDropOverwriteMode">
-             <bool>false</bool>
-            </property>
-            <property name="alternatingRowColors">
-             <bool>false</bool>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <property name="sortingEnabled">
-             <bool>true</bool>
-            </property>
-            <property name="rowCount">
-             <number>32</number>
-            </property>
-            <property name="columnCount">
-             <number>5</number>
-            </property>
-            <attribute name="horizontalHeaderCascadingSectionResizes">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="horizontalHeaderDefaultSectionSize">
-             <number>152</number>
-            </attribute>
-            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-            <attribute name="verticalHeaderDefaultSectionSize">
-             <number>20</number>
-            </attribute>
-            <attribute name="verticalHeaderHighlightSections">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderMinimumSectionSize">
-             <number>20</number>
-            </attribute>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <column>
-             <property name="text">
-              <string>Coin</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>BTC Price (ave)</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>USD Price (ave)</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>BTC Price Sources</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>USD Price Sources</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QFrame" name="frame_32">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>320</height>
-          </size>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="1">
-           <widget class="PlotWidget" name="binance_history_graph">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string/>
-            </property>
-            <property name="interactive">
-             <bool>false</bool>
-            </property>
-            <property name="transformationAnchor">
-             <enum>QGraphicsView::NoAnchor</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QGroupBox" name="groupBox_8">
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="title">
-             <string>Price History</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_8">
-             <property name="spacing">
-              <number>3</number>
-             </property>
-             <item row="2" column="0">
-              <widget class="QComboBox" name="history_timespan_combobox">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);</string>
-               </property>
-               <property name="frame">
-                <bool>true</bool>
-               </property>
-               <item>
-                <property name="text">
-                 <string>1 Year</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>6 Mth</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>3 Mth</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1 Mth</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1 Week</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>24 Hrs</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QFrame" name="frame_2">
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_11">
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>9</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>9</number>
-                </property>
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="binance_history_icon">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize">
-                   <size>
-                    <width>64</width>
-                    <height>64</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QComboBox" name="history_coin_combobox">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);</string>
-               </property>
-               <property name="frame">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QComboBox" name="history_quote_combobox">
-               <property name="styleSheet">
-                <string notr="true">background-color: rgb(114, 159, 207);</string>
-               </property>
-               <property name="frame">
-                <bool>true</bool>
-               </property>
-               <item>
-                <property name="text">
-                 <string>USD</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>BTC</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>KMD</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>
@@ -6013,7 +5591,70 @@ color: rgb(0, 0, 0);</string>
     <string>Wallet</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_51">
-    <item row="0" column="0">
+    <item row="0" column="0" rowspan="2" colspan="2">
+     <widget class="QFrame" name="frame_5">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="mm2_balances_table">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>500</width>
+           <height>0</height>
+          </size>
+         </property>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>125</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Coin</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>MM2 Balance</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>USD Value</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>BTC Value</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="0" column="2">
      <widget class="QFrame" name="wallet_balance_frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -6068,47 +5709,6 @@ color: rgb(0, 0, 0);</string>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="wallet_coin_img">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/300/img/300/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QFrame" name="frame_9">
             <property name="sizePolicy">
              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -6123,6 +5723,34 @@ color: rgb(0, 0, 0);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="QLabel" name="wallet_coin_img">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/300/img/300/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QLabel" name="wallet_balance_lbl">
                <property name="sizePolicy">
@@ -6239,58 +5867,6 @@ color: rgb(0, 0, 0);</string>
            </widget>
           </item>
           <item>
-           <widget class="QFrame" name="frame_5">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <widget class="QLabel" name="wallet_qr_code">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>300</width>
-                 <height>300</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>300</width>
-                 <height>300</height>
-                </size>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
            <spacer name="verticalSpacer_3">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -6304,29 +5880,60 @@ color: rgb(0, 0, 0);</string>
            </spacer>
           </item>
          </layout>
-         <zorder>wallet_coin_img</zorder>
-         <zorder>frame_5</zorder>
          <zorder>verticalSpacer_3</zorder>
-         <zorder>verticalSpacer</zorder>
          <zorder>frame_9</zorder>
         </widget>
        </item>
-       <item>
-        <widget class="QFrame" name="frame_53">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>125</height>
-          </size>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QFrame" name="frame_53">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>125</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>125</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_76">
+       <item row="0" column="0">
+        <widget class="QLabel" name="wallet_addr_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>125</height>
-          </size>
+         <property name="text">
+          <string>Your Address:</string>
          </property>
-         <property name="styleSheet">
-          <string notr="true"/>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QFrame" name="frame_49">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
@@ -6335,82 +5942,22 @@ color: rgb(0, 0, 0);</string>
           <enum>QFrame::Raised</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_44">
-          <item row="3" column="1">
-           <widget class="QLineEdit" name="wallet_recipient">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="3">
-           <widget class="QPushButton" name="wallet_send_btn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>withdraw</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="recipient_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>250</width>
-              <height>40</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Recipient Address:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" colspan="2">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="horizontalSpacing">
+           <number>0</number>
+          </property>
+          <item row="0" column="1">
            <widget class="QLabel" name="wallet_address">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6437,7 +5984,7 @@ color: rgb(0, 0, 0);</string>
              <string/>
             </property>
             <property name="alignment">
-             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+             <set>Qt::AlignCenter</set>
             </property>
             <property name="openExternalLinks">
              <bool>true</bool>
@@ -6447,133 +5994,200 @@ color: rgb(0, 0, 0);</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="wallet_addr_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Your Address:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="wallet_amount">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="decimals">
-             <number>6</number>
-            </property>
-            <property name="maximum">
-             <double>99999999999.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.001000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="send_amount_lbl">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Amount:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="3">
-           <widget class="QComboBox" name="wallet_combo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>220</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>16</pointsize>
-             </font>
-            </property>
-            <property name="layoutDirection">
-             <enum>Qt::LeftToRight</enum>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="currentText">
-             <string/>
-            </property>
-            <property name="currentIndex">
-             <number>-1</number>
-            </property>
-            <property name="maxVisibleItems">
-             <number>4</number>
-            </property>
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <spacer name="horizontalSpacer_16">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="recipient_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>250</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Recipient Address:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="wallet_recipient">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QComboBox" name="wallet_combo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>220</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>16</pointsize>
+          </font>
+         </property>
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="currentText">
+          <string/>
+         </property>
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+         <property name="maxVisibleItems">
+          <number>4</number>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QComboBox::AdjustToMinimumContentsLengthWithIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="send_amount_lbl">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Amount:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QDoubleSpinBox" name="wallet_amount">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>99999999999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.001000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="wallet_send_btn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>withdraw</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="mm2_qr_code_link">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string/>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="coin_icons.qrc">
+           <normaloff>:/32/img/32/qr.png</normaloff>:/32/img/32/qr.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
       </layout>
-      <zorder>frame_53</zorder>
-      <zorder>frame_18</zorder>
      </widget>
     </item>
    </layout>
@@ -10106,7 +9720,44 @@ color: rgb(0, 0, 0);</string>
     <string>Balances</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_72">
-    <item row="0" column="0">
+    <item row="1" column="1">
+     <widget class="QTableWidget" name="all_balances_table">
+      <attribute name="horizontalHeaderDefaultSectionSize">
+       <number>135</number>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Coin</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>MM2 Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Binance Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Total Balance</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>USD Value</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>BTC Value</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
      <widget class="QFrame" name="frame_47">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -10162,43 +9813,6 @@ color: rgb(0, 0, 0);</string>
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QTableWidget" name="balances_table">
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>135</number>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>Coin</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>MM2 Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Binance Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Total Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>USD Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>BTC Value</string>
-       </property>
-      </column>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="tab_prices">
@@ -10207,36 +9821,134 @@ color: rgb(0, 0, 0);</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_75">
     <item row="0" column="0">
-     <widget class="QFrame" name="frame_48">
+     <widget class="QFrame" name="frame_12">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
       <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
+       <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_74">
-       <item row="0" column="1">
-        <widget class="QPushButton" name="pushButton_2">
-         <property name="text">
-          <string>Update</string>
-         </property>
+      <layout class="QGridLayout" name="gridLayout_39">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableWidget" name="balances_table_2">
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>135</number>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Coin</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>MM2 Balance</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Binance Balance</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Total Balance</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>USD Value</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>BTC Value</string>
+          </property>
+         </column>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_5">
+       <item row="1" column="1">
+        <spacer name="verticalSpacer_16">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="prices_header_lbl">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>14</pointsize>
-          </font>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
-          <string>Prices</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Coin API Prices&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="prices_update_btn">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>35</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>Update Prices</string>
          </property>
         </widget>
        </item>
@@ -10244,40 +9956,327 @@ color: rgb(0, 0, 0);</string>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QTableWidget" name="balances_table_2">
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>135</number>
-      </attribute>
-      <column>
-       <property name="text">
-        <string>Coin</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>MM2 Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Binance Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Total Balance</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>USD Value</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>BTC Value</string>
-       </property>
-      </column>
+     <widget class="QFrame" name="frame_57">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_20">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="prices_table">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="sizeAdjustPolicy">
+          <enum>QAbstractScrollArea::AdjustToContents</enum>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>false</bool>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="rowCount">
+          <number>32</number>
+         </property>
+         <property name="columnCount">
+          <number>5</number>
+         </property>
+         <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>152</number>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderDefaultSectionSize">
+          <number>20</number>
+         </attribute>
+         <attribute name="verticalHeaderHighlightSections">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderMinimumSectionSize">
+          <number>20</number>
+         </attribute>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <row/>
+         <column>
+          <property name="text">
+           <string>Coin</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>BTC Price (ave)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>USD Price (ave)</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>BTC Price Sources</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>USD Price Sources</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QFrame" name="frame_32">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>320</height>
+       </size>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <item row="0" column="1">
+        <widget class="PlotWidget" name="binance_history_graph">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string/>
+         </property>
+         <property name="interactive">
+          <bool>false</bool>
+         </property>
+         <property name="transformationAnchor">
+          <enum>QGraphicsView::NoAnchor</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_8">
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="title">
+          <string>Price History</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <property name="spacing">
+           <number>3</number>
+          </property>
+          <item row="2" column="0">
+           <widget class="QComboBox" name="history_timespan_combobox">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(114, 159, 207);</string>
+            </property>
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>1 Year</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>6 Mth</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>3 Mth</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1 Mth</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>1 Week</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>24 Hrs</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QFrame" name="frame_2">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_11">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>9</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>9</number>
+             </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="binance_history_icon">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>64</width>
+                 <height>64</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QComboBox" name="history_coin_combobox">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(114, 159, 207);</string>
+            </property>
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QComboBox" name="history_quote_combobox">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(114, 159, 207);</string>
+            </property>
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>USD</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>BTC</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>KMD</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -11806,8 +11805,8 @@ color: rgb(0, 0, 0);</string>
    <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1889</x>
-     <y>986</y>
+     <x>1898</x>
+     <y>1023</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -11822,8 +11821,8 @@ color: rgb(0, 0, 0);</string>
    <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1863</x>
-     <y>109</y>
+     <x>109</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -11902,8 +11901,8 @@ color: rgb(0, 0, 0);</string>
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1019</x>
-     <y>996</y>
+     <x>157</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -11918,8 +11917,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_utxo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>997</x>
-     <y>227</y>
+     <x>83</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -11934,8 +11933,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1301</x>
-     <y>90</y>
+     <x>93</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11950,8 +11949,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1491</x>
-     <y>90</y>
+     <x>99</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -11966,8 +11965,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1689</x>
-     <y>90</y>
+     <x>105</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12206,8 +12205,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1606</x>
-     <y>227</y>
+     <x>104</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12222,8 +12221,8 @@ color: rgb(0, 0, 0);</string>
    <slot>select_all_smart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>389</x>
-     <y>227</y>
+     <x>61</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12254,8 +12253,8 @@ color: rgb(0, 0, 0);</string>
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1889</x>
-     <y>1022</y>
+     <x>1898</x>
+     <y>1058</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12288,54 +12287,6 @@ color: rgb(0, 0, 0);</string>
     <hint type="sourcelabel">
      <x>1878</x>
      <y>464</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>history_coin_combobox</sender>
-   <signal>activated(int)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>update_history_graph()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>120</x>
-     <y>1008</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>history_quote_combobox</sender>
-   <signal>activated(int)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>update_history_graph()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>120</x>
-     <y>1036</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>history_timespan_combobox</sender>
-   <signal>activated(int)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>update_history_graph()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>120</x>
-     <y>980</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12519,6 +12470,22 @@ color: rgb(0, 0, 0);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mm2_qr_code_link</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>show_mm2_qr_popup()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1653</x>
+     <y>969</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -12573,5 +12540,6 @@ color: rgb(0, 0, 0);</string>
   <slot>mm2_price_changed()</slot>
   <slot>mm2_buy_amount_changed()</slot>
   <slot>mm2_sell_amount_changed()</slot>
+  <slot>show_mm2_qr_popup()</slot>
  </slots>
 </ui>
