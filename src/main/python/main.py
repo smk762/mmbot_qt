@@ -79,6 +79,93 @@ def ETH_AmountToJSON(amount):
 
 # THREADED OPERATIONS
 
+# get mm2 balances in thread
+class mm2_balance_thread(QThread):
+    update_mm2_bal = pyqtSignal(str, str, str, str)
+    def __init__(self, creds, coins_to_thread):
+        QThread.__init__(self)
+        self.creds = creds
+        self.coins_to_thread = coins_to_thread
+
+    def __del__(self):
+        self.quit()
+
+    def run(self):
+        for coin in self.coins_to_thread:
+            resp = rpclib.my_balance(self.creds[0], self.creds[1], coin).json()
+            balance = resp['balance']
+            if coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+                coin_id = coinslib.coin_api_codes[coin]['coingecko_id']
+                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
+                usd_price = float(price[coin_id]['usd'])
+                btc_price = float(price[coin_id]['btc'])
+            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
+                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
+                usd_price = float(price['price_usd'])
+                btc_price = float(price['price_btc'])
+            else:
+                usd_price = 0
+                btc_price = 0
+            if usd_price == 0:
+                usd_val = "No price data..."
+                btc_val = "No price data..."
+            else:
+                usd_val = "$"+str(round(usd_price*float(balance), 4))
+                btc_val = str(round(btc_price*float(balance), 8))
+            self.update_mm2_bal.emit(coin, balance, usd_val, btc_val)
+
+
+# get mm2 wallet data in thread
+class mm2_wallet_thread(QThread):
+    update_mm2_wallet = pyqtSignal(dict)
+    def __init__(self, creds, coin):
+        QThread.__init__(self)
+        self.creds = creds
+        self.coin = coin
+
+    def __del__(self):
+        self.quit()
+
+    def run(self):
+        resp = rpclib.my_balance(self.creds[0], self.creds[1], self.coin).json()
+        self.update_mm2_wallet.emit(resp)
+
+# get mm2 wallet value in thread
+class mm2_value_thread(QThread):
+    update_wallet_value = pyqtSignal(float, float)
+    def __init__(self, creds, coin, balance):
+        QThread.__init__(self)
+        self.creds = creds
+        self.coin = coin
+        self.balance = balance
+
+    def __del__(self):
+        self.quit()
+
+    def run(self):
+        if self.balance == "Loading...":
+            resp = rpclib.my_balance(self.creds[0], self.creds[1], self.coin).json()
+            self.balance = float(resp['balance'])
+        if coinslib.coin_api_codes[self.coin]['coingecko_id'] != '':
+            coin_id = coinslib.coin_api_codes[self.coin]['coingecko_id']
+            price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[self.coin]['coingecko_id'], 'usd,btc').json()
+            usd_price = float(price[coin_id]['usd'])
+            btc_price = float(price[coin_id]['btc'])
+        elif coinslib.coin_api_codes[self.coin]['paprika_id'] != '':
+            price = priceslib.get_paprika_price(coinslib.coin_api_codes[self.coin]['paprika_id']).json()
+            usd_price = float(price['price_usd'])
+            btc_price = float(price['price_btc'])
+        else:
+            usd_price = 0
+            btc_price = 0
+        if usd_price == 0:
+            usd_val = "No price data..."
+            btc_val = "No price data..."
+        else:
+            usd_val = usd_price*float(self.balance)
+            btc_val = btc_price*float(self.balance)
+        self.update_wallet_value.emit(usd_val, btc_val)
+
 # Process coin activation in thread
 class activation_thread(QThread):
     activate = pyqtSignal(str)
@@ -249,7 +336,11 @@ class Ui(QTabWidget):
 
         self.last_price_update = 0
         self.prices_data = {}
-        self.balances_data = {}
+        self.balances_data = {
+            "mm2": {},
+            "binance": {}
+        }
+        self.addresses = {}
 
         # dict for the checkbox and combobox elements use on the coins activation page. Might be a better way to do this.
         self.gui_coins = {
@@ -513,49 +604,29 @@ class Ui(QTabWidget):
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","Text Files (*.csv)", options=options)
         return fileName
 
-    ''' DEPRECATED? This info will be in 'API strategies sessions' data
-        def get_bot_swap_history(self):
-            bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
-            if not os.path.isfile(bot_swap_jsonfile):
-                with open(bot_swap_jsonfile, 'w') as f:
-                    f.write(str({}))
-            with open(bot_swap_jsonfile, 'r') as f:
-                try:
-                    bot_swap_history = json.loads(f.read())
-                except:
-                    bot_swap_history = {}
-            return bot_swap_history
-
-        def write_bot_swap_history(self):
-            print("writing_bot_swap_history")
-            bot_swap_jsonfile = config_path+self.username+"_bot_swaps.json"
-            with open(bot_swap_jsonfile, 'w') as f:
-                f.write(json.dumps(self.bot_swap_history))
-
-    '''
-
     #table functions (for future reference)
     def populate_table(self, endpoint, table):
         url = "http://127.0.0.1:8000/"
         r = requests.get(url+endpoint)
         if r.status_code == 200:
             data = r.json()['table_data']
-            headers = list(data[0].keys())
-            row = 0
-            col_count = len(headers)
-            table.setColumnCount(col_count)
-            row_count = len(data)
-            table.setRowCount(row_count)
-            table.setHorizontalHeaderLabels(headers)
-            table.setSortingEnabled(False)
-            print(headers)
-            self.clear_table(table)
-            for item in data:
-                row_data = list(item.values())
-                self.add_row(row, row_data, table)
-                row += 1
-            table.setSortingEnabled(True)
-            table.resizeColumnsToContents()
+            if len(data) > 0:
+                headers = list(data[0].keys())
+                row = 0
+                col_count = len(headers)
+                table.setColumnCount(col_count)
+                row_count = len(data)
+                table.setRowCount(row_count)
+                table.setHorizontalHeaderLabels(headers)
+                table.setSortingEnabled(False)
+                print(headers)
+                self.clear_table(table)
+                for item in data:
+                    row_data = list(item.values())
+                    self.add_row(row, row_data, table)
+                    row += 1
+                table.setSortingEnabled(True)
+                table.resizeColumnsToContents()
 
     def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
@@ -612,6 +683,14 @@ class Ui(QTabWidget):
                 return 0
         else:
             return 0
+
+    def find_in_table(self, table, text):
+        for i in range(table.rowCount()):
+            for j in range(table.columnCount()):
+                if table.item(i,j) is not None:
+                    if text == table.item(i,j).text():
+                        return i,j
+        return -1, -1
 
     # selection menu operations
     def update_combo(self,combo,options,selected):
@@ -922,39 +1001,6 @@ class Ui(QTabWidget):
         sell_price = round(float(1/float(buy_price)),8)
         return [created_at, role, base, base_amount, buy_price, rel, rel_amount, sell_price, item]
 
-    def update_mm2_orders_tables(self):
-        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
-        self.bot_mm2_orders_table.setSortingEnabled(False)
-        self.mm2_orders_table.setSortingEnabled(False)
-        self.clear_table(self.bot_mm2_orders_table)
-        self.clear_table(self.mm2_orders_table)
-        row_count = len(orders['result']['maker_orders'])+len(orders['result']['taker_orders'])
-        self.bot_mm2_orders_table.setRowCount(row_count)
-        self.mm2_orders_table.setRowCount(row_count)
-        if 'maker_orders' in orders['result']:
-            maker_orders = orders['result']['maker_orders']
-            bot_row = 0
-            mm2_row = 0
-            for item in maker_orders:
-                maker_row = self.prepare_maker_row(maker_orders, item)
-                self.add_row(bot_row, maker_row, self.bot_mm2_orders_table)
-                bot_row += 1
-                self.add_row(mm2_row, maker_row, self.mm2_orders_table)
-                mm2_row += 1
-
-        if 'taker_orders' in orders['result']:
-            taker_orders = orders['result']['taker_orders']
-            for item in taker_orders:
-                taker_row = self.prepare_taker_row(taker_orders, item)
-                self.add_row(bot_row, taker_row, self.bot_mm2_orders_table)
-                bot_row += 1
-                self.add_row(mm2_row, taker_row, self.mm2_orders_table)
-                mm2_row += 1
-
-        self.bot_mm2_orders_table.setSortingEnabled(True)
-        self.bot_mm2_orders_table.resizeColumnsToContents()
-        self.mm2_orders_table.setSortingEnabled(True)
-        self.mm2_orders_table.resizeColumnsToContents()
 
     # Thread callbacks
 
@@ -1039,7 +1085,7 @@ class Ui(QTabWidget):
             self.gui_coins[coin]['checkbox'].setIcon(icon)
             row += 1
 
-    # ACTIVATE
+    ## TABS ##
     def show_activation_tab(self):
         display_coins_erc20 = []
         display_coins_utxo = []
@@ -1074,6 +1120,33 @@ class Ui(QTabWidget):
             self.populate_activation_menu(display_coins_erc20, self.erc20_layout)
             self.populate_activation_menu(display_coins_utxo, self.utxo_layout)
 
+    def show_mm2_orderbook_tab(self):
+        if len(self.active_coins) < 2:
+            msg = 'Please activate at least two coins. '
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
+            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+        else:
+            # get/populate coin combo box selections
+            base = ''
+            base_index = self.orderbook_sell_combo.currentIndex()
+            if base_index != -1:
+                base = self.orderbook_sell_combo.itemText(base_index)
+            rel = ''
+            rel_index = self.orderbook_buy_combo.currentIndex()
+            if rel_index != -1:
+                rel = self.orderbook_buy_combo.itemText(rel_index)
+            active_coins_selection = self.active_coins[:]
+            base = self.update_combo(self.orderbook_sell_combo,active_coins_selection,base)
+            active_coins_selection.remove(base)
+            rel = self.update_combo(self.orderbook_buy_combo,active_coins_selection,rel)
+            # refresh tables
+            self.populate_table("table/orderbook/"+base+"/"+rel, self.orderbook_table)
+            self.populate_table("table/open_orders", self.mm2_orders_table)
+            # Update labels
+            self.update_mm2_orderbook_labels(base, rel)
+
+
+    ## ACTIVATE TAB FUNCTIONS
     def activate_coins(self):
         print('Start activate')
         coins_to_activate = []
@@ -1109,6 +1182,103 @@ class Ui(QTabWidget):
         # TODO: autoactivate coins needing kickstart
         print("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
         self.show_activation_tab()
+
+    ## MARKETMAKER TAB FUNCTIONS
+    def update_mm2_orderbook_labels(self, base, rel):
+        self.orderbook_buy_amount_lbl.setText(""+rel+" Amount")
+        self.orderbook_sell_amount_lbl.setText(""+base+" Amount")
+        self.orderbook_price_lbl.setText(""+base+" Sell Price")
+        self.orderbook_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
+        self.orderbook_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
+        self.orderbook_price_spinbox.setValue(0)
+        self.orderbook_buy_amount_spinbox.setValue(0)
+        self.orderbook_sell_amount_spinbox.setValue(0)
+        self.orderbook_send_order_btn.setText("Sell "+base)
+        if base in self.balances_data['mm2']:
+            locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
+            balance = round(float(self.balances_data['mm2'][base]['total']),8)
+            self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+base)
+            self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+base)
+        if rel in self.balances_data['mm2']:
+            locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
+            balance = round(float(self.balances_data['mm2'][rel]['total']),8)
+            self.orderbook_sell_balance_lbl.setText("Available: "+str(balance)+" "+rel)
+            self.orderbook_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
+
+        def update_mm2_depth_table(self, base, rel):
+            # get orderbooks for pair
+            buy_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
+            sell_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
+
+            row_count = len(sell_pair_book['bids'])
+            row_count += len(sell_pair_book['asks'])
+
+            self.mm2_depth_table.setSortingEnabled(False)            
+            self.mm2_depth_table.setRowCount(row_count)
+            self.clear_table(self.mm2_depth_table)
+
+            # populate depth table
+            row = 0
+            if 'error' in sell_pair_book:
+                pass
+            elif 'bids' in sell_pair_book:
+                for item in sell_pair_book['bids']:
+                    price = round(1/round(float(item['price']), 8),8)
+                    volume = round(float(item['maxvolume']), 8)
+                    val = float(price)*float(item['maxvolume'])
+                    value = round(val, 8)
+                    bid_ask = 'bid'
+                    depth_row = [price, volume, value, bid_ask]
+                    self.add_row(row, depth_row, self.mm2_depth_table, QColor(164, 0, 0)) 
+                    row += 1
+            if 'error' in sell_pair_book:
+                pass
+            elif 'asks' in sell_pair_book:
+                for item in sell_pair_book['asks']:
+                    price = round(float(item['price']), 8)
+                    volume = round(float(item['maxvolume']), 8)
+                    val = float(item['price'])*float(item['maxvolume'])
+                    bid_ask = 'ask'
+                    value = round(val, 8)
+                    depth_row = [price, volume, value, bid_ask]
+                    self.add_row(row, depth_row, self.mm2_depth_table, QColor(78, 154, 6))
+                    row += 1
+            self.mm2_depth_table.setSortingEnabled(True)
+            self.mm2_depth_table.resizeColumnsToContents()
+
+    def update_mm2_orders_tables(self):
+        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
+        self.bot_mm2_orders_table.setSortingEnabled(False)
+        self.mm2_orders_table.setSortingEnabled(False)
+        self.clear_table(self.bot_mm2_orders_table)
+        self.clear_table(self.mm2_orders_table)
+        row_count = len(orders['result']['maker_orders'])+len(orders['result']['taker_orders'])
+        self.bot_mm2_orders_table.setRowCount(row_count)
+        self.mm2_orders_table.setRowCount(row_count)
+        if 'maker_orders' in orders['result']:
+            maker_orders = orders['result']['maker_orders']
+            bot_row = 0
+            mm2_row = 0
+            for item in maker_orders:
+                maker_row = self.prepare_maker_row(maker_orders, item)
+                self.add_row(bot_row, maker_row, self.bot_mm2_orders_table)
+                bot_row += 1
+                self.add_row(mm2_row, maker_row, self.mm2_orders_table)
+                mm2_row += 1
+
+        if 'taker_orders' in orders['result']:
+            taker_orders = orders['result']['taker_orders']
+            for item in taker_orders:
+                taker_row = self.prepare_taker_row(taker_orders, item)
+                self.add_row(bot_row, taker_row, self.bot_mm2_orders_table)
+                bot_row += 1
+                self.add_row(mm2_row, taker_row, self.mm2_orders_table)
+                mm2_row += 1
+
+        self.bot_mm2_orders_table.setSortingEnabled(True)
+        self.bot_mm2_orders_table.resizeColumnsToContents()
+        self.mm2_orders_table.setSortingEnabled(True)
+        self.mm2_orders_table.resizeColumnsToContents()
 
     # category selection options.
     def select_all(self, state, cointype):
@@ -1280,48 +1450,6 @@ class Ui(QTabWidget):
 
     ## SHOW ORDERBOOK
 
-    def show_mm2_orderbook_tab(self):
-        if len(self.active_coins) < 2:
-            msg = 'Please activate at least two coins. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            self.update_history_graph()
-            if self.orderbook_buy_combo.currentIndex() != -1:
-                base = self.orderbook_buy_combo.itemText(self.orderbook_buy_combo.currentIndex())
-            else:
-                base = ''
-            if self.orderbook_sell_combo.currentIndex() != -1:
-                rel = self.orderbook_sell_combo.itemText(self.orderbook_sell_combo.currentIndex())
-            else:
-                rel = ''
-            active_coins_selection = self.active_coins[:]
-            # populate combo boxes
-            base = self.update_combo(self.orderbook_buy_combo,active_coins_selection,base)
-            active_coins_selection.remove(base)
-            rel = self.update_combo(self.orderbook_sell_combo,active_coins_selection,rel)
-            # populate table
-            self.orderbook_table.setHorizontalHeaderLabels(['Buy coin', 'Sell coin', base+' Volume', rel+' price per '+base, 'Market price'])
-            pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
-            self.orderbook_table.setSortingEnabled(False)
-            row_count = len(pair_book['asks']) 
-            self.orderbook_table.setRowCount(row_count)
-            self.clear_table(self.orderbook_table)
-            if 'error' in pair_book:
-                pass
-            elif 'asks' in pair_book:
-                row = 0
-                for item in pair_book['asks']:
-                    base = pair_book['base']
-                    rel = pair_book['rel']
-                    basevolume = round(float(item['maxvolume']), 8)
-                    relprice = round(float(item['price']), 8)
-                    asks_row = [base, rel, basevolume, relprice]
-                    self.add_row(row, asks_row, self.orderbook_table)
-                    row += 1
-            self.orderbook_table.setSortingEnabled(True)
-            self.orderbook_table.resizeColumnsToContents()
-
     def update_history_graph(self):
         print("update_history_graph")
         index = self.history_quote_combobox.currentIndex()
@@ -1391,9 +1519,10 @@ class Ui(QTabWidget):
             usd_price = float(price['price_usd'])
             btc_price = float(price['price_btc'])
         elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
+            coin_id = coinslib.coin_api_codes[self.coin]['coingecko_id']
             price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-            usd_price = float(price['usd'])
-            btc_price = float(price['btc'])
+            usd_price = float(price[coin_id]['usd'])
+            btc_price = float(price[coin_id]['btc'])
         else:
             usd_price = 'No Data'
             btc_price = 'No Data'
@@ -1453,102 +1582,6 @@ class Ui(QTabWidget):
         else:
             msg = "No order selected!"
             QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
-
-    def show_mm2_trading_tab(self):
-        if len(self.active_coins) < 2:
-            msg = 'Please activate at least two coins. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            # refresh tables
-            self.update_mm2_orders_tables()
-            self.update_mm2_trades_table()
-            # get/populate coin combo box selections
-            index = self.mm2_sell_coin_combo.currentIndex()
-            if index != -1:
-                base = self.mm2_sell_coin_combo.itemText(index)
-            else:
-                base = ''
-            index = self.mm2_buy_coin_combo.currentIndex()
-            if index != -1:
-                rel = self.mm2_buy_coin_combo.itemText(index)
-            else:
-                rel = ''
-            active_coins_selection = self.active_coins[:]
-            base = self.update_combo(self.mm2_sell_coin_combo,active_coins_selection,base)
-            active_coins_selection.remove(base)
-            rel = self.update_combo(self.mm2_buy_coin_combo,active_coins_selection,rel)
-
-            # Update labels
-            self.mm2_buy_amount_lbl.setText(""+rel+" Amount")
-            self.mm2_sell_amount_lbl.setText(""+base+" Amount")
-            self.mm2_price_lbl.setText(""+base+" Sell Price")
-            self.mm2_depth_baserel_lbl.setText(base+"/"+rel)
-            self.mm2_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-            self.mm2_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
-            self.mm2_price_spinbox.setValue(0)
-            self.mm2_buy_amount_spinbox.setValue(0)
-            self.mm2_sell_amount_spinbox.setValue(0)
-            self.mm2_depth_table.setHorizontalHeaderLabels(['Price '+rel, 'Volume '+base, 'Value '+rel])
-            self.mm2_send_order_btn.setText("Sell "+base)
-
-            # get balances
-            balance_info = self.balances_data[rel]
-            if 'address' in balance_info:
-                address = balance_info['address']
-                balance_text = round(float(balance_info['balance']),8)
-                locked_text = round(float(balance_info['locked']),8)
-                available_balance = round(float(balance_info['available']),8)
-                self.mm2_sell_balance_lbl.setText("Available: "+str(available_balance)+" "+rel)
-                self.mm2_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
-            balance_info = self.balances_data[base]
-            if 'address' in balance_info:
-                address = balance_info['address']
-                balance_text = round(float(balance_info['balance']),8)
-                locked_text = round(float(balance_info['locked']),8)
-                available_balance = round(float(balance_info['available']),8)
-                self.mm2_buy_balance_lbl.setText("Available: "+str(available_balance)+" "+base)
-                self.mm2_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+base)
-
-            # get orderbooks for pair
-            buy_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], rel, base).json()
-            sell_pair_book = rpclib.orderbook(self.creds[0], self.creds[1], base, rel).json()
-
-            row_count = len(sell_pair_book['bids'])
-            row_count += len(sell_pair_book['asks'])
-
-            self.mm2_depth_table.setSortingEnabled(False)            
-            self.mm2_depth_table.setRowCount(row_count)
-            self.clear_table(self.mm2_depth_table)
-
-            # populate depth table
-            row = 0
-            if 'error' in sell_pair_book:
-                pass
-            elif 'bids' in sell_pair_book:
-                for item in sell_pair_book['bids']:
-                    price = round(1/round(float(item['price']), 8),8)
-                    volume = round(float(item['maxvolume']), 8)
-                    val = float(price)*float(item['maxvolume'])
-                    value = round(val, 8)
-                    bid_ask = 'bid'
-                    depth_row = [price, volume, value, bid_ask]
-                    self.add_row(row, depth_row, self.mm2_depth_table, QColor(164, 0, 0)) 
-                    row += 1
-            if 'error' in sell_pair_book:
-                pass
-            elif 'asks' in sell_pair_book:
-                for item in sell_pair_book['asks']:
-                    price = round(float(item['price']), 8)
-                    volume = round(float(item['maxvolume']), 8)
-                    val = float(item['price'])*float(item['maxvolume'])
-                    bid_ask = 'ask'
-                    value = round(val, 8)
-                    depth_row = [price, volume, value, bid_ask]
-                    self.add_row(row, depth_row, self.mm2_depth_table, QColor(78, 154, 6))
-                    row += 1
-            self.mm2_depth_table.setSortingEnabled(True)
-            self.mm2_depth_table.resizeColumnsToContents()
 
     # when changing price, or buy/sell amounts, update other fields accordingly.
     def update_mm2_amounts(self, source=''):
@@ -1719,9 +1752,30 @@ class Ui(QTabWidget):
             else:
                 selected = self.wallet_combo.itemText(0)
             self.update_combo(self.wallet_combo,self.active_coins,selected)
-            balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
-            self.update_wallet_balance(balances_data)
-            self.update_mm2_balance_table(balances_data)
+            self.update_wallet_balance(self.balances_data)
+            self.update_mm2_balance_table(self.balances_data)
+
+    def calc_mm2_total_vals(self):
+        total_usd_val = 0
+        total_btc_val = 0
+        for i in range(self.mm2_balances_table.rowCount()):
+            if self.mm2_balances_table.item(i,2) is not None:
+                if self.mm2_balances_table.item(i,2).text().find("...") == -1:
+                    usd_val = self.mm2_balances_table.item(i,2).text().replace('$', '')
+                    try:
+                        total_usd_val += float(usd_val)
+                    except:
+                        pass
+            if self.mm2_balances_table.item(i,3) is not None:
+                if self.mm2_balances_table.item(i,2).text().find("...") == -1:
+                    btc_val = self.mm2_balances_table.item(i,3).text()
+                    try:
+                        total_btc_val += float(btc_val)
+                    except:
+                        pass
+        self.total_mm2_usd_val.setText("Total USD Value: $"+str(round(total_usd_val, 4)))
+        self.total_mm2_btc_val.setText("Total BTC Value: "+str(round(total_btc_val, 8)))  
+            
 
     def show_mm2_qr_popup(self):
         index = self.wallet_combo.currentIndex()
@@ -1739,93 +1793,138 @@ class Ui(QTabWidget):
         msgBox.addButton("Close", QMessageBox.NoRole)
         msgBox.exec()
 
-    def update_mm2_balance_table(self, balances_data):        
+    def update_mm2_balance_table(self, balances_data): 
+        print("updating balances_table")
         self.clear_table(self.mm2_balances_table)
         self.mm2_balances_table.setSortingEnabled(False)
         row_count = len(self.active_coins)
         self.mm2_balances_table.setRowCount(row_count)
+        coins_to_thread = []
         row = 0
         for coin in self.active_coins:
-            if coin in balances_data['mm2']:
+            try:
                 mm2_bal = balances_data['mm2'][coin]['total']
                 balance_row = [coin, mm2_bal, '-', '-']
-                print(balance_row)
                 self.add_row(row, balance_row, self.mm2_balances_table)
                 row += 1
-            else:
-                # TODO: make this non blocking
-                #bal_info = requests.get('http://127.0.0.1:8000/mm2_balance/'+coin).json()
-                #mm2_bal = bal_info['balance']
-                mm2_bal = "Loading..."
-                balance_row = [coin, mm2_bal, '-', '-']
-                print(balance_row)
+            except:
+                balance_row = [coin, "Loading...", '-', '-']
                 self.add_row(row, balance_row, self.mm2_balances_table)
                 row += 1
+                coins_to_thread.append(coin)
+        if len(coins_to_thread) > 0:
+            self.mm2_bal_thread = mm2_balance_thread(self.creds, coins_to_thread)
+            self.mm2_bal_thread.update_mm2_bal.connect(self.update_mm2_bal_tbl_from_thread)
+            self.mm2_bal_thread.start()
+        self.mm2_balances_table.setSortingEnabled(True)
+        self.mm2_balances_table.resizeColumnsToContents()
+        print("balances_table updated")
 
+    def update_mm2_bal_tbl_from_thread(self, coin, balance, usd_val, btc_val):
+        cell_coords = self.find_in_table(self.mm2_balances_table, coin)
+        row = cell_coords[0]
+        self.mm2_balances_table.setSortingEnabled(False)
+        if row != -1:
+            balance_row = [coin, balance, usd_val, btc_val]
+            self.add_row(row, balance_row, self.mm2_balances_table)
+        else:
+            # add new row
+            #self.mm2_balances_table.setItem(row,col, QTableWidgetItem(str(balance)))
+            pass
         self.mm2_balances_table.setSortingEnabled(True)
         self.mm2_balances_table.resizeColumnsToContents()
 
-    def update_wallet_balance(self, balances_data):
-        # set wallet page image
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
-        addresses = requests.get('http://127.0.0.1:8000/all_addresses').json()
-        print(addresses)
-        if 'mm2' in addresses:
-            if coin in addresses['mm2']:
-                address = addresses['mm2'][coin]
-        else: 
-            print("get addr manually")
-            bal_info = requests.get('http://127.0.0.1:8000/mm2_balance/'+coin).json()
-            print(bal_info)
-            address = bal_info['address']
-            balance = bal_info['balance']
-            locked = bal_info['locked_by_swaps']
-            available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
-        self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
-        # get wallet balance for slected coin
-        print("bal_data: "+str(balances_data))
-        if coin in balances_data['mm2']:
-            balance = balances_data['mm2'][coin]['total']
-            locked = balances_data['mm2'][coin]['locked']
-            available = balances_data['mm2'][coin]['available']
-        else:
-            print("get balance manually")
+
+    def update_mm2_wallet_from_thread(self, bal_info):
+        coin = bal_info['coin']
+        address = bal_info['address']
+        balance = bal_info['balance']
+        locked = bal_info['locked_by_swaps']
+        available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
+        self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")    
         available_text = round(float(available),8)
         balance_text = round(float(balance),8)
         locked_text = round(float(locked),8)
-        # add hyperlink if explorer url in coinslib
+        QCoreApplication.processEvents()
         if coin != '' and address != '':
-            if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
-            else:
-                self.wallet_address.setText(address)
-            # create qr code and populate balances
-            self.wallet_balance_lbl.setText(str(coin+" BALANCE"))
-            self.wallet_balance.setText(str(balance_text))
-            self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
-            # if price api data available, calculate and show balance value in BTC, USD
-            # TODO: add value in KMD
-            if coin in self.prices_data:
-                btc_price = self.prices_data[coin]['average_btc']
-                usd_price = self.prices_data[coin]['average_usd']
-            elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
-                price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
-                usd_price = float(price['price_usd'])
-                btc_price = float(price['price_btc'])
-            elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-                price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-                usd_price = float(price['usd'])
-                btc_price = float(price['btc'])
-            else:
-                usd_price = 'No Data'
-                btc_price = 'No Data'
-            if btc_price != 'No Data':
-                self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-                self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
-            else:
-                self.wallet_usd_value.setText("")
-                self.wallet_btc_value.setText("")
+            self.update_wallet_labels(coin, address, balance_text, locked_text)
+
+
+    def update_mm2_wallet_value_from_thread(self, usd_val, btc_val):
+        self.wallet_usd_value.setText("$"+str(round(usd_val,4))+" USD")
+        self.wallet_btc_value.setText(str(round(btc_val,8))+" BTC")
+
+
+    def update_wallet_labels(self, coin, address, balance_text, locked_text):
+        print('update_wallet_labels')
+        if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+            self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
+        else:
+            self.wallet_address.setText(address)
+        # create qr code and populate balances
+        self.wallet_balance.setText(str(balance_text))
+        self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
+        # if price api data available, calculate and show balance value in BTC, USD
+        # TODO: add value in KMD
+        if coin in self.prices_data:
+            btc_price = self.prices_data[coin]['average_btc']
+            usd_price = self.prices_data[coin]['average_usd']
+        else:
+            btc_price = 'Loading...'
+        if btc_price != 'Loading...' and balance_text != 'Loading...':
+            self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
+            self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
+        else:
+            self.wallet_usd_value.setText('Loading USD value...')
+            self.wallet_btc_value.setText('Loading BTC value...')
+            self.mm2_val_thread = mm2_value_thread(self.creds, coin, balance_text)
+            self.mm2_val_thread.update_wallet_value.connect(self.update_mm2_wallet_value_from_thread)
+            self.mm2_val_thread.start()
+
+        print('updated_wallet_labels')
+
+    def update_wallet_balance(self, balances_data):
+        # set wallet page image
+        print('update_wallet_balance')
+        index = self.wallet_combo.currentIndex()
+        coin = self.wallet_combo.itemText(index)
+        # TODO: make this a global var grabbed from thread
+        # addresses = requests.get('http://127.0.0.1:8000/all_addresses').json()
+        # print(addresses)
+        if 'mm2' in self.addresses:
+            if coin in self.addresses['mm2']:
+                address = self.addresses['mm2'][coin]
+        else: 
+            print("get addr manually")
+            self.wallet_thread = mm2_wallet_thread(self.creds, coin)
+            self.wallet_thread.update_mm2_wallet.connect(self.update_mm2_wallet_from_thread)
+            self.wallet_thread.start()
+        self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
+        QCoreApplication.processEvents()
+        # get wallet balance for selected coin
+        if 'mm2' in balances_data: 
+            if coin in balances_data['mm2']:
+                balance = balances_data['mm2'][coin]['total']
+                address = balances_data['mm2'][coin]['address']
+                locked = balances_data['mm2'][coin]['locked']
+                available = balances_data['mm2'][coin]['available']  
+                available_text = round(float(available),8)
+                balance_text = round(float(balance),8)
+                locked_text = round(float(locked),8)
+            else:  
+                address = 'Loading...'
+                available_text = 'Loading...'
+                balance_text = 'Loading...'
+                locked_text = 'Loading...'
+        else:  
+            address = 'Loading...'
+            available_text = 'Loading...'
+            balance_text = 'Loading...'
+            locked_text = 'Loading...'
+        QCoreApplication.processEvents()
+        # add hyperlink if explorer url in coinslib
+        print('updated_wallet_balance')
+        self.update_wallet_labels(coin, address, balance_text, locked_text)
 
     # process withdrawl from wallet tab
     def send_funds(self):
@@ -2388,22 +2487,22 @@ class Ui(QTabWidget):
                 row += 1
 
     def show_balances_tab(self):
-        balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
+       
         self.clear_table(self.balances_table)
         self.balances_table.setSortingEnabled(False)
-        if 'binance' in balances_data:
-            bn_coins = list(balances_data['binance'].keys())
+        if 'binance' in self.balances_data:
+            bn_coins = list(self.balances_data['binance'].keys())
             table_coins = list(set(bn_coins + self.active_coins))
             row_count = len(table_coins)
             self.balances_table.setRowCount(row_count)
             row = 0
             for coin in table_coins:
-                if coin in balances_data['mm2']: 
-                    mm2_bal = balances_data['mm2'][coin]
+                if coin in self.balances_data['mm2']: 
+                    mm2_bal = self.balances_data['mm2'][coin]
                 else:
                     mm2_bal = 0
-                if coin in balances_data['binance']:
-                    bn_bal = balances_data['binance'][coin]
+                if coin in self.balances_data['binance']:
+                    bn_bal = self.balances_data['binance'][coin]
                 else:
                     bn_bal = 0
                 total_bal = mm2_bal + bn_bal
@@ -2412,7 +2511,7 @@ class Ui(QTabWidget):
                 row += 1
             self.balances_table.setSortingEnabled(True)
             self.balances_table.resizeColumnsToContents()
-            print(balances_data)
+            print(self.balances_data)
 
     def show_strategies_tab(self):
         pass
@@ -2447,38 +2546,30 @@ class Ui(QTabWidget):
                 print('show_mm2_orderbook_tab')
                 self.show_mm2_orderbook_tab()
             elif index == 2:
+                # binance acct
+                print('show_binance_tab')
+                self.show_binance_trading_tab()
+            elif index == 3:
                 # wallet
                 print('show_mm2_wallet_tab')
                 self.show_mm2_wallet_tab()
-            elif index == 3:
-                # mm trade
-                print('makerbot_trade')
-                self.show_mm2_trading_tab()
             elif index == 4:
-                # binance acct
-                print('binance_acct')
-                self.show_binance_trading_tab()
-            elif index == 5:
-                # bot trade
-                print('bot_trades')
-                self.show_bot_trading_tab()
-            elif index == 6:
-                # config
+                # strategies
                 print('show_strategies_tab')
                 self.show_strategies_tab()
-            elif index == 7:
-                # config
-                print('show_balances_tab')
-                self.show_balances_tab()
-            elif index == 8:
-                # config
+            elif index == 5:
+                # Prices
                 print('show_prices_tab')
-                self.show_prices_tab()
-            elif index == 9:
+                self.show_bot_trading_tab()
+            elif index == 6:
+                # history
+                print('show_history_tab')
+                self.show_history_tab()
+            elif index == 7:
                 # config
                 print('show_config_tab')
                 self.show_config_tab()
-            elif index == 10:
+            elif index == 8:
                 # logs
                 print('show_mm2_logs_tab')
                 self.show_mm2_logs_tab()

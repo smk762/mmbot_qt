@@ -88,7 +88,10 @@ for folder in config_folders:
         os.makedirs(config_path+folder)
 bot_data = {}
 orderbook_data = {}
-balances_data = {}
+balances_data = {
+    "mm2": {},
+    "binance": {}
+}
 prices_data = {
     "binance":{
 
@@ -231,6 +234,113 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
     orderbook_thread = orderbook_update_thread()
     prices_thread = price_update_thread()
     bot_thread = bot_update_thread()        
+
+@app.get("/table/open_orders")
+async def open_orders_table():
+    orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
+    print(orders)
+    if 'error' in orders:
+        return orders
+    if 'maker_orders' in orders['result']:
+        maker_orders = orders['result']['maker_orders']
+    if 'taker_orders' in orders['result']:
+        taker_orders = orders['result']['taker_orders']
+    if len(maker_orders)+len(taker_orders) == 0:
+        resp = {
+            "response": "success",
+            "message":"No open orders!",
+            "table_data": []
+        }
+        return resp
+    else:
+        table_data = []
+        for item in maker_orders:
+            role = "Maker"
+            base = maker_orders[item]['base']
+            base_amount = round(float(maker_orders[item]['available_amount']),8)
+            buy_price = round(float(1/float(sell_price)),8)
+            rel = maker_orders[item]['rel']
+            rel_amount = round(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount']),8)
+            sell_price = round(float(maker_orders[item]['price']),8)
+            timestamp = int(maker_orders[item]['created_at']/1000)
+            created_at = datetime.datetime.fromtimestamp(timestamp)
+            num_matches = len(maker_orders[item]['matches'])
+            table_data.append({
+                    "Role":role,
+                    "Buy Coin":base,
+                    "Buy Volume":base_amount,
+                    "Buy Price":buy_price,
+                    "Sell Coin":rel,
+                    "Sell Volume":rel_amount,
+                    "Sell Price":sell_price,
+                    "Order UUID":item,
+                    "Created At":created_at,
+                    "Num Matches":num_matches,
+                })
+        for item in taker_orders:
+            role = "Taker"
+            timestamp = int(taker_orders[item]['created_at'])/1000
+            created_at = datetime.datetime.fromtimestamp(timestamp)
+            base = taker_orders[item]['request']['base']
+            rel = taker_orders[item]['request']['rel']
+            base_amount = round(float(taker_orders[item]['request']['base_amount']),8)
+            rel_amount = round(float(taker_orders[item]['request']['rel_amount']),8)
+            buy_price = round(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount']),8)
+            sell_price = round(float(1/float(buy_price)),8)
+            table_data.append({
+                    "Role":role,
+                    "Buy Coin":base,
+                    "Buy Volume":base_amount,
+                    "Buy Price":buy_price,
+                    "Sell Coin":rel,
+                    "Sell Volume":rel_amount,
+                    "Sell Price":sell_price,
+                    "Order UUID":item,
+                    "Created At":created_at,
+                    "Num Matches":"-",
+                })
+        resp = {
+            "response": "success",
+            "message": "Open orders table data found.",
+            "table_data": table_data
+        }
+        return resp
+
+@app.get("/table/orderbook/{base}/{rel}")
+async def orderbook_pair_table(base, rel):
+    pair_book = rpclib.orderbook(mm2_ip, mm2_rpc_pass, base, rel).json()
+    if 'error' in pair_book:
+        return pair_book
+    elif len(pair_book['asks']) > 0:
+        table_data = []
+        for item in pair_book['asks']:
+            basevolume = round(float(item['maxvolume']), 8)
+            relprice = round(float(item['price']), 8)
+            order_value = round(float(item['price'])*float(item['maxvolume']), 8)
+            table_data.append({
+                    "Buy Coin":base,
+                    "Sell Coin":rel,
+                    base+" Volume":basevolume,
+                    rel+" Price per "+base:relprice,
+                    "Order Value in "+rel:order_value,
+                    "Age":item['age'],
+                    "Pubkey":item['pubkey'],
+                })
+        resp = {
+            "response": "success",
+            "message": "Orderbook table data found.",
+            "table_data": table_data
+        }
+        return resp
+
+    else:
+        resp = {
+            "response": "success",
+            "message":"No "+base+"/"+rel+" orders in orderbook",
+            "table_data": []
+        }
+        return resp
+
 
 @app.get("/all_balances")
 async def all_balances():

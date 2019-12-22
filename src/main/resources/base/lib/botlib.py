@@ -144,6 +144,7 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_p
             locked = item['locked_by_swaps']
             available = float(total) - float(locked)
             balances_data["mm2"].update({coin: {
+                "address":address,
                 "total":total,
                 "locked":locked,
                 "available":available,

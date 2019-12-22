@@ -1,5 +1,14 @@
 <RCC>
   <qresource prefix="ui">
+    <file>img/other/switch-arrow3.png</file>
+    <file>img/other/switch-arrow2.png</file>
+    <file>img/other/switch-arrow.png</file>
+    <file>img/other/inactive.png</file>
+    <file>img/other/checkbox.png</file>
+    <file>img/other/arrow-up.png</file>
+    <file>img/other/arrow-right.png</file>
+    <file>img/other/arrow-left.png</file>
+    <file>img/other/arrow-down.png</file>
     <file>makerbot_gui_dark_v3a.ui</file>
     <file>makerbot_gui_dark_v3.ui</file>
     <file>img/other/switch-arrow.png</file>
