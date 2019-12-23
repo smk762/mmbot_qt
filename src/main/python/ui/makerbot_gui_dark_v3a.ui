@@ -5287,134 +5287,7 @@ color: rgb(0, 0, 0);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_4">
-             <item row="1" column="0">
-              <spacer name="horizontalSpacer_12">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::MinimumExpanding</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="1" column="1">
-              <widget class="QTableWidget" name="orderbook_table">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>11</pointsize>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-               </property>
-               <property name="sizeAdjustPolicy">
-                <enum>QAbstractScrollArea::AdjustToContents</enum>
-               </property>
-               <property name="editTriggers">
-                <set>QAbstractItemView::NoEditTriggers</set>
-               </property>
-               <property name="showDropIndicator" stdset="0">
-                <bool>false</bool>
-               </property>
-               <property name="dragDropOverwriteMode">
-                <bool>false</bool>
-               </property>
-               <property name="alternatingRowColors">
-                <bool>false</bool>
-               </property>
-               <property name="selectionMode">
-                <enum>QAbstractItemView::SingleSelection</enum>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <property name="textElideMode">
-                <enum>Qt::ElideMiddle</enum>
-               </property>
-               <property name="sortingEnabled">
-                <bool>true</bool>
-               </property>
-               <property name="rowCount">
-                <number>5</number>
-               </property>
-               <property name="columnCount">
-                <number>5</number>
-               </property>
-               <attribute name="horizontalHeaderCascadingSectionResizes">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>201</number>
-               </attribute>
-               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="horizontalHeaderStretchLastSection">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <attribute name="verticalHeaderDefaultSectionSize">
-                <number>20</number>
-               </attribute>
-               <attribute name="verticalHeaderHighlightSections">
-                <bool>true</bool>
-               </attribute>
-               <attribute name="verticalHeaderMinimumSectionSize">
-                <number>20</number>
-               </attribute>
-               <row/>
-               <row/>
-               <row/>
-               <row/>
-               <row/>
-               <column>
-                <property name="text">
-                 <string>Sell Coin</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Buy Coin</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Volume</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Sell Price</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>Mkt Price</string>
-                </property>
-               </column>
-              </widget>
-             </item>
-             <item row="1" column="2">
+             <item row="2" column="2">
               <spacer name="horizontalSpacer_17">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
@@ -5433,7 +5306,7 @@ color: rgb(0, 0, 0);</string>
              <item row="0" column="0" colspan="3">
               <widget class="QFrame" name="frame_71">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -5502,7 +5375,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -5535,7 +5408,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -5568,7 +5441,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -5601,7 +5474,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -5653,86 +5526,6 @@ color: rgb(0, 0, 0);</string>
                          <property name="verticalSpacing">
                           <number>0</number>
                          </property>
-                         <item row="0" column="4">
-                          <widget class="QLabel" name="orderbook_sell_lbl">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>16</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>SELL</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="7">
-                          <widget class="QLabel" name="orderbook_buy_lbl">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>16</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>BUY</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="7">
-                          <widget class="QComboBox" name="orderbook_buy_combo">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>35</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true"/>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="1" column="4">
-                          <widget class="QComboBox" name="orderbook_sell_combo">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>16777215</width>
-                             <height>35</height>
-                            </size>
-                           </property>
-                           <property name="styleSheet">
-                            <string notr="true"/>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="1" column="5">
                           <widget class="QPushButton" name="orderbook_switch_btn">
                            <property name="sizePolicy">
@@ -5744,7 +5537,7 @@ color: rgb(0, 0, 0);</string>
                            <property name="minimumSize">
                             <size>
                              <width>40</width>
-                             <height>0</height>
+                             <height>32</height>
                             </size>
                            </property>
                            <property name="maximumSize">
@@ -5759,6 +5552,110 @@ color: rgb(0, 0, 0);</string>
                            <property name="icon">
                             <iconset resource="coin_icons.qrc">
                              <normaloff>:/ui/img/other/switch-arrow2.png</normaloff>:/ui/img/other/switch-arrow2.png</iconset>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="6">
+                          <widget class="QComboBox" name="orderbook_sell_combo">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>32</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>35</height>
+                            </size>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="1" column="4">
+                          <widget class="QComboBox" name="orderbook_buy_combo">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>32</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>16777215</width>
+                             <height>35</height>
+                            </size>
+                           </property>
+                           <property name="styleSheet">
+                            <string notr="true"/>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="6">
+                          <widget class="QLabel" name="orderbook_sell_lbl">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>16</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>SELL</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="4">
+                          <widget class="QLabel" name="orderbook_buy_lbl">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>16</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>BUY</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
                            </property>
                           </widget>
                          </item>
@@ -5805,7 +5702,64 @@ color: rgb(0, 0, 0);</string>
                       <enum>QFrame::Raised</enum>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_50">
-                      <item row="0" column="3" rowspan="3">
+                      <item row="0" column="1" colspan="3">
+                       <widget class="QLabel" name="orderbook_buy_balance_lbl">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>11</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Balance: </string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1" colspan="3">
+                       <widget class="QLabel" name="orderbook_buy_locked_lbl">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>11</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string/>
+                        </property>
+                        <property name="text">
+                         <string>Locked by swaps:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="5" rowspan="3">
                        <widget class="QLabel" name="orderbook_buy_bal_icon">
                         <property name="minimumSize">
                          <size>
@@ -5845,62 +5799,18 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </spacer>
                       </item>
-                      <item row="1" column="2">
-                       <widget class="QLabel" name="orderbook_buy_locked_lbl">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
+                      <item row="0" column="4" rowspan="3">
+                       <spacer name="verticalSpacer_7">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
                         </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>11</pointsize>
-                         </font>
-                        </property>
-                        <property name="styleSheet">
-                         <string/>
-                        </property>
-                        <property name="text">
-                         <string>Locked by swaps:</string>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="2">
-                       <widget class="QDoubleSpinBox" name="orderbook_sell_amount_spinbox">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
+                        <property name="sizeHint" stdset="0">
                          <size>
-                          <width>16777215</width>
-                          <height>35</height>
+                          <width>20</width>
+                          <height>40</height>
                          </size>
                         </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>9</pointsize>
-                         </font>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true"/>
-                        </property>
-                        <property name="decimals">
-                         <number>8</number>
-                        </property>
-                        <property name="maximum">
-                         <double>9999999999.989999771118164</double>
-                        </property>
-                        <property name="singleStep">
-                         <double>0.000001000000000</double>
-                        </property>
-                       </widget>
+                       </spacer>
                       </item>
                       <item row="2" column="1">
                        <widget class="QLabel" name="orderbook_buy_amount_lbl">
@@ -5913,7 +5823,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -5935,24 +5845,45 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="0" column="2">
-                       <widget class="QLabel" name="orderbook_buy_balance_lbl">
+                      <item row="2" column="2">
+                       <widget class="QDoubleSpinBox" name="orderbook_buy_amount_spinbox">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
                         </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>35</height>
+                         </size>
+                        </property>
                         <property name="font">
                          <font>
-                          <pointsize>11</pointsize>
+                          <pointsize>9</pointsize>
                          </font>
                         </property>
-                        <property name="text">
-                         <string>Balance: </string>
+                        <property name="styleSheet">
+                         <string notr="true"/>
                         </property>
                         <property name="alignment">
-                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                        <property name="decimals">
+                         <number>8</number>
+                        </property>
+                        <property name="maximum">
+                         <double>9999999999.989999771118164</double>
+                        </property>
+                        <property name="singleStep">
+                         <double>0.000001000000000</double>
                         </property>
                        </widget>
                       </item>
@@ -5968,6 +5899,39 @@ color: rgb(0, 0, 0);</string>
                       <enum>QFrame::Raised</enum>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_5">
+                      <item row="2" column="0">
+                       <widget class="QPushButton" name="orderbook_send_order_btn">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>35</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>9</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>Send Order</string>
+                        </property>
+                       </widget>
+                      </item>
                       <item row="0" column="0">
                        <widget class="QLabel" name="orderbook_price_lbl">
                         <property name="sizePolicy">
@@ -5979,7 +5943,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -6002,12 +5966,18 @@ color: rgb(0, 0, 0);</string>
                        </widget>
                       </item>
                       <item row="1" column="0">
-                       <widget class="QDoubleSpinBox" name="orderbook_price_spinbox">
+                       <widget class="QDoubleSpinBox" name="orderbook_buy_price_spinbox">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
                         </property>
                         <property name="maximumSize">
                          <size>
@@ -6022,6 +5992,9 @@ color: rgb(0, 0, 0);</string>
                         </property>
                         <property name="styleSheet">
                          <string notr="true"/>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
                         </property>
                         <property name="decimals">
                          <number>8</number>
@@ -6031,39 +6004,6 @@ color: rgb(0, 0, 0);</string>
                         </property>
                         <property name="singleStep">
                          <double>0.000001000000000</double>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="0">
-                       <widget class="QPushButton" name="orderbook_send_order_btn">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>0</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>35</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>9</pointsize>
-                         </font>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true"/>
-                        </property>
-                        <property name="text">
-                         <string>Send Order</string>
                         </property>
                        </widget>
                       </item>
@@ -6094,13 +6034,19 @@ color: rgb(0, 0, 0);</string>
                       <enum>QFrame::Raised</enum>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_49">
-                      <item row="0" column="1" colspan="2">
+                      <item row="0" column="2" colspan="2">
                        <widget class="QLabel" name="orderbook_sell_balance_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
                         </property>
                         <property name="font">
                          <font>
@@ -6109,39 +6055,6 @@ color: rgb(0, 0, 0);</string>
                         </property>
                         <property name="text">
                          <string>Balance: </string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="2" column="2">
-                       <widget class="QDoubleSpinBox" name="orderbook_buy_amount_spinbox">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>35</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>9</pointsize>
-                         </font>
-                        </property>
-                        <property name="styleSheet">
-                         <string notr="true"/>
-                        </property>
-                        <property name="decimals">
-                         <number>8</number>
-                        </property>
-                        <property name="maximum">
-                         <double>9999999999.989999771118164</double>
-                        </property>
-                        <property name="singleStep">
-                         <double>0.000001000000000</double>
                         </property>
                        </widget>
                       </item>
@@ -6172,7 +6085,7 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="2" column="1">
+                      <item row="2" column="2">
                        <widget class="QLabel" name="orderbook_sell_amount_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -6183,7 +6096,7 @@ color: rgb(0, 0, 0);</string>
                         <property name="minimumSize">
                          <size>
                           <width>0</width>
-                          <height>0</height>
+                          <height>25</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -6205,13 +6118,19 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="1" column="1" colspan="2">
+                      <item row="1" column="2" colspan="2">
                        <widget class="QLabel" name="orderbook_sell_locked_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
                         </property>
                         <property name="font">
                          <font>
@@ -6223,7 +6142,7 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="2" column="3">
+                      <item row="2" column="4">
                        <spacer name="horizontalSpacer_2">
                         <property name="orientation">
                          <enum>Qt::Horizontal</enum>
@@ -6236,6 +6155,61 @@ color: rgb(0, 0, 0);</string>
                         </property>
                        </spacer>
                       </item>
+                      <item row="0" column="1" rowspan="3">
+                       <spacer name="verticalSpacer_8">
+                        <property name="orientation">
+                         <enum>Qt::Vertical</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>20</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="2" column="3">
+                       <widget class="QDoubleSpinBox" name="orderbook_sell_amount_spinbox">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>35</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>9</pointsize>
+                         </font>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                        <property name="decimals">
+                         <number>8</number>
+                        </property>
+                        <property name="maximum">
+                         <double>9999999999.989999771118164</double>
+                        </property>
+                        <property name="singleStep">
+                         <double>0.000001000000000</double>
+                        </property>
+                       </widget>
+                      </item>
                      </layout>
                     </widget>
                    </item>
@@ -6243,6 +6217,157 @@ color: rgb(0, 0, 0);</string>
                  </widget>
                 </item>
                </layout>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <spacer name="horizontalSpacer_12">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="2" column="1">
+              <widget class="QTableWidget" name="orderbook_table">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="mouseTracking">
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Sunken</enum>
+               </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="showDropIndicator" stdset="0">
+                <bool>false</bool>
+               </property>
+               <property name="dragDropOverwriteMode">
+                <bool>false</bool>
+               </property>
+               <property name="alternatingRowColors">
+                <bool>false</bool>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <property name="textElideMode">
+                <enum>Qt::ElideMiddle</enum>
+               </property>
+               <property name="sortingEnabled">
+                <bool>true</bool>
+               </property>
+               <property name="rowCount">
+                <number>5</number>
+               </property>
+               <property name="columnCount">
+                <number>6</number>
+               </property>
+               <attribute name="horizontalHeaderCascadingSectionResizes">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="horizontalHeaderDefaultSectionSize">
+                <number>201</number>
+               </attribute>
+               <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <attribute name="verticalHeaderDefaultSectionSize">
+                <number>20</number>
+               </attribute>
+               <attribute name="verticalHeaderHighlightSections">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderMinimumSectionSize">
+                <number>20</number>
+               </attribute>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <row/>
+               <column>
+                <property name="text">
+                 <string>Sell Coin</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Buy Coin</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Volume</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Sell Price</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Mkt Price</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>BUY</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLabel" name="orderbook_msg_lbl">
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>Click a Row to Buy from the Antara Marketmaker Orderbook</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
               </widget>
              </item>
             </layout>
@@ -6302,6 +6427,22 @@ color: rgb(0, 0, 0);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_32">
              <item row="0" column="0">
+              <spacer name="horizontalSpacer_19">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>181</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="1">
               <widget class="QTableWidget" name="mm2_orders_table">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6409,6 +6550,22 @@ color: rgb(0, 0, 0);</string>
                <column/>
                <column/>
               </widget>
+             </item>
+             <item row="0" column="2">
+              <spacer name="horizontalSpacer_20">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>181</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
              </item>
             </layout>
            </widget>
@@ -6545,7 +6702,7 @@ color: rgb(0, 0, 0);</string>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>307</height>
+        <height>276</height>
        </size>
       </property>
      </spacer>
@@ -8297,6 +8454,45 @@ color: rgb(0, 0, 0);</string>
    <attribute name="title">
     <string>Strategies</string>
    </attribute>
+   <widget class="QPushButton" name="mm2_cancel_all_btn_3">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>210</y>
+      <width>80</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>16777215</width>
+      <height>35</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="text">
+     <string>Cancel All</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QWidget" name="tab_prices">
    <attribute name="title">
@@ -10570,7 +10766,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1306</x>
-     <y>931</y>
+     <y>672</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -10585,8 +10781,8 @@ color: rgb(0, 0, 0);</string>
    <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1898</x>
-     <y>1021</y>
+     <x>1888</x>
+     <y>987</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -10665,8 +10861,8 @@ color: rgb(0, 0, 0);</string>
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1143</x>
-     <y>617</y>
+     <x>1308</x>
+     <y>458</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -10762,7 +10958,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>979</y>
+     <y>465</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10778,7 +10974,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1880</x>
-     <y>1040</y>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10794,7 +10990,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>956</y>
+     <y>442</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10826,7 +11022,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>239</x>
-     <y>1049</y>
+     <y>535</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10842,7 +11038,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>342</x>
-     <y>1049</y>
+     <y>535</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10858,7 +11054,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>810</x>
-     <y>1049</y>
+     <y>535</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10874,7 +11070,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1205</x>
-     <y>1049</y>
+     <y>535</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -10922,7 +11118,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1888</x>
-     <y>911</y>
+     <y>424</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -10937,8 +11133,8 @@ color: rgb(0, 0, 0);</string>
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1898</x>
-     <y>1058</y>
+     <x>1888</x>
+     <y>1037</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -10954,7 +11150,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1344</x>
-     <y>1049</y>
+     <y>741</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -10970,7 +11166,7 @@ color: rgb(0, 0, 0);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1878</x>
-     <y>464</y>
+     <y>345</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -10985,8 +11181,8 @@ color: rgb(0, 0, 0);</string>
    <slot>show_mm2_qr_popup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1696</x>
-     <y>968</y>
+     <x>1262</x>
+     <y>419</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11001,8 +11197,8 @@ color: rgb(0, 0, 0);</string>
    <slot>calc_mm2_total_vals()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>269</x>
-     <y>487</y>
+     <x>302</x>
+     <y>158</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11017,8 +11213,8 @@ color: rgb(0, 0, 0);</string>
    <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>861</x>
-     <y>568</y>
+     <x>1057</x>
+     <y>157</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11033,8 +11229,104 @@ color: rgb(0, 0, 0);</string>
    <slot>show_mm2_orderbook_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>666</x>
-     <y>568</y>
+     <x>862</x>
+     <y>157</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>get_price_from_orderbook()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>960</x>
+     <y>431</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_25pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>bal_25pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>830</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_50pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>bal_50pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>916</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_75pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>bal_75pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1002</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_100pct_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>bal_100pct()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1088</x>
+     <y>192</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>orderbook_switch_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>combo_box_switch()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>959</x>
+     <y>157</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11098,5 +11390,6 @@ color: rgb(0, 0, 0);</string>
   <slot>mm2_sell_amount_changed()</slot>
   <slot>show_mm2_qr_popup()</slot>
   <slot>calc_mm2_total_vals()</slot>
+  <slot>get_price_from_orderbook()</slot>
  </slots>
 </ui>
