@@ -150,7 +150,7 @@ class price_update_thread(object):
 
 
 class bot_update_thread(object):
-    def __init__(self, interval=90):                  # 20 min, TODO: change to var
+    def __init__(self, interval=90):
         self.interval = interval
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
@@ -164,7 +164,7 @@ class bot_update_thread(object):
 
 
 class orderbook_update_thread(object):
-    def __init__(self, interval=10):                  # 20 min, TODO: change to var
+    def __init__(self, interval=10):
         self.interval = interval
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
@@ -178,7 +178,7 @@ class orderbook_update_thread(object):
 
 
 class balances_update_thread(object):
-    def __init__(self, interval=30):                  # 20 min, TODO: change to var
+    def __init__(self, interval=10):
         self.interval = interval
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
@@ -187,11 +187,15 @@ class balances_update_thread(object):
     def run(self):
         while True:
             global balances_data
-            balances_data = botlib.balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path)
+            get_cex = True
+            active_coins = rpclib.check_active_coins(mm2_ip, mm2_rpc_pass)
+            for coin in active_coins:
+                balances_data = botlib.balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, get_cex)
+                get_cex = False
             time.sleep(self.interval)
 
 class addresses_thread(object):
-    def __init__(self):                  # 20 min, TODO: change to var
+    def __init__(self):             
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution

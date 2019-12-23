@@ -6474,7 +6474,7 @@ color: rgb(0, 0, 0);</string>
                   </property>
                   <property name="font">
                    <font>
-                    <pointsize>10</pointsize>
+                    <pointsize>11</pointsize>
                    </font>
                   </property>
                   <property name="styleSheet">
@@ -6508,7 +6508,7 @@ color: rgb(0, 0, 0);</string>
                    <bool>true</bool>
                   </property>
                   <property name="rowCount">
-                   <number>5</number>
+                   <number>0</number>
                   </property>
                   <property name="columnCount">
                    <number>9</number>
@@ -6537,11 +6537,6 @@ color: rgb(0, 0, 0);</string>
                   <attribute name="verticalHeaderMinimumSectionSize">
                    <number>20</number>
                   </attribute>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
                   <column>
                    <property name="text">
                     <string>Created</string>
@@ -6756,7 +6751,7 @@ color: rgb(0, 0, 0);</string>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>234</height>
+        <height>286</height>
        </size>
       </property>
      </spacer>
@@ -11264,7 +11259,7 @@ color: rgb(0, 0, 0);</string>
    <sender>orderbook_buy_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_mm2_orderbook_tab()</slot>
+   <slot>orderbook_combo_box_change()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>862</x>
@@ -11376,7 +11371,7 @@ color: rgb(0, 0, 0);</string>
    <sender>orderbook_switch_btn</sender>
    <signal>clicked()</signal>
    <receiver>MainTabs</receiver>
-   <slot>combo_box_switch()</slot>
+   <slot>orderbook_combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>959</x>
@@ -11497,7 +11492,7 @@ color: rgb(0, 0, 0);</string>
   <slot>mm2_cancel_order()</slot>
   <slot>mm2_cancel_bot_order()</slot>
   <slot>show_mm2_trading_tab()</slot>
-  <slot>combo_box_switch()</slot>
+  <slot>orderbook_combo_box_switch()</slot>
   <slot>update_history_graph()</slot>
   <slot>show_qr_popup()</slot>
   <slot>update_mm2_amounts()</slot>
@@ -11512,5 +11507,6 @@ color: rgb(0, 0, 0);</string>
   <slot>orderbook_buy_price_changed()</slot>
   <slot>orderbook_buy_amount_changed()</slot>
   <slot>orderbook_sell_amount_changed()</slot>
+  <slot>orderbook_combo_box_change()</slot>
  </slots>
 </ui>

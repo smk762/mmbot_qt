@@ -126,38 +126,32 @@ def get_mm2_pair_orderbook(mm2_ip, mm2_rpc_pass, base, rel):
         }
     return orderbook_pair
 
-def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
+def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, get_cex):
     print("starting balances loop")
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
-    balances_data = {
-        "mm2": {},
-        "binance": {}
-    }
-    # get mm2 balances
-    balance_info = rpclib.all_balances(mm2_ip, mm2_rpc_pass)
-    print(balance_info)
-    for item in balance_info:
-        if 'balance' in item:
-            address = item['address']
-            coin = item['coin']
-            total = item['balance']
-            locked = item['locked_by_swaps']
-            available = float(total) - float(locked)
-            balances_data["mm2"].update({coin: {
-                "address":address,
-                "total":total,
-                "locked":locked,
-                "available":available,
-                }                
-            })
-        else:
-            print(item)
+    # get mm2 balance
+    balance_info = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
 
-    # get binance balances
-    binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
-    for coin in binance_balances:
-        available = binance_balances[coin]['available']
-        balances_data["binance"].update({coin:available})
+    if 'balance' in balance_info:
+        address = balance_info['address']
+        coin = balance_info['coin']
+        total = balance_info['balance']
+        locked = balance_info['locked_by_swaps']
+        available = float(total) - float(locked)
+        balances_data["mm2"].update({coin: {
+            "address":address,
+            "total":total,
+            "locked":locked,
+            "available":available,
+            }                
+        })
+    else:
+        print(balance_info)
+    if get_cex:        
+        # get binance balances
+        binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
+        for coin in binance_balances:
+            available = binance_balances[coin]['available']
+            balances_data["binance"].update({coin:available})
     return balances_data
 
 def get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret):

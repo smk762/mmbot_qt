@@ -82,7 +82,7 @@ def ETH_AmountToJSON(amount):
 # request and cache external balance and pricing data in thread
 class cachedata_thread(QThread):
     update_data = pyqtSignal(dict, dict)
-    def __init__(self, creds):
+    def __init__(self):
         QThread.__init__(self)
 
     def __del__(self):
@@ -94,10 +94,24 @@ class cachedata_thread(QThread):
                 prices_data = requests.get('http://127.0.0.1:8000/all_prices').json()
                 balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
                 self.update_data.emit(prices_data, balances_data)
-                time.sleep(20)
+                time.sleep(10)
             except Exception as e:
                 print(e)
                 pass
+
+class balance_update_thread(QThread):
+    update_balance = pyqtSignal(dict)
+    def __init__(self, creds, coin):
+        QThread.__init__(self)
+        self.coin = coin
+        self.creds = creds
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], self.coin)
+        self.update_balance.emit(balance_info.json())
 
 
 # Process coin activation in thread
@@ -437,10 +451,18 @@ class Ui(QTabWidget):
     # once cachedata thred returns data, update balances, logs and tables as required.
     def update_cachedata(self, prices_dict, balances_dict):
         print("updating cache data from thread")
-        print(prices_dict)
-        print(balances_dict)
         self.prices_data = prices_dict
-        self.balances_data = balances_dict
+        #print(prices_dict)
+        print("*****")
+        print("balances_dict"+str(balances_dict['mm2']))
+        print("self.balances_data"+str(self.balances_data['mm2']))
+        self.balances_data['mm2'].update(balances_dict['mm2'])
+        print("self.balances_data merged"+str(self.balances_data['mm2']))
+        print("*****")
+        baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo)
+        base = baserel[0]
+        rel = baserel[1]
+        self.update_mm2_orderbook_labels(base, rel)
         # TODO: Add gui update functions as req here.
 
     ## MM2 management
@@ -668,9 +690,10 @@ class Ui(QTabWidget):
         if rel_index != -1:
             rel = rel_combo.itemText(rel_index)
         active_coins_selection = self.active_coins[:]
-        rel = self.update_combo(rel_combo,active_coins_selection,rel)
-        active_coins_selection.remove(rel)
-        base = self.update_combo(base_combo,active_coins_selection,base)
+        if len(active_coins_selection) > 0:
+            rel = self.update_combo(rel_combo,active_coins_selection,rel)
+            active_coins_selection.remove(rel)
+            base = self.update_combo(base_combo,active_coins_selection,base)
         return base, rel
 
     # parse out user order uuids as a list
@@ -1193,26 +1216,52 @@ class Ui(QTabWidget):
         self.orderbook_price_lbl.setText(""+rel+" Buy Price in "+base)
         self.orderbook_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
         self.orderbook_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-        self.orderbook_buy_price_spinbox.setValue(0)
-        self.orderbook_buy_amount_spinbox.setValue(0)
-        self.orderbook_sell_amount_spinbox.setValue(0)
         self.orderbook_send_order_btn.setText("Buy "+rel)
         if base in self.balances_data['mm2']:
             locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
             balance = round(float(self.balances_data['mm2'][base]['total']),8)
         else:
-            locked_text = round(0,8)
-            balance = round(0,8)
+            # Get coins balance in separate thread
+            self.balance_thread = balance_update_thread(self.creds, base)
+            self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+            self.balance_thread.start()
+            locked_text = round(float(0),8)
+            balance = round(float(0),8)
         self.orderbook_sell_balance_lbl.setText("Available: "+str(balance)+" "+base)
         self.orderbook_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+base)
         if rel in self.balances_data['mm2']:
             locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
             balance = round(float(self.balances_data['mm2'][rel]['total']),8)
         else:
+            # Get coins balance in separate thread
+            self.balance_thread = balance_update_thread(self.creds, rel)
+            self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+            self.balance_thread.start()
             locked_text = round(float(0),8)
             balance = round(float(0),8)
         self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+rel)
         self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
+
+    def update_balance_from_thread(self, bal_info):
+        print('update_balance_from_thread')
+        if 'coin' in bal_info:
+            coin = bal_info['coin']
+            address = bal_info['address']
+            total = bal_info['balance']
+            locked = bal_info['locked_by_swaps']
+            available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
+            self.balances_data["mm2"].update({coin: {
+                    "address":address,
+                    "total":total,
+                    "locked":locked,
+                    "available":available,
+                    }                
+                })
+            print(self.balances_data['mm2'])
+        else:
+            print(bal_info)
+        print(bal_info)
+
 
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -1253,7 +1302,7 @@ class Ui(QTabWidget):
             value = self.orderbook_table.item(selected_row,4).text()
 
     # updates base/rel combo box options to avoid base == rel
-    def combo_box_switch(self):
+    def orderbook_combo_box_switch(self):
         print('combo_box_switch')
         active_coins_selection = self.active_coins[:]
         index = self.orderbook_buy_combo.currentIndex()
@@ -1271,6 +1320,15 @@ class Ui(QTabWidget):
         rel = self.update_combo(self.orderbook_buy_combo,active_coins_selection,old_base)
         active_coins_selection.remove(rel)
         base = self.update_combo(self.orderbook_sell_combo,active_coins_selection,old_rel)
+        self.orderbook_buy_price_spinbox.setValue(0)
+        self.orderbook_buy_amount_spinbox.setValue(0)
+        self.orderbook_sell_amount_spinbox.setValue(0)
+        self.show_mm2_orderbook_tab()
+
+    def orderbook_combo_box_change(self):
+        self.orderbook_buy_price_spinbox.setValue(0)
+        self.orderbook_buy_amount_spinbox.setValue(0)
+        self.orderbook_sell_amount_spinbox.setValue(0)
         self.show_mm2_orderbook_tab()
 
     # calculate and apply trade amount from percentage of balance buttons
@@ -1725,32 +1783,6 @@ class Ui(QTabWidget):
         self.mm2_balances_table.setSortingEnabled(True)
         self.mm2_balances_table.resizeColumnsToContents()
         print("balances_table updated")
-
-    def update_mm2_bal_tbl_from_thread(self, bal_info, usd_val, btc_val):
-        coin = bal_info['coin']
-        address = bal_info['address']
-        total = bal_info['balance']
-        locked = bal_info['locked_by_swaps']
-        available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
-        cell_coords = self.find_in_table(self.mm2_balances_table, coin)
-        row = cell_coords[0]
-        self.mm2_balances_table.setSortingEnabled(False)
-        if row != -1:
-            balance_row = [coin, balance, usd_val, btc_val]
-            self.add_row(row, balance_row, self.mm2_balances_table)
-            self.balances_data["mm2"].update({coin: {
-                    "address":address,
-                    "total":total,
-                    "locked":locked,
-                    "available":available,
-                    }                
-                })
-        else:
-            # add new row
-            #self.mm2_balances_table.setItem(row,col, QTableWidgetItem(str(balance)))
-            pass
-        self.mm2_balances_table.setSortingEnabled(True)
-        self.mm2_balances_table.resizeColumnsToContents()
 
 
     def update_mm2_wallet_from_thread(self, bal_info):
@@ -2402,7 +2434,6 @@ class Ui(QTabWidget):
                 row += 1
             self.balances_table.setSortingEnabled(True)
             self.balances_table.resizeColumnsToContents()
-            print(self.balances_data)
 
     def show_strategies_tab(self):
         pass
