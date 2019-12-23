@@ -8,6 +8,7 @@ from threading import Thread
 import asyncio
 import logging
 #import sqlite3
+import datetime
 from lib import rpclib, botlib, coinslib, priceslib, validatelib
 import time
 import json
@@ -106,6 +107,7 @@ prices_data = {
 
     }
 }
+addresses_data = {}
 
 def colorize(string, color):
     colors = {
@@ -130,11 +132,6 @@ def colorize(string, color):
     else:
         return colors[color] + str(string) + '\033[0m'
 
-balances_data = {}
-prices_data = {}
-bot_data = {}
-orderbook_data = {}
-addresses_data = {}
 
 ### THREAD Classes
 
@@ -258,10 +255,10 @@ async def open_orders_table():
             role = "Maker"
             base = maker_orders[item]['base']
             base_amount = round(float(maker_orders[item]['available_amount']),8)
-            buy_price = round(float(1/float(sell_price)),8)
             rel = maker_orders[item]['rel']
             rel_amount = round(float(maker_orders[item]['price'])*float(maker_orders[item]['available_amount']),8)
             sell_price = round(float(maker_orders[item]['price']),8)
+            buy_price = round(float(1/float(sell_price)),8)
             timestamp = int(maker_orders[item]['created_at']/1000)
             created_at = datetime.datetime.fromtimestamp(timestamp)
             num_matches = len(maker_orders[item]['matches'])
@@ -344,10 +341,11 @@ async def orderbook_pair_table(base, rel):
 
 @app.get("/all_balances")
 async def all_balances():
-    """
-    Returns MM2 and CEX balances
-    """
     return balances_data
+
+@app.get("/all_prices")
+async def all_prices():
+    return prices_data
 
 @app.get("/all_addresses")
 async def all_addresses():
@@ -453,15 +451,6 @@ async def coin_prices(base, rel):
         "binance_prices": prices
     }
     return prices
-
-@app.get("/all_prices")
-async def all_prices():
-    resp = {
-        "response": "success",
-        "message": "All prices data found",
-        "price_data": prices_data,
-    }
-    return resp
 
 @app.get("/prices/{coin}")
 async def coin_prices(coin):
