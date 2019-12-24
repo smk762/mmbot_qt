@@ -30,6 +30,7 @@ from pyqtgraph.Point import Point
  - remove code deprecated by API
  - autoactivate coins needing kickstart
  - https://api.hitbtc.com/
+ - https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
 
 '''
 
@@ -459,12 +460,14 @@ class Ui(QTabWidget):
         print("updating cache data from thread")
         self.prices_data = prices_dict
         self.balances_data['mm2'].update(balances_dict['mm2'])
+        self.balances_data['binance'].update(balances_dict['binance'])
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo)
         base = baserel[0]
         rel = baserel[1]
         self.update_mm2_orderbook_labels(base, rel)
         self.update_mm2_wallet_labels()
         self.update_mm2_balance_table()
+        self.update_binance_balance_table()
         # TODO: Add gui update functions as req here.
 
 
@@ -1231,10 +1234,10 @@ class Ui(QTabWidget):
                     btc_price = self.prices_data['average'][coin]['BTC']
                     # ignore if prices are "No Data"
                     try:
-                        usd_val = float(usd_price)*float(total)
-                        btc_val = float(btc_price)*float(total)
-                        self.wallet_btc_value.setText("$"+str(btc_val)+" USD")
-                        self.wallet_usd_value.setText(str(usd_val)+"BTC")
+                        usd_val = round(float(usd_price)*float(total),4)
+                        btc_val = round(float(btc_price)*float(total),8)
+                        self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
+                        self.wallet_btc_value.setText(str(btc_val)+" BTC")
                     except:
                         self.wallet_btc_value.setText("")
                         self.wallet_usd_value.setText("")
@@ -1329,10 +1332,8 @@ class Ui(QTabWidget):
                     "available":available,
                     }                
                 })
-            print(self.balances_data['mm2'])
         else:
             print(bal_info)
-        print(bal_info)
 
 
     def update_mm2_orders_tables(self):
@@ -1636,13 +1637,10 @@ class Ui(QTabWidget):
             coin = self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
         else:
             coin = self.history_coin_combobox.itemText(index)
-        print(coin)
-
         index = self.history_timespan_combobox.currentIndex()
         if index == -1:
             index = 0
         timespan = self.history_timespan_combobox.itemText(index)
-        print(timespan)
         if timespan == '1 Year':
             since = 'year_ago'
         elif timespan == '6 Mth':
@@ -1804,7 +1802,6 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
         msgBox.exec()
-
 
     def update_mm2_wallet_from_thread(self, bal_info):
         coin = bal_info['coin']
@@ -2065,11 +2062,11 @@ class Ui(QTabWidget):
 
     ## BINANCE API
     def show_binance_trading_tab(self):
-        tickers = self.update_binance_balance_table()
-        print("Binance Tickers: "+str(tickers))
+        tickers = coinslib.binance_coins
         if tickers is not None:
-            # only update if not same len as complete list (for all combo updates)
+            # wallet combobox
             self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
+            # trade combobox
             self.update_combo(self.binance_ticker_pair_comboBox, binance_api.supported_binance_pairs, binance_api.supported_binance_pairs[0])
             self.update_binance_orderbook()
             QCoreApplication.processEvents()
@@ -2106,35 +2103,22 @@ class Ui(QTabWidget):
         print("show Binance QR code msgbox")
         msgBox.exec()
 
-
     def update_binance_balance_table(self):
-        #TODO: thread this
-        acct_info = binance_api.get_account_info(self.creds[5], self.creds[6])
-        if 'msg' in acct_info:
-            QMessageBox.information(self, 'Binance API key error!', str(acct_info['msg']), QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
-        else:
-            tickers = []
-            if 'balances' in acct_info:
-                self.clear_table(self.binance_balances_table)
-                row_count = len(acct_info['balances'])
-                self.binance_balances_table.setRowCount(row_count)
-                self.binance_balances_table.setSortingEnabled(False)
-                row = 0
-                for item in acct_info['balances']:
-                    coin = item['asset']
-                    available = float(item['free'])
-                    locked = float(item['locked'])
-                    balance = locked + available
-                    if balance > 0 or coin in coinslib.binance_coins:
-                        tickers.append(coin)
-                    balance_row = [coin, balance, available, locked]
-                    self.add_row(row, balance_row, self.binance_balances_table)
-                    row += 1
-                self.binance_balances_table.setSortingEnabled(True)
-                self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
-                self.binance_balances_table.resizeColumnsToContents()
-            return tickers
+        self.clear_table(self.binance_balances_table)
+        row_count = len(self.balances_data['binance'])
+        self.binance_balances_table.setRowCount(row_count)
+        self.binance_balances_table.setSortingEnabled(False)
+        row = 0
+        for coin in self.balances_data['binance']:
+            available = float(self.balances_data['binance'][coin]['available'])
+            total = float(self.balances_data['binance'][coin]['total'])
+            locked = float(self.balances_data['binance'][coin]['locked'])
+            balance_row = [coin, total, available, locked]
+            self.add_row(row, balance_row, self.binance_balances_table)
+            row += 1
+        self.binance_balances_table.setSortingEnabled(True)
+        self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
+        self.binance_balances_table.resizeColumnsToContents()
 
     def update_binance_orderbook(self):
         #TODO: thread this
@@ -2318,7 +2302,6 @@ class Ui(QTabWidget):
             else:
                 pairs = ", ".join(binance_api.base_asset_info[buy_coin]['available_pairs'])
             buy_row = [buy_coin, pairs]
-            #print(buy_row)
             self.add_row(row, buy_row, self.bot_buy_list, '', 'left')
             row += 1
         self.bot_buy_list.setSortingEnabled(True)
@@ -2401,7 +2384,6 @@ class Ui(QTabWidget):
         log_row.setForeground(QColor('#00137F'))
         self.trading_logs_list.addItem(log_row)
         if log_result != '':
-            print(log_result)
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
             self.trading_logs_list.addItem(log_row)
@@ -2442,11 +2424,56 @@ class Ui(QTabWidget):
     def show_strategies_tab(self):
         pass
 
-    def show_prices_tab(self):
-        print(self.prices_data)
-        priced_coins = list(self.prices_data.keys())
-        print(priced_coins)
+    def update_prices_table(self):
+        print(self.prices_data)        
+        self.prices_table.setSortingEnabled(False)
+        headers = ['COIN', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
+        self.prices_table.setColumnCount(len(headers))
+        self.prices_table.setHorizontalHeaderLabels(headers)
+        self.clear_table(self.prices_table)
+        self.prices_table.setRowCount(len(self.prices_data['average']))
+        row = 0
+        for coin in self.prices_data['average']:
+            bn_btc_price = '-'
+            bn_tusd_price = '-'
+            gk_btc_price = '-'
+            gk_usd_price = '-'
+            pk_btc_price = '-'
+            pk_usd_price = '-'
+            average_btc_price = '-'
+            average_usd_price = '-'
+            if coin in self.prices_data['average']:
+                if 'BTC' in self.prices_data['average'][coin]:
+                    average_btc_price = self.prices_data['average'][coin]['BTC']
+                if 'USD' in self.prices_data['average'][coin]:
+                    average_usd_price = self.prices_data['average'][coin]['USD']
+            if coin in self.prices_data['binance']:
+                if 'BTC' in self.prices_data['binance'][coin]:
+                    bn_btc_price = self.prices_data['binance'][coin]['BTC']
+                if 'TUSD' in self.prices_data['binance'][coin]:
+                    bn_tusd_price = self.prices_data['binance'][coin]['TUSD']
+            if coin in self.prices_data['gecko']:
+                if 'BTC' in self.prices_data['gecko'][coin]:
+                    gk_btc_price = self.prices_data['gecko'][coin]['BTC']
+                if 'USD' in self.prices_data['gecko'][coin]:
+                    gk_usd_price = self.prices_data['gecko'][coin]['USD']
+            if coin in self.prices_data['paprika']:
+                if 'BTC' in self.prices_data['paprika'][coin]:
+                    pk_btc_price = self.prices_data['paprika'][coin]['BTC']
+                if 'USD' in self.prices_data['paprika'][coin]:
+                    pk_usd_price = self.prices_data['paprika'][coin]['USD']
+            price_row = [coin, bn_btc_price, gk_btc_price, pk_btc_price, average_btc_price, bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price]
+            self.add_row(row, price_row, self.prices_table)
+            row += 1
+        self.prices_table.setSortingEnabled(True)
+        self.prices_table.resizeColumnsToContents()
+        self.prices_table.sortItems(0, Qt.AscendingOrder)
 
+
+
+    def show_prices_tab(self):
+        self.update_prices_table()
+        priced_coins = list(self.prices_data.keys())
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
@@ -2486,7 +2513,7 @@ class Ui(QTabWidget):
             elif index == 5:
                 # Prices
                 print('show_prices_tab')
-                self.show_bot_trading_tab()
+                self.show_prices_tab()
             elif index == 6:
                 # history
                 print('show_history_tab')

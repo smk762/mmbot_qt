@@ -470,7 +470,8 @@ QGroupBox
 {
     border: 1px solid;
     border-color: #607cff;
-    margin-top: 22px;
+    margin-top: 30px;
+    font-size:16pt;
 
 }
 
@@ -480,8 +481,11 @@ QGroupBox::title
     background-color: #607cff;
     color: #ffffff;
     subcontrol-origin: margin;
-    subcontrol-position: top left;
-    padding: 5px;
+    subcontrol-position: top center;
+    padding-top:4px;
+    padding-bottom:4px;
+    padding-left: 15px;
+    padding-right: 15px;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 
@@ -493,8 +497,8 @@ QGroupBox::title::disabled
 	background-color: #404040;
 	color: #656565;
     subcontrol-origin: margin;
-    subcontrol-position: top left;
-    padding: 5px;
+    subcontrol-position: top center;
+    padding: 0px;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 
@@ -1026,7 +1030,7 @@ QDial::disabled
 QScrollBar:horizontal
 {
     border: 1px solid #222222;
-    background-color: #3d3d3d;
+    background-color: #212121;
     height: 13px;
     margin: 0px 16px 0 16px;
 
@@ -1083,14 +1087,14 @@ QScrollBar::left-arrow:horizontal
 
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal
 {
-    background: none;
+    background:  #212121;
 
 }
 
 
 QScrollBar:vertical
 {
-    background-color: #3d3d3d;
+    background-color: #212121;
     width: 13px;
     margin: 16px 0 16px 0;
     border: 1px solid #222222;
@@ -1148,7 +1152,7 @@ QScrollBar::down-arrow:vertical
 
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
 {
-    background: none;
+    background:  #212121;
 
 }
 

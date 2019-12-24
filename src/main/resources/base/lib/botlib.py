@@ -130,7 +130,6 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, 
     print("starting balances loop")
     # get mm2 balance
     balance_info = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
-
     if 'balance' in balance_info:
         address = balance_info['address']
         coin = balance_info['coin']
@@ -144,14 +143,21 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, 
             "available":available,
             }                
         })
-    else:
-        print(balance_info)
     if get_cex:        
         # get binance balances
         binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
         for coin in binance_balances:
             available = binance_balances[coin]['available']
-            balances_data["binance"].update({coin:available})
+            locked = binance_balances[coin]['locked']
+            total = binance_balances[coin]['total']
+            balances_data["binance"].update({coin: {
+                "address":address,
+                "total":total,
+                "locked":locked,
+                "available":available,
+                }                
+            })
+    print("finished balances loop")
     return balances_data
 
 def get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret):
