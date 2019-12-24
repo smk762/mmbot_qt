@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7819,7 +7819,7 @@ color: rgb(0, 0, 0);</string>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>505</height>
+        <height>491</height>
        </size>
       </property>
      </spacer>
@@ -7868,7 +7868,7 @@ color: rgb(0, 0, 0);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_3">
              <item row="0" column="0">
-              <widget class="QTableWidget" name="mm2_balances_table">
+              <widget class="QTableWidget" name="wallet_balances_table">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -7928,7 +7928,7 @@ color: rgb(0, 0, 0);</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_74">
              <item row="1" column="0">
-              <widget class="QLabel" name="total_mm2_btc_val">
+              <widget class="QLabel" name="wallet_btc_total">
                <property name="font">
                 <font>
                  <pointsize>14</pointsize>
@@ -7943,7 +7943,7 @@ color: rgb(0, 0, 0);</string>
               </widget>
              </item>
              <item row="2" column="0">
-              <widget class="QLabel" name="total_mm2_usd_val">
+              <widget class="QLabel" name="wallet_usd_total">
                <property name="font">
                 <font>
                  <pointsize>14</pointsize>
@@ -11232,22 +11232,6 @@ color: rgb(0, 0, 0);</string>
     <hint type="sourcelabel">
      <x>1262</x>
      <y>419</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mm2_balances_table</sender>
-   <signal>cellChanged(int,int)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>calc_mm2_total_vals()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>302</x>
-     <y>158</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>

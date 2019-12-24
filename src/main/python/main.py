@@ -29,6 +29,7 @@ from pyqtgraph.Point import Point
  - create tablification scripts for data returned from api or mm2.
  - remove code deprecated by API
  - autoactivate coins needing kickstart
+ - https://api.hitbtc.com/
 
 '''
 
@@ -283,7 +284,12 @@ class Ui(QTabWidget):
         self.countertrade_delay_limit = 1800
 
         self.last_price_update = 0
-        self.prices_data = {}
+        self.prices_data = {
+            "gecko":{},
+            "paprika":{},
+            "binance":{},
+            "average":{}
+        }
         self.balances_data = {
             "mm2": {},
             "binance": {}
@@ -452,18 +458,15 @@ class Ui(QTabWidget):
     def update_cachedata(self, prices_dict, balances_dict):
         print("updating cache data from thread")
         self.prices_data = prices_dict
-        #print(prices_dict)
-        print("*****")
-        print("balances_dict"+str(balances_dict['mm2']))
-        print("self.balances_data"+str(self.balances_data['mm2']))
         self.balances_data['mm2'].update(balances_dict['mm2'])
-        print("self.balances_data merged"+str(self.balances_data['mm2']))
-        print("*****")
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo)
         base = baserel[0]
         rel = baserel[1]
         self.update_mm2_orderbook_labels(base, rel)
+        self.update_mm2_wallet_labels()
+        self.update_mm2_balance_table()
         # TODO: Add gui update functions as req here.
+
 
     ## MM2 management
     # start MM2 for specific user
@@ -1210,6 +1213,75 @@ class Ui(QTabWidget):
                 self.gui_coins[coin]['checkbox'].setChecked(False)
 
     ## MARKETMAKER TAB FUNCTIONS
+
+    def update_mm2_wallet_labels(self):
+        index = self.wallet_combo.currentIndex()
+        if index != -1:
+            coin = self.wallet_combo.itemText(index)
+            if coin in self.balances_data["mm2"]:
+                address = self.balances_data["mm2"][coin]["address"]
+                total = self.balances_data["mm2"][coin]["total"]
+                locked = self.balances_data["mm2"][coin]["locked"]
+                available = self.balances_data["mm2"][coin]["available"]
+                self.wallet_address.setText(address)
+                self.wallet_balance.setText(total)
+                self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked))
+                if coin in self.prices_data['average']:
+                    usd_price = self.prices_data['average'][coin]['USD']
+                    btc_price = self.prices_data['average'][coin]['BTC']
+                    # ignore if prices are "No Data"
+                    try:
+                        usd_val = float(usd_price)*float(total)
+                        btc_val = float(btc_price)*float(total)
+                        self.wallet_btc_value.setText("$"+str(btc_val)+" USD")
+                        self.wallet_usd_value.setText(str(usd_val)+"BTC")
+                    except:
+                        self.wallet_btc_value.setText("")
+                        self.wallet_usd_value.setText("")
+                        pass
+
+    def update_mm2_balance_table(self): 
+        print("updating balances_table")
+        self.clear_table(self.wallet_balances_table)
+        self.wallet_balances_table.setSortingEnabled(False)
+        row_count = len(self.active_coins)
+        self.wallet_balances_table.setRowCount(row_count)
+        row = 0
+        usd_total = 0
+        btc_total = 0
+        for coin in self.active_coins:
+            try:
+                total = self.balances_data['mm2'][coin]['total']
+                if coin in self.prices_data['average']:
+                    usd_price = self.prices_data['average'][coin]['USD']
+                    btc_price = self.prices_data['average'][coin]['BTC']
+                    try:
+                        usd_val = round(float(usd_price)*float(total),4)
+                        btc_val = round(float(btc_price)*float(total),8)
+                        usd_total += usd_val
+                        btc_total += btc_val
+                    except:
+                        usd_val = '-'
+                        btc_val = '-'
+                balance_row = [coin, total, usd_val, btc_val]
+                self.add_row(row, balance_row, self.wallet_balances_table)
+                row += 1
+            except:
+                balance_row = [coin, "Loading...", '-', '-']
+                self.add_row(row, balance_row, self.wallet_balances_table)
+                # Get coins balance in separate thread
+                self.balance_thread = balance_update_thread(self.creds, coin)
+                self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+                self.balance_thread.start()
+                row += 1
+        self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
+        self.wallet_btc_total.setText("Total BTC Value: "+str(round(btc_total,8)))
+        self.wallet_balances_table.setSortingEnabled(True)
+        self.wallet_balances_table.resizeColumnsToContents()
+        self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
+        print("balances_table updated")
+
+
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
         self.orderbook_sell_amount_lbl.setText(""+base+" Sell Amount")
@@ -1714,30 +1786,8 @@ class Ui(QTabWidget):
             else:
                 selected = self.wallet_combo.itemText(0)
             self.update_combo(self.wallet_combo,self.active_coins,selected)
-            self.update_wallet_balance(self.balances_data)
-            self.update_mm2_balance_table(self.balances_data)
-
-    def calc_mm2_total_vals(self):
-        total_usd_val = 0
-        total_btc_val = 0
-        for i in range(self.mm2_balances_table.rowCount()):
-            if self.mm2_balances_table.item(i,2) is not None:
-                if self.mm2_balances_table.item(i,2).text().find("...") == -1:
-                    usd_val = self.mm2_balances_table.item(i,2).text().replace('$', '')
-                    try:
-                        total_usd_val += float(usd_val)
-                    except:
-                        pass
-            if self.mm2_balances_table.item(i,3) is not None:
-                if self.mm2_balances_table.item(i,2).text().find("...") == -1:
-                    btc_val = self.mm2_balances_table.item(i,3).text()
-                    try:
-                        total_btc_val += float(btc_val)
-                    except:
-                        pass
-        self.total_mm2_usd_val.setText("Total USD Value: $"+str(round(total_usd_val, 4)))
-        self.total_mm2_btc_val.setText("Total BTC Value: "+str(round(total_btc_val, 8)))  
-            
+            self.update_wallet_balance()
+            self.update_mm2_balance_table()
 
     def show_mm2_qr_popup(self):
         index = self.wallet_combo.currentIndex()
@@ -1754,35 +1804,6 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
         msgBox.exec()
-
-    def update_mm2_balance_table(self, balances_data): 
-        print("updating balances_table")
-        self.clear_table(self.mm2_balances_table)
-        self.mm2_balances_table.setSortingEnabled(False)
-        row_count = len(self.active_coins)
-        self.mm2_balances_table.setRowCount(row_count)
-        coins_to_thread = []
-        row = 0
-        for coin in self.active_coins:
-            try:
-                mm2_bal = balances_data['mm2'][coin]['total']
-                balance_row = [coin, mm2_bal, '-', '-']
-                self.add_row(row, balance_row, self.mm2_balances_table)
-                row += 1
-            except:
-                balance_row = [coin, "Loading...", '-', '-']
-                self.add_row(row, balance_row, self.mm2_balances_table)
-                row += 1
-                coins_to_thread.append(coin)
-        '''
-        if len(coins_to_thread) > 0:
-            self.mm2_bal_thread = mm2_balance_thread(self.creds, coins_to_thread)
-            self.mm2_bal_thread.update_mm2_bal.connect(self.update_mm2_bal_tbl_from_thread)
-            self.mm2_bal_thread.start()
-        '''
-        self.mm2_balances_table.setSortingEnabled(True)
-        self.mm2_balances_table.resizeColumnsToContents()
-        print("balances_table updated")
 
 
     def update_mm2_wallet_from_thread(self, bal_info):
@@ -1807,17 +1828,6 @@ class Ui(QTabWidget):
             self.update_wallet_labels(coin, address, balance_text, locked_text)
 
 
-    def update_mm2_wallet_value_from_thread(self, usd_val, btc_val):
-        try:
-            self.wallet_usd_value.setText("$"+str(round(usd_val,4))+" USD")
-        except:
-            self.wallet_usd_value.setText("$"+usd_val+" USD")
-        try:
-            self.wallet_btc_value.setText(str(round(btc_val,8))+" BTC")
-        except:
-            self.wallet_btc_value.setText("$"+btc_val+" BTC")
-
-
     def update_wallet_labels(self, coin, address, balance_text, locked_text):
         print('update_wallet_labels')
         if coinslib.coin_explorers[coin]['addr_explorer'] != '':
@@ -1840,15 +1850,9 @@ class Ui(QTabWidget):
         else:
             self.wallet_usd_value.setText('Loading USD value...')
             self.wallet_btc_value.setText('Loading BTC value...')
-            '''
-            self.mm2_val_thread = mm2_value_thread(self.creds, coin, balance_text)
-            self.mm2_val_thread.update_wallet_value.connect(self.update_mm2_wallet_value_from_thread)
-            self.mm2_val_thread.start()
-            '''
-
         print('updated_wallet_labels')
 
-    def update_wallet_balance(self, balances_data):
+    def update_wallet_balance(self):
         # set wallet page image
         print('update_wallet_balance')
         index = self.wallet_combo.currentIndex()
@@ -1856,7 +1860,7 @@ class Ui(QTabWidget):
         self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
         QCoreApplication.processEvents()
         # get wallet balance for selected coin
-        if 'mm2' in balances_data: 
+        if 'mm2' in self.balances_data: 
             if coin in self.balances_data['mm2']:
                 balance = self.balances_data['mm2'][coin]['total']
                 address = self.balances_data['mm2'][coin]['address']
