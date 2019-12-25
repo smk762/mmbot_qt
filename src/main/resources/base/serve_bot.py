@@ -360,6 +360,44 @@ async def mm2_balance(coin):
     resp = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
     return resp
 
+@app.get("/table/mm2_history")
+async def mm2_history_table():
+    table_data = []
+    swaps_info = rpclib.my_recent_swaps(mm2_ip, mm2_rpc_pass, limit=9999, from_uuid='').json()
+    for swap in swaps_info['result']['swaps']:
+        for event in swap['events']:
+            event_type = event['event']['type']
+            if event_type in rpclib.error_events:
+                event_type = 'Failed'
+                break
+        status = event_type
+        role = swap['type']
+        uuid = swap['uuid']
+        my_amount = round(float(swap['my_info']['my_amount']),8)
+        my_coin = swap['my_info']['my_coin']
+        other_amount = round(float(swap['my_info']['other_amount']),8)
+        other_coin = swap['my_info']['other_coin']
+        started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
+        if swap['type'] == 'Taker':
+            buy_price = round(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']),8)
+            sell_price = '-'
+        else:
+            buy_price = '-'
+            sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
+        table_data.append({
+                "Start Time":started_at,
+                "Role":role,
+                "Status":status,
+                "Buy Coin":other_coin,
+                "Buy Amount":other_amount,
+                "Buy Price":buy_price,
+                "Sell Coin":my_coin,
+                "Sell Amount":my_amount,
+                "Sell Price":sell_price,
+                "UUID":uuid
+            })
+    return {"table_data":table_data}
+
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 
                           base_list: str, margin: float = 5, refresh_interval: int = 30,

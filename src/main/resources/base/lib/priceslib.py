@@ -145,7 +145,10 @@ def prices_loop():
                     prices_data['binance'][baseAsset] = {}
                 if baseAsset+quoteAsset in binance_prices:
                     price = float(binance_prices[baseAsset+quoteAsset])
-                    invert_price = 1/price
+                    if price !=- 0:
+                        invert_price = 1/price
+                    else: 
+                        invert_price = 0
                     prices_data['binance'][quoteAsset].update({baseAsset:invert_price})
                     prices_data['binance'][baseAsset].update({quoteAsset:price})
 

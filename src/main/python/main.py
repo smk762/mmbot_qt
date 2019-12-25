@@ -16,7 +16,7 @@ import random
 from ui import resources
 import datetime
 import time
-import dateutil.parser
+from dateutil import parser
 from zipfile import ZipFile 
 import platform
 import subprocess
@@ -98,6 +98,7 @@ class cachedata_thread(QThread):
                 self.update_data.emit(prices_data, balances_data)
                 time.sleep(10)
             except Exception as e:
+                print('cache_data error')
                 print(e)
                 pass
 
@@ -173,7 +174,10 @@ class graph_history_thread(QThread):
                 price_point = item['price']
             # add value to y axis list
             y.append(price_point)
-            dt = dateutil.parser.parse(item['timestamp'])
+            print(item['timestamp'])
+            
+            dt = parser.parse(item['timestamp'])
+
             # add timestamp and timestring (for labels) to x axis list
             x.append(int(datetime.datetime.timestamp(dt)))
             x_str.append(item['timestamp'])
@@ -465,9 +469,10 @@ class Ui(QTabWidget):
         base = baserel[0]
         rel = baserel[1]
         self.update_mm2_orderbook_labels(base, rel)
-        self.update_mm2_wallet_labels()
         self.update_mm2_balance_table()
+        self.update_mm2_wallet_labels()
         self.update_binance_balance_table()
+        self.update_prices_table()
         # TODO: Add gui update functions as req here.
 
 
@@ -589,8 +594,6 @@ class Ui(QTabWidget):
             self.clear_table(table)
             data = r.json()['table_data']
             table.setRowCount(len(data))
-            print(len(data))
-            print("*******")
             if len(data) > 0:
                 row = 0
                 headers = list(data[0].keys())
@@ -1238,7 +1241,9 @@ class Ui(QTabWidget):
                         btc_val = round(float(btc_price)*float(total),8)
                         self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
                         self.wallet_btc_value.setText(str(btc_val)+" BTC")
-                    except:
+                    except Exception as e:
+                        print('update wallet labels err')
+                        print(e)
                         self.wallet_btc_value.setText("")
                         self.wallet_usd_value.setText("")
                         pass
@@ -1253,6 +1258,8 @@ class Ui(QTabWidget):
         usd_total = 0
         btc_total = 0
         for coin in self.active_coins:
+            usd_val = '-'
+            btc_val = '-'
             try:
                 total = self.balances_data['mm2'][coin]['total']
                 if coin in self.prices_data['average']:
@@ -1263,14 +1270,15 @@ class Ui(QTabWidget):
                         btc_val = round(float(btc_price)*float(total),8)
                         usd_total += usd_val
                         btc_total += btc_val
-                    except:
-                        usd_val = '-'
-                        btc_val = '-'
+                    except Exception as e:
+                        # no float value for coin
+                        pass
                 balance_row = [coin, total, usd_val, btc_val]
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 row += 1
-            except:
-                balance_row = [coin, "Loading...", '-', '-']
+            except Exception as e:
+                print("E: "+str(e))
+                balance_row = [coin, "-", '-', '-']
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 # Get coins balance in separate thread
                 self.balance_thread = balance_update_thread(self.creds, coin)
@@ -1283,7 +1291,6 @@ class Ui(QTabWidget):
         self.wallet_balances_table.resizeColumnsToContents()
         self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
         print("balances_table updated")
-
 
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
@@ -1334,7 +1341,6 @@ class Ui(QTabWidget):
                 })
         else:
             print(bal_info)
-
 
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -1657,8 +1663,11 @@ class Ui(QTabWidget):
         self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote, since)
         self.draw_graph_thread.get_history.connect(self.draw_history_graph)
         self.draw_graph_thread.start()
+        # activate "loading" overlay
 
     def draw_history_graph(self, coin, quote, x, y, time_ticks):
+        # deactivate "loading" overlay
+        
         print('drawing graph')
         self.binance_history_graph.clear()
         price_curve = self.binance_history_graph.plot(
@@ -1684,8 +1693,8 @@ class Ui(QTabWidget):
         date_ticks.enableAutoSIPrefix(enable=False)
         self.binance_history_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+coin.lower()+".png\"/></p></body></html>")
         if coin in self.prices_data:
-            btc_price = self.prices_data[coin]['average_btc']
-            usd_price = self.prices_data[coin]['average_usd']
+            usd_price = self.prices_data['average'][coin]['USD']
+            btc_price = self.prices_data['average'][coin]['BTC']
         elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
             price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
             usd_price = float(price['price_usd'])
@@ -1825,30 +1834,6 @@ class Ui(QTabWidget):
             self.update_wallet_labels(coin, address, balance_text, locked_text)
 
 
-    def update_wallet_labels(self, coin, address, balance_text, locked_text):
-        print('update_wallet_labels')
-        if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-            self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
-        else:
-            self.wallet_address.setText(address)
-        # create qr code and populate balances
-        self.wallet_balance.setText(str(balance_text))
-        self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
-        # if price api data available, calculate and show balance value in BTC, USD
-        # TODO: add value in KMD
-        if coin in self.prices_data:
-            btc_price = self.prices_data[coin]['average_btc']
-            usd_price = self.prices_data[coin]['average_usd']
-        else:
-            btc_price = 'Loading...'
-        if btc_price != 'Loading...' and balance_text != 'Loading...':
-            self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
-            self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
-        else:
-            self.wallet_usd_value.setText('Loading USD value...')
-            self.wallet_btc_value.setText('Loading BTC value...')
-        print('updated_wallet_labels')
-
     def update_wallet_balance(self):
         # set wallet page image
         print('update_wallet_balance')
@@ -1880,6 +1865,30 @@ class Ui(QTabWidget):
         # add hyperlink if explorer url in coinslib
         print('updated_wallet_balance')
         self.update_wallet_labels(coin, address, balance_text, locked_text)
+
+    def update_wallet_labels(self, coin, address, balance_text, locked_text):
+        print('update_wallet_labels')
+        if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+            self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
+        else:
+            self.wallet_address.setText(address)
+        # create qr code and populate balances
+        self.wallet_balance.setText(str(balance_text))
+        self.wallet_locked_by_swaps.setText("("+str(locked_text)+" locked by swaps)")
+        # if price api data available, calculate and show balance value in BTC, USD
+        # TODO: add value in KMD
+        if coin in self.prices_data:
+            usd_price = self.prices_data['average'][coin]['USD']
+            btc_price = self.prices_data['average'][coin]['BTC']
+        else:
+            btc_price = 'Loading...'
+        if btc_price != 'Loading...' and balance_text != 'Loading...':
+            self.wallet_usd_value.setText("$"+str(round(balance_text*usd_price,2))+" USD")
+            self.wallet_btc_value.setText(str(round(balance_text*btc_price,6))+" BTC")
+        else:
+            self.wallet_usd_value.setText('Loading USD value...')
+            self.wallet_btc_value.setText('Loading BTC value...')
+        print('updated_wallet_labels')
 
     # process withdrawl from wallet tab
     def send_funds(self):
@@ -2278,51 +2287,6 @@ class Ui(QTabWidget):
             self.update_binance_orders_table()
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
 
-    ## BOT TRADES
-    def show_bot_trading_tab(self):     
-        self.update_mm2_orders_tables()
-        if len(self.active_coins) < 2:
-            msg = 'Please activate at least two coins. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
-            self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
-        else:
-            self.populate_bot_lists()
-
-    def populate_bot_lists(self):
-        self.clear_table(self.bot_buy_list)
-        self.bot_buy_list.setSortingEnabled(False)
-        row_count = len(self.buy_coins)
-        self.bot_buy_list.setRowCount(row_count)
-        row = 0
-        for buy_coin in self.buy_coins:
-            if buy_coin not in self.active_coins:
-                pairs = "(inactive)"
-            elif buy_coin not in coinslib.binance_coins:
-                pairs = "(not on Binance)"
-            else:
-                pairs = ", ".join(binance_api.base_asset_info[buy_coin]['available_pairs'])
-            buy_row = [buy_coin, pairs]
-            self.add_row(row, buy_row, self.bot_buy_list, '', 'left')
-            row += 1
-        self.bot_buy_list.setSortingEnabled(True)
-        self.bot_buy_list.resizeColumnsToContents()
-        self.clear_table(self.bot_sell_list)
-        self.bot_sell_list.setSortingEnabled(False)
-        row_count = len(self.sell_coins)
-        self.bot_sell_list.setRowCount(row_count)
-        row = 0
-        for sell_coin in self.sell_coins:
-            if sell_coin not in self.active_coins:
-                pairs = "(inactive)"
-            elif sell_coin not in coinslib.binance_coins:
-                pairs = "(not on Binance)"
-            else:
-                pairs = ", ".join(binance_api.base_asset_info[sell_coin]['available_pairs'])
-            sell_row = [sell_coin, pairs]
-            self.add_row(row, sell_row, self.bot_sell_list, '', 'left')
-            row += 1
-        self.bot_sell_list.setSortingEnabled(True)
-        self.bot_sell_list.resizeColumnsToContents()
 
     def stop_bot_trading(self):
         self.bot_trade_thread.stop()
@@ -2425,7 +2389,6 @@ class Ui(QTabWidget):
         pass
 
     def update_prices_table(self):
-        print(self.prices_data)        
         self.prices_table.setSortingEnabled(False)
         headers = ['COIN', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
         self.prices_table.setColumnCount(len(headers))
@@ -2469,11 +2432,21 @@ class Ui(QTabWidget):
         self.prices_table.resizeColumnsToContents()
         self.prices_table.sortItems(0, Qt.AscendingOrder)
 
-
-
     def show_prices_tab(self):
         self.update_prices_table()
-        priced_coins = list(self.prices_data.keys())
+        self.update_history_graph()
+
+    def show_history_tab(self):
+        print('show_history_tab')
+        self.update_mm2_trade_history_table()
+        self.update_binance_trade_history_table()
+
+    def update_mm2_trade_history_table(self):
+        self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
+
+
+    def update_binance_trade_history_table(self):
+        pass
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
