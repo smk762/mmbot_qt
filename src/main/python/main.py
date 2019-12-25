@@ -584,11 +584,12 @@ class Ui(QTabWidget):
         return fileName
 
     #table functions (for future reference)
-    def populate_table(self, endpoint, table, msg_lbl='', msg=''):
+    def populate_table(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
         url = "http://127.0.0.1:8000/"
         r = requests.get(url+endpoint)
         print(url+endpoint)
         print(r.status_code)
+        print(row_filter)
         if r.status_code == 200:
             table.setSortingEnabled(False)
             self.clear_table(table)
@@ -601,8 +602,25 @@ class Ui(QTabWidget):
                 table.setHorizontalHeaderLabels(headers)
                 for item in data:
                     row_data = list(item.values())
-                    self.add_row(row, row_data, table)
-                    row += 1
+                    if row_filter == '':
+                        self.add_row(row, row_data, table)
+                        row += 1
+                    else:
+                        print('filtering')
+                        filter_param = row_filter.split('|')
+                        print(filter_param)
+                        filter_col_num = filter_param[0]
+                        filter_col_text = filter_param[1]
+                        filter_type = filter_param[2]
+                        if row_data[int(filter_col_num)].find(filter_col_text) > -1:
+                            if filter_type == 'INCLUDE':
+                                self.add_row(row, row_data, table)
+                                row += 1
+                        else:
+                            if filter_type == 'EXCLUDE':
+                                self.add_row(row, row_data, table)
+                                row += 1
+            table.setRowCount(row)
             table.setSortingEnabled(True)
             table.resizeColumnsToContents()
             if msg_lbl != '':
@@ -2442,10 +2460,13 @@ class Ui(QTabWidget):
         self.update_binance_trade_history_table()
 
     def update_mm2_trade_history_table(self):
-        self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
-
+        if self.mm2_hide_failed_checkbox.isChecked():
+            self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE")
+        else:
+            self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
 
     def update_binance_trade_history_table(self):
+        # Will need to be tracked locally. API endpoint is per symbol
         pass
 
     # runs each time the tab is changed to populate the items on that tab

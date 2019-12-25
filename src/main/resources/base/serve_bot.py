@@ -9,7 +9,7 @@ import asyncio
 import logging
 #import sqlite3
 import datetime
-from lib import rpclib, botlib, coinslib, priceslib, validatelib
+from lib import rpclib, botlib, coinslib, priceslib, validatelib, binance_api
 import time
 import json
 import sys
@@ -365,11 +365,20 @@ async def mm2_history_table():
     table_data = []
     swaps_info = rpclib.my_recent_swaps(mm2_ip, mm2_rpc_pass, limit=9999, from_uuid='').json()
     for swap in swaps_info['result']['swaps']:
+        trade_addr = ''
         for event in swap['events']:
             event_type = event['event']['type']
             if event_type in rpclib.error_events:
                 event_type = 'Failed'
                 break
+            if swap['type'] == 'Taker':
+                print(event_type)
+                print(event['event'])
+                if event_type == 'MakerPaymentReceived':
+                    trade_addr = event['event']['data']['from'][0]
+            elif swap['type'] == 'Maker':
+                if event_type == 'TakerFeeValidated':
+                    trade_addr = event['event']['data']['from'][0]
         status = event_type
         role = swap['type']
         uuid = swap['uuid']
@@ -394,9 +403,16 @@ async def mm2_history_table():
                 "Sell Coin":my_coin,
                 "Sell Amount":my_amount,
                 "Sell Price":sell_price,
+                "Trade Address":trade_addr,
                 "UUID":uuid
             })
     return {"table_data":table_data}
+
+
+@app.get("/table/binance_history")
+async def binance_history_table():
+    resp = binance_api.get_binance_orders_history(bn_key, bn_secret)
+    return resp
 
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 
