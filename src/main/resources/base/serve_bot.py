@@ -176,8 +176,7 @@ class orderbook_update_thread(object):
             orderbook_data = botlib.orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
             time.sleep(self.interval)
 
-
-class balances_update_thread(object):
+class bn_balances_update_thread(object):
     def __init__(self, interval=10):
         self.interval = interval
         thread = Thread(target=self.run, args=())
@@ -187,11 +186,24 @@ class balances_update_thread(object):
     def run(self):
         while True:
             global balances_data
-            get_cex = True
+            bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret)
+            balances_data['binance'].update(bn_balances_data)
+            time.sleep(self.interval)
+
+class mm2_balances_update_thread(object):
+    def __init__(self, interval=10):
+        self.interval = interval
+        thread = Thread(target=self.run, args=())
+        thread.daemon = True                            # Daemonize thread
+        thread.start()                                  # Start the execution
+
+    def run(self):
+        while True:
+            global balances_data
             active_coins = rpclib.check_active_coins(mm2_ip, mm2_rpc_pass)
             for coin in active_coins:
-                balances_data = botlib.balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, get_cex)
-                get_cex = False
+                mm2_coin_balance_data = botlib.mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin)
+                balances_data["mm2"].update(mm2_coin_balance_data)
             time.sleep(self.interval)
 
 class addresses_thread(object):
@@ -231,7 +243,8 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
     mm2_rpc_pass = rpc_pass
     bn_key = key
     bn_secret = secret
-    balance_thread = balances_update_thread()
+    mm2_balance_thread = mm2_balances_update_thread()
+    bn_balance_thread = bn_balances_update_thread()
     orderbook_thread = orderbook_update_thread()
     prices_thread = price_update_thread()
     bot_thread = bot_update_thread()        
@@ -359,6 +372,54 @@ async def all_addresses():
 async def mm2_balance(coin):
     resp = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
     return resp
+
+@app.get("/table/binance_open_orders")
+async def binance_open_orders():
+    table_data = []
+    open_orders = binance_api.get_open_orders(bn_key, bn_secret)
+    for item in open_orders:    
+        order_id = item['orderId']
+        side = item['side']
+        symbol = item['symbol']
+        price = item['price']
+        qty = item['origQty']
+        filled = item['executedQty']
+        time = datetime.datetime.fromtimestamp(int(item['time']/1000))
+        table_data.append({
+                "Order ID": order_id,
+                "Side": side,
+                "Pair": symbol,
+                "Price":price,
+                "Qty":qty,
+                "Filled":filled,
+                "Time":time
+            })
+    return {"table_data":table_data}
+
+@app.get("/table/get_binance_depth/{symbol}")
+async def get_binance_depth(symbol):
+    table_data = []
+    depth = binance_api.get_depth(bn_key, symbol, 10)
+    print(depth)
+    for item in depth['bids']:
+        price = float(item[0])
+        volume = float(item[1])
+        table_data.append({
+                "Pair": symbol,
+                "Price": price,
+                "Volume": volume,
+                "Bid/Ask":'Bid'
+            })
+    for item in depth['asks']:
+        price = float(item[0])
+        volume = float(item[1])
+        table_data.append({
+                "Pair": symbol,
+                "Price": price,
+                "Volume": volume,
+                "Bid/Ask":'Ask'
+            })
+    return {"table_data":table_data}
 
 @app.get("/table/mm2_history")
 async def mm2_history_table():

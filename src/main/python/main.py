@@ -102,8 +102,8 @@ class cachedata_thread(QThread):
                 print(e)
                 pass
 
-class balance_update_thread(QThread):
-    update_balance = pyqtSignal(dict)
+class mm2_balance_update_thread(QThread):
+    mm2_update_balance = pyqtSignal(dict)
     def __init__(self, creds, coin):
         QThread.__init__(self)
         self.coin = coin
@@ -114,7 +114,20 @@ class balance_update_thread(QThread):
 
     def run(self):
         balance_info = rpclib.my_balance(self.creds[0], self.creds[1], self.coin)
-        self.update_balance.emit(balance_info.json())
+        self.mm2_update_balance.emit(balance_info.json())
+
+class bn_balance_update_thread(QThread):
+    bn_update_balance = pyqtSignal(dict)
+    def __init__(self, creds):
+        QThread.__init__(self)
+        self.creds = creds
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        balance_info = binance_api.get_binance_balances(self.creds[5], self.creds[6])
+        self.bn_update_balance.emit(balance_info)
 
 
 # Process coin activation in thread
@@ -587,16 +600,13 @@ class Ui(QTabWidget):
     def populate_table(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
         url = "http://127.0.0.1:8000/"
         r = requests.get(url+endpoint)
-        print(url+endpoint)
-        print(r.status_code)
-        print(row_filter)
         if r.status_code == 200:
             table.setSortingEnabled(False)
             self.clear_table(table)
             data = r.json()['table_data']
             table.setRowCount(len(data))
+            row = 0
             if len(data) > 0:
-                row = 0
                 headers = list(data[0].keys())
                 table.setColumnCount(len(headers))
                 table.setHorizontalHeaderLabels(headers)
@@ -606,9 +616,7 @@ class Ui(QTabWidget):
                         self.add_row(row, row_data, table)
                         row += 1
                     else:
-                        print('filtering')
                         filter_param = row_filter.split('|')
-                        print(filter_param)
                         filter_col_num = filter_param[0]
                         filter_col_text = filter_param[1]
                         filter_type = filter_param[2]
@@ -1267,7 +1275,7 @@ class Ui(QTabWidget):
                         pass
 
     def update_mm2_balance_table(self): 
-        print("updating balances_table")
+        print("updating mm2 balances_table")
         self.clear_table(self.wallet_balances_table)
         self.wallet_balances_table.setSortingEnabled(False)
         row_count = len(self.active_coins)
@@ -1295,12 +1303,12 @@ class Ui(QTabWidget):
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 row += 1
             except Exception as e:
-                print("E: "+str(e))
+                print("mm2_bal_tbl err: "+str(e))
                 balance_row = [coin, "-", '-', '-']
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 # Get coins balance in separate thread
-                self.balance_thread = balance_update_thread(self.creds, coin)
-                self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+                self.balance_thread = mm2_balance_update_thread(self.creds, coin)
+                self.balance_thread.mm2_update_balance.connect(self.mm2_update_balance_from_thread)
                 self.balance_thread.start()
                 row += 1
         self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
@@ -1322,8 +1330,8 @@ class Ui(QTabWidget):
             balance = round(float(self.balances_data['mm2'][base]['total']),8)
         else:
             # Get coins balance in separate thread
-            self.balance_thread = balance_update_thread(self.creds, base)
-            self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+            self.balance_thread = mm2_balance_update_thread(self.creds, base)
+            self.balance_thread.mm2_update_balance.connect(self.mm2_update_balance_from_thread)
             self.balance_thread.start()
             locked_text = round(float(0),8)
             balance = round(float(0),8)
@@ -1334,16 +1342,16 @@ class Ui(QTabWidget):
             balance = round(float(self.balances_data['mm2'][rel]['total']),8)
         else:
             # Get coins balance in separate thread
-            self.balance_thread = balance_update_thread(self.creds, rel)
-            self.balance_thread.update_balance.connect(self.update_balance_from_thread)
+            self.balance_thread = mm2_balance_update_thread(self.creds, rel)
+            self.balance_thread.mm2_update_balance.connect(self.mm2_update_balance_from_thread)
             self.balance_thread.start()
             locked_text = round(float(0),8)
             balance = round(float(0),8)
         self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+rel)
         self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
 
-    def update_balance_from_thread(self, bal_info):
-        print('update_balance_from_thread')
+    def mm2_update_balance_from_thread(self, bal_info):
+        print('mm2 update_balance_from_thread')
         if 'coin' in bal_info:
             coin = bal_info['coin']
             address = bal_info['address']
@@ -1357,8 +1365,20 @@ class Ui(QTabWidget):
                     "available":available,
                     }                
                 })
-        else:
-            print(bal_info)
+
+    def bn_update_balance_from_thread(self, bal_info):
+        print('bn update_balance_from_thread')
+        for coin in bal_info:
+            total = bal_info[coin]['total']
+            locked = bal_info[coin]['locked']
+            available = bal_info[coin]['available']
+            self.balances_data["binance"].update({coin: {
+                    "total":total,
+                    "locked":locked,
+                    "available":available,
+                    "address":"Loading...",
+                    }                
+                })
 
     def update_mm2_orders_tables(self):
         orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
@@ -2095,7 +2115,7 @@ class Ui(QTabWidget):
             self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
             # trade combobox
             self.update_combo(self.binance_ticker_pair_comboBox, binance_api.supported_binance_pairs, binance_api.supported_binance_pairs[0])
-            self.update_binance_orderbook()
+            self.update_binance_depth_table()
             QCoreApplication.processEvents()
             self.update_binance_orders_table()
             QCoreApplication.processEvents()
@@ -2131,51 +2151,47 @@ class Ui(QTabWidget):
         msgBox.exec()
 
     def update_binance_balance_table(self):
+        print('update Binance_balance_table')
         self.clear_table(self.binance_balances_table)
         row_count = len(self.balances_data['binance'])
         self.binance_balances_table.setRowCount(row_count)
         self.binance_balances_table.setSortingEnabled(False)
         row = 0
-        for coin in self.balances_data['binance']:
-            available = float(self.balances_data['binance'][coin]['available'])
-            total = float(self.balances_data['binance'][coin]['total'])
-            locked = float(self.balances_data['binance'][coin]['locked'])
-            balance_row = [coin, total, available, locked]
-            self.add_row(row, balance_row, self.binance_balances_table)
-            row += 1
+        if row_count == 0:
+            self.binance_balances_msg_lbl.setText('Balances loading...')
+            # Get coins balance in separate thread
+            self.balance_thread = bn_balance_update_thread(self.creds)
+            self.balance_thread.bn_update_balance.connect(self.bn_update_balance_from_thread)
+            self.balance_thread.start()
+        else:
+            self.binance_balances_msg_lbl.setText('')
+            for coin in self.balances_data['binance']:
+                available = float(self.balances_data['binance'][coin]['available'])
+                total = float(self.balances_data['binance'][coin]['total'])
+                locked = float(self.balances_data['binance'][coin]['locked'])
+                balance_row = [coin, total, available, locked]
+                self.add_row(row, balance_row, self.binance_balances_table)
+                row += 1
         self.binance_balances_table.setSortingEnabled(True)
         self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
         self.binance_balances_table.resizeColumnsToContents()
 
-    def update_binance_orderbook(self):
+    def update_binance_depth_table(self):
         #TODO: thread this
         index = self.binance_ticker_pair_comboBox.currentIndex()
         self.binance_price_spinbox.setValue(0)
         ticker_pair = self.binance_ticker_pair_comboBox.itemText(index)
         # populate binance depth table
-        depth_limit = 10
-        orderbook = binance_api.get_depth(self.creds[5], ticker_pair, depth_limit)
-        self.clear_table(self.binance_depth_table)
-        row_count = len(orderbook['bids'])+len(orderbook['asks'])
-        self.binance_depth_table.setRowCount(20)
-        self.binance_depth_table.setSortingEnabled(False)
-        row = 0
-        for item in orderbook['bids']:
-            price = float(item[0])
-            volume = float(item[1])
-            balance_row = [ticker_pair, price, volume, 'bid']
-            self.add_row(row, balance_row, self.binance_depth_table, QColor(164, 0, 0))
-            row += 1
-
-        for item in orderbook['asks']:
-            price = float(item[0])
-            volume = float(item[1])
-            balance_row = [ticker_pair, price, volume, 'ask']
-            self.add_row(row, balance_row, self.binance_depth_table, QColor(78, 154, 6))
-            row += 1
-        self.binance_depth_table.setSortingEnabled(True)
-        self.binance_depth_table.sortItems(1)
-        self.binance_depth_table.resizeColumnsToContents()
+        self.populate_table("table/get_binance_depth/"+ticker_pair, self.binance_depth_table, self.binance_depth_msg_lbl, "")
+        # apply BG color
+        for row in range(self.binance_depth_table.rowCount()):
+            if self.binance_depth_table.item(row,3) is not None:
+                if self.binance_depth_table.item(row,3).text() == 'Ask':
+                    bgcol = QColor(164, 0, 0)
+                else:
+                    bgcol = QColor(78, 154, 6)
+                for col in range(self.binance_depth_table.columnCount()):
+                    self.binance_depth_table.item(row,col).setBackground(bgcol)
         # update button text
         self.binance_sell_btn.setText("Sell "+ticker_pair)
         self.binance_buy_btn.setText("Buy "+ticker_pair)
@@ -2246,27 +2262,9 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_binance_orders_table(self):
-        open_orders = binance_api.get_open_orders(self.creds[5], self.creds[6])
-        if 'msg' in open_orders:
-            QMessageBox.information(self, 'Binance API key error!', str(open_orders['msg']), QMessageBox.Ok, QMessageBox.Ok)
-        self.clear_table(self.binance_orders_table)
-        self.binance_orders_table.setSortingEnabled(False)
-        row_count = len(open_orders)
-        self.binance_orders_table.setRowCount(row_count)
-        row = 0
-        for item in open_orders:
-            order_id = item['orderId']
-            side = item['side']
-            symbol = item['symbol']
-            price = item['price']
-            qty = item['origQty']
-            filled = item['executedQty']
-            time = datetime.datetime.fromtimestamp(int(item['time']/1000))
-            balance_row = [order_id, side, symbol, price, qty, filled, time]
-            self.add_row(row, balance_row, self.binance_orders_table)
-            row += 1
-        self.binance_orders_table.setSortingEnabled(True)
-        self.binance_orders_table.resizeColumnsToContents()
+        print('update_binance_orders_table')
+        # populate binance depth table
+        self.populate_table("table/get_binance_orders/", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def binance_cancel_selected_order(self):
         selected_row = self.binance_orders_table.currentRow()

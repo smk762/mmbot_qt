@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>6</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -6521,7 +6521,7 @@ color: rgb(46, 52, 54);</string>
                    <number>0</number>
                   </property>
                   <property name="columnCount">
-                   <number>9</number>
+                   <number>10</number>
                   </property>
                   <attribute name="horizontalHeaderCascadingSectionResizes">
                    <bool>true</bool>
@@ -6549,12 +6549,7 @@ color: rgb(46, 52, 54);</string>
                   </attribute>
                   <column>
                    <property name="text">
-                    <string>Created</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Type</string>
+                    <string>Role</string>
                    </property>
                   </column>
                   <column>
@@ -6564,7 +6559,7 @@ color: rgb(46, 52, 54);</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Buy Vol</string>
+                    <string>Buy Volume</string>
                    </property>
                   </column>
                   <column>
@@ -6572,10 +6567,36 @@ color: rgb(46, 52, 54);</string>
                     <string>Buy Price</string>
                    </property>
                   </column>
-                  <column/>
-                  <column/>
-                  <column/>
-                  <column/>
+                  <column>
+                   <property name="text">
+                    <string>Sell Coin</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Sell Volume</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Sell Price</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Order UUID</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Created At</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Num Matches</string>
+                   </property>
+                  </column>
                  </widget>
                 </item>
                 <item row="0" column="0">
@@ -6845,7 +6866,7 @@ color: rgb(46, 52, 54);</string>
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QFrame" name="frame_39">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6878,7 +6899,7 @@ color: rgb(46, 52, 54);</string>
                 <property name="bottomMargin">
                  <number>9</number>
                 </property>
-                <item row="0" column="0">
+                <item row="1" column="0">
                  <widget class="QLabel" name="label_19">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6896,7 +6917,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="0">
+                <item row="2" column="0">
                  <widget class="QLabel" name="label_20">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6914,7 +6935,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item row="3" column="0">
                  <widget class="QLabel" name="label_18">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6932,7 +6953,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="2">
+                <item row="2" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="binance_price_spinbox">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6965,7 +6986,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1" colspan="2">
+                <item row="3" column="1" colspan="2">
                  <widget class="QDoubleSpinBox" name="binance_qty_spinbox">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6998,7 +7019,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="2">
+                <item row="4" column="2">
                  <widget class="QPushButton" name="binance_sell_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7025,7 +7046,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1" colspan="2">
+                <item row="1" column="1" colspan="2">
                  <widget class="QComboBox" name="binance_ticker_pair_comboBox">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7049,7 +7070,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <widget class="QPushButton" name="binance_buy_btn">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7187,6 +7208,22 @@ color: rgb(46, 52, 54);</string>
                </column>
               </widget>
              </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="binance_depth_msg_lbl">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>No records in table</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
             </layout>
            </widget>
           </item>
@@ -7234,7 +7271,7 @@ color: rgb(46, 52, 54);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_84">
-             <item row="3" column="0">
+             <item row="4" column="0">
               <widget class="QFrame" name="frame_35">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7420,7 +7457,7 @@ color: rgb(46, 52, 54);</string>
                </layout>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="3" column="0">
               <widget class="QFrame" name="frame_67">
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -7584,7 +7621,7 @@ color: rgb(46, 52, 54);</string>
                </column>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="binance_addr_coin_lbl">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7599,6 +7636,22 @@ color: rgb(46, 52, 54);</string>
                </property>
                <property name="text">
                 <string>Binance Wallet</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="binance_balances_msg_lbl">
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                 <italic>true</italic>
+                </font>
+               </property>
+               <property name="text">
+                <string>No records in table</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
@@ -7911,7 +7964,7 @@ color: rgb(46, 52, 54);</string>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="binance_msg_lbl">
+              <widget class="QLabel" name="binance_orders_msg_lbl">
                <property name="font">
                 <font>
                  <pointsize>11</pointsize>
@@ -8718,6 +8771,39 @@ color: rgb(46, 52, 54);</string>
    <attribute name="title">
     <string>Strategies</string>
    </attribute>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>120</y>
+      <width>101</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Strategy Type:</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>120</y>
+      <width>86</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>arbitrage</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>margin</string>
+     </property>
+    </item>
+   </widget>
   </widget>
   <widget class="QWidget" name="tab_prices">
    <attribute name="title">
@@ -8959,19 +9045,6 @@ color: rgb(46, 52, 54);</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_7">
        <item row="0" column="0">
-        <spacer name="horizontalSpacer_55">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>38</width>
-           <height>17</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="1">
         <widget class="QGroupBox" name="groupBox_13">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -9108,19 +9181,6 @@ color: rgb(46, 52, 54);</string>
           </item>
          </layout>
         </widget>
-       </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer_54">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -10983,7 +11043,7 @@ color: rgb(46, 52, 54);</string>
    <sender>binance_ticker_pair_comboBox</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>update_binance_orderbook()</slot>
+   <slot>update_binance_depth_table()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>605</x>
@@ -11370,8 +11430,8 @@ color: rgb(46, 52, 54);</string>
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1440</x>
-     <y>385</y>
+     <x>1394</x>
+     <y>346</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11386,8 +11446,8 @@ color: rgb(46, 52, 54);</string>
    <slot>update_mm2_trade_history_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1347</x>
-     <y>374</y>
+     <x>1301</x>
+     <y>335</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -11428,7 +11488,7 @@ color: rgb(46, 52, 54);</string>
   <slot>binance_withdraw()</slot>
   <slot>get_binance_deposit_addr()</slot>
   <slot>update_binance_addr()</slot>
-  <slot>update_binance_orderbook()</slot>
+  <slot>update_binance_depth_table()</slot>
   <slot>binance_cancel_all_orders()</slot>
   <slot>binance_cancel_selected_order()</slot>
   <slot>update_binance_price_val()</slot>

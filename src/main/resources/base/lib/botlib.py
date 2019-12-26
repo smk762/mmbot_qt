@@ -126,8 +126,8 @@ def get_mm2_pair_orderbook(mm2_ip, mm2_rpc_pass, base, rel):
         }
     return orderbook_pair
 
-def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, get_cex):
-    print("starting balances loop")
+def mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin):
+    print("starting mm2 balances loop")
     # get mm2 balance
     balance_info = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
     if 'balance' in balance_info:
@@ -136,29 +136,37 @@ def balances_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, coin, 
         total = balance_info['balance']
         locked = balance_info['locked_by_swaps']
         available = float(total) - float(locked)
-        balances_data["mm2"].update({coin: {
+        mm2_coin_balance_data = {
+            coin: {
+                    "":address,
+                    "total":total,
+                    "locked":locked,
+                    "available":available,
+                }                
+            }
+    print("finished mm2 balances loop")
+    return mm2_coin_balance_data
+
+def bn_balances_loop(bn_key, bn_secret):
+    print("starting Binance balances loop")
+    # get binance balances
+    binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
+    bn_balances_data = {}
+    for coin in binance_balances:
+        print(binance_balances[coin])
+        address = binance_balances[coin]['address']
+        available = binance_balances[coin]['available']
+        locked = binance_balances[coin]['locked']
+        total = binance_balances[coin]['total']
+        bn_balances_data.update({coin: {
             "address":address,
             "total":total,
             "locked":locked,
             "available":available,
             }                
         })
-    if get_cex:        
-        # get binance balances
-        binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
-        for coin in binance_balances:
-            available = binance_balances[coin]['available']
-            locked = binance_balances[coin]['locked']
-            total = binance_balances[coin]['total']
-            balances_data["binance"].update({coin: {
-                "address":address,
-                "total":total,
-                "locked":locked,
-                "available":available,
-                }                
-            })
-    print("finished balances loop")
-    return balances_data
+    print("finished Binance balances loop")
+    return bn_balances_data
 
 def get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret):
     bn_addr = binance_api.get_binance_addresses(bn_key, bn_secret)
