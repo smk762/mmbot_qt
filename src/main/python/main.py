@@ -152,12 +152,11 @@ class activation_thread(QThread):
 # Get graph history in thread. 
 class graph_history_thread(QThread):
     get_history = pyqtSignal(str, str, list, list, list)
-    def __init__(self, coin, coin_id, quote, since):
+    def __init__(self, coin, coin_id, quote):
         QThread.__init__(self)
         self.coin = coin
         self.coin_id = coin_id
         self.quote = quote
-        self.since = since
 
     def __del__(self):
         self.wait()
@@ -165,10 +164,10 @@ class graph_history_thread(QThread):
     def run(self): 
         if self.quote == 'KMD':
             kmd_btc_price =priceslib.get_paprika_price(coinslib.coin_api_codes['KMD']['paprika_id']).json()['price_btc']
-            history = priceslib.get_paprika_history(self.coin_id, self.since, 'BTC')
-            kmd_history = priceslib.get_paprika_history(coinslib.coin_api_codes['KMD']['paprika_id'], self.since, 'BTC')
+            history = priceslib.get_paprika_history(self.coin_id, 'year_ago', 'BTC')
+            kmd_history = priceslib.get_paprika_history(coinslib.coin_api_codes['KMD']['paprika_id'], 'year_ago', 'BTC')
         else:
-            history = priceslib.get_paprika_history(self.coin_id, self.since, self.quote)
+            history = priceslib.get_paprika_history(self.coin_id, 'year_ago', self.quote)
         x = []
         x_str = []
         y = []
@@ -195,50 +194,11 @@ class graph_history_thread(QThread):
             x.append(int(datetime.datetime.timestamp(dt)))
             x_str.append(item['timestamp'])
             # derive time label ticks based on history timespan
-            if self.since in ['year_ago']:
-                month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
-                if month != last_time:
-                    if last_time != '':
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
-                    last_time = month
-            elif self.since in ['6_month_ago']:
-                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                if time_components[2] in ['15']:
-                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                elif time_components[3] in ['1']:
-                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-            elif self.since in ['3_month_ago']:
-                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                if time_components[2] in ['15', '22']:
-                    if time_components[2] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                        last_time = time_components[2]
-                if time_components[3] in ['1', '8']:
-                    if time_components[3] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-                        last_time = time_components[3]                            
-            elif self.since in ['month_ago']:
-                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                if time_components[2] in ['10', '13', '16', '19', '22', '25', '28']:
-                    if time_components[2] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[2]+" "+time_components[1]))
-                        last_time = time_components[2]
-                elif time_components[3] in ['1', '4', '7']:
-                    if time_components[3] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]+" "+time_components[1]))
-                        last_time = time_components[3]
-            elif self.since in ['week_ago']:
-                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                if time_components[0] != last_time:
-                    time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[0]+" "+time_components[2]+" "+time_components[1]))
-                    last_time = time_components[0]
-            elif self.since in ['day_ago']:
-                time_components = (time.ctime(int(datetime.datetime.timestamp(dt))).split(" "))
-                hour_components = time_components[3].split(":")
-                if int(hour_components[0])%2 == 0:
-                    if hour_components[0] != last_time:
-                        time_ticks.append((int(datetime.datetime.timestamp(dt)),time_components[3]))
-                        last_time = hour_components[0]
+            month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
+            if month != last_time:
+                if last_time != '':
+                    time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
+                last_time = month
         # emit signal to draw graph with xy data
         self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
 # Item Classes 
@@ -1681,24 +1641,8 @@ class Ui(QTabWidget):
             coin = self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
         else:
             coin = self.history_coin_combobox.itemText(index)
-        index = self.history_timespan_combobox.currentIndex()
-        if index == -1:
-            index = 0
-        timespan = self.history_timespan_combobox.itemText(index)
-        if timespan == '1 Year':
-            since = 'year_ago'
-        elif timespan == '6 Mth':
-            since = '6_month_ago'
-        elif timespan == '3 Mth':
-            since = '3_month_ago'
-        elif timespan == '1 Mth':
-            since = 'month_ago'
-        elif timespan == '1 Week':
-            since = 'week_ago'
-        elif timespan == '24 Hrs':
-            since = 'day_ago'
         coin_id = coinslib.coin_api_codes[coin]['paprika_id']
-        self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote, since)
+        self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote)
         self.draw_graph_thread.get_history.connect(self.draw_history_graph)
         self.draw_graph_thread.start()
         # activate "loading" overlay
