@@ -399,7 +399,7 @@ async def binance_open_orders():
 @app.get("/table/get_binance_depth/{symbol}")
 async def get_binance_depth(symbol):
     table_data = []
-    depth = binance_api.get_depth(bn_key, symbol, 10)
+    depth = binance_api.get_depth(bn_key, symbol, 20)
     print(depth)
     for item in depth['bids']:
         price = float(item[0])

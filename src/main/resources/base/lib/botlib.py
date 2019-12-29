@@ -138,7 +138,7 @@ def mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin):
         available = float(total) - float(locked)
         mm2_coin_balance_data = {
             coin: {
-                    "":address,
+                    "address":address,
                     "total":total,
                     "locked":locked,
                     "available":available,

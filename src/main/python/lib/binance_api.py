@@ -348,11 +348,13 @@ def get_exchange_info():
                 quoteAssets.append(quoteAsset)
 
     for base in base_asset_info:
+        quotes = []
         available_pairs = []
         for rel in quoteAssets:
             if base+rel in binance_pairs:
                 symbol = base+rel
                 available_pairs.append(symbol)
+                quotes.append(rel)
             elif rel+base in binance_pairs:
                 symbol = rel+base
                 available_pairs.append(symbol)
@@ -360,27 +362,27 @@ def get_exchange_info():
                 for quote in quoteAssets:
                     if base+quote in quoteAssets:
                         symbol = rel+base
-                        available_pairs.append(symbol)
+                        available_pairs.append(base)
                     elif quote+base in quoteAssets:
                         symbol = base+rel
                         available_pairs.append(symbol)
         available_pairs.sort()
         base_asset_info[base].update({'available_pairs':available_pairs})
-    for base in coinslib.coin_activation:
+        base_asset_info[base].update({'quote_assets':quotes})
+    for base in coinslib.coin_api_codes:
         if base in base_asset_info:
             supported_binance_pairs += base_asset_info[base]['available_pairs']
     supported_binance_pairs = list(set(supported_binance_pairs))
     binance_pairs.sort()
     supported_binance_pairs.sort()
-    print(supported_binance_pairs)
     quoteAssets.sort()
     return binance_pairs, base_asset_info, quoteAssets, binance_pair_info, supported_binance_pairs
-
 
 
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
+print(base_asset_info)
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
 supported_binance_pairs = exch_info[4]
