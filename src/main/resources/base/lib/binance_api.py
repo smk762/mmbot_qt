@@ -288,8 +288,6 @@ def get_binance_orders_history(api_key, api_secret, symbol):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    print(r)
-    print(r.text)
     return r.text
     
 
@@ -405,7 +403,6 @@ def get_exchange_info():
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
-print(base_asset_info)
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
 supported_binance_pairs = exch_info[4]

@@ -279,6 +279,7 @@ async def open_orders_table():
             timestamp = int(maker_orders[item]['created_at']/1000)
             created_at = datetime.datetime.fromtimestamp(timestamp)
             num_matches = len(maker_orders[item]['matches'])
+            started_swaps = len(maker_orders[item]['started_swaps'])
             table_data.append({
                     "Role":role,
                     "Buy Coin":base,
@@ -290,6 +291,7 @@ async def open_orders_table():
                     "Order UUID":item,
                     "Created At":created_at,
                     "Num Matches":num_matches,
+                    "Started Swaps":started_swaps,
                 })
         for item in taker_orders:
             role = "Taker"
@@ -312,6 +314,7 @@ async def open_orders_table():
                     "Order UUID":item,
                     "Created At":created_at,
                     "Num Matches":"-",
+                    "Started Swaps":"-",
                 })
         resp = {
             "response": "success",

@@ -382,7 +382,6 @@ def get_exchange_info():
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
-print(base_asset_info)
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
 supported_binance_pairs = exch_info[4]

@@ -448,6 +448,7 @@ class Ui(QTabWidget):
         rel = baserel[1]
         self.update_binance_balance_table()
         self.update_prices_table()
+        self.update_mm2_trade_history_table()
         # TODO: Add gui update functions as req here.
 
     ## MM2 management
@@ -644,10 +645,19 @@ class Ui(QTabWidget):
                 table.item(row,col).setBackground(bgcol)
             col += 1
 
-    def get_cell_val(self, table, column):
+    def colorize_row(self, table, row, bgcol):
+        for col in range(table.columnCount()):
+            table.item(row,col).setForeground(bgcol)
+
+
+    def get_cell_val(self, table, row='', column=''):
+        if row == '':
+           row = table.currentRow() 
+        if column == '':
+           column = table.currentColumn() 
         if table.currentRow() != -1:
-            if table.item(table.currentRow(),column).text() != '':
-                return float(table.item(table.currentRow(),column).text())
+            if table.item(row,column).text() != '':
+                return float(table.item(row,column).text())
             else:
                 return 0
         else:
@@ -692,7 +702,7 @@ class Ui(QTabWidget):
                 active_coins_selection.remove(rel)
                 base = self.update_combo(base_combo,active_coins_selection,base)
         elif api == 'binance':
-            base_coins_selection = list(binance_api.base_asset_info.keys())
+            base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(self.active_coins[:]))
             if len(base_coins_selection) > 0:                
                 base = self.update_combo(base_combo,base_coins_selection,base)
                 rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']
@@ -732,7 +742,7 @@ class Ui(QTabWidget):
             rel = baserel[1]
             # refresh tables
             self.populate_table("table/orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
-            self.populate_table("table/open_orders", self.mm2_orders_table, self.orderbook_msg_lbl, "Highlight a row to select for cancelling order")
+            self.populate_table("table/open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
             # Update labels
             self.update_mm2_orderbook_labels(base, rel)
 
@@ -748,6 +758,7 @@ class Ui(QTabWidget):
             self.update_binance_depth_table()
             self.update_binance_orders_table()
             self.update_binance_addr()
+            self.update_binance_labels(base, rel)
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -1260,42 +1271,49 @@ class Ui(QTabWidget):
     def mm2_cancel_order(self):
         cancel = True
         selected_row = self.mm2_orders_table.currentRow()
-        if self.mm2_orders_table.item(selected_row,8) is not None:
-            if self.mm2_orders_table.item(selected_row,0).text() != '':
-                mm2_order_uuid = self.mm2_orders_table.item(selected_row,8).text()
-                order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
-                if len(order_info['order']['started_swaps']) != 0:
+        if self.mm2_orders_table.item(selected_row,7) is not None:
+            mm2_order_uuid = self.mm2_orders_table.item(selected_row,7).text()
+            order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
+            if len(order_info['order']['started_swaps']) != 0:
+                swaps_in_progress = {}
+                for swap_uuid in order_info['order']['started_swaps']:
+                    swap_status = rpclib.my_swap_status(self.creds[0], self.creds[1], swap_uuid).json()
+                    # TODO: Need an order with started swaps to test this further.
+                    print(swap_status)
+                if len(swaps_in_progress) != 0:
                     msg = "This order has swaps in progress, are you sure you want to cancel it?"
+                    msg += "\nSwaps in progress: \n"
+                    for swap in swaps_in_progress:
+                        msg += swap+": "+swaps_in_progress[swap]
                     confirm = QMessageBox.question(self, 'Cancel Order', msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
                     if confirm == QMessageBox.No:
                         cancel = False
                     elif confirm == QMessageBox.Cancel:
                         cancel = False
-                if cancel:
-                    resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
-                    msg = ''
-                    if 'result' in resp:
-                        if resp['result'] == 'success':
-                            msg = "Order "+mm2_order_uuid+" cancelled"
-                        else:
-                            msg = resp
+            if cancel:
+                resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
+                msg = ''
+                if 'result' in resp:
+                    if resp['result'] == 'success':
+                        msg = "Order "+mm2_order_uuid+" cancelled"
                     else:
                         msg = resp
-                    log_msg = "Cancelling mm2 order "+mm2_order_uuid+"..."
-                    self.update_trading_log("mm2", log_msg, str(resp))
-                    QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
-            else:
-                QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+                else:
+                    msg = resp
+                log_msg = "Cancelling mm2 order "+mm2_order_uuid+"..."
+                self.update_trading_log("mm2", log_msg, str(resp))
+                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
         else:
-            QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+            QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)
         self.update_mm2_orders_table()
 
     def mm2_cancel_all_orders(self):
         pending = 0
         cancel = True
-        if self.bot_mm2_orders_table.item(0,0).text() != '':
+        if self.mm2_trades_table.rowCount() != 0:
             for i in range(self.mm2_trades_table.rowCount()):
                 if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
+                    print(self.mm2_trades_table.item(i,2).text())
                     pending += 1
             if pending > 0:
                 msg = str(pending)+" order(s) have swaps in progress, are you sure you want to cancel all?"
@@ -1364,6 +1382,26 @@ class Ui(QTabWidget):
         self.binance_buy_amount_spinbox.setValue(0)
         self.binance_sell_amount_spinbox.setValue(0)
         self.show_binance_trading_tab()
+
+    def update_binance_labels(self, base, rel):
+        self.binance_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
+        self.binance_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
+        if rel in self.balances_data['binance']:
+            locked_text = "Locked: "+str(round(float(self.balances_data['binance'][rel]['locked']),8))
+            balance = "Balance: "+str(round(float(self.balances_data['binance'][rel]['total']),8))
+        else:
+            locked_text = ""
+            balance = "loading balance..."
+        self.binance_buy_balance_lbl.setText(balance)
+        self.binance_buy_locked_lbl.setText(locked_text)
+        if base in self.balances_data['binance']:
+            locked_text = "Locked: "+str(round(float(self.balances_data['binance'][base]['locked']),8))
+            balance = "Balance: "+str(round(float(self.balances_data['binance'][base]['total']),8))
+        else:
+            locked_text = ""
+            balance = "loading balance..."
+        self.binance_sell_balance_lbl.setText(balance)
+        self.binance_sell_locked_lbl.setText(locked_text)
 
     ## Prices Tab
     def update_price_history_graph(self):
@@ -1978,6 +2016,14 @@ class Ui(QTabWidget):
             self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE")
         else:
             self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
+        for row in range(self.mm2_trades_table.rowCount()):
+            if self.mm2_trades_table.item(row, 2).text() == 'Finished':
+                self.colorize_row(self.mm2_trades_table, row, QColor(218, 255, 127))
+            elif self.mm2_trades_table.item(row, 2).text() == 'Failed':
+                self.colorize_row(self.mm2_trades_table, row, QColor(255, 127, 127))
+            else:
+                self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
+
 
     def update_binance_trade_history_table(self):
         # Will need to be tracked locally. API endpoint is per symbol

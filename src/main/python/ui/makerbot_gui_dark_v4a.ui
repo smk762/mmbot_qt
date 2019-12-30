@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -2829,8 +2829,8 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>280</width>
-                            <height>408</height>
+                            <width>266</width>
+                            <height>368</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_14">
@@ -3922,7 +3922,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>283</width>
-                            <height>408</height>
+                            <height>296</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout">
@@ -5357,7 +5357,7 @@ color: rgb(46, 52, 54);</string>
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
-               <layout class="QGridLayout" name="gridLayout_4">
+               <layout class="QGridLayout" name="gridLayout_34">
                 <item row="0" column="0">
                  <widget class="QFrame" name="frame_71">
                   <property name="sizePolicy">
@@ -6255,122 +6255,161 @@ color: rgb(46, 52, 54);</string>
                  </widget>
                 </item>
                 <item row="1" column="0">
-                 <widget class="QTableWidget" name="orderbook_table">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="font">
-                   <font>
-                    <pointsize>11</pointsize>
-                   </font>
-                  </property>
-                  <property name="mouseTracking">
-                   <bool>true</bool>
-                  </property>
-                  <property name="styleSheet">
-                   <string notr="true"/>
-                  </property>
+                 <widget class="QFrame" name="frame_11">
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
                   </property>
                   <property name="frameShadow">
-                   <enum>QFrame::Sunken</enum>
+                   <enum>QFrame::Raised</enum>
                   </property>
-                  <property name="sizeAdjustPolicy">
-                   <enum>QAbstractScrollArea::AdjustToContents</enum>
-                  </property>
-                  <property name="editTriggers">
-                   <set>QAbstractItemView::NoEditTriggers</set>
-                  </property>
-                  <property name="showDropIndicator" stdset="0">
-                   <bool>false</bool>
-                  </property>
-                  <property name="dragDropOverwriteMode">
-                   <bool>false</bool>
-                  </property>
-                  <property name="alternatingRowColors">
-                   <bool>false</bool>
-                  </property>
-                  <property name="selectionMode">
-                   <enum>QAbstractItemView::SingleSelection</enum>
-                  </property>
-                  <property name="selectionBehavior">
-                   <enum>QAbstractItemView::SelectRows</enum>
-                  </property>
-                  <property name="textElideMode">
-                   <enum>Qt::ElideMiddle</enum>
-                  </property>
-                  <property name="sortingEnabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="rowCount">
-                   <number>5</number>
-                  </property>
-                  <property name="columnCount">
-                   <number>6</number>
-                  </property>
-                  <attribute name="horizontalHeaderCascadingSectionResizes">
-                   <bool>true</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>201</number>
-                  </attribute>
-                  <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                   <bool>true</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderStretchLastSection">
-                   <bool>true</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderVisible">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderDefaultSectionSize">
-                   <number>20</number>
-                  </attribute>
-                  <attribute name="verticalHeaderHighlightSections">
-                   <bool>true</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderMinimumSectionSize">
-                   <number>20</number>
-                  </attribute>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <row/>
-                  <column>
-                   <property name="text">
-                    <string>Sell Coin</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Buy Coin</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Volume</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Sell Price</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Mkt Price</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>BUY</string>
-                   </property>
-                  </column>
+                  <layout class="QGridLayout" name="gridLayout_4">
+                   <item row="0" column="0">
+                    <spacer name="horizontalSpacer_56">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::MinimumExpanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="1">
+                    <widget class="QTableWidget" name="orderbook_table">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="mouseTracking">
+                      <bool>true</bool>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Sunken</enum>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QAbstractScrollArea::AdjustToContents</enum>
+                     </property>
+                     <property name="editTriggers">
+                      <set>QAbstractItemView::NoEditTriggers</set>
+                     </property>
+                     <property name="showDropIndicator" stdset="0">
+                      <bool>false</bool>
+                     </property>
+                     <property name="dragDropOverwriteMode">
+                      <bool>false</bool>
+                     </property>
+                     <property name="alternatingRowColors">
+                      <bool>false</bool>
+                     </property>
+                     <property name="selectionMode">
+                      <enum>QAbstractItemView::SingleSelection</enum>
+                     </property>
+                     <property name="selectionBehavior">
+                      <enum>QAbstractItemView::SelectRows</enum>
+                     </property>
+                     <property name="textElideMode">
+                      <enum>Qt::ElideMiddle</enum>
+                     </property>
+                     <property name="sortingEnabled">
+                      <bool>true</bool>
+                     </property>
+                     <property name="rowCount">
+                      <number>0</number>
+                     </property>
+                     <property name="columnCount">
+                      <number>6</number>
+                     </property>
+                     <attribute name="horizontalHeaderCascadingSectionResizes">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="horizontalHeaderDefaultSectionSize">
+                      <number>149</number>
+                     </attribute>
+                     <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="horizontalHeaderStretchLastSection">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="verticalHeaderVisible">
+                      <bool>false</bool>
+                     </attribute>
+                     <attribute name="verticalHeaderDefaultSectionSize">
+                      <number>20</number>
+                     </attribute>
+                     <attribute name="verticalHeaderHighlightSections">
+                      <bool>true</bool>
+                     </attribute>
+                     <attribute name="verticalHeaderMinimumSectionSize">
+                      <number>20</number>
+                     </attribute>
+                     <column>
+                      <property name="text">
+                       <string>Sell Coin</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Buy Coin</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Volume</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Sell Price</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>Mkt Price</string>
+                      </property>
+                     </column>
+                     <column>
+                      <property name="text">
+                       <string>BUY</string>
+                      </property>
+                     </column>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <spacer name="horizontalSpacer_57">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::MinimumExpanding</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item row="2" column="0">
@@ -6600,7 +6639,7 @@ color: rgb(46, 52, 54);</string>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="orderbook_msg_lbl_2">
+              <widget class="QLabel" name="mm2_orders_msg_lbl">
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
@@ -7345,7 +7384,184 @@ color: rgb(46, 52, 54);</string>
                    <enum>QFrame::Raised</enum>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_85">
-                   <item row="1" column="0">
+                   <item row="0" column="0">
+                    <widget class="QFrame" name="frame_81">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="frameShape">
+                      <enum>QFrame::StyledPanel</enum>
+                     </property>
+                     <property name="frameShadow">
+                      <enum>QFrame::Raised</enum>
+                     </property>
+                     <layout class="QGridLayout" name="gridLayout_67">
+                      <item row="0" column="1">
+                       <widget class="QLabel" name="binance_sell_bal_icon">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>64</width>
+                          <height>64</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>64</width>
+                          <height>64</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>10</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="0">
+                       <spacer name="horizontalSpacer_38">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::MinimumExpanding</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="1" column="0" colspan="3">
+                       <widget class="QLabel" name="binance_sell_balance_lbl">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>11</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Balance: </string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="2">
+                       <spacer name="horizontalSpacer_54">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::MinimumExpanding</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="2" column="0" colspan="3">
+                       <widget class="QLabel" name="binance_sell_locked_lbl">
+                        <property name="sizePolicy">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                          <horstretch>0</horstretch>
+                          <verstretch>0</verstretch>
+                         </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>25</height>
+                         </size>
+                        </property>
+                        <property name="font">
+                         <font>
+                          <pointsize>11</pointsize>
+                         </font>
+                        </property>
+                        <property name="text">
+                         <string>Locked:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <spacer name="horizontalSpacer_39">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>69</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QFrame" name="frame_43">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_66">
+                   <item row="0" column="0">
                     <widget class="QFrame" name="frame_80">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7402,10 +7618,26 @@ color: rgb(46, 52, 54);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="1" column="0" colspan="2">
+                      <item row="0" column="2">
+                       <spacer name="horizontalSpacer_49">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::MinimumExpanding</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item row="1" column="0" colspan="3">
                        <widget class="QLabel" name="binance_buy_balance_lbl">
                         <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
@@ -7425,14 +7657,14 @@ color: rgb(46, 52, 54);</string>
                          <string>Balance: </string>
                         </property>
                         <property name="alignment">
-                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         <set>Qt::AlignCenter</set>
                         </property>
                        </widget>
                       </item>
-                      <item row="2" column="0" colspan="2">
+                      <item row="2" column="0" colspan="3">
                        <widget class="QLabel" name="binance_buy_locked_lbl">
                         <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
@@ -7455,148 +7687,25 @@ color: rgb(46, 52, 54);</string>
                          <string>Locked:</string>
                         </property>
                         <property name="alignment">
-                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                        </property>
-                       </widget>
-                      </item>
-                     </layout>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="0" column="0">
-                 <spacer name="horizontalSpacer_39">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>69</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item row="0" column="3">
-                 <widget class="QFrame" name="frame_43">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::StyledPanel</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_66">
-                   <item row="0" column="1" colspan="2">
-                    <widget class="QFrame" name="frame_81">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>16777215</height>
-                      </size>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="frameShape">
-                      <enum>QFrame::StyledPanel</enum>
-                     </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Raised</enum>
-                     </property>
-                     <layout class="QGridLayout" name="gridLayout_67">
-                      <item row="2" column="0">
-                       <widget class="QLabel" name="binance_sell_locked_lbl">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>25</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>11</pointsize>
-                         </font>
-                        </property>
-                        <property name="text">
-                         <string>Locked:</string>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="1" column="0">
-                       <widget class="QLabel" name="binance_sell_balance_lbl">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>25</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>11</pointsize>
-                         </font>
-                        </property>
-                        <property name="text">
-                         <string>Balance: </string>
+                         <set>Qt::AlignCenter</set>
                         </property>
                        </widget>
                       </item>
                       <item row="0" column="0">
-                       <widget class="QLabel" name="binance_sell_bal_icon">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
+                       <spacer name="horizontalSpacer_55">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
                         </property>
-                        <property name="minimumSize">
+                        <property name="sizeType">
+                         <enum>QSizePolicy::MinimumExpanding</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
                          <size>
-                          <width>64</width>
-                          <height>64</height>
+                          <width>40</width>
+                          <height>20</height>
                          </size>
                         </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>64</width>
-                          <height>64</height>
-                         </size>
-                        </property>
-                        <property name="font">
-                         <font>
-                          <pointsize>10</pointsize>
-                         </font>
-                        </property>
-                        <property name="text">
-                         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                        </property>
-                        <property name="alignment">
-                         <set>Qt::AlignCenter</set>
-                        </property>
-                       </widget>
+                       </spacer>
                       </item>
                      </layout>
                     </widget>
@@ -7672,7 +7781,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>136</width>
+                       <width>150</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -7972,7 +8081,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="sizeHint" stdset="0">
                       <size>
-                       <width>135</width>
+                       <width>149</width>
                        <height>20</height>
                       </size>
                      </property>
@@ -12481,6 +12590,38 @@ color: rgb(46, 52, 54);</string>
     <hint type="sourcelabel">
      <x>745</x>
      <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_cancel_selected_order_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>mm2_cancel_order()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1628</x>
+     <y>768</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_cancel_all_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>mm2_cancel_all_orders()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1721</x>
+     <y>768</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
