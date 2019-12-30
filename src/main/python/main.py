@@ -23,6 +23,7 @@ import subprocess
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
+import decimal
 
 '''
 # TODOS #
@@ -671,6 +672,21 @@ class Ui(QTabWidget):
                         return i,j
         return -1, -1
 
+    def binance_bid_price_update(self):
+        selected_row = self.binance_depth_table_bid.currentRow()
+        if selected_row != -1 and self.binance_depth_table_bid.item(selected_row,1) is not None:
+            price = self.binance_depth_table_bid.item(selected_row,1).text()
+            self.binance_price_spinbox.setValue(float(price))
+            #self.binance_depth_table_ask.clearSelection()
+
+    def binance_ask_price_update(self):
+        selected_row = self.binance_depth_table_ask.currentRow()
+        if selected_row != -1 and self.binance_depth_table_ask.item(selected_row,1) is not None:
+            price = self.binance_depth_table_ask.item(selected_row,1).text()
+            self.binance_price_spinbox.setValue(float(price))
+            #self.binance_depth_table_bid.clearSelection()
+
+
     # Selection menu operations
     def update_combo(self,combo,options,selected):
         combo.clear()
@@ -1057,11 +1073,9 @@ class Ui(QTabWidget):
         self.mm2_orders_table.setRowCount(row_count)
         if 'maker_orders' in orders['result']:
             maker_orders = orders['result']['maker_orders']
-            bot_row = 0
             mm2_row = 0
             for item in maker_orders:
                 maker_row = self.prepare_maker_row(maker_orders, item)
-                bot_row += 1
                 self.add_row(mm2_row, maker_row, self.mm2_orders_table)
                 mm2_row += 1
 
@@ -1069,7 +1083,6 @@ class Ui(QTabWidget):
             taker_orders = orders['result']['taker_orders']
             for item in taker_orders:
                 taker_row = self.prepare_taker_row(taker_orders, item)
-                bot_row += 1
                 self.add_row(mm2_row, taker_row, self.mm2_orders_table)
                 mm2_row += 1
 
@@ -1757,6 +1770,9 @@ class Ui(QTabWidget):
         index = self.binance_rel_combo.currentIndex()
         rel = self.binance_rel_combo.itemText(index)
         self.binance_price_spinbox.setValue(0)
+        self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
+        self.binance_buy_amount_lbl.setText("Amount ("+base+")")
+        self.binance_sell_amount_lbl.setText("Amount ("+rel+")")
         ticker_pair = base+rel
         # populate binance depth table
         self.populate_table("table/get_binance_depth/"+ticker_pair,

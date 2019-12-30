@@ -15,6 +15,7 @@ import json
 import sys
 import os
 import uvicorn
+from decimal import Decimal
 
 # what does bot do when mm2 is down? Respawn, or exit (could leave open orders)?
 
@@ -409,7 +410,7 @@ async def get_binance_depth(symbol):
         volume = float(item[1])
         table_data.append({
                 "Pair": symbol,
-                "Price": price,
+                "Price": "{:.8f}".format(price),
                 "Volume": volume,
                 "Bid/Ask":'Bid'
             })
@@ -418,7 +419,7 @@ async def get_binance_depth(symbol):
         volume = float(item[1])
         table_data.append({
                 "Pair": symbol,
-                "Price": price,
+                "Price": "{:.8f}".format(price),
                 "Volume": volume,
                 "Bid/Ask":'Ask'
             })
