@@ -776,6 +776,11 @@ class Ui(QTabWidget):
                 baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, 'binance')
                 base = baserel[0]
                 rel = baserel[1]
+                step_size = binance_api.base_asset_info[base]['stepSize']
+                min_qty = binance_api.base_asset_info[base]['minQty']
+                max_qty = binance_api.base_asset_info[base]['maxQty']
+                self.binance_base_amount_spinbox.setSingleStep(float(step_size))
+                self.binance_base_amount_spinbox.setRange(float(min_qty), float(max_qty))
                 self.update_binance_depth_table()
                 self.update_binance_orders_table()
                 self.update_binance_labels(base, rel)
@@ -1505,42 +1510,94 @@ class Ui(QTabWidget):
         order_type = self.binance_depth_table.item(selected_row,3).text()
         self.binance_price_spinbox.setValue(float(price))
 
+    # Dynamic order form price spinbox slots
+    def update_binance_orderbook_amounts(self, source=''):
+        if source == '':
+            sent_by = self.sender().objectName()
+        else:
+            sent_by = source
+        print("update binance values amounts (source: "+sent_by+")")
+        index = self.binance_base_combo.currentIndex()
+        baseAsset = self.binance_base_combo.itemText(index)
+        index = self.binance_rel_combo.currentIndex()
+        quoteAsset = self.binance_rel_combo.itemText(index)
+        symbol = baseAsset+quoteAsset
+        price_val = self.binance_price_spinbox.value()
+        quote_amount_val = self.binance_quote_amount_spinbox.value()
+        base_amount_val = self.binance_base_amount_spinbox.value()
+        if sent_by == 'binance_price_spinbox':
+            if price_val != 0:
+                if base_amount_val != 0:
+                    quote_amount_val = base_amount_val*price_val
+                    self.binance_quote_amount_spinbox.setValue(quote_amount_val)
+                elif quote_amount_val != 0:
+                    base_amount_val = binance_api.round_to_step(symbol, quote_amount_val/price_val)
+                    self.binance_base_amount_spinbox.setValue(base_amount_val)
+        elif sent_by == 'binance_quote_amount_spinbox':
+            if quote_amount_val != 0:
+                if price_val != 0:
+                    base_amount_val = binance_api.round_to_step(symbol, quote_amount_val/price_val)
+                    self.binance_base_amount_spinbox.setValue(base_amount_val)
+        elif sent_by == 'binance_base_amount_spinbox':
+            if base_amount_val != 0:
+                if price_val != 0:                
+                    quote_amount_val = base_amount_val*price_val
+                    self.binance_quote_amount_spinbox.setValue(quote_amount_val)
+
+    def binance_price_changed(self):
+        self.update_binance_orderbook_amounts('binance_price_spinbox')
+
+    def binance_quote_amount_changed(self):
+        self.update_binance_orderbook_amounts('binance_quote_amount_spinbox')
+
+    def binance_base_amount_changed(self):
+        self.update_binance_orderbook_amounts('binance_base_amount_spinbox')
+
     def binance_buy(self):
         qty = '{:.8f}'.format(self.binance_base_amount_spinbox.value())
+        quote_qty = '{:.8f}'.format(self.binance_quote_amount_spinbox.value())
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
         index = self.binance_base_combo.currentIndex()
         baseAsset = self.binance_base_combo.itemText(index)
         index = self.binance_rel_combo.currentIndex()
         quoteAsset = self.binance_rel_combo.itemText(index)
         symbol = baseAsset+quoteAsset
-        print(symbol)
-        resp = binance_api.create_buy_order(self.creds[5], self.creds[6], symbol, qty, price)
-        log_msg = "Buy order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
-        if 'orderId' in resp:
-            msg = "Buy order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
-            QMessageBox.information(self, 'Buy Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+        print(binance_api.binance_pair_info[symbol])
+        min_notional = float(binance_api.binance_pair_info[symbol]['minNotional'])
+        if float(quote_qty) < min_notional:
+            QMessageBox.information(self, 'Buy Order Failed', "Trade value must be over "+str(min_notional)+" "+quoteAsset, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            QMessageBox.information(self, 'Buy Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-        self.update_trading_log('Binance', log_msg, str(resp))
+            resp = binance_api.create_buy_order(self.creds[5], self.creds[6], symbol, qty, price)
+            log_msg = "Buy order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
+            if 'orderId' in resp:
+                msg = "Buy order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
+                QMessageBox.information(self, 'Buy Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, 'Buy Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+            self.update_trading_log('Binance', log_msg, str(resp))
         self.update_binance_orders_table()
 
     def binance_sell(self):
         qty = '{:.8f}'.format(self.binance_base_amount_spinbox.value())
+        quote_qty = '{:.8f}'.format(self.binance_quote_amount_spinbox.value())
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
         index = self.binance_base_combo.currentIndex()
         baseAsset = self.binance_base_combo.itemText(index)
         index = self.binance_rel_combo.currentIndex()
         quoteAsset = self.binance_rel_combo.itemText(index)
         symbol = baseAsset+quoteAsset
-        print(symbol)
-        resp = binance_api.create_sell_order(self.creds[5], self.creds[6], symbol, qty, price)
-        log_msg = "Sell order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
-        if 'orderId' in resp:
-            msg = "Sell order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
-            QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+        min_notional = binance_api.binance_pair_info[symbol]['minNotional']
+        if float(quote_qty) < float(min_notional):
+            QMessageBox.information(self, 'Buy Order Failed', "Trade value must be over "+str(min_notional)+" "+quoteAsset, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-        self.update_trading_log('Binance', log_msg, str(resp))
+            resp = binance_api.create_sell_order(self.creds[5], self.creds[6], symbol, qty, price)
+            log_msg = "Sell order submitted! "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+" (Total: "+str(float(qty)*float(price))+" "+quoteAsset+")"
+            if 'orderId' in resp:
+                msg = "Sell order submitted!\n "+str(qty)+" "+baseAsset+" at "+str(price)+" "+quoteAsset+"\nTotal: "+str(float(qty)*float(price))+" "+quoteAsset
+                QMessageBox.information(self, 'Sell Order Sent', msg, QMessageBox.Ok, QMessageBox.Ok)
+            else:
+                QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+            self.update_trading_log('Binance', log_msg, str(resp))
         self.update_binance_orders_table()
 
     def binance_withdraw(self):
@@ -1566,27 +1623,23 @@ class Ui(QTabWidget):
                 msg += str(resp)
             QMessageBox.information(self, 'Binance Withdraw', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
-
     def binance_cancel_selected_order(self):
         selected_row = self.binance_orders_table.currentRow()
         if self.binance_orders_table.item(selected_row,0) is not None:
-            if self.binance_orders_table.item(selected_row,0).text() != '':
-                order_id = self.binance_orders_table.item(selected_row,0).text()
-                ticker_pair = self.binance_orders_table.item(selected_row,2).text()
-                resp = binance_api.delete_order(self.creds[5], self.creds[6], ticker_pair, order_id)
-                msg = ''
-                if "status" in resp:
-                    if resp["status"] == "CANCELED":
-                        msg = "Order "+order_id+" cancelled"
-                    else:
-                        msg = resp
+            order_id = self.binance_orders_table.item(selected_row,0).text()
+            ticker_pair = self.binance_orders_table.item(selected_row,2).text()
+            resp = binance_api.delete_order(self.creds[5], self.creds[6], ticker_pair, order_id)
+            msg = ''
+            if "status" in resp:
+                if resp["status"] == "CANCELED":
+                    msg = "Order "+order_id+" cancelled"
                 else:
                     msg = resp
-                log_msg = "Cancelling Binance order "+str(order_id)+" ("+ticker_pair+")"
-                self.update_trading_log("Binance", log_msg, str(resp))
-                QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
             else:
-                QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
+                msg = resp
+            log_msg = "Cancelling Binance order "+str(order_id)+" ("+ticker_pair+")"
+            self.update_trading_log("Binance", log_msg, str(resp))
+            QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)      
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         self.update_binance_orders_table()

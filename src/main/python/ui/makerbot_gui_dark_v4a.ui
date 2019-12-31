@@ -7329,6 +7329,15 @@ color: rgb(46, 52, 54);</string>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
                      </property>
+                     <property name="readOnly">
+                      <bool>true</bool>
+                     </property>
+                     <property name="correctionMode">
+                      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                     </property>
+                     <property name="suffix">
+                      <string/>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -7511,6 +7520,9 @@ color: rgb(46, 52, 54);</string>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
                      </property>
+                     <property name="correctionMode">
+                      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                     </property>
                      <property name="decimals">
                       <number>8</number>
                      </property>
@@ -7552,6 +7564,9 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="correctionMode">
+                      <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                      </property>
                      <property name="decimals">
                       <number>8</number>
@@ -12563,8 +12578,8 @@ color: rgb(46, 52, 54);</string>
    <slot>binance_combo_box_change()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>837</x>
-     <y>164</y>
+     <x>814</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12580,7 +12595,7 @@ color: rgb(46, 52, 54);</string>
    <hints>
     <hint type="sourcelabel">
      <x>654</x>
-     <y>164</y>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12613,6 +12628,54 @@ color: rgb(46, 52, 54);</string>
     <hint type="sourcelabel">
      <x>825</x>
      <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_price_spinbox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_price_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>747</x>
+     <y>264</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_base_amount_spinbox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_base_amount_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>670</x>
+     <y>201</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_quote_amount_spinbox</sender>
+   <signal>valueChanged(double)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_quote_amount_changed()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>825</x>
+     <y>201</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12686,5 +12749,8 @@ color: rgb(46, 52, 54);</string>
   <slot>binance_combo_box_change()</slot>
   <slot>binance_ask_price_update()</slot>
   <slot>binance_bid_price_update()</slot>
+  <slot>binance_price_changed()</slot>
+  <slot>binance_quote_amount_changed()</slot>
+  <slot>binance_base_amount_changed()</slot>
  </slots>
 </ui>

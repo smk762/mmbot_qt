@@ -346,21 +346,24 @@ def get_exchange_info():
                 minQty = filter_types['minQty']
                 maxQty = filter_types['maxQty']
                 stepSize = filter_types['stepSize']
+            if filter_types['filterType'] == 'MIN_NOTIONAL':
+                minNotional = filter_types['minNotional']
         if status == "TRADING":
             base_asset_info.update({
                 baseAsset:{
-                    'minQty':minQty,
-                    'maxQty':maxQty,
-                    'stepSize':stepSize
+                    'minQty':float(minQty),
+                    'maxQty':float(maxQty),
+                    'stepSize':float(stepSize)
                 }
             })
             binance_pair_info.update({
                 symbol:{
                     'baseAsset':baseAsset,
                     'quoteAsset':quoteAsset,
-                    'minQty':minQty,
-                    'maxQty':maxQty,
-                    'stepSize':stepSize
+                    'minQty':float(minQty),
+                    'maxQty':float(maxQty),
+                    'minNotional':float(minNotional),
+                    'stepSize':float(stepSize)
                 }
             })
             binance_pairs.append(symbol)
