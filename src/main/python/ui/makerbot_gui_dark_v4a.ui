@@ -6937,7 +6937,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_67">
                       <item row="0" column="1">
-                       <widget class="QLabel" name="binance_sell_bal_icon">
+                       <widget class="QLabel" name="binance_base_icon">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -6986,7 +6986,7 @@ color: rgb(46, 52, 54);</string>
                        </spacer>
                       </item>
                       <item row="1" column="0" colspan="3">
-                       <widget class="QLabel" name="binance_sell_balance_lbl">
+                       <widget class="QLabel" name="binance_base_balance_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7029,7 +7029,7 @@ color: rgb(46, 52, 54);</string>
                        </spacer>
                       </item>
                       <item row="2" column="0" colspan="3">
-                       <widget class="QLabel" name="binance_sell_locked_lbl">
+                       <widget class="QLabel" name="binance_base_locked_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7114,7 +7114,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_72">
                       <item row="0" column="1">
-                       <widget class="QLabel" name="binance_buy_bal_icon">
+                       <widget class="QLabel" name="binance_quote_icon">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7163,7 +7163,7 @@ color: rgb(46, 52, 54);</string>
                        </spacer>
                       </item>
                       <item row="1" column="0" colspan="3">
-                       <widget class="QLabel" name="binance_buy_balance_lbl">
+                       <widget class="QLabel" name="binance_quote_balance_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7190,7 +7190,7 @@ color: rgb(46, 52, 54);</string>
                        </widget>
                       </item>
                       <item row="2" column="0" colspan="3">
-                       <widget class="QLabel" name="binance_buy_locked_lbl">
+                       <widget class="QLabel" name="binance_quote_locked_lbl">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7296,7 +7296,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                   <layout class="QGridLayout" name="gridLayout_69">
                    <item row="4" column="2">
-                    <widget class="QDoubleSpinBox" name="binance_sell_amount_spinbox">
+                    <widget class="QDoubleSpinBox" name="binance_quote_amount_spinbox">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -7341,7 +7341,7 @@ color: rgb(46, 52, 54);</string>
                     </widget>
                    </item>
                    <item row="3" column="1">
-                    <widget class="QLabel" name="binance_buy_amount_lbl">
+                    <widget class="QLabel" name="binance_base_amount_lbl">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -7427,8 +7427,8 @@ color: rgb(46, 52, 54);</string>
                       <property name="bottomMargin">
                        <number>0</number>
                       </property>
-                      <item row="0" column="0">
-                       <widget class="QComboBox" name="binance_base_combo">
+                      <item row="0" column="1">
+                       <widget class="QComboBox" name="binance_rel_combo">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7452,37 +7452,8 @@ color: rgb(46, 52, 54);</string>
                         </property>
                        </widget>
                       </item>
-                      <item row="0" column="1">
-                       <widget class="QPushButton" name="binance_combo_switch_btn">
-                        <property name="sizePolicy">
-                         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-                          <horstretch>0</horstretch>
-                          <verstretch>0</verstretch>
-                         </sizepolicy>
-                        </property>
-                        <property name="minimumSize">
-                         <size>
-                          <width>40</width>
-                          <height>32</height>
-                         </size>
-                        </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>40</width>
-                          <height>16777215</height>
-                         </size>
-                        </property>
-                        <property name="text">
-                         <string/>
-                        </property>
-                        <property name="icon">
-                         <iconset resource="coin_icons.qrc">
-                          <normaloff>:/ui/img/other/switch-arrow2.png</normaloff>:/ui/img/other/switch-arrow2.png</iconset>
-                        </property>
-                       </widget>
-                      </item>
-                      <item row="0" column="2">
-                       <widget class="QComboBox" name="binance_rel_combo">
+                      <item row="0" column="0">
+                       <widget class="QComboBox" name="binance_base_combo">
                         <property name="sizePolicy">
                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                           <horstretch>0</horstretch>
@@ -7552,7 +7523,7 @@ color: rgb(46, 52, 54);</string>
                     </widget>
                    </item>
                    <item row="4" column="1">
-                    <widget class="QDoubleSpinBox" name="binance_buy_amount_spinbox">
+                    <widget class="QDoubleSpinBox" name="binance_base_amount_spinbox">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -7627,7 +7598,7 @@ color: rgb(46, 52, 54);</string>
                     </widget>
                    </item>
                    <item row="3" column="2">
-                    <widget class="QLabel" name="binance_sell_amount_lbl">
+                    <widget class="QLabel" name="binance_quote_amount_lbl">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -12618,14 +12589,30 @@ color: rgb(46, 52, 54);</string>
    </hints>
   </connection>
   <connection>
-   <sender>binance_combo_switch_btn</sender>
+   <sender>binance_buy_btn</sender>
    <signal>clicked()</signal>
    <receiver>MainTabs</receiver>
-   <slot>binance_combo_box_switch()</slot>
+   <slot>binance_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>745</x>
-     <y>164</y>
+     <x>670</x>
+     <y>295</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_sell_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_sell()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>825</x>
+     <y>295</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
