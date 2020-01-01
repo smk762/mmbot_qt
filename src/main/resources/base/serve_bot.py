@@ -89,7 +89,7 @@ for folder in config_folders:
     if not os.path.exists(config_path+folder):
         os.makedirs(config_path+folder)
 bot_data = {}
-orderbook_data = {}
+mm2_orderbook_data = {}
 balances_data = {
     "mm2": {},
     "binance": {}
@@ -133,7 +133,6 @@ def colorize(string, color):
     else:
         return colors[color] + str(string) + '\033[0m'
 
-
 ### THREAD Classes
 
 class price_update_thread(object):
@@ -149,7 +148,6 @@ class price_update_thread(object):
             prices_data = priceslib.prices_loop()
             time.sleep(self.interval)
 
-
 class bot_update_thread(object):
     def __init__(self, interval=90):
         self.interval = interval
@@ -163,7 +161,6 @@ class bot_update_thread(object):
             bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path)
             time.sleep(self.interval)
 
-
 class orderbook_update_thread(object):
     def __init__(self, interval=10):
         self.interval = interval
@@ -173,8 +170,8 @@ class orderbook_update_thread(object):
 
     def run(self):
         while True:
-            global orderbook_data
-            orderbook_data = botlib.orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
+            global mm2_orderbook_data
+            mm2_orderbook_data = botlib.orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
             time.sleep(self.interval)
 
 class bn_balances_update_thread(object):
@@ -221,7 +218,6 @@ class addresses_thread(object):
 
 ### API CALLS
 
-
 # TODO: add https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
 
 app = FastAPI()
@@ -250,8 +246,10 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
     prices_thread = price_update_thread()
     bot_thread = bot_update_thread()        
 
-@app.get("/table/open_orders")
-async def open_orders_table():
+# TABLE FORMATTED 
+
+@app.get("/table/mm2_open_orders")
+async def mm2_open_orders_table():
     orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
     print(orders)
     if 'error' in orders:
@@ -324,8 +322,8 @@ async def open_orders_table():
         }
         return resp
 
-@app.get("/table/orderbook/{base}/{rel}")
-async def orderbook_pair_table(base, rel):
+@app.get("/table/mm2_orderbook/{base}/{rel}")
+async def mm2_orderbook_pair_table(base, rel):
     pair_book = rpclib.orderbook(mm2_ip, mm2_rpc_pass, base, rel).json()
     if 'error' in pair_book:
         return pair_book
@@ -358,24 +356,6 @@ async def orderbook_pair_table(base, rel):
             "table_data": []
         }
         return resp
-
-
-@app.get("/all_balances")
-async def all_balances():
-    return balances_data
-
-@app.get("/all_prices")
-async def all_prices():
-    return prices_data
-
-@app.get("/all_addresses")
-async def all_addresses():
-    return addresses_data
-
-@app.get("/mm2_balance/{coin}")
-async def mm2_balance(coin):
-    resp = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
-    return resp
 
 @app.get("/table/binance_open_orders")
 async def binance_open_orders():
@@ -473,11 +453,95 @@ async def mm2_history_table():
             })
     return {"table_data":table_data}
 
-
 @app.get("/table/binance_history")
 async def binance_history_table():
     resp = binance_api.get_binance_orders_history(bn_key, bn_secret)
     return resp
+
+@app.get("/table/bot_strategies")
+async def bot_strategies():
+    json_files = [ x for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = []
+    for json_file in json_files:
+        with open(config_path+'/strategies/'+json_file) as j:
+            strategy = json.loads(j.read())
+            strategies.append(strategy)
+    return strategies
+
+# CACHED DATA
+
+@app.get("/all_balances")
+async def all_balances():
+    return balances_data
+
+@app.get("/all_prices")
+async def all_prices():
+    return prices_data
+
+@app.get("/prices/{coin}")
+async def coin_prices(coin):
+    coin = coin.upper()
+    if coin == 'ALL':
+        resp = {
+            "response": "success",
+            "message": coin+" price data found",
+            "price_data": prices_data,
+        }
+    elif coin in prices_data['average']:
+        coin_price_data = {
+            "binance":{coin:prices_data['binance'][coin]},
+            "paprika":{coin:prices_data['paprika'][coin]},
+            "gecko":{coin:prices_data['gecko'][coin]},
+            "average":{coin:prices_data['average'][coin]}
+        }
+        resp = {
+            "response": "success",
+            "message": coin+" price data found",
+            "price_data": coin_price_data,
+        }
+    else:
+        resp = {
+            "response": "error",
+            "message": coin+" price data not found!"
+        }        
+    return resp
+    
+@app.get("/all_addresses")
+async def all_addresses():
+    return addresses_data
+
+@app.get("/mm2_balance/{coin}")
+async def mm2_balance(coin):
+    resp = rpclib.my_balance(mm2_ip, mm2_rpc_pass, coin).json()
+    return resp
+
+@app.get("/coins/list")
+async def list_coins():
+    resp = {
+        "response": "success",
+        "message": "Coins list found",
+        "coins_list": coinslib.cointags
+    }
+    return resp
+
+@app.get("/cex/list")
+async def list_cex():
+    resp = {
+        "response": "success",
+        "message": "Cex list found",
+        "cex_list": coinslib.cex_names
+    }
+    return resp
+
+@app.get("/mm2_orderbook")
+async def show_mm2_orderbook():
+    resp = {
+        "response": "success",
+        "orderbook": mm2_orderbook_data
+    }        
+    return resp
+
+# STRATEGIES
 
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 
@@ -535,83 +599,6 @@ async def create_strategy(*, name: str, strategy_type: str, rel_list: str,
             }
         }
     return resp
-
-@app.get("/coins/list")
-async def list_coins():
-    resp = {
-        "response": "success",
-        "message": "Coins list found",
-        "coins_list": coinslib.cointags
-    }
-    return resp
-
-@app.get("/cex/list")
-async def list_cex():
-    resp = {
-        "response": "success",
-        "message": "Cex list found",
-        "cex_list": coinslib.cex_names
-    }
-    return resp
-
-@app.get("/orderbook")
-async def show_orderbook():
-    resp = {
-        "response": "success",
-        "orderbook": orderbook_data
-    }        
-    return resp
-
-
-@app.post("/binance_prices/{base}/{rel}")
-async def coin_prices(base, rel):
-    base = base.upper()
-    rel = rel.upper()
-    prices = priceslib.get_binance_price(base, rel, prices_data)
-    resp = {
-        "response": "success",
-        "message": base+"/"+rel+" price data found",
-        "binance_prices": prices
-    }
-    return prices
-
-@app.get("/prices/{coin}")
-async def coin_prices(coin):
-    coin = coin.upper()
-    if coin == 'ALL':
-        resp = {
-            "response": "success",
-            "message": coin+" price data found",
-            "price_data": prices_data,
-        }
-    elif coin in prices_data['average']:
-        coin_price_data = {
-            "binance":{coin:prices_data['binance'][coin]},
-            "paprika":{coin:prices_data['paprika'][coin]},
-            "gecko":{coin:prices_data['gecko'][coin]},
-            "average":{coin:prices_data['average'][coin]}
-        }
-        resp = {
-            "response": "success",
-            "message": coin+" price data found",
-            "price_data": coin_price_data,
-        }
-    else:
-        resp = {
-            "response": "error",
-            "message": coin+" price data not found!"
-        }        
-    return resp
-
-@app.get("/strategies/list")
-async def list_strategies():
-    json_files = [ x for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
-    strategies = []
-    for json_file in json_files:
-        with open(config_path+'/strategies/'+json_file) as j:
-            strategy = json.loads(j.read())
-            strategies.append(strategy)
-    return strategies
 
 @app.get("/strategies/active")
 async def active_strategies():
@@ -738,6 +725,19 @@ async def stop_strategy(strategy_name):
         }
     return resp
 
+# REVIEW
+
+@app.post("/binance_prices/{base}/{rel}")
+async def binance_prices(base, rel):
+    base = base.upper()
+    rel = rel.upper()
+    prices = priceslib.get_binance_price(base, rel, prices_data)
+    resp = {
+        "response": "success",
+        "message": base+"/"+rel+" price data found",
+        "binance_prices": prices
+    }
+    return prices
 
 
 def main():

@@ -463,7 +463,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, "Progress status", 'No mm2!')
             print(e)
 
-    def start_api(self, logfile='bot_api_output.log'):        
+    def start_api(self, logfile='bot_api_output.log'):
         try:
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
             subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
@@ -473,7 +473,7 @@ class Ui(QTabWidget):
             print('bot not start')
             print(e)
 
-    def launch_mm2(self):         
+    def launch_mm2(self):
         if self.username in settings.value('users'):
             self.username_input.setText('')
             self.password_input.setText('')
@@ -559,7 +559,7 @@ class Ui(QTabWidget):
         fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","Text Files (*.csv)", options=options)
         return fileName
 
-    # Table functions 
+    # Table operations
     def export_table(self):
         #TODO: add sender, get headers dynamically
         table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
@@ -650,7 +650,6 @@ class Ui(QTabWidget):
         for col in range(table.columnCount()):
             table.item(row,col).setForeground(bgcol)
 
-
     def get_cell_val(self, table, row='', column=''):
         if row == '':
            row = table.currentRow() 
@@ -672,6 +671,7 @@ class Ui(QTabWidget):
                         return i,j
         return -1, -1
 
+    # spinbox operations
     def binance_bid_price_update(self):
         selected_row = self.binance_depth_table_bid.currentRow()
         if selected_row != -1 and self.binance_depth_table_bid.item(selected_row,1) is not None:
@@ -685,7 +685,6 @@ class Ui(QTabWidget):
             price = self.binance_depth_table_ask.item(selected_row,1).text()
             self.binance_price_spinbox.setValue(float(price))
             #self.binance_depth_table_bid.clearSelection()
-
 
     # Selection menu operations
     def update_combo(self,combo,options,selected):
@@ -733,8 +732,6 @@ class Ui(QTabWidget):
             else:
                 self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(52, 101, 164)")
 
-    ## LOGIN 
-
     ## TABS ##
     def show_login_tab(self):
         self.stacked_login.setCurrentIndex(0)
@@ -757,8 +754,8 @@ class Ui(QTabWidget):
             base = baserel[0]
             rel = baserel[1]
             # refresh tables
-            self.populate_table("table/orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
-            self.populate_table("table/open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
+            self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
+            self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
             # Update labels
             self.update_mm2_orderbook_labels(base, rel)
 
@@ -801,7 +798,8 @@ class Ui(QTabWidget):
             self.update_mm2_balance_table()
 
     def show_strategies_tab(self):
-        pass
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to select for trade history")
+
 
     def show_prices_tab(self):
         self.update_prices_table()
