@@ -799,7 +799,7 @@ class Ui(QTabWidget):
 
     def show_strategies_tab(self):
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to select for trade history")
-
+        self.populate_strategy_lists()
 
     def show_prices_tab(self):
         self.update_prices_table()
@@ -1728,7 +1728,7 @@ class Ui(QTabWidget):
         self.binance_history_graph.addItem(text)
         text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
 
-    ## WALLET
+    ## WALLET TAB
     def update_mm2_wallet_from_thread(self, bal_info):
         coin = bal_info['coin']
         address = bal_info['address']
@@ -1846,6 +1846,51 @@ class Ui(QTabWidget):
                 self.wallet_balance.setText(str(balance_text))
             self.update_mm2_wallet_labels()
 
+    ## STRATEGIES TAB
+    def populate_strategy_lists(self):
+        self.strat_buy_list.clear()
+        self.strat_sell_list.clear()
+        self.strat_cex_list.clear()
+        for item in self.active_coins:
+            buy_list_item = QListWidgetItem(item)
+            buy_list_item.setTextAlignment(Qt.AlignHCenter)
+            self.strat_buy_list.addItem(buy_list_item)
+            sell_list_item = QListWidgetItem(item)
+            sell_list_item.setTextAlignment(Qt.AlignHCenter)
+            self.strat_sell_list.addItem(sell_list_item)
+        cex_list = requests.get('http://127.0.0.1:8000/cex/list').json()['cex_list']
+        for item in cex_list:
+            list_item = QListWidgetItem(item)
+            list_item.setTextAlignment(Qt.AlignHCenter)
+            self.strat_cex_list.addItem(list_item)
+
+    def create_strat(self):
+        params = 'name='+self.strat_name.text()
+        index = self.strat_type_combo.currentIndex()
+        strat_type = self.strat_type_combo.itemText(index)
+        params += '&strategy_type='+strat_type
+        buy_list = []
+        for item in self.strat_buy_list.selectedItems():
+            buy_list.append(item.text())
+        sell_list = []
+        for item in self.strat_sell_list.selectedItems():
+            sell_list.append(item.text())
+        cex_list = []
+        for item in self.strat_cex_list.selectedItems():
+            cex_list.append(item.text())
+        buy_items = ','.join(buy_list)
+        sell_items = ','.join(sell_list)
+        cex_items = ','.join(cex_list)
+        params += '&sell_list='+sell_items
+        params += '&buy_list='+buy_items
+        params += '&margin='+str(self.strat_margin_spinbox.value())
+        params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
+        params += '&balances_pct='+str(self.strat_bal_pct_spinbox.value())
+        params += '&cex_list='+cex_items
+        resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
+        QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.show_strategies_tab()
+
     ## CONFIG
 
     def set_localonly(self):
@@ -1945,7 +1990,6 @@ class Ui(QTabWidget):
     ## LOGS
 
 
-
     ### FUCTIONS TO REVIEW ###
 
     def stop_bot_trading(self):
@@ -2017,8 +2061,6 @@ class Ui(QTabWidget):
         uuid = self.swap_recover_uuid.text()
         resp = rpclib.recover_stuck_swap(self.creds[0], self.creds[1], uuid).json()
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-
-
 
     def update_prices_table(self):
         self.prices_table.setSortingEnabled(False)

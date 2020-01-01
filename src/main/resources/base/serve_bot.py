@@ -35,8 +35,8 @@ from decimal import Decimal
     strategy = {
         "name": str,
         "strategy_type": str,
-        "rel_list": list,
-        "base_list": list,
+        "sell_list": list,
+        "buy_list": list,
         "margin": float,
         "refresh_interval": int,
         "balance_pct": int,
@@ -251,7 +251,6 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
 @app.get("/table/mm2_open_orders")
 async def mm2_open_orders_table():
     orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
-    print(orders)
     if 'error' in orders:
         return orders
     if 'maker_orders' in orders['result']:
@@ -384,7 +383,6 @@ async def binance_open_orders():
 async def get_binance_depth(symbol):
     table_data = []
     depth = binance_api.get_depth(bn_key, symbol, 20)
-    print(depth)
     for item in depth['bids']:
         price = float(item[0])
         volume = float(item[1])
@@ -417,8 +415,6 @@ async def mm2_history_table():
                 event_type = 'Failed'
                 break
             if swap['type'] == 'Taker':
-                print(event_type)
-                print(event['event'])
                 if event_type == 'MakerPaymentReceived':
                     trade_addr = event['event']['data']['from'][0]
             elif swap['type'] == 'Maker':
@@ -463,10 +459,17 @@ async def bot_strategies():
     json_files = [ x for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
     strategies = []
     for json_file in json_files:
-        with open(config_path+'/strategies/'+json_file) as j:
-            strategy = json.loads(j.read())
+        with open(config_path+'strategies/'+json_file) as strat:
+            strategy = json.loads(strat.read())
+            with open(config_path+"history/"+json_file, 'r') as hist:
+                history = json.loads(hist.read())
+            strategy.update({
+                    "Sessions":len(history['Sessions']),
+                    "Last refresh":history['Last refresh'],
+                    "Status":history['Status']
+                })
             strategies.append(strategy)
-    return strategies
+    return {"table_data":strategies}
 
 # CACHED DATA
 
@@ -505,7 +508,7 @@ async def coin_prices(coin):
             "message": coin+" price data not found!"
         }        
     return resp
-    
+
 @app.get("/all_addresses")
 async def all_addresses():
     return addresses_data
@@ -544,19 +547,19 @@ async def show_mm2_orderbook():
 # STRATEGIES
 
 @app.post("/strategies/create")
-async def create_strategy(*, name: str, strategy_type: str, rel_list: str, 
-                          base_list: str, margin: float = 5, refresh_interval: int = 30,
+async def create_strategy(*, name: str, strategy_type: str, sell_list: str, 
+                          buy_list: str, margin: float = 5, refresh_interval: int = 30,
                           balance_pct: int = 100, cex_list: str = 'binance'):
     """
     Creates a new trading strategy definition.
     - **name**: Each strategy must have a name. E.g. KMD
     - **strategy_type**: A valid strategy name. E.g. Margin
-    - **rel_list**: a comma delimited list of tickers. E.g. KMD,BTC,ETH
-    - **base_list**: a comma delimited list of tickers. E.g. KMD,BTC,ETH
+    - **sell_list**: a comma delimited list of tickers. E.g. KMD,BTC,ETH
+    - **buy_list**: a comma delimited list of tickers. E.g. KMD,BTC,ETH
     - **margin** (float): percentage to set sell orders above market (margin), or buy orders below market (arbitrage). E.g. 5 
     - **refresh_interval** (integer): time in minutes between refreshing prices and updating orders.
     - **balance_pct** (integer): percentage of available balance to use for trades. E.g. 100
-    - **base_list**: a comma delimited list of centralised exchanges. E.g. Binance,Coinbase
+    - **buy_list**: a comma delimited list of centralised exchanges. E.g. Binance,Coinbase
 
     """
     valid_strategies = ['margin', 'arbitrage']
@@ -566,10 +569,10 @@ async def create_strategy(*, name: str, strategy_type: str, rel_list: str,
             "message": "Strategy name 'all' is reserved, use a different name.",
         }
     elif strategy_type in valid_strategies:
-        rel_list = rel_list.upper().split(',')
-        base_list = base_list.upper().split(',')
+        sell_list = sell_list.upper().split(',')
+        buy_list = buy_list.upper().split(',')
         cex_list = cex_list.title().split(',')
-        valid_coins = validatelib.validate_coins(list(set(rel_list+base_list)))
+        valid_coins = validatelib.validate_coins(list(set(sell_list+buy_list)))
         valid_cex = validatelib.validate_cex(list(set(cex_list)))
         if not valid_coins[0]:
             resp = {
@@ -583,7 +586,7 @@ async def create_strategy(*, name: str, strategy_type: str, rel_list: str,
                 "message": "'"+valid_cex[1]+"' is an invalid CEX. Check /cex/list for valid options, and enter them as comma delimiter with no spaces."
             }
             return resp
-        strategy = botlib.init_strategy_file(name, strategy_type, rel_list, base_list, margin, refresh_interval, balance_pct, cex_list, config_path)
+        strategy = botlib.init_strategy_file(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path)
         resp = {
             "response": "success",
             "message": "Strategy '"+name+"' created",
@@ -765,7 +768,7 @@ strategy_events strategy_id <depth> -> displaying events (trades/transfers and e
 
 ## API methods
 
-# start_trading(rel_list, base_list, margin, refresh_interval=30 (optional, minutes), balance_pct=100 (optional, default 100), cex_countertrade=None (optional, cex_name or None).
+# start_trading(sell_list, buy_list, margin, refresh_interval=30 (optional, minutes), balance_pct=100 (optional, default 100), cex_countertrade=None (optional, cex_name or None).
 # if cex not None, check if cex_auth is ok.
 # if refresh interval expires while swap in progress, wait before cancel.
 # monitor trade status periodically, emit on updates. 

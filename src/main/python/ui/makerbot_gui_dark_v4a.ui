@@ -9607,7 +9607,7 @@ color: rgb(46, 52, 54);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>457</width>
+        <width>552</width>
         <height>20</height>
        </size>
       </property>
@@ -9650,6 +9650,150 @@ color: rgb(46, 52, 54);</string>
              <string>Create Bot Trading Strategy</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_65">
+             <item row="0" column="5">
+              <widget class="QFrame" name="frame_16">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>200</height>
+                </size>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_12">
+                <item row="1" column="0">
+                 <widget class="QListWidget" name="strat_cex_list">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border-color: rgb(52, 101, 164);
+background-color: rgb(85, 87, 83);</string>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::MultiSelection</enum>
+                  </property>
+                  <property name="movement">
+                   <enum>QListView::Static</enum>
+                  </property>
+                  <property name="resizeMode">
+                   <enum>QListView::Adjust</enum>
+                  </property>
+                  <property name="layoutMode">
+                   <enum>QListView::Batched</enum>
+                  </property>
+                  <property name="uniformItemSizes">
+                   <bool>false</bool>
+                  </property>
+                  <property name="selectionRectVisible">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_14">
+                  <property name="text">
+                   <string>CEX list</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QFrame" name="frame_18">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>200</height>
+                </size>
+               </property>
+               <layout class="QGridLayout" name="gridLayout_47">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_12">
+                  <property name="text">
+                   <string>Buy list</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QListWidget" name="strat_buy_list">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border-color: rgb(52, 101, 164);
+background-color: rgb(85, 87, 83);</string>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::MultiSelection</enum>
+                  </property>
+                  <property name="movement">
+                   <enum>QListView::Static</enum>
+                  </property>
+                  <property name="resizeMode">
+                   <enum>QListView::Fixed</enum>
+                  </property>
+                  <property name="layoutMode">
+                   <enum>QListView::SinglePass</enum>
+                  </property>
+                  <property name="uniformItemSizes">
+                   <bool>false</bool>
+                  </property>
+                  <property name="selectionRectVisible">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
              <item row="0" column="0" colspan="3">
               <widget class="QFrame" name="frame_21">
                <property name="frameShape">
@@ -9659,6 +9803,16 @@ color: rgb(46, 52, 54);</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_56">
+                <item row="4" column="1">
+                 <widget class="QSpinBox" name="strat_refresh_spinbox">
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="suffix">
+                   <string> min</string>
+                  </property>
+                 </widget>
+                </item>
                 <item row="0" column="0">
                  <widget class="QLabel" name="label_6">
                   <property name="text">
@@ -9667,7 +9821,7 @@ color: rgb(46, 52, 54);</string>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox">
+                 <widget class="QDoubleSpinBox" name="strat_margin_spinbox">
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
@@ -9680,7 +9834,7 @@ color: rgb(46, 52, 54);</string>
                  </widget>
                 </item>
                 <item row="1" column="1">
-                 <widget class="QComboBox" name="comboBox">
+                 <widget class="QComboBox" name="strat_type_combo">
                   <item>
                    <property name="text">
                     <string>arbitrage</string>
@@ -9701,25 +9855,12 @@ color: rgb(46, 52, 54);</string>
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QLineEdit" name="lineEdit"/>
+                 <widget class="QLineEdit" name="strat_name"/>
                 </item>
                 <item row="3" column="0">
                  <widget class="QLabel" name="label_15">
                   <property name="text">
                    <string>Trade balance</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                  <property name="prefix">
-                   <string/>
-                  </property>
-                  <property name="suffix">
-                   <string>%</string>
                   </property>
                  </widget>
                 </item>
@@ -9737,51 +9878,97 @@ color: rgb(46, 52, 54);</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
-                 <widget class="QSpinBox" name="spinBox">
+                <item row="3" column="1">
+                 <widget class="QDoubleSpinBox" name="strat_bal_pct_spinbox">
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
+                  <property name="prefix">
+                   <string/>
+                  </property>
                   <property name="suffix">
-                   <string> min</string>
+                   <string>%</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="5" column="0" colspan="2">
+                 <widget class="QPushButton" name="add_strat_btn">
+                  <property name="text">
+                   <string>Add Strategy</string>
                   </property>
                  </widget>
                 </item>
                </layout>
               </widget>
              </item>
-             <item row="1" column="0">
-              <widget class="QGroupBox" name="groupBox_16">
-               <property name="title">
-                <string>Buy List</string>
+             <item row="0" column="4">
+              <widget class="QFrame" name="frame_17">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
-               <layout class="QGridLayout" name="gridLayout_12">
-                <item row="0" column="0">
-                 <widget class="QListWidget" name="listWidget"/>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QGroupBox" name="groupBox_17">
-               <property name="title">
-                <string>Sell list</string>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>200</height>
+                </size>
                </property>
                <layout class="QGridLayout" name="gridLayout_42">
-                <item row="0" column="0">
-                 <widget class="QListWidget" name="listWidget_2"/>
+                <item row="1" column="0">
+                 <widget class="QListWidget" name="strat_sell_list">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="autoFillBackground">
+                   <bool>false</bool>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">border-color: rgb(52, 101, 164);
+background-color: rgb(85, 87, 83);</string>
+                  </property>
+                  <property name="sizeAdjustPolicy">
+                   <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                  </property>
+                  <property name="editTriggers">
+                   <set>QAbstractItemView::NoEditTriggers</set>
+                  </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::MultiSelection</enum>
+                  </property>
+                  <property name="movement">
+                   <enum>QListView::Static</enum>
+                  </property>
+                  <property name="resizeMode">
+                   <enum>QListView::Adjust</enum>
+                  </property>
+                  <property name="layoutMode">
+                   <enum>QListView::Batched</enum>
+                  </property>
+                  <property name="uniformItemSizes">
+                   <bool>false</bool>
+                  </property>
+                  <property name="selectionRectVisible">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sortingEnabled">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
                 </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QGroupBox" name="groupBox_18">
-               <property name="title">
-                <string>CEX list</string>
-               </property>
-               <layout class="QGridLayout" name="gridLayout_47">
                 <item row="0" column="0">
-                 <widget class="QListWidget" name="listWidget_3"/>
+                 <widget class="QLabel" name="label_13">
+                  <property name="text">
+                   <string>Sell list</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -9812,7 +9999,7 @@ color: rgb(46, 52, 54);</string>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>944</width>
+           <width>753</width>
            <height>20</height>
           </size>
          </property>
@@ -9829,14 +10016,54 @@ color: rgb(46, 52, 54);</string>
          <layout class="QGridLayout" name="gridLayout_87">
           <item row="0" column="1">
            <widget class="QGroupBox" name="groupBox_12">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="title">
-             <string>Existing Bot Trading Strategies</string>
+             <string>Bot Trading Strategies</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_89">
-             <item row="0" column="0">
-              <widget class="QTableWidget" name="strategies_table"/>
+             <item row="2" column="1">
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="text">
+                <string>Stop</string>
+               </property>
+              </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
+              <widget class="QPushButton" name="pushButton_2">
+               <property name="text">
+                <string>Start</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QPushButton" name="pushButton_4">
+               <property name="text">
+                <string>View</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="3">
+              <widget class="QTableWidget" name="strategies_table">
+               <property name="sizeAdjustPolicy">
+                <enum>QAbstractScrollArea::AdjustToContents</enum>
+               </property>
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="3">
               <widget class="QLabel" name="strategies_msg_lbl">
                <property name="text">
                 <string>No items in table</string>
@@ -9888,7 +10115,7 @@ color: rgb(46, 52, 54);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>456</width>
+        <width>552</width>
         <height>20</height>
        </size>
       </property>
@@ -9902,7 +10129,7 @@ color: rgb(46, 52, 54);</string>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>152</height>
+        <height>454</height>
        </size>
       </property>
      </spacer>
@@ -12244,7 +12471,7 @@ color: rgb(46, 52, 54);</string>
    <slot>binance_cancel_selected_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>744</x>
+     <x>739</x>
      <y>1026</y>
     </hint>
     <hint type="destinationlabel">
@@ -12765,6 +12992,22 @@ color: rgb(46, 52, 54);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>add_strat_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>create_strat()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>767</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -12834,5 +13077,6 @@ color: rgb(46, 52, 54);</string>
   <slot>binance_price_changed()</slot>
   <slot>binance_quote_amount_changed()</slot>
   <slot>binance_base_amount_changed()</slot>
+  <slot>create_strat()</slot>
  </slots>
 </ui>
