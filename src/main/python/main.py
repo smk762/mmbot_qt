@@ -797,7 +797,7 @@ class Ui(QTabWidget):
             self.update_mm2_balance_table()
 
     def show_strategies_tab(self):
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to select for trade history")
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
         self.populate_strategy_lists()
 
     def show_prices_tab(self):
@@ -1897,6 +1897,34 @@ class Ui(QTabWidget):
         resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
         QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
+
+    def start_strat(self):
+        pass
+
+    def stop_strat(self):
+        pass
+
+    def view_strat_summary(self):
+        print('view_strat_summary')
+        selected_row = self.strategies_table.currentRow()
+        print(selected_row)
+        print(self.strategies_table.item(selected_row,0).text())
+        if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
+            strategy_name = self.strategies_table.item(selected_row,0).text()
+            self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table)
+
+    def delete_strat(self):
+        selected_row = self.strategies_table.currentRow()
+        if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
+            strategy_name = self.strategies_table.item(selected_row,0).text()
+            resp = requests.post('http://127.0.0.1:8000/strategies/delete/'+strategy_name).json()
+        else:
+            resp = {
+                "response": "error",
+                "message": "No strategy row selected!"
+            }
+        QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+
 
     ## CONFIG
 

@@ -468,13 +468,65 @@ async def bot_strategies():
             strategy = json.loads(strat.read())
             with open(config_path+"history/"+json_file, 'r') as hist:
                 history = json.loads(hist.read())
-            strategy.update({
-                    "Sessions":len(history['Sessions']),
-                    "Last refresh":history['Last refresh'],
-                    "Status":history['Status']
-                })
-            strategies.append(strategy)
+            if history['Status'] != 'archived':
+                strategy.update({
+                        "Sessions":len(history['Sessions']),
+                        "Last refresh":history['Last refresh'],
+                        "Status":history['Status']
+                    })
+                strategies.append(strategy)
     return {"table_data":strategies}
+
+@app.get("/table/bot_strategy/summary/{strategy_name}")
+async def bot_strategy_summary(strategy_name):
+    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    if len(strategies) == 0:
+        resp = {
+            "response": "error",
+            "message": "No strategies found!",
+            "table_data": []
+        }
+    elif strategy_name not in strategies:
+        resp = {
+            "response": "error",
+            "message": "Strategy '"+strategy_name+"' not found!",
+            "table_data": []
+        }
+    else:
+        table_data = []
+        with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
+            history = json.loads(f.read())
+        i = 1
+        for session in history['Sessions']:
+            session_data = {
+                "Name":strategy_name,
+                "Session":i,
+                "Duration":history['Sessions']['Duration'],
+                "MM2 swaps completed":history['Sessions']['MM2 swaps completed'],
+                "CEX swaps completed":history['Sessions']['CEX swaps completed'],
+            }
+            for coin in history['Balance Deltas']:
+                session_data.update({coin+" delta":history['Balance Deltas'][coin]})
+            table_data.append(session_data)
+            i += 1
+        total_data = {
+            "Name":strategy_name,
+            "Session":"Total",
+            "Duration":"-",
+            "MM2 swaps":history['Total MM2 swaps completed'],
+            "CEX swaps":history['Total CEX swaps completed'],
+        }
+        for coin in history['Total balance deltas']:
+            total_data.update({coin+" delta":history['Total balance deltas'][coin]})
+        table_data.append(total_data)
+        resp = {
+            "response": "success",
+            "message": "History found for strategy: "+strategy_name,
+            "table_data": table_data
+        }
+    return resp
+
+
 
 # CACHED DATA
 
@@ -694,7 +746,6 @@ async def run_strategy(strategy_name):
         }
     return resp
 
-
 @app.post("/strategies/stop/{strategy_name}")
 async def stop_strategy(strategy_name):
     strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
@@ -703,7 +754,7 @@ async def stop_strategy(strategy_name):
         for strategy in strategies:
             with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
                 history = json.loads(f.read())
-            if history['status'] == 'active':
+            if history['Status'] == 'active':
                 history.update({"status":"inactive"})
                 history = botlib.cancel_strategy(history)
                 with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
@@ -713,7 +764,7 @@ async def stop_strategy(strategy_name):
             "response": "success",
             "message": "All active strategies stopped!",
             "status": histories
-        }        
+        }
     elif strategy_name not in strategies:
         resp = {
             "response": "error",
@@ -722,7 +773,7 @@ async def stop_strategy(strategy_name):
     else:
         with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
-        history.update({"status":"inactive"})
+        history.update({"Status":"inactive"})
 
         with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
             f.write(json.dumps(history))
@@ -732,6 +783,30 @@ async def stop_strategy(strategy_name):
             "status": history
         }
     return resp
+
+@app.post("/strategies/delete/{strategy_name}")
+async def delete_strategy(strategy_name):
+    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    if strategy_name in strategies:
+        with open(config_path+"/strategies/"+strategy_name+".json", 'r') as f:
+            strategy = json.loads(f.read())
+        with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
+            history = json.loads(f.read())
+        history.update({"Status":"archived"})
+        history = botlib.cancel_strategy(history)
+        with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
+            f.write(json.dumps(history))
+        resp = {
+            "response": "success",
+            "message": "Strategy '"+strategy_name+"' archived"
+        }
+    else:
+        resp = {
+            "response": "error",
+            "message": "Strategy '"+strategy_name+"' not found!"
+        }
+    return resp
+
 
 # REVIEW
 

@@ -23,7 +23,7 @@ def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path ):
         with open(config_path+"strategies/"+strategy_name+".json", 'r') as f:
             strategy = json.loads(f.read())
             active_coins += strategy['Sell list']
-            active_coins += strategy['But list']
+            active_coins += strategy['Buy list']
     active_coins = list(set(active_coins))
     orderbook_data = []
     for base in active_coins:
@@ -41,7 +41,7 @@ def bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path):
     for strategy_name in strategies:
         with open(config_path+"history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
-        if history['status'] == 'active':
+        if history['Status'] == 'active':
             print("Active strategy: "+strategy_name)
             with open(config_path+"strategies/"+strategy_name+".json", 'r') as f:
                 strategy = json.loads(f.read())
@@ -49,7 +49,7 @@ def bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path):
             if history['Last refresh'] == 0 or history['Last refresh'] + strategy['Refresh interval']*2 < int(time.time()):
                 print("*** Refreshing strategy: "+strategy_name+" ***")
                 history.update({'Last refresh':int(time.time())})
-                session = history['sessions'][str(len(history['sessions'])-1)]
+                session = history['Sessions'][str(len(history['Sessions'])-1)]
                 # cancel old orders
                 cancel_session_orders(session)
                 # place fresh orders
@@ -195,43 +195,42 @@ def cancel_session_orders(session):
         rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
 
 def cancel_strategy(history):
-    session = history['sessions'][str(len(history['sessions']))]
-    started_at = session['started']
-    duration = int(time.time()) - started_at
-    session.update({"duration":duration})
+    if len(history['Sessions']) > 0:
+        session = history['Sessions'][str(len(history['Sessions']))]
+        started_at = session['Started']
+        duration = int(time.time()) - started_at
+        session.update({"Duration":duration})
+        mm2_open_orders = session["MM2 open orders"]
+        for order_uuid in mm2_open_orders:
+            rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
+        cex_open_orders = session["CEX open orders"]
+        for order in cex_open_orders:
+            if 'binance' in cex_open_orders:
+                for symbol in cex_open_orders['binance']:
+                    order_id = cex_open_orders['binance'][symbol]
+                    binance_api.delete_order(bn_key, bn_secret, symbol, order_id)
+        mm2_swaps_in_progress = session["MM2 swaps in progress"]
+        for swap in mm2_swaps_in_progress:
+            # alreay cancelled, move to completed, and mark as "cancelled while in progress"
+            pass
+        cex_swaps_in_progress = session["CEX swaps in progress"]
+        for swap in cex_swaps_in_progress:
+            # alreay cancelled, move to completed, and mark as "cancelled while in progress"
+            pass
 
-    mm2_open_orders = session["MM2 open orders"]
-    for order_uuid in mm2_open_orders:
-        rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
-    cex_open_orders = session["CEX open orders"]
-    for order in cex_open_orders:
-        if 'binance' in cex_open_orders:
-            for symbol in cex_open_orders['binance']:
-                order_id = cex_open_orders['binance'][symbol]
-                binance_api.delete_order(bn_key, bn_secret, symbol, order_id)
+        balance_delta_coins = list(session["balance_deltas"].keys())
+        mm2_swaps_completed = session["MM2 swaps completed"]
+        for swap in mm2_swaps_completed:
+            # calculate deltas
+            pass
+        cex_swaps_completed = session["CEX swaps completed"]
+        for swap in cex_swaps_completed:
+            # calculate deltas
+            pass
 
-    mm2_swaps_in_progress = session["MM2 swaps in progress"]
-    for swap in mm2_swaps_in_progress:
-        # alreay cancelled, move to completed, and mark as "cancelled while in progress"
-        pass
-    cex_swaps_in_progress = session["CEX swaps in progress"]
-    for swap in cex_swaps_in_progress:
-        # alreay cancelled, move to completed, and mark as "cancelled while in progress"
-        pass
-
-    balance_delta_coins = list(session["balance_deltas"].keys())
-    mm2_swaps_completed = session["MM2 swaps completed"]
-    for swap in mm2_swaps_completed:
-        # calculate deltas
-        pass
-    cex_swaps_completed = session["CEX swaps completed"]
-    for swap in cex_swaps_completed:
-        # calculate deltas
-        pass
-
-    session.update({"balance_deltas":balance_deltas})
-    sessions.update({str(len(history['sessions'])):session})
-    history.update({"sessions":sessions})
+        session.update({"balance_deltas":balance_deltas})
+        sessions.update({str(len(history['sessions'])):session})
+        history.update({"sessions":sessions})
     return history
 
 # STRATEGY INITIALIZATION
