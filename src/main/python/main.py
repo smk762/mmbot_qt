@@ -188,7 +188,6 @@ class graph_history_thread(QThread):
                 price_point = item['price']
             # add value to y axis list
             y.append(price_point)
-            print(item['timestamp'])
             
             dt = parser.parse(item['timestamp'])
 

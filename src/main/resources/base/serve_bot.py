@@ -332,11 +332,16 @@ async def mm2_orderbook_pair_table(base, rel):
             basevolume = round(float(item['maxvolume']), 8)
             relprice = round(float(item['price']), 8)
             order_value = round(float(item['price'])*float(item['maxvolume']), 8)
+            try:
+                api_price = prices_data['average'][base]['BTC']/prices_data['average'][rel]['BTC']
+            except:
+                api_price = '-'
             table_data.append({
                     "Buy Coin":base,
                     "Sell Coin":rel,
                     base+" Volume":basevolume,
                     rel+" Price per "+base:relprice,
+                    "API Average Price":api_price,
                     "Order Value in "+rel:order_value,
                     "Age":item['age'],
                     "Pubkey":item['pubkey'],
