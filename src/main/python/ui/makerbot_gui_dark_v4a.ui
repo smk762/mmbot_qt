@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -8944,6 +8944,12 @@ color: rgb(46, 52, 54);</string>
                <property name="sizeAdjustPolicy">
                 <enum>QAbstractScrollArea::AdjustToContents</enum>
                </property>
+               <property name="editTriggers">
+                <set>QAbstractItemView::NoEditTriggers</set>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
                <attribute name="horizontalHeaderDefaultSectionSize">
                 <number>125</number>
                </attribute>
@@ -13008,6 +13014,22 @@ background-color: rgb(85, 87, 83);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>wallet_balances_table</sender>
+   <signal>itemSelectionChanged()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>select_wallet_from_table()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>667</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -13078,5 +13100,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>binance_quote_amount_changed()</slot>
   <slot>binance_base_amount_changed()</slot>
   <slot>create_strat()</slot>
+  <slot>select_wallet_from_table()</slot>
  </slots>
 </ui>

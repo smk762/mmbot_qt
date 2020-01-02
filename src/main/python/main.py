@@ -1797,6 +1797,14 @@ class Ui(QTabWidget):
         msgBox.addButton("Close", QMessageBox.NoRole)
         msgBox.exec()
 
+    def select_wallet_from_table(self):
+        selected_row = self.wallet_balances_table.currentRow()
+        if selected_row != -1 and self.wallet_balances_table.item(selected_row,0) is not None:
+            coin = self.wallet_balances_table.item(selected_row,0).text()
+            self.wallet_balances_table.setRangeSelected(QTableWidgetSelectionRange(selected_row, 0, selected_row, 3), False)
+            self.update_combo(self.wallet_combo,self.active_coins,coin)
+            self.show_mm2_wallet_tab()
+
     # process withdrawl from wallet tab
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
