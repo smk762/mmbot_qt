@@ -39,7 +39,6 @@ def get_serverTime():
     url = urljoin(base_url, path)
     r = requests.get(url, params=params)
     if r.status_code == 200:
-        # print(json.dumps(r.json(), indent=2))
         data = r.json()
         print(f"diff={timestamp - data['serverTime']}ms")
     else:

@@ -474,6 +474,12 @@ async def bot_strategies():
                         "Last refresh":history['Last refresh'],
                         "Status":history['Status']
                     })
+                active_coins = botlib.mm2_active_coins()
+                strategy_coins = list(set(strategy['Sell coins']+strategy['Buy coins']))
+                for coin in strategy_coins:
+                    if coin not in active_coins:
+                        strategy.update({"Status":"Coins not active"})
+                        break
                 strategies.append(strategy)
     return {"table_data":strategies}
 
@@ -643,12 +649,21 @@ async def create_strategy(*, name: str, strategy_type: str, sell_list: str,
                 "message": "'"+valid_cex[1]+"' is an invalid CEX. Check /cex/list for valid options, and enter them as comma delimiter with no spaces."
             }
             return resp
-        strategy = botlib.init_strategy_file(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path)
-        resp = {
-            "response": "success",
-            "message": "Strategy '"+name+"' created",
-            "parameters": strategy
-        }
+
+        strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+        if name in strategies:
+            resp = {
+                "response": "error",
+                "message": "Strategy '"+name+"' already exists - if not in table, it may be archived. Try another name."
+            }
+            return resp
+        else:
+            strategy = botlib.init_strategy_file(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path)
+            resp = {
+                "response": "success",
+                "message": "Strategy '"+name+"' created",
+                "parameters": strategy
+            }
     else:
         resp = {
             "response": "error",
@@ -714,30 +729,30 @@ async def strategy_history(strategy_name):
         }
     return resp
 
-@app.post("/strategies/run/{strategy_name}")
-async def run_strategy(strategy_name):
+@app.post("/strategies/start/{strategy_name}")
+async def start_strategy(strategy_name):
     strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
     if strategy_name in strategies:
         with open(config_path+"/strategies/"+strategy_name+".json", 'r') as f:
             strategy = json.loads(f.read())
         with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
-        if strategy['strategy_type'] == "margin":
+        if strategy['Type'] == "margin":
             botlib.init_session(strategy_name, strategy, history, config_path)
             resp = {
                 "response": "success",
-                "message": "Strategy '"+strategy['name']+"' started!",
+                "message": "Strategy '"+strategy['Name']+"' started!",
             }
-        elif strategy['strategy_type'] == "arbitrage":
+        elif strategy['Type'] == "arbitrage":
             botlib.init_session(strategy_name, strategy, history, config_path)
             resp = {
                 "response": "success",
-                "message": "Strategy '"+strategy['name']+"' started",
+                "message": "Strategy '"+strategy['Name']+"' started",
             }
         else:
             resp = {
                 "response": "error",
-                "message": "Strategy type '"+strategy['strategy_type']+"' not recognised!"
+                "message": "Strategy type '"+strategy['Type']+"' not recognised!"
             }
     else:
         resp = {
@@ -755,7 +770,7 @@ async def stop_strategy(strategy_name):
             with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
                 history = json.loads(f.read())
             if history['Status'] == 'active':
-                history.update({"status":"inactive"})
+                history.update({"Status":"inactive"})
                 history = botlib.cancel_strategy(history)
                 with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
                     f.write(json.dumps(history))

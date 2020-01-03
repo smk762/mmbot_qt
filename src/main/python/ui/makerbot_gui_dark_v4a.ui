@@ -9776,7 +9776,7 @@ color: rgb(46, 52, 54);</string>
                 <item row="0" column="0" colspan="7">
                  <widget class="QTableWidget" name="strategies_table">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -10356,7 +10356,7 @@ background-color: rgb(85, 87, 83);</string>
                 <item row="0" column="0" colspan="2">
                  <widget class="QTableWidget" name="strat_summary_table">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>

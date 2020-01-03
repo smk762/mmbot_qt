@@ -32,6 +32,7 @@ import decimal
  - autoactivate coins needing kickstart
  - https://api.hitbtc.com/
  - https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
+ - Add orderbook table view from API loop
 
 '''
 
@@ -102,35 +103,6 @@ class cachedata_thread(QThread):
                 print('cache_data error')
                 print(e)
                 pass
-
-# get mm2 balance if not yet in cache
-class mm2_balance_update_thread(QThread):
-    mm2_update_balance = pyqtSignal(dict)
-    def __init__(self, creds, coin):
-        QThread.__init__(self)
-        self.coin = coin
-        self.creds = creds
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        balance_info = rpclib.my_balance(self.creds[0], self.creds[1], self.coin)
-        self.mm2_update_balance.emit(balance_info.json())
-
-# get binance balances if not yet in cache
-class bn_balance_update_thread(QThread):
-    bn_update_balance = pyqtSignal(dict)
-    def __init__(self, creds):
-        QThread.__init__(self)
-        self.creds = creds
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        balance_info = binance_api.get_binance_balances(self.creds[5], self.creds[6])
-        self.bn_update_balance.emit(balance_info)
 
 # Process mm2 coin activation
 class activation_thread(QThread):
@@ -429,7 +401,6 @@ class Ui(QTabWidget):
             },
         }               
         self.show_login_tab()
-
 
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     def update_cachedata(self, prices_dict, balances_dict):
@@ -1059,10 +1030,6 @@ class Ui(QTabWidget):
                 print("mm2_bal_tbl err: "+str(e))
                 balance_row = [coin, "-", '-', '-']
                 self.add_row(row, balance_row, self.wallet_balances_table)
-                # Get coins balance in separate thread
-                self.balance_thread = mm2_balance_update_thread(self.creds, coin)
-                self.balance_thread.mm2_update_balance.connect(self.update_mm2_balance_from_thread)
-                self.balance_thread.start()
                 row += 1
         self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
         self.wallet_btc_total.setText("Total BTC Value: "+str(round(btc_total,8)))
@@ -1138,10 +1105,6 @@ class Ui(QTabWidget):
             locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
             balance = round(float(self.balances_data['mm2'][base]['total']),8)
         else:
-            # Get coins balance in separate thread
-            self.balance_thread = mm2_balance_update_thread(self.creds, base)
-            self.balance_thread.mm2_update_balance.connect(self.update_mm2_balance_from_thread)
-            self.balance_thread.start()
             locked_text = round(float(0),8)
             balance = round(float(0),8)
         self.orderbook_sell_balance_lbl.setText("Available: "+str(balance)+" "+base)
@@ -1150,10 +1113,6 @@ class Ui(QTabWidget):
             locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
             balance = round(float(self.balances_data['mm2'][rel]['total']),8)
         else:
-            # Get coins balance in separate thread
-            self.balance_thread = mm2_balance_update_thread(self.creds, rel)
-            self.balance_thread.mm2_update_balance.connect(self.update_mm2_balance_from_thread)
-            self.balance_thread.start()
             locked_text = round(float(0),8)
             balance = round(float(0),8)
         self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+rel)
@@ -1446,10 +1405,6 @@ class Ui(QTabWidget):
         row = 0
         if row_count == 0:
             self.binance_balances_msg_lbl.setText('Balances loading...')
-            # Get coins balance in separate thread
-            self.balance_thread = bn_balance_update_thread(self.creds)
-            self.balance_thread.bn_update_balance.connect(self.bn_update_balance_from_thread)
-            self.balance_thread.start()
         else:
             self.binance_balances_msg_lbl.setText('')
             for coin in self.balances_data['binance']:
@@ -1899,10 +1854,30 @@ class Ui(QTabWidget):
         self.show_strategies_tab()
 
     def start_strat(self):
-        pass
+        selected_row = self.strategies_table.currentRow()
+        if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
+            strategy_name = self.strategies_table.item(selected_row,0).text()
+            resp = requests.post('http://127.0.0.1:8000/strategies/start/'+strategy_name).json()
+        else:
+            resp = {
+                "response": "error",
+                "message": "No strategy row selected!"
+            }
+        QMessageBox.information(self, 'Strategy '+strategy_name+' started', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
 
     def stop_strat(self):
-        pass
+        selected_row = self.strategies_table.currentRow()
+        if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
+            strategy_name = self.strategies_table.item(selected_row,0).text()
+            resp = requests.post('http://127.0.0.1:8000/strategies/stop/'+strategy_name).json()
+        else:
+            resp = {
+                "response": "error",
+                "message": "No strategy row selected!"
+            }
+        QMessageBox.information(self, 'Strategy '+strategy_name+' stopped', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
 
     def view_strat_summary(self):
         print('view_strat_summary')
@@ -1923,11 +1898,10 @@ class Ui(QTabWidget):
                 "response": "error",
                 "message": "No strategy row selected!"
             }
-        QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-
+        QMessageBox.information(self, 'Archive Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
 
     ## CONFIG
-
     def set_localonly(self):
         # TODO: should this just be default, without remote option?
         local_only = self.checkbox_local_only.isChecked()
@@ -2154,7 +2128,6 @@ class Ui(QTabWidget):
             else:
                 self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
 
-
     def update_binance_trade_history_table(self):
         # Will need to be tracked locally. API endpoint is per symbol
         pass
@@ -2223,26 +2196,6 @@ class Ui(QTabWidget):
         self.dl_progressBar.setValue(value)
         if value == 100:
             QMessageBox.information(self, "Progress status", 'Download complete!')
-
-    def getDatePrice(self):
-        min_delta = 999999999999
-        xpos = self.vLine.getXPos()
-        for item in self.xy:
-            delta = abs(int(item) - xpos)
-            if delta < min_delta:
-                min_delta = delta
-                ref_time = item
-                ref_price = self.xy[str(item)]
-
-    def getPrice(self, x):
-        min_delta = 999999999999
-        for item in self.xy:
-            delta = abs(int(item) - x)
-            if delta < min_delta:
-                min_delta = delta
-                ref_time = item
-                ref_price = self.xy[str(item)]
-        return ref_price
 
     def export_logs(self):
         pass
