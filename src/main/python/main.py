@@ -199,6 +199,20 @@ class QR_image(qrcode.image.base.BaseImage):
     def save(self, stream, kind=None):
         pass
 
+class ScrollMessageBox(QMessageBox):
+    def __init__(self, json_data, *args, **kwargs):
+        QMessageBox.__init__(self, *args, **kwargs)
+        scroll = QScrollArea(self)
+        scroll.setWidgetResizable(True)
+        self.content = QWidget()
+        scroll.setWidget(self.content)
+        lay = QVBoxLayout(self.content)
+        json_lines = json.dumps(json_data, indent=4).splitlines()
+        for line in json_lines:
+            lay.addWidget(QLabel(line, self))
+        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
+        self.setStyleSheet("QScrollArea{min-width:600 px; min-height: 800px}")
+
 # UI Class
 
 class Ui(QTabWidget):
@@ -726,6 +740,9 @@ class Ui(QTabWidget):
             # refresh tables
             self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
             self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
+            for row in range(self.mm2_orders_table.rowCount()):
+                if self.mm2_orders_table.item(row, 10).text() != '0':
+                    self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
             # Update labels
             self.update_mm2_orderbook_labels(base, rel)
 
@@ -1038,30 +1055,6 @@ class Ui(QTabWidget):
         self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
         print("balances_table updated")
 
-    def update_mm2_orders_table(self):
-        orders = rpclib.my_orders(self.creds[0], self.creds[1]).json()
-        self.mm2_orders_table.setSortingEnabled(False)
-        self.clear_table(self.mm2_orders_table)
-        row_count = len(orders['result']['maker_orders'])+len(orders['result']['taker_orders'])
-        self.mm2_orders_table.setRowCount(row_count)
-        if 'maker_orders' in orders['result']:
-            maker_orders = orders['result']['maker_orders']
-            mm2_row = 0
-            for item in maker_orders:
-                maker_row = self.prepare_maker_row(maker_orders, item)
-                self.add_row(mm2_row, maker_row, self.mm2_orders_table)
-                mm2_row += 1
-
-        if 'taker_orders' in orders['result']:
-            taker_orders = orders['result']['taker_orders']
-            for item in taker_orders:
-                taker_row = self.prepare_taker_row(taker_orders, item)
-                self.add_row(mm2_row, taker_row, self.mm2_orders_table)
-                mm2_row += 1
-
-        self.mm2_orders_table.setSortingEnabled(True)
-        self.mm2_orders_table.resizeColumnsToContents()
-
     def update_mm2_trades_table(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
         row = 0
@@ -1246,6 +1239,16 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
         self.update_trading_log('mm2', log_msg, str(resp))
 
+    def mm2_view_order(self):
+        cancel = True
+        selected_row = self.mm2_orders_table.currentRow()
+        if self.mm2_orders_table.item(selected_row,7) is not None:
+            mm2_order_uuid = self.mm2_orders_table.item(selected_row,7).text()
+            order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
+            result = ScrollMessageBox(order_info)
+            result.exec_()
+            #QMessageBox.information(self, 'MM2 Order Info', json.dumps(order_info, indent=4), QMessageBox.Ok, QMessageBox.Ok)
+
     def mm2_cancel_order(self):
         cancel = True
         selected_row = self.mm2_orders_table.currentRow()
@@ -1283,7 +1286,7 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Order Cancelled', str(msg), QMessageBox.Ok, QMessageBox.Ok)
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)
-        self.update_mm2_orders_table()
+        self.show_mm2_orderbook_tab()
 
     def mm2_cancel_all_orders(self):
         pending = 0
@@ -1315,7 +1318,7 @@ class Ui(QTabWidget):
                 self.update_trading_log("mm2", log_msg, str(resp))
         else:
             QMessageBox.information(self, 'Order Cancelled', 'You have no orders!', QMessageBox.Ok, QMessageBox.Ok)
-        self.update_mm2_orders_table()
+        self.show_mm2_orderbook_tab()
    
     ## Binance Tab
     def bn_update_balance_from_thread(self, bal_info):
@@ -1849,6 +1852,7 @@ class Ui(QTabWidget):
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
         params += '&balances_pct='+str(self.strat_bal_pct_spinbox.value())
         params += '&cex_list='+cex_items
+        print('http://127.0.0.1:8000/strategies/create?'+params)
         resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
         QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
@@ -1871,12 +1875,13 @@ class Ui(QTabWidget):
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             resp = requests.post('http://127.0.0.1:8000/strategies/stop/'+strategy_name).json()
+            QMessageBox.information(self, 'Strategy '+strategy_name+' stopped', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         else:
             resp = {
                 "response": "error",
                 "message": "No strategy row selected!"
             }
-        QMessageBox.information(self, 'Strategy '+strategy_name+' stopped', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'Strategy stop error', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
 
     def view_strat_summary(self):
@@ -2049,14 +2054,14 @@ class Ui(QTabWidget):
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
             self.trading_logs_list.addItem(log_row)
-        self.update_mm2_orders_table()
+        # self.update_mm2_orders_table()
 
     def update_trading_log(self, sender, log_msg, log_result=''):
         timestamp = int(time.time())
         time_str = datetime.datetime.fromtimestamp(timestamp)
         prefix = str(time_str)+" ("+sender+"): "
         log_msg = prefix+log_msg
-        self.update_mm2_orders_table()
+        #  self.update_mm2_orders_table()
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#00137F'))
         self.trading_logs_list.addItem(log_row)
@@ -2548,7 +2553,7 @@ class Ui(QTabWidget):
             elif 'result' in resp:
                 msg = "Sell order Submitted.\n"
                 msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+str(trade_val)+" "+rel
-                self.update_mm2_orders_table()
+                # self.update_mm2_orders_table()
                 self.update_mm2_trades_table()
             else:
                 msg = resp
@@ -2586,7 +2591,7 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
-        self.update_mm2_orders_table()
+        # self.update_mm2_orders_table()
 
 if __name__ == '__main__':
     

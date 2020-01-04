@@ -249,6 +249,7 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
 # TABLE FORMATTED 
 
 @app.get("/table/mm2_open_orders")
+# TODO: SPLIT MAKER AND TAKER. BUY/SELL COLUMNS SWITCH!!!
 async def mm2_open_orders_table():
     orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
     if 'error' in orders:
@@ -474,11 +475,11 @@ async def bot_strategies():
                         "Last refresh":history['Last refresh'],
                         "Status":history['Status']
                     })
-                active_coins = botlib.mm2_active_coins()
-                strategy_coins = list(set(strategy['Sell coins']+strategy['Buy coins']))
+                active_coins = botlib.mm2_active_coins(mm2_ip, mm2_rpc_pass)
+                strategy_coins = list(set(strategy['Sell list']+strategy['Buy list']))
                 for coin in strategy_coins:
                     if coin not in active_coins:
-                        strategy.update({"Status":"Coins not active"})
+                        strategy.update({"Status":"MM2 coin not activated - ["+coin+"]"})
                         break
                 strategies.append(strategy)
     return {"table_data":strategies}
@@ -711,7 +712,7 @@ async def strategy_history(strategy_name):
             histories.append(history)
         resp = {
             "response": "success",
-            "message": str(len(strategies))+" found!",
+            "message": str(len(strategies))+" sessions found!",
             "histories": histories
         }
     elif strategy_name not in strategies:
@@ -789,9 +790,10 @@ async def stop_strategy(strategy_name):
         with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
         history.update({"Status":"inactive"})
-
         with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
             f.write(json.dumps(history))
+        # get current order uuids
+        history = botlib.cancel_session_orders(history)
         resp = {
             "response": "success",
             "message": "Strategy '"+strategy_name+"' stopped",

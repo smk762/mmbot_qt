@@ -41,7 +41,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5384,6 +5384,12 @@ color: rgb(46, 52, 54);</string>
                      <layout class="QGridLayout" name="gridLayout_53">
                       <item row="0" column="1">
                        <widget class="QFrame" name="frame_73">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>75</height>
+                         </size>
+                        </property>
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
                         </property>
@@ -5715,6 +5721,12 @@ color: rgb(46, 52, 54);</string>
                           <verstretch>0</verstretch>
                          </sizepolicy>
                         </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>75</height>
+                         </size>
+                        </property>
                         <property name="maximumSize">
                          <size>
                           <width>16777215</width>
@@ -5924,6 +5936,12 @@ color: rgb(46, 52, 54);</string>
                       </item>
                       <item row="1" column="1">
                        <widget class="QFrame" name="frame_8">
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>75</height>
+                         </size>
+                        </property>
                         <property name="frameShape">
                          <enum>QFrame::StyledPanel</enum>
                         </property>
@@ -6049,6 +6067,12 @@ color: rgb(46, 52, 54);</string>
                           <horstretch>0</horstretch>
                           <verstretch>0</verstretch>
                          </sizepolicy>
+                        </property>
+                        <property name="minimumSize">
+                         <size>
+                          <width>0</width>
+                          <height>75</height>
+                         </size>
                         </property>
                         <property name="maximumSize">
                          <size>
@@ -6705,6 +6729,39 @@ color: rgb(46, 52, 54);</string>
                 </size>
                </property>
               </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="mm2_view_order_btn">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>View Selected</string>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="mm2_cancel_selected_order_btn">
@@ -10066,7 +10123,79 @@ background-color: rgb(85, 87, 83);</string>
                   </layout>
                  </widget>
                 </item>
-                <item row="0" column="0" colspan="3">
+                <item row="0" column="4">
+                 <widget class="QFrame" name="frame_17">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>200</height>
+                   </size>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_42">
+                   <item row="1" column="0">
+                    <widget class="QListWidget" name="strat_sell_list">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="autoFillBackground">
+                      <bool>false</bool>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">border-color: rgb(52, 101, 164);
+background-color: rgb(85, 87, 83);</string>
+                     </property>
+                     <property name="sizeAdjustPolicy">
+                      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+                     </property>
+                     <property name="editTriggers">
+                      <set>QAbstractItemView::NoEditTriggers</set>
+                     </property>
+                     <property name="selectionMode">
+                      <enum>QAbstractItemView::MultiSelection</enum>
+                     </property>
+                     <property name="movement">
+                      <enum>QListView::Static</enum>
+                     </property>
+                     <property name="resizeMode">
+                      <enum>QListView::Adjust</enum>
+                     </property>
+                     <property name="layoutMode">
+                      <enum>QListView::Batched</enum>
+                     </property>
+                     <property name="uniformItemSizes">
+                      <bool>false</bool>
+                     </property>
+                     <property name="selectionRectVisible">
+                      <bool>true</bool>
+                     </property>
+                     <property name="sortingEnabled">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_13">
+                     <property name="text">
+                      <string>Sell list</string>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="0" column="6">
                  <widget class="QFrame" name="frame_21">
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
@@ -10219,78 +10348,6 @@ background-color: rgb(85, 87, 83);</string>
                      </property>
                      <property name="text">
                       <string>Create Strategy</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item row="0" column="4">
-                 <widget class="QFrame" name="frame_17">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>200</height>
-                   </size>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_42">
-                   <item row="1" column="0">
-                    <widget class="QListWidget" name="strat_sell_list">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="autoFillBackground">
-                      <bool>false</bool>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">border-color: rgb(52, 101, 164);
-background-color: rgb(85, 87, 83);</string>
-                     </property>
-                     <property name="sizeAdjustPolicy">
-                      <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-                     </property>
-                     <property name="editTriggers">
-                      <set>QAbstractItemView::NoEditTriggers</set>
-                     </property>
-                     <property name="selectionMode">
-                      <enum>QAbstractItemView::MultiSelection</enum>
-                     </property>
-                     <property name="movement">
-                      <enum>QListView::Static</enum>
-                     </property>
-                     <property name="resizeMode">
-                      <enum>QListView::Adjust</enum>
-                     </property>
-                     <property name="layoutMode">
-                      <enum>QListView::Batched</enum>
-                     </property>
-                     <property name="uniformItemSizes">
-                      <bool>false</bool>
-                     </property>
-                     <property name="selectionRectVisible">
-                      <bool>true</bool>
-                     </property>
-                     <property name="sortingEnabled">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_13">
-                     <property name="text">
-                      <string>Sell list</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
                      </property>
                     </widget>
                    </item>
@@ -13297,8 +13354,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>create_strat()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>757</x>
-     <y>336</y>
+     <x>1141</x>
+     <y>327</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13330,7 +13387,7 @@ background-color: rgb(85, 87, 83);</string>
    <hints>
     <hint type="sourcelabel">
      <x>1094</x>
-     <y>669</y>
+     <y>543</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13346,7 +13403,7 @@ background-color: rgb(85, 87, 83);</string>
    <hints>
     <hint type="sourcelabel">
      <x>780</x>
-     <y>669</y>
+     <y>543</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13362,7 +13419,7 @@ background-color: rgb(85, 87, 83);</string>
    <hints>
     <hint type="sourcelabel">
      <x>937</x>
-     <y>669</y>
+     <y>543</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13379,6 +13436,22 @@ background-color: rgb(85, 87, 83);</string>
     <hint type="sourcelabel">
      <x>950</x>
      <y>479</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mm2_view_order_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>mm2_view_order()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1533</x>
+     <y>752</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13462,5 +13535,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>start_strat()</slot>
   <slot>stop_strat()</slot>
   <slot>view_strat_summary()</slot>
+  <slot>mm2_view_order()</slot>
  </slots>
 </ui>
