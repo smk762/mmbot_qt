@@ -1,1 +1,0 @@
-{"name": "test", "strategy_type": "arbitrage", "rel_list": ["KMD", "RVN"], "base_list": ["ZEC"], "margin": 5.0, "refresh_interval": 30, "balance_pct": 100, "cex_countertrade": ["Binance"]}

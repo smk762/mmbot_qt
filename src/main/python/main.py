@@ -415,7 +415,7 @@ class Ui(QTabWidget):
             },
         }               
         self.show_login_tab()
-
+                
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     def update_cachedata(self, prices_dict, balances_dict):
         print("updating cache data from thread")
@@ -434,6 +434,9 @@ class Ui(QTabWidget):
         self.update_binance_balance_table()
         self.update_prices_table()
         self.update_mm2_trade_history_table()
+        self.update_strategies_table()
+        self.update_mm2_orders_table()
+
         # TODO: Add gui update functions as req here.
 
     ## MM2 management
@@ -496,6 +499,9 @@ class Ui(QTabWidget):
                 with open(config_path+"MM2.json", 'w+') as j:
                     j.write('')
                 self.show_activation_tab()
+                # stop zombie orders / strats
+                self.stop_all_strats()
+                rpclib.cancel_all(self.creds[0], self.creds[1]).json()
                 # start data caching loop in other thread
                 self.datacache_thread = cachedata_thread()
                 self.datacache_thread.update_data.connect(self.update_cachedata)
@@ -739,10 +745,7 @@ class Ui(QTabWidget):
             rel = baserel[1]
             # refresh tables
             self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
-            self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
-            for row in range(self.mm2_orders_table.rowCount()):
-                if self.mm2_orders_table.item(row, 10).text() != '0':
-                    self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
+            self.update_mm2_orders_table()
             # Update labels
             self.update_mm2_orderbook_labels(base, rel)
 
@@ -785,7 +788,7 @@ class Ui(QTabWidget):
             self.update_mm2_balance_table()
 
     def show_strategies_tab(self):
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.update_strategies_table()
         self.populate_strategy_lists()
 
     def show_prices_tab(self):
@@ -1086,6 +1089,13 @@ class Ui(QTabWidget):
             row += 1
         self.mm2_trades_table.setSortingEnabled(True)
         self.mm2_trades_table.resizeColumnsToContents()
+
+    def update_mm2_orders_table(self):
+        self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
+        for row in range(self.mm2_orders_table.rowCount()):
+            if self.mm2_orders_table.item(row, 10).text() != '0':
+                self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
+            
 
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
@@ -1829,6 +1839,10 @@ class Ui(QTabWidget):
             list_item.setTextAlignment(Qt.AlignHCenter)
             self.strat_cex_list.addItem(list_item)
 
+    def update_strategies_table(self):
+        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.strategies_table.clearSelection()
+
     def create_strat(self):
         params = 'name='+self.strat_name.text()
         index = self.strat_type_combo.currentIndex()
@@ -1884,6 +1898,9 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Strategy stop error', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
 
+    def stop_all_strats(self):
+        resp = requests.post('http://127.0.0.1:8000/strategies/stop/all').json()
+
     def view_strat_summary(self):
         print('view_strat_summary')
         selected_row = self.strategies_table.currentRow()
@@ -1905,6 +1922,16 @@ class Ui(QTabWidget):
             }
         QMessageBox.information(self, 'Archive Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+
+    ## HISTORY
+    def mm2_view_swap(self):
+        cancel = True
+        selected_row = self.mm2_trades_table.currentRow()
+        if self.mm2_trades_table.item(selected_row,10) is not None:
+            swap_uuid = self.mm2_trades_table.item(selected_row,10).text()
+            swap_info = rpclib.my_swap_status(self.creds[0], self.creds[1], swap_uuid).json()
+            result = ScrollMessageBox(swap_info)
+            result.exec_()
 
     ## CONFIG
     def set_localonly(self):
@@ -2054,14 +2081,12 @@ class Ui(QTabWidget):
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
             self.trading_logs_list.addItem(log_row)
-        # self.update_mm2_orders_table()
 
     def update_trading_log(self, sender, log_msg, log_result=''):
         timestamp = int(time.time())
         time_str = datetime.datetime.fromtimestamp(timestamp)
         prefix = str(time_str)+" ("+sender+"): "
         log_msg = prefix+log_msg
-        #  self.update_mm2_orders_table()
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#00137F'))
         self.trading_logs_list.addItem(log_row)
@@ -2553,7 +2578,6 @@ class Ui(QTabWidget):
             elif 'result' in resp:
                 msg = "Sell order Submitted.\n"
                 msg += "Sell "+str(basevolume)+" "+base+"\nfor\n"+str(trade_val)+" "+rel
-                # self.update_mm2_orders_table()
                 self.update_mm2_trades_table()
             else:
                 msg = resp
@@ -2591,7 +2615,6 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
         else:
             QMessageBox.information(self, 'Order Cancelled', 'No orders selected!', QMessageBox.Ok, QMessageBox.Ok)        
-        # self.update_mm2_orders_table()
 
 if __name__ == '__main__':
     

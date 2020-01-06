@@ -5351,6 +5351,12 @@ color: rgb(46, 52, 54);</string>
             <layout class="QGridLayout" name="gridLayout_21">
              <item row="0" column="0">
               <widget class="QFrame" name="frame_7">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>375</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -5386,7 +5392,7 @@ color: rgb(46, 52, 54);</string>
                        <widget class="QFrame" name="frame_73">
                         <property name="minimumSize">
                          <size>
-                          <width>0</width>
+                          <width>350</width>
                           <height>75</height>
                          </size>
                         </property>
@@ -6947,6 +6953,12 @@ color: rgb(46, 52, 54);</string>
             <layout class="QGridLayout" name="gridLayout_86">
              <item row="0" column="0" rowspan="2">
               <widget class="QFrame" name="frame_22">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>230</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -9947,6 +9959,12 @@ color: rgb(46, 52, 54);</string>
           </item>
           <item row="1" column="0">
            <widget class="QFrame" name="frame_51">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>280</height>
+             </size>
+            </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -10725,6 +10743,9 @@ background-color: rgb(85, 87, 83);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>602</width>
@@ -10915,6 +10936,9 @@ background-color: rgb(85, 87, 83);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>602</width>
@@ -11067,7 +11091,7 @@ background-color: rgb(85, 87, 83);</string>
              <enum>QAbstractItemView::SingleSelection</enum>
             </property>
             <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectItems</enum>
+             <enum>QAbstractItemView::SelectRows</enum>
             </property>
             <property name="sortingEnabled">
              <bool>true</bool>
@@ -11173,6 +11197,39 @@ background-color: rgb(85, 87, 83);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_59">
+             <item row="0" column="3">
+              <widget class="QPushButton" name="export_mm2_trade_table_btn">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>35</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                </font>
+               </property>
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Export</string>
+               </property>
+              </widget>
+             </item>
              <item row="0" column="0">
               <widget class="QLabel" name="mm2_hide_failed_lbl">
                <property name="enabled">
@@ -11233,7 +11290,7 @@ background-color: rgb(85, 87, 83);</string>
               </widget>
              </item>
              <item row="0" column="2">
-              <widget class="QPushButton" name="export_mm2_trade_table_btn">
+              <widget class="QPushButton" name="mm2_view_swap_btn">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -11261,7 +11318,7 @@ background-color: rgb(85, 87, 83);</string>
                 <string notr="true"/>
                </property>
                <property name="text">
-                <string>Export</string>
+                <string>View Selected</string>
                </property>
               </widget>
              </item>
@@ -11347,7 +11404,7 @@ background-color: rgb(85, 87, 83);</string>
    <attribute name="title">
     <string>Config</string>
    </attribute>
-   <layout class="QGridLayout" name="gridLayout_40">
+   <layout class="QGridLayout" name="gridLayout_70">
     <item row="0" column="1">
      <spacer name="horizontalSpacer_50">
       <property name="orientation">
@@ -11374,7 +11431,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
      </spacer>
     </item>
-    <item row="1" column="1" colspan="2">
+    <item row="1" column="1" rowspan="2" colspan="2">
      <widget class="QGroupBox" name="groupBox">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -11385,8 +11442,8 @@ background-color: rgb(85, 87, 83);</string>
       <property name="title">
        <string>Antara Marketmaker Settings</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_20">
-       <item row="0" column="2" colspan="2">
+      <layout class="QGridLayout" name="gridLayout_40">
+       <item row="0" column="0" colspan="2">
         <widget class="QFrame" name="frame_mm2json">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -11922,72 +11979,6 @@ background-color: rgb(85, 87, 83);</string>
                   </property>
                  </spacer>
                 </item>
-                <item>
-                 <widget class="QFrame" name="frame_31">
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_70">
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="lbl_premium">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="text">
-                      <string>Trade Premium (%)</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                     </property>
-                     <property name="buddy">
-                      <cstring>margin_input</cstring>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1">
-                    <widget class="QDoubleSpinBox" name="margin_input">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="layoutDirection">
-                      <enum>Qt::LeftToRight</enum>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <spacer name="horizontalSpacer_34">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::MinimumExpanding</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>175</width>
-                       <height>62</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
                </layout>
               </widget>
              </item>
@@ -12101,7 +12092,7 @@ background-color: rgb(85, 87, 83);</string>
          </layout>
         </widget>
        </item>
-       <item row="2" column="2" colspan="2">
+       <item row="1" column="0" colspan="2">
         <widget class="QFrame" name="frame_27">
          <property name="styleSheet">
           <string notr="true"/>
@@ -12112,8 +12103,8 @@ background-color: rgb(85, 87, 83);</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_20">
+          <item row="0" column="0">
            <spacer name="horizontalSpacer_28">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -12126,22 +12117,22 @@ background-color: rgb(85, 87, 83);</string>
             </property>
            </spacer>
           </item>
-          <item>
-           <widget class="QLabel" name="label">
+          <item row="0" column="1">
+           <widget class="QLabel" name="label_16">
             <property name="text">
-             <string>Swap UUID</string>
+             <string>Import Swap JSON</string>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QLineEdit" name="swap_recover_uuid">
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="swap_recover_uuid_2">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
            </widget>
           </item>
-          <item>
-           <widget class="QPushButton" name="recover_swap_btn">
+          <item row="0" column="3">
+           <widget class="QPushButton" name="recover_swap_btn_2">
             <property name="styleSheet">
              <string notr="true"/>
             </property>
@@ -12150,7 +12141,20 @@ background-color: rgb(85, 87, 83);</string>
             </property>
            </widget>
           </item>
-          <item>
+          <item row="0" column="4">
+           <spacer name="horizontalSpacer_34">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>304</width>
+              <height>17</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
            <spacer name="horizontalSpacer_35">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -12163,10 +12167,47 @@ background-color: rgb(85, 87, 83);</string>
             </property>
            </spacer>
           </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Swap UUID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="swap_recover_uuid">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="recover_swap_btn">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>Recover Stuck Swap</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <spacer name="horizontalSpacer_60">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>304</width>
+              <height>17</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
        </item>
-       <item row="3" column="2">
+       <item row="2" column="0">
         <widget class="QLabel" name="api_version_lbl">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -12189,7 +12230,7 @@ background-color: rgb(85, 87, 83);</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="3">
+       <item row="2" column="1">
         <widget class="QLabel" name="mm2_version_lbl">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -12554,7 +12595,6 @@ background-color: rgb(85, 87, 83);</string>
   <tabstop>checkbox_local_only</tabstop>
   <tabstop>binance_key_text_input</tabstop>
   <tabstop>binance_secret_text_input</tabstop>
-  <tabstop>margin_input</tabstop>
   <tabstop>netid_input</tabstop>
   <tabstop>btn_save_config</tabstop>
   <tabstop>console_logs</tabstop>
@@ -13162,7 +13202,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>update_mm2_trade_history_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1272</x>
+     <x>1166</x>
      <y>372</y>
     </hint>
     <hint type="destinationlabel">
@@ -13459,6 +13499,22 @@ background-color: rgb(85, 87, 83);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mm2_view_swap_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>mm2_view_swap()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1222</x>
+     <y>361</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -13536,5 +13592,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>stop_strat()</slot>
   <slot>view_strat_summary()</slot>
   <slot>mm2_view_order()</slot>
+  <slot>mm2_view_swap()</slot>
  </slots>
 </ui>

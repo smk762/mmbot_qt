@@ -149,7 +149,7 @@ class price_update_thread(object):
             time.sleep(self.interval)
 
 class bot_update_thread(object):
-    def __init__(self, interval=90):
+    def __init__(self, interval=30):
         self.interval = interval
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
@@ -158,7 +158,7 @@ class bot_update_thread(object):
     def run(self):
         while True:
             global bot_data
-            bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path)
+            bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path)
             time.sleep(self.interval)
 
 class orderbook_update_thread(object):
@@ -294,7 +294,7 @@ async def mm2_open_orders_table():
                 })
         for item in taker_orders:
             role = "Taker"
-            timestamp = int(taker_orders[item]['created_at'])/1000
+            timestamp = int(taker_orders[item]['created_at']/1000)
             created_at = datetime.datetime.fromtimestamp(timestamp)
             base = taker_orders[item]['request']['base']
             rel = taker_orders[item]['request']['rel']
@@ -508,12 +508,12 @@ async def bot_strategy_summary(strategy_name):
             session_data = {
                 "Name":strategy_name,
                 "Session":i,
-                "Duration":history['Sessions']['Duration'],
-                "MM2 swaps completed":history['Sessions']['MM2 swaps completed'],
-                "CEX swaps completed":history['Sessions']['CEX swaps completed'],
+                "Duration":history['Sessions'][str(len(history['Sessions'])-1)]['Duration'],
+                "MM2 swaps completed":len(history['Sessions'][str(len(history['Sessions'])-1)]['MM2 swaps completed']),
+                "CEX swaps completed":len(history['Sessions'][str(len(history['Sessions'])-1)]['CEX swaps completed']),
             }
-            for coin in history['Balance Deltas']:
-                session_data.update({coin+" delta":history['Balance Deltas'][coin]})
+            for coin in history['Sessions'][str(len(history['Sessions'])-1)]['Balance Deltas']:
+                session_data.update({coin+" delta":history['Sessions'][str(len(history['Sessions'])-1)]['Balance Deltas'][coin]})
             table_data.append(session_data)
             i += 1
         total_data = {
@@ -707,7 +707,7 @@ async def strategy_history(strategy_name):
     elif strategy_name == 'all':
         histories = []
         for strategy in strategies:
-            with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
+            with open(config_path+"/history/"+strategy+".json", 'r') as f:
                 history = json.loads(f.read())
             histories.append(history)
         resp = {
@@ -768,12 +768,12 @@ async def stop_strategy(strategy_name):
     if strategy_name == 'all':
         histories = []
         for strategy in strategies:
-            with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
+            with open(config_path+"/history/"+strategy+".json", 'r') as f:
                 history = json.loads(f.read())
             if history['Status'] == 'active':
                 history.update({"Status":"inactive"})
-                history = botlib.cancel_strategy(history)
-                with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
+                history = botlib.cancel_strategy(mm2_ip, mm2_rpc_pass, history)
+                with open(config_path+"/history/"+strategy+".json", 'w+') as f:
                     f.write(json.dumps(history))
                 histories.append(history)
         resp = {
@@ -793,7 +793,7 @@ async def stop_strategy(strategy_name):
         with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
             f.write(json.dumps(history))
         # get current order uuids
-        history = botlib.cancel_session_orders(history)
+        history = botlib.cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history)
         resp = {
             "response": "success",
             "message": "Strategy '"+strategy_name+"' stopped",
@@ -810,7 +810,7 @@ async def delete_strategy(strategy_name):
         with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
         history.update({"Status":"archived"})
-        history = botlib.cancel_strategy(history)
+        history = botlib.cancel_strategy(mm2_ip, mm2_rpc_pass, history)
         with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
             f.write(json.dumps(history))
         resp = {

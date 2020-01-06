@@ -6,16 +6,9 @@ import time
 import requests
 from . import rpclib, priceslib, binance_api
 
-# CACHE DATA LOOPS
+#  LOOPS
 
-def start_mm2_bot_loop(creds, buy_coins, sell_coins, cancel_previous, trade_max):
-    for base in sell_coins:
-        for rel in buy_coins:
-            if base != rel:
-                pass
-                    # detect unfinished swaps
-
-def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path ):
+def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path):
     print("starting orderbook loop")
     active_coins = mm2_active_coins(mm2_ip, mm2_rpc_pass)
     orderbook_data = []
@@ -27,7 +20,7 @@ def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path ):
     print("orderbook loop completed")
     return orderbook_data
     
-def bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path):
+def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
     print("starting bot loop")
     strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
     bot_data = "bot data placeholder"
@@ -39,7 +32,7 @@ def bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path):
             with open(config_path+"strategies/"+strategy_name+".json", 'r') as f:
                 strategy = json.loads(f.read())
             # check refresh interval vs last refresh
-            if history['Last refresh'] == 0 or history['Last refresh'] + strategy['Refresh interval']*2 < int(time.time()):
+            if history['Last refresh'] == 0 or history['Last refresh'] + strategy['Refresh interval']*60 < int(time.time()):
                 active_coins = mm2_active_coins(mm2_ip, mm2_rpc_pass)
                 strategy_coins = list(set(strategy['Sell list']+strategy['Buy list']))
                 inactive_skip = False
@@ -51,14 +44,17 @@ def bot_loop(mm2_ip, mm2_rpc_pass, prices_data, config_path):
                     print("*** Refreshing strategy: "+strategy_name+" ***")
                     history.update({'Last refresh':int(time.time())})
                     # cancel old orders
-                    history = cancel_session_orders(history)
+                    history = cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history)
                     # place fresh orders
-                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, strategy, history)
+                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history)
                     # update session history
                     with open(config_path+"history/"+strategy_name+".json", 'w+') as f:
                          f.write(json.dumps(history, indent=4))
                 else:
                     print("Skipping strategy "+strategy_name+": MM2 coins not active ")
+            else:
+                time_left = history['Last refresh'] + strategy['Refresh interval']*60 - int(time.time())
+                print("Skipping strategy "+strategy_name+": waiting for refresh interval in "+str(time_left)+" min")
     print("bot loop completed")
     return bot_data
 
@@ -111,18 +107,18 @@ def mm2_active_coins(mm2_ip, mm2_rpc_pass):
 
 # STRATEGIES
 
-def submit_strategy_orders(mm2_ip, mm2_rpc_pass, strategy, history):
+def submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history):
     prices_data = priceslib.prices_loop()
     print("*** submitting strategy orders ***")
     print("Strategy: "+str(strategy))
     if strategy['Type'] == 'margin':
         history = run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data)
     elif strategy['Type'] == 'arbitrage':
-        history = run_arb_strategy(mm2_ip, mm2_rpc_pass, strategy, history)
+        history = run_arb_strategy(mm2_ip, mm2_rpc_pass, config_path, strategy, history)
     return history
 
-def run_arb_strategy(mm2_ip, mm2_rpc_pass, strategy, history):
-    orderbook_data = orderbook_loop(mm2_ip, mm2_rpc_pass)
+def run_arb_strategy(mm2_ip, mm2_rpc_pass, config_path, strategy, history):
+    orderbook_data = orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
     prices_data = priceslib.prices_loop()
     # check balances
     balances = {}
@@ -193,24 +189,59 @@ def run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data):
     return history
     # update session history with open orders
 
-def cancel_session_orders(history):
+def get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap):
+    swap_data = rpclib.my_swap_status(mm2_ip, mm2_rpc_pass, swap).json()
+    for event in swap_data['result']['events']:
+        if event['event']['type'] in rpclib.error_events: 
+            status = 'failed'
+            break
+        if event['event']['type'] == 'Finished':
+            status = 'finished'
+        else:
+            status = event['event']['type']
+    return status, swap_data
+
+def cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history):
     print("cancelling session orders")
     session = history['Sessions'][str(len(history['Sessions'])-1)]
+    # Cancel Binance Orders
     if 'binance' in session['CEX open orders']:
         binance_orders = session['CEX open orders']['binance']
         for symbol in binance_orders:
             order_id = binance_orders[symbol]
             binance_api.delete_order(bn_key, bn_secret, symbol, order_id)
-    # add other cex when integrated
+    # Cancel MM2 Orders
     mm2_order_uuids = session['MM2 open orders']
     for order_uuid in mm2_order_uuids:
-        # TODO: dont cancel if in progress, until in progress complete.
-        rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
-    history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders'] = []
-    history['Sessions'][str(len(history['Sessions'])-1)]['CEX open orders']['binance'] = []
+        order_info = rpclib.order_status(mm2_ip, mm2_rpc_pass, order_uuid).json()
+        swap_in_progress = False
+        if 'result' in order_info:
+            swaps = order_info['result']['started_swaps']
+            for swap in swaps:
+                swap_status = get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap)
+                status = swap_status[0]
+                swap_data = swap_status[1]
+                if status == 'Finished':
+                    session['MM2 swaps completed'].update({
+                                                        swap:{
+                                                            "Recieved coin":swap_data["other_coin"],
+                                                            "Recieved amount":swap_data["other_amount"],
+                                                            "Sent coin":swap_data["my_coin"],
+                                                            "Sent amount":swap_data["my_amount"],
+                                                            "Start time":swap_data["started_at"]
+                                                        }
+                                                    })
+                elif status != 'Failed':
+                    # swap in progress
+                    swap_in_progress = True
+                    session['MM2 swaps in progress'].append(swap)
+        if not swap_in_progress:
+            rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
+    session['MM2 open orders'] = []
+    session['CEX open orders']['binance'] = {}
     return history
 
-def cancel_strategy(history):
+def cancel_strategy(mm2_ip, mm2_rpc_pass, history):
     if len(history['Sessions']) > 0:
         sessions = history['Sessions']
         session = history['Sessions'][str(len(history['Sessions'])-1)]
@@ -234,7 +265,6 @@ def cancel_strategy(history):
         for swap in cex_swaps_in_progress:
             # already cancelled, move to completed, and mark as "cancelled while in progress"
             pass
-
         mm2_swaps_completed = session["MM2 swaps completed"]
         for swap in mm2_swaps_completed:
             print(swap)
@@ -315,8 +345,8 @@ def init_session(strategy_name, strategy, history, config_path):
     sessions.update({str(len(sessions)):{
             "Started":int(time.time()),
             "Duration":0,
-            "MM2 open orders": {},
-            "MM2 swaps in progress": {},
+            "MM2 open orders": [],
+            "MM2 swaps in progress": [],
             "MM2 swaps completed": {},
             "CEX open orders": {},
             "CEX swaps in progress": {},
