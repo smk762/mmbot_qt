@@ -207,9 +207,10 @@ class ScrollMessageBox(QMessageBox):
         self.content = QWidget()
         scroll.setWidget(self.content)
         lay = QVBoxLayout(self.content)
-        json_lines = json.dumps(json_data, indent=4).splitlines()
-        for line in json_lines:
-            lay.addWidget(QLabel(line, self))
+        json_lines = json.dumps(json_data, indent=4)
+        msg_data = QTextEdit(json_lines, self)
+        msg_data.setReadOnly(True)
+        lay.addWidget(msg_data)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
         self.setStyleSheet("QScrollArea{min-width:600 px; min-height: 800px}")
 
@@ -435,6 +436,7 @@ class Ui(QTabWidget):
         self.update_prices_table()
         self.update_mm2_trade_history_table()
         self.update_strategies_table()
+        self.view_strat_summary()
         self.update_mm2_orders_table()
 
         # TODO: Add gui update functions as req here.
@@ -605,7 +607,7 @@ class Ui(QTabWidget):
                         filter_col_num = filter_param[0]
                         filter_col_text = filter_param[1]
                         filter_type = filter_param[2]
-                        if row_data[int(filter_col_num)].find(filter_col_text) > -1:
+                        if str(row_data[int(filter_col_num)]) == str(filter_col_text):
                             if filter_type == 'INCLUDE':
                                 self.add_row(row, row_data, table)
                                 row += 1
@@ -809,7 +811,6 @@ class Ui(QTabWidget):
             self.rpc_ip_text_input.setText(self.creds[4])
             self.binance_key_text_input.setText(self.creds[5])
             self.binance_secret_text_input.setText(self.creds[6])
-            self.margin_input.setValue(float(self.creds[7]))
             self.countertrade_timeout_input.setValue(float(self.creds[9]))
             if self.creds[8] == "Marketmaker & Binance":
                 self.bot_mode_comboBox.setCurrentIndex(1)
@@ -1901,14 +1902,27 @@ class Ui(QTabWidget):
     def stop_all_strats(self):
         resp = requests.post('http://127.0.0.1:8000/strategies/stop/all').json()
 
+    def view_strat_session(self):
+        selected_row = self.strat_summary_table.currentRow()
+        if self.strat_summary_table.item(selected_row,1) is not None:
+            session_num = self.strat_summary_table.item(selected_row,1).text()
+            session_name = self.strat_summary_table.item(selected_row,0).text()
+            session_info = requests.post('http://127.0.0.1:8000/strategies/session/'+session_name+'/'+session_num).json()
+            result = ScrollMessageBox(session_info)
+            result.exec_()
+
     def view_strat_summary(self):
         print('view_strat_summary')
         selected_row = self.strategies_table.currentRow()
-        print(selected_row)
-        print(self.strategies_table.item(selected_row,0).text())
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
-            self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table)
+            if self.summary_hide_empty_checkbox.isChecked():
+                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "3|0|EXCLUDE")
+            else:
+                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table)
+            for row in range(self.strat_summary_table.rowCount()):
+                if self.strat_summary_table.item(row, 3).text() != '0':
+                    self.colorize_row(self.strat_summary_table, row, QColor(218, 255, 127))
 
     def delete_strat(self):
         selected_row = self.strategies_table.currentRow()
