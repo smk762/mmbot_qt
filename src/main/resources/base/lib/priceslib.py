@@ -117,9 +117,8 @@ def get_paprika_price(coin_id):
 def prices_loop():
     # TODO: include mm2 price? or do separate?
     # source > quoteasset > baseasset
-    print("starting prices loop")
     prices_data = {
-        "binance":{
+        "Binance":{
 
         },
         "paprika":{
@@ -138,19 +137,19 @@ def prices_loop():
     for item in binance_data:
         binance_prices.update({item['symbol']:item['price']})
     for quoteAsset in binance_api.quoteAssets:
-        prices_data['binance'][quoteAsset] = {}
+        prices_data["Binance"][quoteAsset] = {}
         for baseAsset in binance_api.base_asset_info:
             if baseAsset in coinslib.cointags:
-                if baseAsset not in prices_data['binance']:
-                    prices_data['binance'][baseAsset] = {}
+                if baseAsset not in prices_data["Binance"]:
+                    prices_data["Binance"][baseAsset] = {}
                 if baseAsset+quoteAsset in binance_prices:
                     price = float(binance_prices[baseAsset+quoteAsset])
                     if price !=- 0:
                         invert_price = 1/price
                     else: 
                         invert_price = 0
-                    prices_data['binance'][quoteAsset].update({baseAsset:invert_price})
-                    prices_data['binance'][baseAsset].update({quoteAsset:price})
+                    prices_data["Binance"][quoteAsset].update({baseAsset:invert_price})
+                    prices_data["Binance"][baseAsset].update({quoteAsset:price})
 
     paprika_data = requests.get("https://api.coinpaprika.com/v1/tickers?quotes=USD%2CBTC").json()
     for item in paprika_data:
@@ -184,18 +183,18 @@ def prices_loop():
             btc_api_sum += prices_data['paprika'][coin]['BTC']
             btc_api_sources.append('CoinPaprika')
             usd_api_sources.append('CoinPaprika')
-        if coin in prices_data['binance']:
-            if 'TUSD' in prices_data['binance'][coin]:
-                usd_api_sum += prices_data['binance'][coin]['TUSD']
+        if coin in prices_data["Binance"]:
+            if 'TUSD' in prices_data["Binance"][coin]:
+                usd_api_sum += prices_data["Binance"][coin]['TUSD']
                 usd_api_sources.append('Binance')
             if coin == 'BTC':
                 btc_api_sum += 1
                 btc_api_sources.append('Binance')
-            elif 'BTC' in prices_data['binance'][coin]:
-                btc_api_sum += prices_data['binance'][coin]['BTC']
+            elif 'BTC' in prices_data["Binance"][coin]:
+                btc_api_sum += prices_data["Binance"][coin]['BTC']
                 btc_api_sources.append('Binance')
-            elif coin in prices_data['binance']['BTC']:
-                btc_api_sum += 1/prices_data['binance']['BTC'][coin]
+            elif coin in prices_data["Binance"]['BTC']:
+                btc_api_sum += 1/prices_data["Binance"]['BTC'][coin]
                 btc_api_sources.append('Binance')
 
         if len(usd_api_sources) > 0:
@@ -212,8 +211,6 @@ def prices_loop():
                 "usd_sources":usd_api_sources
             }
         })
-
-    print("prices loop completed")
     return prices_data
 
 
@@ -222,31 +219,31 @@ def get_binance_price(base, rel, prices_data):
     prices = {}
     if base+rel in binance_api.binance_pairs:
         prices.update({"direct":{
-                base+rel:prices_data['binance'][base][rel],
-                rel+base:1/prices_data['binance'][base][rel]
+                base+rel:prices_data["Binance"][base][rel],
+                rel+base:1/prices_data["Binance"][base][rel]
              }
         })
     elif rel+base in binance_api.binance_pairs:
         prices.update({"direct":{
-                rel+base:1/prices_data['binance'][base][rel],
-                base+rel:prices_data['binance'][base][rel]
+                rel+base:1/prices_data["Binance"][base][rel],
+                base+rel:prices_data["Binance"][base][rel]
              }
         })
     # indirect via common quote
     rel_quotes = []
     base_quotes = []
-    for quote in prices_data['binance']:
-        if base in prices_data['binance'][quote]:
+    for quote in prices_data["Binance"]:
+        if base in prices_data["Binance"][quote]:
             rel_quotes.append(quote)
-        if rel in prices_data['binance'][quote]:
+        if rel in prices_data["Binance"][quote]:
             base_quotes.append(quote)
     common_quote = list(set(rel_quotes) & set(base_quotes))
     indirect = {}
     if len(common_quote) > 0:
         for q_asset in common_quote:
             indirect[q_asset] = {}
-            base_price = prices_data['binance'][q_asset][base]
-            rel_price = prices_data['binance'][q_asset][rel]
+            base_price = prices_data["Binance"][q_asset][base]
+            rel_price = prices_data["Binance"][q_asset][rel]
             indirect[q_asset].update({rel+base:base_price/rel_price})
             indirect[q_asset].update({base+rel:rel_price/base_price})
             indirect[q_asset].update({rel+q_asset:rel_price})

@@ -252,12 +252,12 @@ class Ui(QTabWidget):
         self.prices_data = {
             "gecko":{},
             "paprika":{},
-            "binance":{},
+            "Binance":{},
             "average":{}
         }
         self.balances_data = {
             "mm2": {},
-            "binance": {}
+            "Binance": {}
         }
 
         # dict for the checkbox and combobox elements use on the coins activation page. Might be a better way to do this.
@@ -419,17 +419,16 @@ class Ui(QTabWidget):
                 
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     def update_cachedata(self, prices_dict, balances_dict):
-        print("updating cache data from thread")
         self.prices_data = prices_dict
         self.balances_data['mm2'].update(balances_dict['mm2'])
-        self.balances_data['binance'].update(balances_dict['binance'])
+        self.balances_data["Binance"].update(balances_dict["Binance"])
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
         base = baserel[0]
         rel = baserel[1]
         self.update_mm2_orderbook_labels(base, rel)
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
-        baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, 'binance')
+        baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
         base = baserel[0]
         rel = baserel[1]
         self.update_binance_balance_table()
@@ -455,7 +454,7 @@ class Ui(QTabWidget):
     def start_api(self, logfile='bot_api_output.log'):
         try:
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+            subprocess.Popen([self.bot_api, config_path+self.username+"/"], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
             time.sleep(2)
             requests.post('http://127.0.0.1:8000/set_creds?ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+self.creds[5]+'&secret='+self.creds[6])
         except Exception as e:
@@ -693,7 +692,6 @@ class Ui(QTabWidget):
         return selected
 
     def get_base_rel_from_combos(self, base_combo, rel_combo, api='mm2'):
-        print(api)
         base = ''
         base_index = base_combo.currentIndex()
         if base_index != -1:
@@ -708,7 +706,7 @@ class Ui(QTabWidget):
                 rel = self.update_combo(rel_combo,active_coins_selection,rel)
                 active_coins_selection.remove(rel)
                 base = self.update_combo(base_combo,active_coins_selection,base)
-        elif api == 'binance':
+        elif api == "Binance":
             base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(self.active_coins[:]))
             if len(base_coins_selection) > 0:                
                 base = self.update_combo(base_combo,base_coins_selection,base)
@@ -762,7 +760,7 @@ class Ui(QTabWidget):
                 # wallet combobox
                 self.update_combo(self.binance_asset_comboBox,tickers,tickers[0])
                 # trade combobox
-                baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, 'binance')
+                baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
                 base = baserel[0]
                 rel = baserel[1]
                 step_size = binance_api.base_asset_info[base]['stepSize']
@@ -823,7 +821,6 @@ class Ui(QTabWidget):
                 self.checkbox_local_only.setChecked(False)
 
     def show_logs_tab(self):
-        print("show_logs_tab")
         logfile='mm2_output.log'
         mm2_output = open(config_path+self.username+"_"+logfile,'r')
         with mm2_output as f:
@@ -856,7 +853,6 @@ class Ui(QTabWidget):
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     def activate_coins(self):
-        print('Start activate')
         coins_to_activate = []
         autoactivate = []
         self.buy_coins = []
@@ -1004,7 +1000,6 @@ class Ui(QTabWidget):
 
     ## MARKETMAKER TAB FUNCTIONS
     def update_mm2_balance_from_thread(self, bal_info):
-        print('mm2 update_balance_from_thread')
         if 'coin' in bal_info:
             coin = bal_info['coin']
             address = bal_info['address']
@@ -1020,7 +1015,6 @@ class Ui(QTabWidget):
                 })
 
     def update_mm2_balance_table(self): 
-        print("updating mm2 balances_table")
         self.clear_table(self.wallet_balances_table)
         self.wallet_balances_table.setSortingEnabled(False)
         row_count = len(self.active_coins)
@@ -1057,7 +1051,6 @@ class Ui(QTabWidget):
         self.wallet_balances_table.setSortingEnabled(True)
         self.wallet_balances_table.resizeColumnsToContents()
         self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
-        print("balances_table updated")
 
     def update_mm2_trades_table(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
@@ -1338,7 +1331,7 @@ class Ui(QTabWidget):
             total = bal_info[coin]['total']
             locked = bal_info[coin]['locked']
             available = bal_info[coin]['available']
-            self.balances_data["binance"].update({coin: {
+            self.balances_data["Binance"].update({coin: {
                     "total":total,
                     "locked":locked,
                     "available":available,
@@ -1355,9 +1348,9 @@ class Ui(QTabWidget):
     def update_binance_labels(self, base, rel):
         # Quote coin icon and balances
         self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-        if rel in self.balances_data['binance']:
-            locked_text = "Locked: "+str(round(float(self.balances_data['binance'][rel]['locked']),8))
-            balance = "Balance: "+str(round(float(self.balances_data['binance'][rel]['total']),8))
+        if rel in self.balances_data["Binance"]:
+            locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][rel]['locked']),8))
+            balance = "Balance: "+str(round(float(self.balances_data["Binance"][rel]['total']),8))
         else:
             locked_text = ""
             balance = "loading balance..."
@@ -1365,15 +1358,22 @@ class Ui(QTabWidget):
         self.binance_quote_locked_lbl.setText(locked_text)
         # Base coin icon and balances
         self.binance_base_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
-        if base in self.balances_data['binance']:
-            locked_text = "Locked: "+str(round(float(self.balances_data['binance'][base]['locked']),8))
-            balance = "Balance: "+str(round(float(self.balances_data['binance'][base]['total']),8))
+        if base in self.balances_data["Binance"]:
+            locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][base]['locked']),8))
+            balance = "Balance: "+str(round(float(self.balances_data["Binance"][base]['total']),8))
         else:
             locked_text = ""
             balance = "loading balance..."
         self.binance_base_balance_lbl.setText(balance)
         self.binance_base_locked_lbl.setText(locked_text)
         self.update_binance_addr()
+
+    def update_binance_wallet(self):
+        selected_row = self.binance_balances_table.currentRow()
+        if selected_row != -1 and self.binance_balances_table.item(selected_row,0) is not None:
+            coin = self.binance_balances_table.item(selected_row,0).text()
+            self.update_combo(self.binance_asset_comboBox,coinslib.binance_coins,coin)
+            self.update_binance_addr()
 
     def update_binance_addr(self):
         # TODO: Isn't this cached?
@@ -1411,9 +1411,8 @@ class Ui(QTabWidget):
         msgBox.exec()
 
     def update_binance_balance_table(self):
-        print('update Binance_balance_table')
         self.clear_table(self.binance_balances_table)
-        row_count = len(self.balances_data['binance'])
+        row_count = len(self.balances_data["Binance"])
         self.binance_balances_table.setRowCount(row_count)
         self.binance_balances_table.setSortingEnabled(False)
         row = 0
@@ -1421,10 +1420,10 @@ class Ui(QTabWidget):
             self.binance_balances_msg_lbl.setText('Balances loading...')
         else:
             self.binance_balances_msg_lbl.setText('')
-            for coin in self.balances_data['binance']:
-                available = float(self.balances_data['binance'][coin]['available'])
-                total = float(self.balances_data['binance'][coin]['total'])
-                locked = float(self.balances_data['binance'][coin]['locked'])
+            for coin in self.balances_data["Binance"]:
+                available = float(self.balances_data["Binance"][coin]['available'])
+                total = float(self.balances_data["Binance"][coin]['total'])
+                locked = float(self.balances_data["Binance"][coin]['locked'])
                 balance_row = [coin, total, available, locked]
                 self.add_row(row, balance_row, self.binance_balances_table)
                 row += 1
@@ -1565,6 +1564,8 @@ class Ui(QTabWidget):
                 QMessageBox.information(self, 'Sell Order Failed', str(resp), QMessageBox.Ok, QMessageBox.Ok)
             self.update_trading_log('Binance', log_msg, str(resp))
         self.update_binance_orders_table()
+
+    
 
     def binance_withdraw(self):
         index = self.binance_asset_comboBox.currentIndex()
@@ -1812,8 +1813,8 @@ class Ui(QTabWidget):
             else:
                 msg = str(resp)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
-            # TODO: update balance after withdrawl 
-            balance_info = self.balances_data[cointag]
+            balance_info = self.balances_data['mm2'][cointag]
+            print(balance_info)
             if 'address' in balance_info:
                 address = balance_info['address']
                 balance = round(float(balance_info['balance']),8)
@@ -1842,6 +1843,11 @@ class Ui(QTabWidget):
 
     def update_strategies_table(self):
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        for row in range(self.strategies_table.rowCount()):
+            if self.strategies_table.item(row, 10).text() == 'active':
+                self.colorize_row(self.strategies_table, row, QColor(218, 255, 127))
+            elif self.strategies_table.item(row, 10).text() != 'inactive':
+                self.colorize_row(self.strategies_table, row, QColor(255, 233, 127))
         self.strategies_table.clearSelection()
 
     def create_strat(self):
@@ -1872,6 +1878,7 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
 
+
     def start_strat(self):
         selected_row = self.strategies_table.currentRow()
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
@@ -1883,7 +1890,7 @@ class Ui(QTabWidget):
                 "message": "No strategy row selected!"
             }
         QMessageBox.information(self, 'Strategy '+strategy_name+' started', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.update_strategies_table()
 
     def stop_strat(self):
         selected_row = self.strategies_table.currentRow()
@@ -1897,7 +1904,7 @@ class Ui(QTabWidget):
                 "message": "No strategy row selected!"
             }
             QMessageBox.information(self, 'Strategy stop error', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.update_strategies_table()
 
     def stop_all_strats(self):
         resp = requests.post('http://127.0.0.1:8000/strategies/stop/all').json()
@@ -1912,16 +1919,15 @@ class Ui(QTabWidget):
             result.exec_()
 
     def view_strat_summary(self):
-        print('view_strat_summary')
         selected_row = self.strategies_table.currentRow()
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             if self.summary_hide_empty_checkbox.isChecked():
-                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "3|0|EXCLUDE")
+                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "4|0|EXCLUDE")
             else:
                 self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table)
             for row in range(self.strat_summary_table.rowCount()):
-                if self.strat_summary_table.item(row, 3).text() != '0':
+                if self.strat_summary_table.item(row, 4).text() != '0':
                     self.colorize_row(self.strat_summary_table, row, QColor(218, 255, 127))
 
     def delete_strat(self):
@@ -1935,7 +1941,7 @@ class Ui(QTabWidget):
                 "message": "No strategy row selected!"
             }
         QMessageBox.information(self, 'Archive Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.update_strategies_table()
 
     ## HISTORY
     def mm2_view_swap(self):
@@ -2137,11 +2143,11 @@ class Ui(QTabWidget):
                     average_btc_price = self.prices_data['average'][coin]['BTC']
                 if 'USD' in self.prices_data['average'][coin]:
                     average_usd_price = self.prices_data['average'][coin]['USD']
-            if coin in self.prices_data['binance']:
-                if 'BTC' in self.prices_data['binance'][coin]:
-                    bn_btc_price = self.prices_data['binance'][coin]['BTC']
-                if 'TUSD' in self.prices_data['binance'][coin]:
-                    bn_tusd_price = self.prices_data['binance'][coin]['TUSD']
+            if coin in self.prices_data["Binance"]:
+                if 'BTC' in self.prices_data["Binance"][coin]:
+                    bn_btc_price = self.prices_data["Binance"][coin]['BTC']
+                if 'TUSD' in self.prices_data["Binance"][coin]:
+                    bn_tusd_price = self.prices_data["Binance"][coin]['TUSD']
             if coin in self.prices_data['gecko']:
                 if 'BTC' in self.prices_data['gecko'][coin]:
                     gk_btc_price = self.prices_data['gecko'][coin]['BTC']
@@ -2423,49 +2429,6 @@ class Ui(QTabWidget):
                             row += 1
         self.bot_binance_orders_table.setSortingEnabled(True)
         self.bot_binance_orders_table.resizeColumnsToContents()
-
-    # For a given trade pair, determine if direct trade possible, or if a common quote asset is avaiable.
-    def get_binance_countertrade_symbols(self, base, rel, base_amount, rel_amount):
-        available_base_pairs = binance_api.base_asset_info[base]['available_pairs']
-        available_rel_pairs = binance_api.base_asset_info[rel]['available_pairs']
-        selected_base_symbol = ''
-        if base in binance_api.quoteAssets:
-            # check if direct rel trade possible
-            for symbol in available_rel_pairs:
-                if binance_api.binance_pair_info[symbol]['quoteAsset'] == base:
-                    selected_base_symbol = symbol
-                    selected_rel_symbol = symbol
-                    print("Direct trade symbol found (base quote): "+symbol)
-            return symbol, symbol
-        elif rel in binance_api.quoteAssets:
-            # check if direct base trade possible
-            for symbol in available_base_pairs:
-                if binance_api.binance_pair_info[symbol]['quoteAsset'] == rel:
-                    selected_base_symbol = symbol
-                    selected_rel_symbol = symbol
-                    print("Direct trade symbol found (rel quote): "+symbol)
-            return symbol, symbol
-        else:
-            # no common pair, check for common quote asset
-            print("No common trade symbol, checking for common quote asset...")
-            for base_symbol in available_base_pairs:
-                base_quoteAsset = binance_api.binance_pair_info[base_symbol]['quoteAsset']
-                base_baseAsset = binance_api.binance_pair_info[base_symbol]['baseAsset']
-                for rel_symbol in available_rel_pairs:
-                    rel_quoteAsset = binance_api.binance_pair_info[rel_symbol]['quoteAsset']
-                    rel_baseAsset = binance_api.binance_pair_info[rel_symbol]['baseAsset']
-                    if rel_quoteAsset == base_quoteAsset:
-                        # calculate required quote asset value for trade, check if balance sufficient.
-                        quoteAsset_balance = self.binance_balances[base_quoteAsset]['available']
-                        rel_symbol_market_price = binance_api.get_price(self.creds[5], rel_symbol)['price']
-                        base_symbol_market_price = binance_api.get_price(self.creds[5], base_symbol)['price']
-                        # TODO: fix this - quote asset is only required for buy side! Sell side req sell asset balance!
-                        base_quote_req = float(base_amount)*float(base_symbol_market_price)
-                        rel_quote_req = float(rel_amount)*float(rel_symbol_market_price)
-                        if rel_quote_req < quoteAsset_balance and base_quote_req < quoteAsset_balance:
-                            return rel_symbol, base_symbol
-                        else:
-                            print("Not enough "+base_quoteAsset+" balance to cointertrade!")
 
     def start_binance_countertrade(self, base, rel, base_amount, rel_amount, mm2_order_uuid, swap):
         # replenish base, liquidate rel

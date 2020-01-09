@@ -92,10 +92,10 @@ bot_data = {}
 mm2_orderbook_data = {}
 balances_data = {
     "mm2": {},
-    "binance": {}
+    "Binance": {}
 }
 prices_data = {
-    "binance":{
+    "Binance":{
 
     },
     "paprika":{
@@ -172,7 +172,7 @@ class bot_update_thread(object):
     def run(self):
         while True:
             global bot_data
-            bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path)
+            bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, prices_data, config_path)
             time.sleep(self.interval)
 
 class orderbook_update_thread(object):
@@ -199,7 +199,7 @@ class bn_balances_update_thread(object):
         while True:
             global balances_data
             bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret)
-            balances_data['binance'].update(bn_balances_data)
+            balances_data["Binance"].update(bn_balances_data)
             time.sleep(self.interval)
 
 class mm2_balances_update_thread(object):
@@ -517,17 +517,20 @@ async def bot_strategy_summary(strategy_name):
         table_data = []
         with open(config_path+"/history/"+strategy_name+".json", 'r') as f:
             history = json.loads(f.read())
-        i = 1
+        i = 0
         total_duration = 0
         for session in history['Sessions']:
             duration = history['Sessions'][session]['Duration']
+            started = int(history['Sessions'][session]['Started'])
+            started_at = datetime.datetime.fromtimestamp(started)
             total_duration += duration
             session_data = {
                 "Name":strategy_name,
                 "Session":i,
+                "Started":started_at,
                 "Duration":sec_to_hms(duration),
                 "MM2 swaps":len(history['Sessions'][session]['MM2 swaps completed']),
-                "CEX swaps":len(history['Sessions'][session]['CEX swaps completed']),
+                "CEX swaps":len(history['Sessions'][session]['CEX swaps completed']['Binance']),
             }
             delta_coins = list(history['Sessions'][session]['Balance Deltas'].keys())
             delta_coins.sort()
@@ -538,6 +541,7 @@ async def bot_strategy_summary(strategy_name):
         total_data = {
             "Name":strategy_name,
             "Session":"Total",
+            "Started":'-',
             "Duration":sec_to_hms(total_duration),
             "MM2 swaps":history['Total MM2 swaps completed'],
             "CEX swaps":history['Total CEX swaps completed'],
@@ -577,7 +581,7 @@ async def coin_prices(coin):
         }
     elif coin in prices_data['average']:
         coin_price_data = {
-            "binance":{coin:prices_data['binance'][coin]},
+            "Binance":{coin:prices_data["Binance"][coin]},
             "paprika":{coin:prices_data['paprika'][coin]},
             "gecko":{coin:prices_data['gecko'][coin]},
             "average":{coin:prices_data['average'][coin]}
@@ -634,7 +638,7 @@ async def show_mm2_orderbook():
 @app.post("/strategies/create")
 async def create_strategy(*, name: str, strategy_type: str, sell_list: str, 
                           buy_list: str, margin: float = 5, refresh_interval: int = 30,
-                          balance_pct: int = 100, cex_list: str = 'binance'):
+                          balance_pct: int = 100, cex_list: str = "Binance"):
     """
     Creates a new trading strategy definition.
     - **name**: Each strategy must have a name. E.g. KMD
@@ -848,7 +852,7 @@ async def stop_strategy(strategy_name):
         with open(config_path+"/history/"+strategy_name+".json", 'w+') as f:
             f.write(json.dumps(history, indent=4))
         # get current order uuids
-        history = botlib.cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history)
+        history = botlib.cancel_session_orders(mm2_ip, mm2_rpc_pass, history)
         resp = {
             "response": "success",
             "message": "Strategy '"+strategy_name+"' stopped",

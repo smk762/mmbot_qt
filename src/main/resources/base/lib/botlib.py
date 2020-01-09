@@ -9,7 +9,6 @@ from . import rpclib, priceslib, binance_api
 #  LOOPS
 
 def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path):
-    print("starting orderbook loop")
     active_coins = mm2_active_coins(mm2_ip, mm2_rpc_pass)
     orderbook_data = []
     for base in active_coins:
@@ -17,10 +16,9 @@ def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path):
             if base != rel:
                 orderbook_pair = get_mm2_pair_orderbook(mm2_ip, mm2_rpc_pass, base, rel)
                 orderbook_data.append(orderbook_pair)
-    print("orderbook loop completed")
     return orderbook_data
     
-def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
+def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, prices_data, config_path):
     print("starting bot loop")
     strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
     bot_data = "bot data placeholder"
@@ -33,7 +31,12 @@ def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
             print("Active strategy: "+strategy_name)
             with open(config_path+"strategies/"+strategy_name+".json", 'r') as f:
                 strategy = json.loads(f.read())
-            history = update_session_swaps(mm2_ip, mm2_rpc_pass, strategy, history)
+            history = update_session_swaps(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, strategy, history)
+            history = get_binance_orders_status(bn_key, bn_secret, history)
+            print("session swaps updated")
+            print("update total balanace deltas")
+            history = calc_total_balance_deltas(strategy, history)
+            print("total deltas updated")
             # check refresh interval vs last refresh
             refresh_time = history['Last refresh'] + strategy['Refresh interval']*60
             if history['Last refresh'] == 0 or refresh_time < int(time.time()) or history['Last refresh'] < session_start:
@@ -48,9 +51,9 @@ def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, prices_data, config_path):
                     print("*** Refreshing strategy: "+strategy_name+" ***")
                     history.update({'Last refresh':int(time.time())})
                     # cancel old orders
-                    history = cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history)
+                    history = cancel_session_orders(mm2_ip, mm2_rpc_pass, history)
                     # place fresh orders
-                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history)
+                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, config_path, strategy, history)
                     # update session history
                 else:
                     print("Skipping strategy "+strategy_name+": MM2 coins not active ")
@@ -121,7 +124,7 @@ def mm2_active_coins(mm2_ip, mm2_rpc_pass):
 
 # STRATEGIES
 
-def submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history):
+def submit_strategy_orders(mm2_ip, mm2_rpc_pass, config_path, strategy, history):
     prices_data = priceslib.prices_loop()
     print("*** submitting strategy orders ***")
     print("Strategy: "+str(strategy))
@@ -215,7 +218,7 @@ def get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap):
             status = event['event']['type']
     return status, swap_data['result']
 
-def update_session_swaps(mm2_ip, mm2_rpc_pass, strategy, history):
+def update_session_swaps(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, strategy, history):
     for session in history['Sessions']:
         mm2_order_uuids = history['Sessions'][session]['MM2 open orders']
         for order_uuid in mm2_order_uuids:
@@ -228,6 +231,7 @@ def update_session_swaps(mm2_ip, mm2_rpc_pass, strategy, history):
                     if swap not in history['Sessions'][session]['MM2 swaps in progress']:
                         history['Sessions'][session]['MM2 swaps in progress'].append(swap)
             elif 'error' in order_info:
+                print("order_info error: "+str(order_info))
                 mm2_order_uuids.remove(order_uuid)
             else:
                 print("order_info: "+str(order_info))
@@ -236,9 +240,11 @@ def update_session_swaps(mm2_ip, mm2_rpc_pass, strategy, history):
             swap_status = get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap)
             status = swap_status[0]
             swap_data = swap_status[1]
-            print("status: "+status)
+            print(swap+" status: "+status)
             if status == 'Finished':
+                print("adding to session deltas")
                 if "my_info" in swap_data:
+                    print("updating session deltas history")
                     history['Sessions'][session]['MM2 swaps completed'].update({
                                                         swap:{
                                                             "Recieved coin":swap_data["my_info"]["other_coin"],
@@ -249,84 +255,208 @@ def update_session_swaps(mm2_ip, mm2_rpc_pass, strategy, history):
                                                         }
                                                     })
                     swaps_in_progress.remove(swap)
+                    print("init cex counterswap")
+                    history = start_cex_counterswap(bn_key, bn_secret, strategy, history, balances_data, session, swap)
+                    print("submitted cex counterswap")
                 else:
-                    print("data: "+str(swap_data))
+                    print(swap+" data: "+str(swap_data))
             elif status == 'Failed':
                 swaps_in_progress.remove(swap)
         history['Sessions'][session]['MM2 swaps in progress'] = swaps_in_progress
         history['Sessions'][session]['MM2 open orders'] = mm2_order_uuids
-        history = calc_total_balance_deltas(strategy, history)
     return history
 
+def get_binance_orders_status(bn_key, bn_secret, history):
+    for session in history['Sessions']:
+        if "Binance" in history['Sessions'][session]["CEX open orders"]:
+            for mm2_uuid in history['Sessions'][session]["CEX open orders"]["Binance"]:
+                add_symbols = []
+                rem_symbols = []
+                for symbol in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid]:
+                    if 'orderId' in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]:
+                        orderID = history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]['orderId']
+                        resp = binance_api.get_order(bn_key, bn_secret, symbol, orderID)
+                        print(resp)
+                        if "status" in resp:
+                            if resp['status'] == 'FILLED':
+                                # move to "completed"
+                                if mm2_uuid not in history['Sessions'][session]["CEX swaps completed"]["Binance"]:
+                                    history['Sessions'][session]["CEX swaps completed"]["Binance"].update({mm2_uuid:{}})
+                                history['Sessions'][session]["CEX swaps completed"]["Binance"][mm2_uuid].update({symbol:resp})
+                                # remove from open
+                                rem_symbols.append(symbol)
+                            else:
+                                add_symbols.append({symbol:resp})
+                        else:
+                            print(resp)
+                for symbol_resp in add_symbols:
+                    history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].update(symbol_resp)
+                for symbol_resp in rem_symbols:
+                    if symbol in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid]:
+                        history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].pop(symbol)
+    return history
 
-def cancel_session_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, history):
-    print("cancelling session orders")
-    session = history['Sessions'][str(len(history['Sessions'])-1)]
-    # Cancel Binance Orders
-    if 'binance' in session['CEX open orders']:
-        binance_orders = session['CEX open orders']['binance']
-        for symbol in binance_orders:
-            order_id = binance_orders[symbol]
-            binance_api.delete_order(bn_key, bn_secret, symbol, order_id)
-    # Cancel MM2 Orders
-    mm2_order_uuids = history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders']
-    print(mm2_order_uuids)
-    for order_uuid in mm2_order_uuids:
-        print(order_uuid)
-        order_info = rpclib.order_status(mm2_ip, mm2_rpc_pass, order_uuid).json()
-        swap_in_progress = False
-        if 'order' in order_info:
-            swaps = order_info['order']['started_swaps']
-            print(swaps)
-            # updates swaps
-            for swap in swaps:
-                swap_status = get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap)
-                status = swap_status[0]
-                swap_data = swap_status[1]
-                print(swap+": "+status)
-                if status != 'Finished' and status != 'Failed':
-                    # swap in progress
-                    swap_in_progress = True
-                    history['Sessions'][str(len(history['Sessions'])-1)]['MM2 swaps in progress'].append(swap)
+def start_cex_counterswap(bn_key, bn_secret, strategy, history, balances_data, session_num, mm2_swap_uuid):
+    mm2_swap_data = history['Sessions'][session_num]['MM2 swaps completed'][mm2_swap_uuid]
+    replenish_coin = mm2_swap_data["Sent coin"]
+    replenish_amount = float(mm2_swap_data["Sent amount"])
+    spend_coin = mm2_swap_data["Recieved coin"]
+    spend_amount = float(mm2_swap_data["Recieved amount"])
+    if "Binance" in strategy["CEX countertrade list"]:
+        symbols = binance_api.get_binance_countertrade_symbols(bn_key, bn_secret, balances_data["Binance"], replenish_coin, spend_coin, replenish_amount, spend_amount)
+        if symbols[0] is not False:
+            if symbols[0] == symbols[1]:
+                history = start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_swap_uuid,
+                                   replenish_coin, spend_coin, replenish_amount, spend_amount, symbols[0])
+            else:
+                history = start_indirect_trade(bn_key, bn_secret, strategy, history, session_num, mm2_swap_uuid,
+                                     replenish_coin, spend_coin, replenish_amount, spend_amount, symbols[0], symbols[1])
         else:
-            print(order_info)
-        if not swap_in_progress:
-            rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
+            print("countertrade symbols not found")
+    return history
 
-    history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders'] = []
-    history['Sessions'][str(len(history['Sessions'])-1)]['CEX open orders']['binance'] = {}
+def start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_swap_uuid,
+                       replenish_coin, spend_coin, replenish_amount, spend_amount, symbol):
+    margin = strategy["Margin"]
+    replenish_amount = binance_api.round_to_tick(symbol, replenish_amount)
+    spend_amount = binance_api.round_to_tick(symbol, spend_amount)
+    if mm2_swap_uuid not in history['Sessions'][session_num]["CEX open orders"]["Binance"]:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"].update({mm2_swap_uuid:{}})
+    if binance_api.binance_pair_info[symbol]['quoteAsset'] == replenish_coin:
+        # E.g. Replenish BTC, Spend KMD
+        # Spend Amount = 10000 (KMD)
+        # replenish_amount = 0.777 (BTC)
+        # symbol = KMDBTC
+        # quoteAsset = BTC
+        # Margin = 2%
+        price = float(replenish_amount)/float(spend_amount)*(100+margin)/100
+        price = binance_api.round_to_tick(symbol, price)
+        # Sell 10000 KMD for 0.79254 BTC
+        resp = binance_api.create_sell_order(bn_key, bn_secret, symbol, spend_amount, price)
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+    else:
+        # E.g. Replenish KMD, Spend BTC
+        # replenish_amount = 10000 (KMD)
+        # Spend Amount = 0.777 (BTC)
+        # symbol = KMDBTC
+        # quoteAsset = BTC
+        # Margin = 2%
+        price = float(replenish_amount)/float(spend_amount)*(100-margin)/100
+        price = binance_api.round_to_tick(symbol, price)
+        # Replenish 10000 KMD, spending 0.7614 BTC
+        resp = binance_api.create_buy_order(bn_key, bn_secret, symbol, replenish_amount, price)
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+    return history
+
+def start_indirect_trade(bn_key, bn_secret, strategy, history, session_num, mm2_swap_uuid,
+                         replenish_coin, spend_coin, replenish_amount, spend_amount, spend_symbol, replenish_symbol):
+
+    margin = strategy["Margin"]
+    mm2_trade_price = replenish_amount/spend_amount
+    inverse_mm2_trade_price = spend_amount/replenish_amount
+
+    margin_trade_buy_price = mm2_trade_price*(100-margin)/100
+    margin_trade_sell_price = mm2_trade_price*(100+margin)/100
+
+    # E.g. Spend KMD, Replenish DASH
+    # replenish_amount = 1 (DASH)
+    # Spend Amount = 100 (KMD)
+    # replenish_symbol = DASHBTC
+    # spend_symbol = KMDBTC
+    # quoteAsset = BTC
+    # Margin = 2%
+
+    # i.e KMDBTC price
+    spend_quote_price = float(binance_api.get_price(bn_key, spend_symbol)['price'])
+    spend_quote_amount = binance_api.round_to_tick(spend_symbol, spend_amount*spend_quote_price)
+
+    # i.e DASHBTC price
+    replenish_quote_price = float(binance_api.get_price(bn_key, replenish_symbol)['price'])
+    rep_quote_amount = binance_api.round_to_tick(spend_symbol, spend_amount*spend_quote_price)
+
+    # i.e. DASHKMD price (should be close to mm2_trade price after margin applied)
+    rep_spend_price = replenish_quote_price/spend_quote_price
+
+    # i.e. KMDDASH price (should be close to inverse mm2_trade price after margin applied)
+    spend_rep_price = spend_quote_price/replenish_quote_price
+
+    if mm2_swap_uuid not in history['Sessions'][session_num]["CEX open orders"]["Binance"]:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"].update({mm2_swap_uuid:{}})
+    while float(rep_quote_amount) > float(spend_quote_amount)*(100+margin)/100:
+        replenish_quote_price = replenish_quote_price*0.999
+        replenish_amount = binance_api.round_to_tick(replenish_symbol, replenish_amount)
+        rep_quote_amount = spend_amount*spend_quote_price
+    # Replenish spent BTC, spending DASH
+    resp = binance_api.create_sell_order(bn_key, bn_secret, spend_symbol, float(spend_amount), spend_quote_price)
+    history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: resp})
+    # Replenish 100 KMD, spending BTC 
+    resp = binance_api.create_buy_order(bn_key, bn_secret, replenish_symbol, float(replenish_amount), replenish_quote_price)
+    history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: resp})
     return history
 
 def calc_total_balance_deltas(strategy, history):
     strategy_coins = list(set(strategy['Sell list']+strategy['Buy list']))
-    # update balance deltas
-    for swap in history['Sessions'][str(len(history['Sessions'])-1)]['MM2 swaps completed']:
-        recieved = session["Balance Deltas"][swap["Recieved coin"]] + swap["Recieved amount"]
-        history['Sessions'][str(len(history['Sessions'])-1)]["Balance Deltas"].update({[swap["Recieved coin"]]: recieved})
-        sent = session["Balance Deltas"][swap["Sent coin"]] - swap["Sent amount"]
-        history['Sessions'][str(len(history['Sessions'])-1)]["Balance Deltas"].update({[swap["Sent coin"]]: sent})
 
     total_balance_deltas = {}
     total_cex_completed_swaps = 0
     total_mm2_completed_swaps = 0
+
     for strategy_coin in strategy_coins:
         total_balance_deltas.update({strategy_coin:0})
+
     for session in history['Sessions']:
-        total_mm2_completed_swaps += len(history['Sessions'][session]['MM2 swaps completed'])
-        total_cex_completed_swaps += len(history['Sessions'][session]['CEX swaps completed'])
         session_balance_deltas = {}
         for strategy_coin in strategy_coins:
             session_balance_deltas.update({strategy_coin:0})
-        for swap in history['Sessions'][session]['MM2 swaps completed']:
-            recieved_coin = history['Sessions'][session]['MM2 swaps completed'][swap]["Recieved coin"]
-            recieved_amount = float(history['Sessions'][session]['MM2 swaps completed'][swap]["Recieved amount"])
-            sent_coin = history['Sessions'][session]['MM2 swaps completed'][swap]["Sent coin"]
-            sent_amount = float(history['Sessions'][session]['MM2 swaps completed'][swap]["Sent amount"])
-            session_balance_deltas[recieved_coin] += recieved_amount
-            session_balance_deltas[sent_coin] -= sent_amount
-            total_balance_deltas[recieved_coin] += recieved_amount
-            total_balance_deltas[sent_coin] -= sent_amount
+
+        mm2_swaps = history['Sessions'][session]['MM2 swaps completed']
+        total_mm2_completed_swaps += len(mm2_swaps)
+
+        binance_swaps = history['Sessions'][session]["CEX swaps completed"]["Binance"]
+        for uuid in binance_swaps:
+            for symbol in binance_swaps[uuid]:
+                total_cex_completed_swaps += len(binance_swaps)
+                if binance_api.binance_pair_info[symbol]['quoteAsset'] not in session_balance_deltas:
+                    session_balance_deltas.update({strategy_coin:0})
+                if binance_api.binance_pair_info[symbol]['quoteAsset'] not in total_balance_deltas:
+                    total_balance_deltas.update({strategy_coin:0})
+
+        for swap_uuid in mm2_swaps:
+            swap_info = mm2_swaps[swap_uuid]
+            swap_rec_coin = swap_info["Recieved coin"]
+            swap_rec_amount = swap_info["Recieved amount"]
+            swap_spent_coin = swap_info["Sent coin"]
+            swap_spent_amount = swap_info["Sent amount"]
+
+            session_balance_deltas[swap_rec_coin] += swap_rec_amount
+            session_balance_deltas[swap_spent_coin] -= swap_spent_amount
+            total_balance_deltas[swap_rec_coin] += swap_rec_amount
+            total_balance_deltas[swap_spent_coin] -= swap_spent_amount
+
+        for uuid in binance_swaps:
+            for symbol in binance_swaps[uuid]:
+                swap_info = binance_swaps[uuid][symbol]
+                print(swap_info['side']+" "+swap_info['symbol'])
+                if swap_info['side'] == 'BUY':
+                    swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset'] 
+                    swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                    swap_rec_amount = swap_info["executedQty"]
+                    swap_spent_amount = swap_info["cummulativeQuoteQty"]
+                elif swap_info['side'] == 'SELL':
+                    swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset'] 
+                    swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                    swap_spent_amount = swap_info["executedQty"]
+                    swap_rec_amount = swap_info["cummulativeQuoteQty"]
+                print("Rec: "+swap_rec_amount+swap_rec_coin)
+                print("Sent: "+swap_spent_amount+swap_spent_coin)
+                print(swap_spent_coin)
+            session_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
+            session_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
+            total_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
+            total_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
+
         history["Sessions"][session].update({"Balance Deltas": session_balance_deltas})
+
     history.update({
             "Total MM2 swaps completed": total_mm2_completed_swaps,
             "Total CEX swaps completed": total_cex_completed_swaps,
@@ -350,53 +480,39 @@ def cancel_strategy(mm2_ip, mm2_rpc_pass, history, strategy):
         for order_uuid in mm2_open_orders:
             rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
         session.update({"MM2 open orders":[]})
-        # cancel cex orders
-        cex_open_orders = session["CEX open orders"]
-        for order in cex_open_orders:
-            if 'binance' in cex_open_orders:
-                for symbol in cex_open_orders['binance']:
-                    order_id = cex_open_orders['binance'][symbol]
-                    binance_api.delete_order(bn_key, bn_secret, symbol, order_id)
-        session.update({"CEX open orders":{
-                                "binance":{}
-                            }
-                        })
-        # Handle swaps in progress
-        mm2_swaps_in_progress = session["MM2 swaps in progress"]
-        for swap in mm2_swaps_in_progress:
-            # alreay cancelled, move to completed, and mark as "cancelled while in progress"... or do these continue?
-            pass
-        cex_swaps_in_progress = session["CEX swaps in progress"]
-        for swap in cex_swaps_in_progress:
-            # already cancelled, move to completed, and mark as "cancelled while in progress"... or do these continue?
-            pass
-        mm2_swaps_completed = session["MM2 swaps completed"]
-        for swap in mm2_swaps_completed:
-            print(swap)
-            '''
-            # calculate deltas
-            spent_coin = 
-            recieved_coin = 
-            spent_amount = 
-            recieved_amount = 
-            session["Balance Deltas"][spent_coin]-spent_amount
-            session["Balance Deltas"][recieved_coin]+recieved_amount
-            # DEX FEES?
-            # CEX FEES?
-            '''
-        cex_swaps_completed = session["CEX swaps completed"]
-        for swap in cex_swaps_completed:
-            # calculate deltas
-            print(swap)
-            '''
-            spent_coin = 
-            recieved_coin = 
-            spent_amount = 
-            recieved_amount = 
-            session["Balance Deltas"][spent_coin]-spent_amount
-            session["Balance Deltas"][recieved_coin]+recieved_amount
-            '''
         history['Sessions'].update({str(len(history['Sessions'])-1):session})
+    return history
+
+def cancel_session_orders(mm2_ip, mm2_rpc_pass, history):
+    print("cancelling session orders")
+    session = str(len(history['Sessions'])-1)
+    # Cancel MM2 Orders
+    mm2_order_uuids = history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders']
+    print(mm2_order_uuids)
+    for order_uuid in mm2_order_uuids:
+        print(order_uuid)
+        order_info = rpclib.order_status(mm2_ip, mm2_rpc_pass, order_uuid).json()
+        swap_in_progress = False
+        if 'order' in order_info:
+            swaps = order_info['order']['started_swaps']
+            print(swaps)
+            # updates swaps
+            for swap in swaps:
+                swap_status = get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap)
+                status = swap_status[0]
+                swap_data = swap_status[1]
+                print(swap+": "+status)
+                if status != 'Finished' and status != 'Failed':
+                    # swap in progress
+                    swap_in_progress = True
+                    if swap not in history['Sessions'][session]['MM2 swaps in progress']:
+                        history['Sessions'][session]['MM2 swaps in progress'].append(swap)
+        else:
+            print(order_info)
+        if not swap_in_progress:
+            rpclib.cancel_uuid(mm2_ip, mm2_rpc_pass, order_uuid)
+
+    history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders'] = []
     return history
 
 # STRATEGY INITIALIZATION
@@ -452,9 +568,12 @@ def init_session(strategy_name, strategy, history, config_path):
             "MM2 open orders": [],
             "MM2 swaps in progress": [],
             "MM2 swaps completed": {},
-            "CEX open orders": {},
-            "CEX swaps in progress": {},
-            "CEX swaps completed": {},
+            "CEX open orders": {
+                    "Binance": {}
+                },
+            "CEX swaps completed": {
+                    "Binance": {}
+                },
             "Balance Deltas": balance_deltas,
         }})
     history.update({"Sessions":sessions})
@@ -507,7 +626,7 @@ def get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret):
     bn_addr = binance_api.get_binance_addresses(bn_key, bn_secret)
     mm2_addr = rpclib.all_addresses(mm2_ip, mm2_rpc_pass)
     addresses = {
-        'binance': bn_addr ,
+        "Binance": bn_addr ,
         'mm2': mm2_addr
     }
     return addresses
