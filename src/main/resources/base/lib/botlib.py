@@ -207,15 +207,19 @@ def run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data):
     # update session history with open orders
 
 def get_mm2_swap_status(mm2_ip, mm2_rpc_pass, swap):
+    print("checking mm2 swap "+swap)
     swap_data = rpclib.my_swap_status(mm2_ip, mm2_rpc_pass, swap).json()
-    for event in swap_data['result']['events']:
-        if event['event']['type'] in rpclib.error_events: 
-            status = 'Failed'
-            break
-        if event['event']['type'] == 'Finished':
-            status = 'Finished'
-        else:
-            status = event['event']['type']
+    if 'result' in swap_data:
+        for event in swap_data['result']['events']:
+            if event['event']['type'] in rpclib.error_events: 
+                status = 'Failed'
+                break
+            if event['event']['type'] == 'Finished':
+                status = 'Finished'
+            else:
+                status = event['event']['type']
+    else: 
+        print(swap_data)
     return status, swap_data['result']
 
 def update_session_swaps(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, strategy, history):
@@ -291,7 +295,7 @@ def get_binance_orders_status(bn_key, bn_secret, history):
                             print(resp)
                 for symbol_resp in add_symbols:
                     history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].update(symbol_resp)
-                for symbol_resp in rem_symbols:
+                for symbol in rem_symbols:
                     if symbol in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid]:
                         history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].pop(symbol)
     return history
@@ -399,6 +403,7 @@ def calc_total_balance_deltas(strategy, history):
 
     total_balance_deltas = {}
     total_cex_completed_swaps = 0
+    total_cex_unfinished_swaps = 0
     total_mm2_completed_swaps = 0
 
     for strategy_coin in strategy_coins:
@@ -406,23 +411,21 @@ def calc_total_balance_deltas(strategy, history):
 
     for session in history['Sessions']:
         session_balance_deltas = {}
+        session_mm2_completed_swaps = 0
+        session_cex_completed_swaps = 0
+        session_cex_unfinished_swaps = 0
+        mm2_swaps = history['Sessions'][session]['MM2 swaps completed']
+        binance_swaps = history['Sessions'][session]["CEX swaps completed"]["Binance"]
+        unfinished_binance_swaps = history['Sessions'][session]["CEX open orders"]["Binance"]
+
         for strategy_coin in strategy_coins:
             session_balance_deltas.update({strategy_coin:0})
 
-        mm2_swaps = history['Sessions'][session]['MM2 swaps completed']
-        total_mm2_completed_swaps += len(mm2_swaps)
+        for uuid in mm2_swaps:
+            session_mm2_completed_swaps += 1
+            total_mm2_completed_swaps += 1
 
-        binance_swaps = history['Sessions'][session]["CEX swaps completed"]["Binance"]
-        for uuid in binance_swaps:
-            for symbol in binance_swaps[uuid]:
-                total_cex_completed_swaps += len(binance_swaps)
-                if binance_api.binance_pair_info[symbol]['quoteAsset'] not in session_balance_deltas:
-                    session_balance_deltas.update({strategy_coin:0})
-                if binance_api.binance_pair_info[symbol]['quoteAsset'] not in total_balance_deltas:
-                    total_balance_deltas.update({strategy_coin:0})
-
-        for swap_uuid in mm2_swaps:
-            swap_info = mm2_swaps[swap_uuid]
+            swap_info = mm2_swaps[uuid]
             swap_rec_coin = swap_info["Recieved coin"]
             swap_rec_amount = swap_info["Recieved amount"]
             swap_spent_coin = swap_info["Sent coin"]
@@ -433,32 +436,51 @@ def calc_total_balance_deltas(strategy, history):
             total_balance_deltas[swap_rec_coin] += swap_rec_amount
             total_balance_deltas[swap_spent_coin] -= swap_spent_amount
 
+        for uuid in unfinished_binance_swaps:
+            for symbol in unfinished_binance_swaps[uuid]:
+                session_cex_unfinished_swaps += 1
+                total_cex_unfinished_swaps += 1
+
         for uuid in binance_swaps:
             for symbol in binance_swaps[uuid]:
+                session_cex_completed_swaps += 1
+                total_cex_completed_swaps += 1
+
+                quoteAsset = binance_api.binance_pair_info[symbol]['quoteAsset']
+                baseAsset = binance_api.binance_pair_info[symbol]['baseAsset'] 
+
+                if quoteAsset not in session_balance_deltas:
+                    session_balance_deltas.update({strategy_coin:0})
+                if quoteAsset not in total_balance_deltas:
+                    total_balance_deltas.update({strategy_coin:0})
+
                 swap_info = binance_swaps[uuid][symbol]
-                print(swap_info['side']+" "+swap_info['symbol'])
                 if swap_info['side'] == 'BUY':
-                    swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset'] 
-                    swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                    swap_rec_coin = baseAsset
+                    swap_spent_coin = quoteAsset
                     swap_rec_amount = swap_info["executedQty"]
                     swap_spent_amount = swap_info["cummulativeQuoteQty"]
                 elif swap_info['side'] == 'SELL':
-                    swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset'] 
-                    swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                    swap_spent_coin = baseAsset
+                    swap_rec_coin = quoteAsset
                     swap_spent_amount = swap_info["executedQty"]
                     swap_rec_amount = swap_info["cummulativeQuoteQty"]
-                print("Rec: "+swap_rec_amount+swap_rec_coin)
-                print("Sent: "+swap_spent_amount+swap_spent_coin)
-                print(swap_spent_coin)
-            session_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
-            session_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
-            total_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
-            total_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
 
-        history["Sessions"][session].update({"Balance Deltas": session_balance_deltas})
+                session_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
+                session_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
+                total_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
+                total_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
+
+        history["Sessions"][session].update({
+                "Balance Deltas": session_balance_deltas,
+                "Num MM2 Swaps":session_mm2_completed_swaps,
+                "Num CEX Swaps Completed":session_cex_completed_swaps,
+                "Num CEX Swaps Started":session_cex_unfinished_swaps
+            })
 
     history.update({
             "Total MM2 swaps completed": total_mm2_completed_swaps,
+            "Total CEX swaps unfinished": total_cex_unfinished_swaps,
             "Total CEX swaps completed": total_cex_completed_swaps,
             "Total balance deltas": total_balance_deltas,
         })
@@ -575,6 +597,9 @@ def init_session(strategy_name, strategy, history, config_path):
                     "Binance": {}
                 },
             "Balance Deltas": balance_deltas,
+            "Num MM2 Swaps": 0,
+            "Num CEX Swaps Started": 0,
+            "Num CEX Swaps Completed": 0
         }})
     history.update({"Sessions":sessions})
     with open(config_path+"history/"+strategy_name+".json", 'w+') as f:

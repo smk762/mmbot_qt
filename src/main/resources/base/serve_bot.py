@@ -469,10 +469,74 @@ async def mm2_history_table():
             })
     return {"table_data":table_data}
 
-@app.get("/table/binance_history")
-async def binance_history_table():
-    resp = binance_api.get_binance_orders_history(bn_key, bn_secret)
-    return resp
+@app.get("/table/strategies_history")
+async def strategies_history_table():
+    table_data = []
+    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    for json_file in json_files:
+        with open(config_path+"history/"+json_file, 'r') as hist:
+            history = json.loads(hist.read())
+        for session in history['Sessions']:
+            for uuid in history['Sessions'][session]['MM2 swaps completed']:
+                swap_info = history['Sessions'][session]['MM2 swaps completed'][uuid]
+                table_data.append({
+                        "Start Time": datetime.datetime.fromtimestamp(round(swap_info["Start time"]/1000)*1000),
+                        "API":"MM2",
+                        "Buy Coin":swap_info["Recieved coin"],
+                        "Buy Amount":swap_info["Recieved amount"],
+                        "Sell Coin":swap_info["Sent amount"],
+                        "Sell Amount":swap_info["Sent amount"],
+                        "MM2 UUID":uuid,
+                        "Binance OrderID":"-",
+                        "Status": "Complete"
+                    })
+                for symbol in history['Sessions'][session]['CEX open orders']['Binance'][uuid]:
+                    order_info = history['Sessions'][session]['CEX open orders']['Binance'][uuid][symbol]
+                    if order_info['side'] == 'BUY':
+                        swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                        swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                        swap_rec_amount = order_info["origQty"]
+                        swap_spent_amount = round(float(order_info["origQty"])*float(order_info["price"]),10)
+                    elif order_info['side'] == 'SELL':
+                        swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                        swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                        swap_spent_amount = order_info["origQty"]
+                        swap_rec_amount = round(float(order_info["origQty"])*float(order_info["price"]),10)
+                    table_data.append({
+                            "Start Time": datetime.datetime.fromtimestamp(round(order_info["time"]/1000)),
+                            "API":"Binance",
+                            "Buy Coin":swap_rec_coin,
+                            "Buy Amount":swap_rec_amount,
+                            "Sell Coin":swap_spent_coin,
+                            "Sell Amount":swap_spent_amount,
+                            "MM2 UUID":uuid,
+                            "Binance OrderID":order_info["orderId"],
+                            "Status": "Incomplete"
+                        })
+                for symbol in history['Sessions'][session]['CEX swaps completed']['Binance'][uuid]:
+                    order_info = history['Sessions'][session]['CEX swaps completed']['Binance'][uuid][symbol]
+                    if order_info['side'] == 'BUY':
+                        swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                        swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                        swap_rec_amount = order_info["executedQty"]
+                        swap_spent_amount = order_info["cummulativeQuoteQty"]
+                    elif order_info['side'] == 'SELL':
+                        swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                        swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                        swap_spent_amount = order_info["executedQty"]
+                        swap_rec_amount = order_info["cummulativeQuoteQty"]
+                    table_data.append({
+                            "Start Time": datetime.datetime.fromtimestamp(round(order_info["time"]/1000)),
+                            "API":"Binance",
+                            "Buy Coin":swap_rec_coin,
+                            "Buy Amount":swap_rec_amount,
+                            "Sell Coin":swap_spent_coin,
+                            "Sell Amount":swap_spent_amount,
+                            "MM2 UUID":uuid,
+                            "Binance OrderID":order_info["orderId"],
+                            "Status": "Complete"
+                        })
+    return {"table_data":table_data}
 
 @app.get("/table/bot_strategies")
 async def bot_strategies():
@@ -524,13 +588,15 @@ async def bot_strategy_summary(strategy_name):
             started = int(history['Sessions'][session]['Started'])
             started_at = datetime.datetime.fromtimestamp(started)
             total_duration += duration
+            cex_unfinished = history['Sessions'][session]["Num CEX Swaps Started"]
+            cex_completed = history['Sessions'][session]["Num CEX Swaps Completed"]
             session_data = {
                 "Name":strategy_name,
                 "Session":i,
                 "Started":started_at,
                 "Duration":sec_to_hms(duration),
-                "MM2 swaps":len(history['Sessions'][session]['MM2 swaps completed']),
-                "CEX swaps":len(history['Sessions'][session]['CEX swaps completed']['Binance']),
+                "MM2 swaps":history['Sessions'][session]["Num MM2 Swaps"],
+                "CEX swaps":str(cex_completed)+"/"+str(cex_unfinished+cex_completed)
             }
             delta_coins = list(history['Sessions'][session]['Balance Deltas'].keys())
             delta_coins.sort()
@@ -544,7 +610,8 @@ async def bot_strategy_summary(strategy_name):
             "Started":'-',
             "Duration":sec_to_hms(total_duration),
             "MM2 swaps":history['Total MM2 swaps completed'],
-            "CEX swaps":history['Total CEX swaps completed'],
+            "CEX swaps":str(history['Total CEX swaps completed'])+"/"+str(history['Total CEX swaps completed']+history['Total CEX swaps unfinished']),
+            
         }
         delta_coins = list(history['Total balance deltas'].keys())
         delta_coins.sort()

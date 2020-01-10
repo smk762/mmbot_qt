@@ -434,6 +434,7 @@ class Ui(QTabWidget):
         self.update_binance_balance_table()
         self.update_prices_table()
         self.update_mm2_trade_history_table()
+        self.update_strategy_history_table()
         self.update_strategies_table()
         self.view_strat_summary()
         self.update_mm2_orders_table()
@@ -798,7 +799,7 @@ class Ui(QTabWidget):
     def show_history_tab(self):
         print('show_history_tab')
         self.update_mm2_trade_history_table()
-        self.update_binance_trade_history_table()
+        self.update_strategy_history_table()
 
     def show_config_tab(self):
         # populate credentials and config settings form fields
@@ -1813,14 +1814,6 @@ class Ui(QTabWidget):
             else:
                 msg = str(resp)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
-            balance_info = self.balances_data['mm2'][cointag]
-            print(balance_info)
-            if 'address' in balance_info:
-                address = balance_info['address']
-                balance = round(float(balance_info['balance']),8)
-                locked = round(float(balance_info['locked']),8)
-                available_balance = round(float(balance_info['available']),8)
-                self.wallet_balance.setText(str(balance_text))
             self.update_mm2_wallet_labels()
 
     ## STRATEGIES TAB
@@ -2178,9 +2171,13 @@ class Ui(QTabWidget):
             else:
                 self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
 
-    def update_binance_trade_history_table(self):
-        # Will need to be tracked locally. API endpoint is per symbol
-        pass
+    def update_strategy_history_table(self):
+        self.populate_table("table/strategies_history", self.strategy_trades_table, self.strategy_trades_msg_lbl, "")  
+        for row in range(self.strategy_trades_table.rowCount()):
+            if self.strategy_trades_table.item(row, 8).text() == 'Complete':
+                self.colorize_row(self.strategy_trades_table, row, QColor(218, 255, 127))
+            else:
+                self.colorize_row(self.strategy_trades_table, row, QColor(255, 233, 127))
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):

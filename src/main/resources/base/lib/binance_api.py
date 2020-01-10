@@ -345,24 +345,12 @@ def round_to_step(symbol, qty):
     stepSize = '{:.8f}'.format(binance_pair_info[symbol]['stepSize'])
     precision = str(stepSize).replace('.','').find('1')
     new_qty = '{:.8f}'.format(round(float(qty),precision))
-    print('*********************')
-    print("precision = " +str(precision))
-    print(symbol+ " stepSize = " +str(stepSize))
-    print("qty = " +str(qty))
-    print("New Qty = " +str(new_qty))    
-    print('*********************')
     return new_qty
 
 def round_to_tick(symbol, price):
     tickSize = '{:.8f}'.format(binance_pair_info[symbol]['tickSize'])
     precision = str(tickSize).replace('.','').find('1')
     new_price = '{:.8f}'.format(round(float(price),precision))
-    print('*********************')
-    print("precision = " +str(precision))
-    print(symbol+ " tickSize = " +str(tickSize))
-    print("Price = " +str(price))
-    print("New Price = " +str(new_price))    
-    print('*********************')
     return new_price
 
 def get_exchange_info():
@@ -441,8 +429,6 @@ def get_exchange_info():
     quoteAssets.sort()
     return binance_pairs, base_asset_info, quoteAssets, binance_pair_info, supported_binance_pairs
 
-
-
 def get_binance_balances(key, secret):
     binance_balances = {}
     acct_info = get_account_info(key, secret)
@@ -465,8 +451,6 @@ def get_binance_balances(key, secret):
                 }
             })
     return binance_balances
-
-
 
 def get_binance_addresses(key, secret):
     binance_addresses = {}
