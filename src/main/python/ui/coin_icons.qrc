@@ -22,6 +22,7 @@
     <file>makerbot_gui2.ui</file>
   </qresource>
   <qresource prefix="32">
+    <file>img/32/busd.png</file>
     <file>img/32/zilla.png</file>
     <file>img/32/zexo.png</file>
     <file>img/32/zec.png</file>
@@ -80,6 +81,7 @@
   </qresource>
   <qresource prefix="64">
     <file>img/64/zilla.png</file>
+    <file>img/64/busd.png</file>
     <file>img/64/zexo.png</file>
     <file>img/64/zec.png</file>
     <file>img/64/vtho.png</file>
@@ -127,6 +129,7 @@
     <file>img/64/awc.png</file>
   </qresource>
   <qresource prefix="300">
+    <file>img/300/busd.png</file>
     <file>img/300/zilla.png</file>
     <file>img/300/zexo.png</file>
     <file>img/300/zec.png</file>

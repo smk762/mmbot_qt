@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>6</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -11283,7 +11283,7 @@ background-color: rgb(85, 87, 83);</string>
              <bool>true</bool>
             </property>
             <property name="rowCount">
-             <number>10</number>
+             <number>0</number>
             </property>
             <property name="columnCount">
              <number>10</number>
@@ -11312,16 +11312,6 @@ background-color: rgb(85, 87, 83);</string>
             <attribute name="verticalHeaderMinimumSectionSize">
              <number>20</number>
             </attribute>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
             <column>
              <property name="text">
               <string>Date</string>
@@ -11650,7 +11640,7 @@ background-color: rgb(85, 87, 83);</string>
              <bool>true</bool>
             </property>
             <property name="rowCount">
-             <number>10</number>
+             <number>0</number>
             </property>
             <property name="columnCount">
              <number>10</number>
@@ -11679,16 +11669,6 @@ background-color: rgb(85, 87, 83);</string>
             <attribute name="verticalHeaderMinimumSectionSize">
              <number>20</number>
             </attribute>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
-            <row/>
             <column>
              <property name="text">
               <string>Date</string>
@@ -12595,7 +12575,7 @@ background-color: rgb(85, 87, 83);</string>
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>Recover Stuck Swap</string>
+             <string>Import</string>
             </property>
            </widget>
           </item>
@@ -13554,7 +13534,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>update_mm2_trade_history_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1166</x>
+     <x>1240</x>
      <y>372</y>
     </hint>
     <hint type="destinationlabel">
@@ -13858,8 +13838,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_view_swap()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1222</x>
-     <y>361</y>
+     <x>1331</x>
+     <y>372</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13915,6 +13895,38 @@ background-color: rgb(85, 87, 83);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>history_coin_combobox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_price_history_graph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>719</x>
+     <y>612</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>history_quote_combobox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>update_price_history_graph()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>719</x>
+     <y>683</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -13961,7 +13973,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>mm2_cancel_bot_order()</slot>
   <slot>show_mm2_trading_tab()</slot>
   <slot>mm2_orderbook_combo_box_switch()</slot>
-  <slot>update_history_graph()</slot>
   <slot>show_qr_popup()</slot>
   <slot>update_mm2_amounts()</slot>
   <slot>recover_swap()</slot>
@@ -13995,5 +14006,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>mm2_view_swap()</slot>
   <slot>view_strat_session()</slot>
   <slot>update_binance_wallet()</slot>
+  <slot>update_price_history_graph()</slot>
  </slots>
 </ui>

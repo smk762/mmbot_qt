@@ -82,12 +82,9 @@ from decimal import Decimal
         average:{}
     }
 '''
-config_path = sys.argv[1]
+root_config_path = sys.argv[1]
 config_folders = ['strategies', 'history']
 
-for folder in config_folders:
-    if not os.path.exists(config_path+folder):
-        os.makedirs(config_path+folder)
 bot_data = {}
 mm2_orderbook_data = {}
 balances_data = {
@@ -152,52 +149,56 @@ def sec_to_hms(sec):
 class price_update_thread(object):
     def __init__(self, interval=60):
         self.interval = interval
+        self.signal = True
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
         global prices_data
-        while True:
+        while self.signal == True:
             prices_data = priceslib.prices_loop()
             time.sleep(self.interval)
 
 class bot_update_thread(object):
     def __init__(self, interval=30):
         self.interval = interval
+        self.signal = True
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
-        while True:
-            global bot_data
+        global bot_data
+        while self.signal == True:
             bot_data = botlib.bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, prices_data, config_path)
             time.sleep(self.interval)
 
 class orderbook_update_thread(object):
     def __init__(self, interval=10):
         self.interval = interval
+        self.signal = True
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
-        while True:
-            global mm2_orderbook_data
+        global mm2_orderbook_data
+        while self.signal == True:
             mm2_orderbook_data = botlib.orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
             time.sleep(self.interval)
 
 class bn_balances_update_thread(object):
     def __init__(self, interval=10):
         self.interval = interval
+        self.signal = True
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
-        while True:
-            global balances_data
+        global balances_data
+        while self.signal == True:
             bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret)
             balances_data["Binance"].update(bn_balances_data)
             time.sleep(self.interval)
@@ -205,13 +206,14 @@ class bn_balances_update_thread(object):
 class mm2_balances_update_thread(object):
     def __init__(self, interval=10):
         self.interval = interval
+        self.signal = True
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
-        while True:
-            global balances_data
+        global balances_data
+        while self.signal == True:
             active_coins = rpclib.check_active_coins(mm2_ip, mm2_rpc_pass)
             for coin in active_coins:
                 mm2_coin_balance_data = botlib.mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin)
@@ -219,14 +221,15 @@ class mm2_balances_update_thread(object):
             time.sleep(self.interval)
 
 class addresses_thread(object):
-    def __init__(self):             
+    def __init__(self):
+        self.signal = True       
         thread = Thread(target=self.run, args=())
         thread.daemon = True                            # Daemonize thread
         thread.start()                                  # Start the execution
 
     def run(self):
-        while True:
-            global addresses_data
+        global addresses_data
+        while self.signal == True:
             addresses_data = botlib.get_user_addresses(mm2_ip, mm2_rpc_pass, bn_key, bn_secret)
 
 
@@ -245,39 +248,60 @@ async def api_version():
 
 # Get creds from app
 @app.post("/set_creds")
-async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
+async def set_creds(ip: str, rpc_pass: str, key: str, secret: str, username: str):
     global mm2_ip
     global mm2_rpc_pass
     global bn_key
     global bn_secret
+    global config_path
     mm2_ip = 'http://'+ip+':7783'
     mm2_rpc_pass = rpc_pass
     bn_key = key
     bn_secret = secret
-    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    config_path = root_config_path+username+"/"
+    for folder in config_folders:
+        if not os.path.exists(config_path+folder):
+            os.makedirs(config_path+folder)
+    json_files = [ x for x in os.listdir(config_path+'history') if x.endswith("json") ]
     for json_file in json_files:
         with open(config_path+"history/"+json_file, 'r') as hist:
             history = json.loads(hist.read())
         if history['Status'] == 'active':
             history.update({'Status':"inactive"})
-        with open(config_path+"/history/"+json_file, 'w+') as f:
+        with open(config_path+"history/"+json_file, 'w+') as f:
             f.write(json.dumps(history, indent=4))
+    if 'mm2_balance_thread' in globals():
+        bn_balance_thread.signal = False
+    if 'bn_balance_thread' in globals():
+        bn_balance_thread.signal = False
+    if 'prices_thread' in globals():
+        prices_thread.signal = False
+    if 'orderbook_thread' in globals():
+        orderbook_thread.signal = False
+    if 'bot_thread' in globals():
+        bot_thread.signal = False
     mm2_balance_thread = mm2_balances_update_thread()
     bn_balance_thread = bn_balances_update_thread()
     orderbook_thread = orderbook_update_thread()
     prices_thread = price_update_thread()
     bot_thread = bot_update_thread()        
 
+@app.post("/logout")
+async def logout():
+    pass
+
 # TABLE FORMATTED 
 
 @app.get("/table/mm2_open_orders")
 async def mm2_open_orders_table():
     strat_open_orders = {}
-    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    table_data = []
+    json_files = [ x for x in os.listdir(config_path+'history') if x.endswith("json") ]
     for json_file in json_files:
         with open(config_path+"history/"+json_file, 'r') as hist:
             history = json.loads(hist.read())
-            strat_open_orders[json_file[:-5]] = history['Sessions'][str(len(history['Sessions'])-1)]["MM2 open orders"]
+            if len(history['Sessions']) > 0:
+                strat_open_orders[json_file[:-5]] = history['Sessions'][str(len(history['Sessions'])-1)]["MM2 open orders"]
 
     orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
     if 'error' in orders:
@@ -290,11 +314,9 @@ async def mm2_open_orders_table():
         resp = {
             "response": "success",
             "message":"No open orders!",
-            "table_data": []
+            "table_data": table_data
         }
-        return resp
     else:
-        table_data = []
         for item in maker_orders:
             for strategy in strat_open_orders:
                 if item in strat_open_orders[strategy]:
@@ -358,7 +380,7 @@ async def mm2_open_orders_table():
             "message": "Open orders table data found.",
             "table_data": table_data
         }
-        return resp
+    return resp
 
 @app.get("/table/mm2_orderbook/{base}/{rel}")
 async def mm2_orderbook_pair_table(base, rel):
@@ -404,23 +426,25 @@ async def mm2_orderbook_pair_table(base, rel):
 async def binance_open_orders():
     table_data = []
     open_orders = binance_api.get_open_orders(bn_key, bn_secret)
-    for item in open_orders:    
-        order_id = item['orderId']
-        side = item['side']
-        symbol = item['symbol']
-        price = item['price']
-        qty = item['origQty']
-        filled = item['executedQty']
-        time = datetime.datetime.fromtimestamp(int(item['time']/1000))
-        table_data.append({
-                "Order ID": order_id,
-                "Side": side,
-                "Pair": symbol,
-                "Price":price,
-                "Qty":qty,
-                "Filled":filled,
-                "Time":time
-            })
+    for item in open_orders:
+        print(item)
+        if 'orderId' in item:
+            order_id = item['orderId']
+            side = item['side']
+            symbol = item['symbol']
+            price = item['price']
+            qty = item['origQty']
+            filled = item['executedQty']
+            time = datetime.datetime.fromtimestamp(int(item['time']/1000))
+            table_data.append({
+                    "Order ID": order_id,
+                    "Side": side,
+                    "Pair": symbol,
+                    "Price":price,
+                    "Qty":qty,
+                    "Filled":filled,
+                    "Time":time
+                })
     return {"table_data":table_data}
 
 @app.get("/table/get_binance_depth/{symbol}")
@@ -451,52 +475,53 @@ async def get_binance_depth(symbol):
 async def mm2_history_table():
     table_data = []
     swaps_info = rpclib.my_recent_swaps(mm2_ip, mm2_rpc_pass, limit=9999, from_uuid='').json()
-    for swap in swaps_info['result']['swaps']:
-        trade_addr = ''
-        for event in swap['events']:
-            event_type = event['event']['type']
-            if event_type in rpclib.error_events:
-                event_type = 'Failed'
-                break
+    if 'result' in swaps_info:
+        for swap in swaps_info['result']['swaps']:
+            trade_addr = ''
+            for event in swap['events']:
+                event_type = event['event']['type']
+                if event_type in rpclib.error_events:
+                    event_type = 'Failed'
+                    break
+                if swap['type'] == 'Taker':
+                    if event_type == 'MakerPaymentReceived':
+                        trade_addr = event['event']['data']['from'][0]
+                elif swap['type'] == 'Maker':
+                    if event_type == 'TakerFeeValidated':
+                        trade_addr = event['event']['data']['from'][0]
+            status = event_type
+            role = swap['type']
+            uuid = swap['uuid']
+            my_amount = round(float(swap['my_info']['my_amount']),8)
+            my_coin = swap['my_info']['my_coin']
+            other_amount = round(float(swap['my_info']['other_amount']),8)
+            other_coin = swap['my_info']['other_coin']
+            started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
             if swap['type'] == 'Taker':
-                if event_type == 'MakerPaymentReceived':
-                    trade_addr = event['event']['data']['from'][0]
-            elif swap['type'] == 'Maker':
-                if event_type == 'TakerFeeValidated':
-                    trade_addr = event['event']['data']['from'][0]
-        status = event_type
-        role = swap['type']
-        uuid = swap['uuid']
-        my_amount = round(float(swap['my_info']['my_amount']),8)
-        my_coin = swap['my_info']['my_coin']
-        other_amount = round(float(swap['my_info']['other_amount']),8)
-        other_coin = swap['my_info']['other_coin']
-        started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
-        if swap['type'] == 'Taker':
-            buy_price = round(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']),8)
-            sell_price = '-'
-        else:
-            buy_price = '-'
-            sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
-        table_data.append({
-                "Start Time":started_at,
-                "Role":role,
-                "Status":status,
-                "Buy Coin":other_coin,
-                "Buy Amount":other_amount,
-                "Buy Price":buy_price,
-                "Sell Coin":my_coin,
-                "Sell Amount":my_amount,
-                "Sell Price":sell_price,
-                "Trade Address":trade_addr,
-                "UUID":uuid
-            })
+                buy_price = round(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']),8)
+                sell_price = '-'
+            else:
+                buy_price = '-'
+                sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
+            table_data.append({
+                    "Start Time":started_at,
+                    "Role":role,
+                    "Status":status,
+                    "Buy Coin":other_coin,
+                    "Buy Amount":other_amount,
+                    "Buy Price":buy_price,
+                    "Sell Coin":my_coin,
+                    "Sell Amount":my_amount,
+                    "Sell Price":sell_price,
+                    "Trade Address":trade_addr,
+                    "UUID":uuid
+                })
     return {"table_data":table_data}
 
 @app.get("/table/strategies_history")
 async def strategies_history_table():
     table_data = []
-    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    json_files = [ x for x in os.listdir(config_path+'history') if x.endswith("json") ]
     for json_file in json_files:
         with open(config_path+"history/"+json_file, 'r') as hist:
             history = json.loads(hist.read())
@@ -573,7 +598,7 @@ async def strategies_history_table():
 
 @app.get("/table/bot_strategies")
 async def bot_strategies():
-    json_files = [ x for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    json_files = [ x for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     strategies = []
     for json_file in json_files:
         with open(config_path+'strategies/'+json_file) as strat:
@@ -597,7 +622,7 @@ async def bot_strategies():
 
 @app.get("/table/bot_strategy/summary/{strategy_name}")
 async def bot_strategy_summary(strategy_name):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if len(strategies) == 0:
         resp = {
             "response": "error",
@@ -789,7 +814,7 @@ async def create_strategy(*, name: str, strategy_type: str, sell_list: str,
             }
             return resp
 
-        strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+        strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
         if name in strategies:
             resp = {
                 "response": "error",
@@ -817,14 +842,14 @@ async def create_strategy(*, name: str, strategy_type: str, sell_list: str,
 
 @app.get("/strategies/active")
 async def active_strategies():
-    json_files = [ x for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    json_files = [ x for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     count = 0
     strategies = []
     for json_file in json_files:
-        with open(config_path+'/history/'+json_file) as j:
+        with open(config_path+'history/'+json_file) as j:
             history = json.loads(j.read())
         if history["status"] == 'active':
-            with open(config_path+'/strategies/'+json_file) as j:
+            with open(config_path+'strategies/'+json_file) as j:
                 strategy = json.loads(j.read())
             count += 1
             strategies.append(strategy)
@@ -838,7 +863,7 @@ async def active_strategies():
 
 @app.post("/strategies/session/{strategy_name}/{session_num}")
 async def strategy_session(strategy_name, session_num):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if len(strategies) == 0:
         resp = {
             "response": "error",
@@ -869,7 +894,7 @@ async def strategy_session(strategy_name, session_num):
 
 @app.post("/strategies/history/{strategy_name}")
 async def strategy_history(strategy_name):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if len(strategies) == 0:
         resp = {
             "response": "error",
@@ -903,7 +928,7 @@ async def strategy_history(strategy_name):
 
 @app.post("/strategies/start/{strategy_name}")
 async def start_strategy(strategy_name):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if strategy_name in strategies:
         with open(config_path+"/strategies/"+strategy_name+".json", 'r') as f:
             strategy = json.loads(f.read())
@@ -935,7 +960,7 @@ async def start_strategy(strategy_name):
 
 @app.post("/strategies/stop/{strategy_name}")
 async def stop_strategy(strategy_name):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if strategy_name == 'all':
         histories = []
         for strategy in strategies:
@@ -976,7 +1001,7 @@ async def stop_strategy(strategy_name):
 
 @app.post("/strategies/delete/{strategy_name}")
 async def delete_strategy(strategy_name):
-    strategies = [ x[:-5] for x in os.listdir(config_path+'/strategies') if x.endswith("json") ]
+    strategies = [ x[:-5] for x in os.listdir(config_path+'strategies') if x.endswith("json") ]
     if strategy_name in strategies:
         with open(config_path+"/strategies/"+strategy_name+".json", 'r') as f:
             strategy = json.loads(f.read())

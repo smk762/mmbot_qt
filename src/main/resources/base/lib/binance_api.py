@@ -113,6 +113,8 @@ def get_open_orders(api_key, api_secret):
         return r.json()
     elif r.status_code == 401:
         return {"Error: Unauthorised"}
+    else:
+        return r.json()
 
 def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     print("Buying "+str(round_to_step(ticker_pair, qty))+" "+ticker_pair+" on Binance at "+str(round_to_tick(ticker_pair, price)))

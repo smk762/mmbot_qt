@@ -455,9 +455,21 @@ class Ui(QTabWidget):
     def start_api(self, logfile='bot_api_output.log'):
         try:
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-            subprocess.Popen([self.bot_api, config_path+self.username+"/"], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+            # check if already running?
+            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
             time.sleep(2)
-            requests.post('http://127.0.0.1:8000/set_creds?ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+self.creds[5]+'&secret='+self.creds[6])
+            if self.creds[5] == '':
+                key = 'x'
+            else:
+                key = self.creds[5]
+            if self.creds[6] == '':
+                secret = 'x'
+            else:
+                secret = self.creds[6]
+            endpoint = 'http://127.0.0.1:8000/set_creds?'
+            params = 'ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+key+'&secret='+secret+'&username='+self.username
+            url = endpoint+params
+            requests.post(url)
         except Exception as e:
             print('bot not start')
             print(e)
@@ -590,38 +602,42 @@ class Ui(QTabWidget):
         if r.status_code == 200:
             table.setSortingEnabled(False)
             self.clear_table(table)
-            data = r.json()['table_data']
-            table.setRowCount(len(data))
-            row = 0
-            if len(data) > 0:
-                headers = list(data[0].keys())
-                table.setColumnCount(len(headers))
-                table.setHorizontalHeaderLabels(headers)
-                for item in data:
-                    row_data = list(item.values())
-                    if row_filter == '':
-                        self.add_row(row, row_data, table)
-                        row += 1
-                    else:
-                        filter_param = row_filter.split('|')
-                        filter_col_num = filter_param[0]
-                        filter_col_text = filter_param[1]
-                        filter_type = filter_param[2]
-                        if str(row_data[int(filter_col_num)]) == str(filter_col_text):
-                            if filter_type == 'INCLUDE':
-                                self.add_row(row, row_data, table)
-                                row += 1
+            if 'table_data' in r.json():
+                data = r.json()['table_data']
+                table.setRowCount(len(data))
+                row = 0
+                if len(data) > 0:
+                    headers = list(data[0].keys())
+                    table.setColumnCount(len(headers))
+                    table.setHorizontalHeaderLabels(headers)
+                    for item in data:
+                        row_data = list(item.values())
+                        if row_filter == '':
+                            self.add_row(row, row_data, table)
+                            row += 1
                         else:
-                            if filter_type == 'EXCLUDE':
-                                self.add_row(row, row_data, table)
-                                row += 1
-            table.setRowCount(row)
-            table.setSortingEnabled(True)
-            table.resizeColumnsToContents()
-            if msg_lbl != '':
-                if len(data) == 0:
-                    msg = "No results in table..."
-                msg_lbl.setText(msg)
+                            filter_param = row_filter.split('|')
+                            filter_col_num = filter_param[0]
+                            filter_col_text = filter_param[1]
+                            filter_type = filter_param[2]
+                            if str(row_data[int(filter_col_num)]) == str(filter_col_text):
+                                if filter_type == 'INCLUDE':
+                                    self.add_row(row, row_data, table)
+                                    row += 1
+                            else:
+                                if filter_type == 'EXCLUDE':
+                                    self.add_row(row, row_data, table)
+                                    row += 1
+                table.setRowCount(row)
+                table.setSortingEnabled(True)
+                table.resizeColumnsToContents()
+                if msg_lbl != '':
+                    if len(data) == 0:
+                        msg = "No results in table..."
+                    msg_lbl.setText(msg)
+        else:
+            print(r)
+            print(r.text)
 
     def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
@@ -1091,7 +1107,6 @@ class Ui(QTabWidget):
             if self.mm2_orders_table.item(row, 10).text() != '0':
                 self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
             
-
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
         self.orderbook_sell_amount_lbl.setText(""+base+" Sell Amount")
@@ -1256,8 +1271,8 @@ class Ui(QTabWidget):
     def mm2_view_order(self):
         cancel = True
         selected_row = self.mm2_orders_table.currentRow()
-        if self.mm2_orders_table.item(selected_row,7) is not None:
-            mm2_order_uuid = self.mm2_orders_table.item(selected_row,7).text()
+        if self.mm2_orders_table.item(selected_row,8) is not None:
+            mm2_order_uuid = self.mm2_orders_table.item(selected_row,8).text()
             order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
             result = ScrollMessageBox(order_info)
             result.exec_()
@@ -1641,7 +1656,6 @@ class Ui(QTabWidget):
         if index == -1:
             index = 0
         quote = self.history_quote_combobox.itemText(index)
-
         index = self.history_coin_combobox.currentIndex()
         if index == -1:
             coin = self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
@@ -2171,13 +2185,14 @@ class Ui(QTabWidget):
             self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE")
         else:
             self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
-        for row in range(self.mm2_trades_table.rowCount()):
-            if self.mm2_trades_table.item(row, 2).text() == 'Finished':
-                self.colorize_row(self.mm2_trades_table, row, QColor(218, 255, 127))
-            elif self.mm2_trades_table.item(row, 2).text() == 'Failed':
-                self.colorize_row(self.mm2_trades_table, row, QColor(255, 127, 127))
-            else:
-                self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
+        if self.mm2_trades_table.rowCount() > 0:
+            for row in range(self.mm2_trades_table.rowCount()):
+                if self.mm2_trades_table.item(row, 2).text() == 'Finished':
+                    self.colorize_row(self.mm2_trades_table, row, QColor(218, 255, 127))
+                elif self.mm2_trades_table.item(row, 2).text() == 'Failed':
+                    self.colorize_row(self.mm2_trades_table, row, QColor(255, 127, 127))
+                else:
+                    self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
 
     def update_strategy_history_table(self):
         self.populate_table("table/strategies_history", self.strategy_trades_table, self.strategy_trades_msg_lbl, "")  
