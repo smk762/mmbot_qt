@@ -56,7 +56,12 @@ def get_price(api_key, ticker_pair):
     }
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
+    elif r.status_code == 400:
+        return r.json()
 
 def get_historicalTrades(api_key, ticker_pair):
     path = '/api/v3/historicalTrades'
@@ -68,7 +73,10 @@ def get_historicalTrades(api_key, ticker_pair):
     }
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 
 def get_depth(api_key, ticker_pair, limit):
@@ -101,7 +109,10 @@ def get_open_orders(api_key, api_secret):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     print("Buying "+str(round_to_step(ticker_pair, qty))+" "+ticker_pair+" on Binance at "+str(round_to_tick(ticker_pair, price)))
@@ -127,7 +138,12 @@ def create_buy_order(api_key, api_secret, ticker_pair, qty, price):
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
     print(r.json())
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
+    else:
+        return r.json()
 
 def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     print("Selling "+str(round_to_step(ticker_pair, qty))+" "+ticker_pair+" on Binance at "+str(round_to_tick(ticker_pair, price)))
@@ -151,7 +167,12 @@ def create_sell_order(api_key, api_secret, ticker_pair, qty, price):
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
     print(r.json())
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
+    else:
+        return r.json()
 
 def create_buy_order_at_market(api_key, api_secret, ticker_pair, qty):
     path = '/api/v3/order'
@@ -173,7 +194,10 @@ def create_buy_order_at_market(api_key, api_secret, ticker_pair, qty):
 
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 def create_sell_order_at_market(api_key, api_secret, ticker_pair, qty):
     path = '/api/v3/order'
@@ -193,7 +217,10 @@ def create_sell_order_at_market(api_key, api_secret, ticker_pair, qty):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 
 
@@ -211,7 +238,10 @@ def get_account_info(api_key, api_secret):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 def get_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'
@@ -232,6 +262,9 @@ def get_order(api_key, api_secret, ticker_pair, order_id):
     r = requests.get(url, headers=headers, params=params)
     if r.status_code == 200:
         return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
+
 
 def delete_order(api_key, api_secret, ticker_pair, order_id):
     path = '/api/v3/order'
@@ -271,9 +304,12 @@ def get_deposit_addr(api_key, api_secret, asset):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
-# Only rteturns from single symbol :(
+# Only returns from single symbol :(
 def get_binance_orders_history(api_key, api_secret, symbol):
     path = '/api/v3/allOrders'
     timestamp = int(time.time() * 1000)
@@ -288,7 +324,10 @@ def get_binance_orders_history(api_key, api_secret, symbol):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.get(url, headers=headers, params=params)
-    return r.text
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
     
 
 # Returns error 500 at the moment
@@ -305,7 +344,10 @@ def asset_detail(api_key, api_secret):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 
 def recent_trades(api_key, api_secret):
@@ -321,7 +363,10 @@ def recent_trades(api_key, api_secret):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 def withdraw(api_key, api_secret, asset, addr, amount):
     path = '/wapi/v3/withdraw.html'
@@ -339,7 +384,10 @@ def withdraw(api_key, api_secret, asset, addr, amount):
     params['signature'] = hmac.new(api_secret.encode('utf-8'), query_string.encode('utf-8'), hashlib.sha256).hexdigest()
     url = urljoin(base_url, path)
     r = requests.post(url, headers=headers, params=params)
-    return r.json()
+    if r.status_code == 200:
+        return r.json()
+    elif r.status_code == 401:
+        return {"Error: Unauthorised"}
 
 def round_to_step(symbol, qty):
     stepSize = '{:.8f}'.format(binance_pair_info[symbol]['stepSize'])
@@ -467,6 +515,16 @@ def get_binance_addresses(key, secret):
             binance_addresses.update({coin:address})
     return binance_addresses
 
+def get_binance_common_quoteAsset(base, rel):
+    available_base_pairs = base_asset_info[base]['available_pairs']
+    available_base_quote_assets = []
+    for symbol in available_base_pairs:
+        available_base_quote_assets.append(binance_pair_info[symbol]['quoteAsset'])
+    available_rel_pairs = base_asset_info[rel]['available_pairs']
+    available_rel_quote_assets = []
+    for symbol in available_rel_pairs:
+        available_rel_quote_assets.append(binance_pair_info[symbol]['quoteAsset'])
+    return list(set(available_base_quote_assets)&set(available_rel_quote_assets))    
 
 # For a given trade pair, determine if direct trade possible, or if a common quote asset is avaiable.
 def get_binance_countertrade_symbols(bn_key, bn_secret, binance_balances, replenish_coin, spend_coin, replenish_coin_amount, spend_coin_amount):

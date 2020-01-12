@@ -7,6 +7,12 @@ import requests
 from . import rpclib, priceslib, binance_api
 
 #  LOOPS
+def format_num_10f(val):
+    if val != 0:
+        val = "{:.10f}".format(round(float(val),10))
+    else:
+        val = 0
+    return val
 
 def orderbook_loop(mm2_ip, mm2_rpc_pass, config_path):
     active_coins = mm2_active_coins(mm2_ip, mm2_rpc_pass)
@@ -35,7 +41,7 @@ def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, prices_data
             history = get_binance_orders_status(bn_key, bn_secret, history)
             print("session swaps updated")
             print("update total balanace deltas")
-            history = calc_total_balance_deltas(strategy, history)
+            history = calc_balance_deltas(strategy, history)
             print("total deltas updated")
             # check refresh interval vs last refresh
             refresh_time = history['Last refresh'] + strategy['Refresh interval']*60
@@ -53,7 +59,7 @@ def bot_loop(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data, prices_data
                     # cancel old orders
                     history = cancel_session_orders(mm2_ip, mm2_rpc_pass, history)
                     # place fresh orders
-                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, config_path, strategy, history)
+                    history = submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history)
                     # update session history
                 else:
                     print("Skipping strategy "+strategy_name+": MM2 coins not active ")
@@ -83,7 +89,6 @@ def mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin):
                 }                
             }
     else:
-        print(balance_info)
         mm2_coin_balance_data = {
             coin: {
                     "address":'-',
@@ -124,17 +129,17 @@ def mm2_active_coins(mm2_ip, mm2_rpc_pass):
 
 # STRATEGIES
 
-def submit_strategy_orders(mm2_ip, mm2_rpc_pass, config_path, strategy, history):
+def submit_strategy_orders(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history):
     prices_data = priceslib.prices_loop()
     print("*** submitting strategy orders ***")
     print("Strategy: "+str(strategy))
     if strategy['Type'] == 'margin':
         history = run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data)
     elif strategy['Type'] == 'arbitrage':
-        history = run_arb_strategy(mm2_ip, mm2_rpc_pass, config_path, strategy, history)
+        history = run_arb_strategy(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history)
     return history
 
-def run_arb_strategy(mm2_ip, mm2_rpc_pass, config_path, strategy, history):
+def run_arb_strategy(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, config_path, strategy, history):
     orderbook_data = orderbook_loop(mm2_ip, mm2_rpc_pass, config_path)
     prices_data = priceslib.prices_loop()
     # check balances
@@ -142,39 +147,66 @@ def run_arb_strategy(mm2_ip, mm2_rpc_pass, config_path, strategy, history):
     for base in strategy['Buy list']:
         for rel in strategy['Sell list']:
             if base != rel:
-                best_price = 999999999999999999999999999999999
-                # get binance price
-                binance_prices = priceslib.get_binance_price(base, rel, prices_data)
-                # TODO: get bid and ask for binance, not just simple price.
-                if 'direct' in binance_prices:
-                    print("Binance Price (direct): "+str(binance_prices['direct']))
-                    # TODO: check this for price compare later with direct pair
-                if 'indirect' in binance_prices:
-                    for quote in binance_prices['indirect']:
-                        print("Binance Price (indirect via "+quote+"): "+str(binance_prices['indirect'][quote]))
-                        price = binance_prices['indirect'][quote][base+rel]
-                        if price < best_price:
-                            best_price = binance_prices['indirect'][quote][base+rel]
-                            best_symbol = quote
-                print("Binance Best Price (via "+quote+"): "+str(best_price))
-                print("mm2 offers: "+base+rel)
                 for pair in orderbook_data:
-                    if base+rel in pair:
-                        bids = pair[base+rel]['asks']
-                        asks = pair[base+rel]['bids']
-                print("BIDS")
-                for item in bids:
-                    mm2_price = float(item['price'])
-                    pct = best_price/mm2_price-1
-                    print(str(item)+"  (pct vs binance best = "+str(pct)+"%)")
-                print("ASKS")
-                for item in asks:
-                    mm2_price = float(item['price'])
-                    pct = best_price/mm2_price-1
-                    print(str(item)+"  (pct vs binance best = "+str(pct)+"%)")
-                print("---------------------------------------------------------")
-            # check if any mm2 orders under binance price
-            pass
+                    if rel+base in pair:
+                        asks = pair[rel+base]['asks']
+                if len(asks) > 0:
+                    best_mm2_price = 999999999999999999999999999999999
+                    for item in asks:
+                        mm2_price = float(item['price'])
+                        if mm2_price < best_mm2_price:
+                            mm2_base = item['base']
+                            mm2_rel = item['rel']
+                            best_mm2_price = mm2_price
+                            mm2_maxvol = float(item['max_volume'])
+                    print("** BEST MM2 PRICE: "+str(best_mm2_price))
+
+                    best_bn_price = 999999999999999999999999999999999
+                    # Check for direct binance price
+                    if base+rel in binance_api.binance_pairs:
+                        binance_price = float(binance_api.get_price(bn_key, base+rel)['price'])
+                        if binance_price < best_bn_price:
+                            best_bn_price = binance_price
+                            source = "Direct "+base+rel
+                    elif rel+base in binance_api.binance_pairs:
+                        binance_price = float(binance_api.get_price(bn_key, rel+base)['price'])
+                        if binance_price < best_bn_price:
+                            best_bn_price = binance_price
+                            source = "Direct "+rel+base
+                    # Get indirect binance prices
+                    common_quote_assets = binance_api.get_binance_common_quoteAsset(base, rel)
+                    for quote in common_quote_assets:
+                        if quote not in [base, rel]:
+                            base_quote_price = binance_api.get_price(bn_key, base+quote)
+                            if 'price' in base_quote_price:
+                                base_quote_price = float(base_quote_price['price'])
+                            rel_quote_price = binance_api.get_price(bn_key, rel+quote)
+                            if 'price' in rel_quote_price:
+                                rel_quote_price = float(rel_quote_price['price'])
+                            binance_price = rel_quote_price/base_quote_price
+                            if binance_price < best_bn_price:
+                                best_bn_price = binance_price
+                                source = "Indirect via "+rel+quote+" & "+base+quote
+                    print("** BEST BINANCE PRICE: "+str(best_bn_price)+" ("+source+")")
+                    pct = (best_mm2_price/best_bn_price-1)*100
+                    if pct < -1*strategy['Margin']:
+                        print("*** ARB OPPORTUNITY! *** (pct vs binance best = "+str(pct)+"%)")
+                        # buy base, sell rel. 
+                        mm2_rel_bal = float(rpclib.my_balance(mm2_ip, mm2_rpc_pass, mm2_rel).json()['balance'])*strategy["Balance pct"]/100
+                        mm2_trade_fee = float(rpclib.get_fee(mm2_ip, mm2_rpc_pass, mm2_rel).json()['result']['amount'])*2
+                        mm2_vol = (mm2_rel_bal-mm2_trade_fee)/best_mm2_price
+                        if base in prices_data['average']:
+                            trade_val = mm2_vol*prices_data['average'][mm2_base]['USD']
+                        if trade_val > 5:
+                            resp = rpclib.buy(mm2_ip, mm2_rpc_pass, mm2_base, mm2_rel, mm2_vol, best_mm2_price).json()
+                            print(resp)
+                            if 'result' in resp:
+                                session = str(len(history['Sessions'])-1)
+                                history['Sessions'][session]['MM2 open orders'].append(resp['result']['uuid'])
+                        else:
+                            print("Skipping, below USD$5 trade value") 
+                    print("---------------------------------------------------------")
+    return history
 
 def run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data):
     uuids = []
@@ -191,8 +223,6 @@ def run_margin_strategy(mm2_ip, mm2_rpc_pass, strategy, history, prices_data):
                     available_base_balance = float(base_balance_info["balance"]) - float(base_balance_info["locked_by_swaps"])
                     basevolume = available_base_balance * strategy['Balance pct']/100
                     print("trade price: "+base+" (base) / "+rel+" (rel) "+str(rel_price)+" volume = "+str(basevolume))
-                    # place new order
-                    # TODO: check if order swap in progress or finished. If finished, initiate CEX countertrade.
                     if strategy['Balance pct'] != 100:
                         resp = rpclib.setprice(mm2_ip, mm2_rpc_pass, base, rel, basevolume, rel_price, False, True)
                     else:
@@ -236,7 +266,13 @@ def update_session_swaps(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data,
                         history['Sessions'][session]['MM2 swaps in progress'].append(swap)
             elif 'error' in order_info:
                 print("order_info error: "+str(order_info))
-                mm2_order_uuids.remove(order_uuid)
+                swap_status = rpclib.my_swap_status(mm2_ip, mm2_rpc_pass, order_uuid).json()
+                print(swap_status)
+                if 'result' in swap_status:
+                    if order_uuid not in history['Sessions'][session]['MM2 swaps in progress']:
+                        history['Sessions'][session]['MM2 swaps in progress'].append(order_uuid)
+                else:
+                    mm2_order_uuids.remove(order_uuid)
             else:
                 print("order_info: "+str(order_info))
         swaps_in_progress = history['Sessions'][session]['MM2 swaps in progress']
@@ -259,9 +295,9 @@ def update_session_swaps(mm2_ip, mm2_rpc_pass, bn_key, bn_secret, balances_data,
                                                         }
                                                     })
                     swaps_in_progress.remove(swap)
-                    print("init cex counterswap")
+                    print("init cex counterswap ["+swap+"]")
                     history = start_cex_counterswap(bn_key, bn_secret, strategy, history, balances_data, session, swap)
-                    print("submitted cex counterswap")
+                    print("submitted cex counterswap  ["+swap+"]")
                 else:
                     print(swap+" data: "+str(swap_data))
             elif status == 'Failed':
@@ -277,10 +313,11 @@ def get_binance_orders_status(bn_key, bn_secret, history):
                 add_symbols = []
                 rem_symbols = []
                 for symbol in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid]:
+                    print(symbol)
+                    print(history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid])
                     if 'orderId' in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]:
                         orderID = history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]['orderId']
                         resp = binance_api.get_order(bn_key, bn_secret, symbol, orderID)
-                        print(resp)
                         if "status" in resp:
                             if resp['status'] == 'FILLED':
                                 # move to "completed"
@@ -337,7 +374,16 @@ def start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_sw
         price = binance_api.round_to_tick(symbol, price)
         # Sell 10000 KMD for 0.79254 BTC
         resp = binance_api.create_sell_order(bn_key, bn_secret, symbol, spend_amount, price)
-        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+        if 'orderID' in resp:
+            history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+        else:
+            history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: {
+                        "error": "Sell "+symbol+" failed - "+resp['msg'],
+                        "type":"SELL",
+                        "Amount":spend_amount,
+                        "Price":price
+                    }
+                })
     else:
         # E.g. Replenish KMD, Spend BTC
         # replenish_amount = 10000 (KMD)
@@ -349,7 +395,16 @@ def start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_sw
         price = binance_api.round_to_tick(symbol, price)
         # Replenish 10000 KMD, spending 0.7614 BTC
         resp = binance_api.create_buy_order(bn_key, bn_secret, symbol, replenish_amount, price)
-        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+        if 'orderID' in resp:
+            history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
+        else:
+            history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: {
+                        "error": "Sell "+symbol+" failed - "+resp['msg'],
+                        "type":"BUY",
+                        "Amount":replenish_amount,
+                        "Price":price
+                    }
+                })
     return history
 
 def start_indirect_trade(bn_key, bn_secret, strategy, history, session_num, mm2_swap_uuid,
@@ -392,13 +447,32 @@ def start_indirect_trade(bn_key, bn_secret, strategy, history, session_num, mm2_
         rep_quote_amount = spend_amount*spend_quote_price
     # Replenish spent BTC, spending DASH
     resp = binance_api.create_sell_order(bn_key, bn_secret, spend_symbol, float(spend_amount), spend_quote_price)
-    history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: resp})
+    if 'orderID' in resp:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: resp})
+    else:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: {
+                    "error": "Sell "+spend_symbol+" failed - "+resp['msg'],
+                    "type":"SELL",
+                    "Amount":spend_amount,
+                    "Price":spend_quote_price
+                }
+            })
+
     # Replenish 100 KMD, spending BTC 
     resp = binance_api.create_buy_order(bn_key, bn_secret, replenish_symbol, float(replenish_amount), replenish_quote_price)
-    history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: resp})
+    if 'orderID' in resp:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: resp})
+    else:
+        history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: {
+                    "error": "Sell "+replenish_symbol+" failed - "+resp['msg'],
+                    "type":"SELL",
+                    "Amount":replenish_amount,
+                    "Price":replenish_quote_price
+                }
+            })
     return history
 
-def calc_total_balance_deltas(strategy, history):
+def calc_balance_deltas(strategy, history):
     strategy_coins = list(set(strategy['Sell list']+strategy['Buy list']))
 
     total_balance_deltas = {}
@@ -431,10 +505,10 @@ def calc_total_balance_deltas(strategy, history):
             swap_spent_coin = swap_info["Sent coin"]
             swap_spent_amount = swap_info["Sent amount"]
 
-            session_balance_deltas[swap_rec_coin] += swap_rec_amount
-            session_balance_deltas[swap_spent_coin] -= swap_spent_amount
-            total_balance_deltas[swap_rec_coin] += swap_rec_amount
-            total_balance_deltas[swap_spent_coin] -= swap_spent_amount
+            session_balance_deltas[swap_rec_coin] += round(swap_rec_amount,10)
+            session_balance_deltas[swap_spent_coin] -= round(swap_spent_amount,10)
+            total_balance_deltas[swap_rec_coin] += round(swap_rec_amount,10)
+            total_balance_deltas[swap_spent_coin] -= round(swap_spent_amount,10)
 
         for uuid in unfinished_binance_swaps:
             for symbol in unfinished_binance_swaps[uuid]:
@@ -466,16 +540,16 @@ def calc_total_balance_deltas(strategy, history):
                     swap_spent_amount = swap_info["executedQty"]
                     swap_rec_amount = swap_info["cummulativeQuoteQty"]
 
-                session_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
-                session_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
-                total_balance_deltas[swap_rec_coin] += float(swap_rec_amount)
-                total_balance_deltas[swap_spent_coin] -= float(swap_spent_amount)
+                session_balance_deltas[swap_rec_coin] += round(float(swap_rec_amount),10)
+                session_balance_deltas[swap_spent_coin] -= round(float(swap_spent_amount),10)
+                total_balance_deltas[swap_rec_coin] += round(float(swap_rec_amount),10)
+                total_balance_deltas[swap_spent_coin] -= round(float(swap_spent_amount),10)
 
         history["Sessions"][session].update({
                 "Balance Deltas": session_balance_deltas,
-                "Num MM2 Swaps":session_mm2_completed_swaps,
-                "Num CEX Swaps Completed":session_cex_completed_swaps,
-                "Num CEX Swaps Started":session_cex_unfinished_swaps
+                "Session MM2 swaps completed":session_mm2_completed_swaps,
+                "Session CEX swaps completed":session_cex_completed_swaps,
+                "Session CEX swaps unfinished":session_cex_unfinished_swaps
             })
 
     history.update({
@@ -537,29 +611,14 @@ def cancel_session_orders(mm2_ip, mm2_rpc_pass, history):
     history['Sessions'][str(len(history['Sessions'])-1)]['MM2 open orders'] = []
     return history
 
-# STRATEGY INITIALIZATION
+# JSON FILES INITIALIZATION
 
-def init_history_file(name, strategy_coins, config_path):
-    balance_deltas = {}
-    for strategy_coin in strategy_coins:
-        balance_deltas.update({strategy_coin:0})
-    history = { 
-        "Sessions":{},
-        "Last refresh": 0,
-        "Total MM2 swaps completed": 0,
-        "Total CEX swaps completed": 0,
-        "Total balance deltas": balance_deltas,
-        "Status":"inactive"
-    }
-    with open(config_path+"history/"+name+".json", 'w+') as f:
-        f.write(json.dumps(history, indent=4))
-
-def init_strategy_file(name, strategy_type, rel_list, base_list, margin, refresh_interval, balance_pct, cex_list, config_path):
+def init_strategy(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path):
     strategy = {
         "Name":name,
         "Type":strategy_type,
-        "Sell list":rel_list,
-        "Buy list":base_list,
+        "Sell list":sell_list,
+        "Buy list":buy_list,
         "Margin":margin,
         "Refresh interval":refresh_interval,
         "Balance pct":balance_pct,
@@ -567,10 +626,21 @@ def init_strategy_file(name, strategy_type, rel_list, base_list, margin, refresh
     }
     with open(config_path+"strategies/"+name+'.json', 'w+') as f:
         f.write(json.dumps(strategy, indent=4))
-
-    if not os.path.exists(config_path+"history/"+name+".json"):
-        strategy_coins = list(set(rel_list+base_list))
-        init_history_file(name, strategy_coins, config_path)
+    balance_deltas = {}
+    strategy_coins = list(set(sell_list+buy_list))
+    for strategy_coin in strategy_coins:
+        balance_deltas.update({strategy_coin:0})
+    history = { 
+        "Sessions":{},
+        "Last refresh": 0,
+        "Total MM2 swaps completed": 0,
+        "Total CEX swaps completed": 0,
+        "Total CEX swaps unfinished": 0,
+        "Total balance deltas": balance_deltas,
+        "Status":"inactive"
+    }
+    with open(config_path+"history/"+name+".json", 'w+') as f:
+        f.write(json.dumps(history, indent=4))
     return strategy
 
 def init_session(strategy_name, strategy, history, config_path):
@@ -597,9 +667,9 @@ def init_session(strategy_name, strategy, history, config_path):
                     "Binance": {}
                 },
             "Balance Deltas": balance_deltas,
-            "Num MM2 Swaps": 0,
-            "Num CEX Swaps Started": 0,
-            "Num CEX Swaps Completed": 0
+            "Session MM2 swaps completed": 0,
+            "Session CEX swaps unfinished": 0,
+            "Session CEX swaps completed": 0
         }})
     history.update({"Sessions":sessions})
     with open(config_path+"history/"+strategy_name+".json", 'w+') as f:

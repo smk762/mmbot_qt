@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>6</number>
+   <number>4</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -10297,7 +10297,10 @@ background-color: rgb(85, 87, 83);</string>
                       <string>%</string>
                      </property>
                      <property name="maximum">
-                      <double>100.000000000000000</double>
+                      <double>95.000000000000000</double>
+                     </property>
+                     <property name="value">
+                      <double>5.000000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -10388,6 +10391,12 @@ background-color: rgb(85, 87, 83);</string>
                      </property>
                      <property name="minimum">
                       <number>25</number>
+                     </property>
+                     <property name="maximum">
+                      <number>95</number>
+                     </property>
+                     <property name="value">
+                      <number>80</number>
                      </property>
                     </widget>
                    </item>

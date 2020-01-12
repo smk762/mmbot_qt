@@ -254,6 +254,14 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
     mm2_rpc_pass = rpc_pass
     bn_key = key
     bn_secret = secret
+    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    for json_file in json_files:
+        with open(config_path+"history/"+json_file, 'r') as hist:
+            history = json.loads(hist.read())
+        if history['Status'] == 'active':
+            history.update({'Status':"inactive"})
+        with open(config_path+"/history/"+json_file, 'w+') as f:
+            f.write(json.dumps(history, indent=4))
     mm2_balance_thread = mm2_balances_update_thread()
     bn_balance_thread = bn_balances_update_thread()
     orderbook_thread = orderbook_update_thread()
@@ -263,8 +271,14 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str):
 # TABLE FORMATTED 
 
 @app.get("/table/mm2_open_orders")
-# TODO: SPLIT MAKER AND TAKER. BUY/SELL COLUMNS SWITCH!!!
 async def mm2_open_orders_table():
+    strat_open_orders = {}
+    json_files = [ x for x in os.listdir(config_path+'/history') if x.endswith("json") ]
+    for json_file in json_files:
+        with open(config_path+"history/"+json_file, 'r') as hist:
+            history = json.loads(hist.read())
+            strat_open_orders[json_file[:-5]] = history['Sessions'][str(len(history['Sessions'])-1)]["MM2 open orders"]
+
     orders = rpclib.my_orders(mm2_ip, mm2_rpc_pass).json()
     if 'error' in orders:
         return orders
@@ -282,6 +296,10 @@ async def mm2_open_orders_table():
     else:
         table_data = []
         for item in maker_orders:
+            for strategy in strat_open_orders:
+                if item in strat_open_orders[strategy]:
+                    strat = strategy
+                else: strat = '-'
             role = "Maker"
             base = maker_orders[item]['base']
             base_amount = round(float(maker_orders[item]['available_amount']),8)
@@ -294,19 +312,24 @@ async def mm2_open_orders_table():
             num_matches = len(maker_orders[item]['matches'])
             started_swaps = len(maker_orders[item]['started_swaps'])
             table_data.append({
+                    "Strategy":strat,
                     "Role":role,
-                    "Buy Coin":base,
-                    "Buy Volume":base_amount,
-                    "Buy Price":buy_price,
-                    "Sell Coin":rel,
-                    "Sell Volume":rel_amount,
-                    "Sell Price":sell_price,
+                    "Buy Coin":rel,
+                    "Buy Volume":rel_amount,
+                    "Buy Price":sell_price,
+                    "Sell Coin":base,
+                    "Sell Volume":base_amount,
+                    "Sell Price":buy_price,
                     "Order UUID":item,
                     "Created At":created_at,
                     "Num Matches":num_matches,
                     "Started Swaps":started_swaps,
                 })
         for item in taker_orders:
+            for strategy in strat_open_orders:
+                if item in strat_open_orders[strategy]:
+                    strat = strategy
+                else: strat = '-'
             role = "Taker"
             timestamp = int(taker_orders[item]['created_at']/1000)
             created_at = datetime.datetime.fromtimestamp(timestamp)
@@ -317,6 +340,7 @@ async def mm2_open_orders_table():
             buy_price = round(float(taker_orders[item]['request']['rel_amount'])/float(taker_orders[item]['request']['base_amount']),8)
             sell_price = round(float(1/float(buy_price)),8)
             table_data.append({
+                    "Strategy":strat,
                     "Role":role,
                     "Buy Coin":base,
                     "Buy Volume":base_amount,
@@ -492,27 +516,36 @@ async def strategies_history_table():
                     })
                 for symbol in history['Sessions'][session]['CEX open orders']['Binance'][uuid]:
                     order_info = history['Sessions'][session]['CEX open orders']['Binance'][uuid][symbol]
-                    if order_info['side'] == 'BUY':
-                        swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset']
-                        swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
-                        swap_rec_amount = order_info["origQty"]
-                        swap_spent_amount = round(float(order_info["origQty"])*float(order_info["price"]),10)
-                    elif order_info['side'] == 'SELL':
-                        swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset']
-                        swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
-                        swap_spent_amount = order_info["origQty"]
-                        swap_rec_amount = round(float(order_info["origQty"])*float(order_info["price"]),10)
-                    table_data.append({
-                            "Start Time": datetime.datetime.fromtimestamp(round(order_info["time"]/1000)),
-                            "API":"Binance",
-                            "Buy Coin":swap_rec_coin,
-                            "Buy Amount":swap_rec_amount,
-                            "Sell Coin":swap_spent_coin,
-                            "Sell Amount":swap_spent_amount,
-                            "MM2 UUID":uuid,
-                            "Binance OrderID":order_info["orderId"],
-                            "Status": "Incomplete"
-                        })
+                    if 'side' in order_info:
+                        if order_info['side'] == 'BUY':
+                            swap_rec_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                            swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                            swap_rec_amount = order_info["origQty"]
+                            if float(order_info["origQty"])*float(order_info["price"]) != 0:
+                                swap_spent_amount = "{:.10f}".format(round(float(order_info["origQty"])*float(order_info["price"]),10))
+                            else:
+                                swap_rec_amount = 0
+                        elif order_info['side'] == 'SELL':
+                            swap_spent_coin = binance_api.binance_pair_info[symbol]['baseAsset']
+                            swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
+                            swap_spent_amount = order_info["origQty"]
+                            if float(order_info["origQty"])*float(order_info["price"]) != 0:
+                                swap_rec_amount = "{:.10f}".format(round(float(order_info["origQty"])*float(order_info["price"]),10))
+                            else:
+                                swap_rec_amount = 0
+                        table_data.append({
+                                "Start Time": datetime.datetime.fromtimestamp(round(order_info["time"]/1000)),
+                                "API":"Binance",
+                                "Buy Coin":swap_rec_coin,
+                                "Buy Amount":swap_rec_amount,
+                                "Sell Coin":swap_spent_coin,
+                                "Sell Amount":swap_spent_amount,
+                                "MM2 UUID":uuid,
+                                "Binance OrderID":order_info["orderId"],
+                                "Status": "Incomplete"
+                            })
+                    else:
+                        print("Error with Binance Order: "+str(order_info))
                 for symbol in history['Sessions'][session]['CEX swaps completed']['Binance'][uuid]:
                     order_info = history['Sessions'][session]['CEX swaps completed']['Binance'][uuid][symbol]
                     if order_info['side'] == 'BUY':
@@ -588,35 +621,50 @@ async def bot_strategy_summary(strategy_name):
             started = int(history['Sessions'][session]['Started'])
             started_at = datetime.datetime.fromtimestamp(started)
             total_duration += duration
-            cex_unfinished = history['Sessions'][session]["Num CEX Swaps Started"]
-            cex_completed = history['Sessions'][session]["Num CEX Swaps Completed"]
+            cex_unfinished = history['Sessions'][session]["Session CEX swaps unfinished"]
+            cex_completed = history['Sessions'][session]["Session CEX swaps completed"]
             session_data = {
                 "Name":strategy_name,
                 "Session":i,
                 "Started":started_at,
                 "Duration":sec_to_hms(duration),
-                "MM2 swaps":history['Sessions'][session]["Num MM2 Swaps"],
+                "MM2 swaps":history['Sessions'][session]["Session MM2 swaps completed"],
                 "CEX swaps":str(cex_completed)+"/"+str(cex_unfinished+cex_completed)
             }
             delta_coins = list(history['Sessions'][session]['Balance Deltas'].keys())
             delta_coins.sort()
             for coin in delta_coins:
-                session_data.update({coin:history['Sessions'][session]['Balance Deltas'][coin]})
+                if float(history['Sessions'][session]['Balance Deltas'][coin]) != 0:
+                    session_data.update({coin:"{:.10f}".format(round(float(history['Sessions'][session]['Balance Deltas'][coin]),10))})
+                else:
+                    session_data.update({coin:0})
+            cex_err = []
+            for uuid in history['Sessions'][session]["CEX open orders"]["Binance"]:
+                for symbol in history['Sessions'][session]["CEX open orders"]["Binance"][uuid]:
+                    if 'orderId' not in history['Sessions'][session]["CEX open orders"]["Binance"][uuid][symbol]:
+                        cex_err.append(history['Sessions'][session]["CEX open orders"]["Binance"][uuid][symbol]['error'])
+            session_data.update({"CEX errors":cex_err})
             table_data.append(session_data)
             i += 1
+        total_cex_completed = history['Total CEX swaps completed']
+        total_cex_unfinished = history['Total CEX swaps unfinished']
         total_data = {
             "Name":strategy_name,
             "Session":"Total",
             "Started":'-',
             "Duration":sec_to_hms(total_duration),
             "MM2 swaps":history['Total MM2 swaps completed'],
-            "CEX swaps":str(history['Total CEX swaps completed'])+"/"+str(history['Total CEX swaps completed']+history['Total CEX swaps unfinished']),
+            "CEX swaps":str(total_cex_completed)+"/"+str(total_cex_completed+total_cex_unfinished),
             
         }
         delta_coins = list(history['Total balance deltas'].keys())
         delta_coins.sort()
         for coin in delta_coins:
-            total_data.update({coin:history['Total balance deltas'][coin]})
+            if float(history['Total balance deltas'][coin]) != 0:
+                total_data.update({coin:"{:.10f}".format(round(float(history['Total balance deltas'][coin]),10))})
+            else:
+                total_data.update({coin:0})
+        total_data.update({"CEX errors":"-"})
         table_data.append(total_data)
         resp = {
             "response": "success",
@@ -624,8 +672,6 @@ async def bot_strategy_summary(strategy_name):
             "table_data": table_data
         }
     return resp
-
-
 
 # CACHED DATA
 
@@ -751,7 +797,8 @@ async def create_strategy(*, name: str, strategy_type: str, sell_list: str,
             }
             return resp
         else:
-            strategy = botlib.init_strategy_file(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path)
+            strategy = botlib.init_strategy(name, strategy_type, sell_list, buy_list, margin, refresh_interval, balance_pct, cex_list, config_path)
+
             resp = {
                 "response": "success",
                 "message": "Strategy '"+name+"' created",

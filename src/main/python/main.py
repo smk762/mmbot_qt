@@ -212,7 +212,7 @@ class ScrollMessageBox(QMessageBox):
         msg_data.setReadOnly(True)
         lay.addWidget(msg_data)
         self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:600 px; min-height: 800px}")
+        self.setStyleSheet("QScrollArea{min-width:800 px; min-height: 800px}")
 
 # UI Class
 
@@ -1099,20 +1099,29 @@ class Ui(QTabWidget):
         self.orderbook_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
         self.orderbook_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
         self.orderbook_send_order_btn.setText("Buy "+rel)
-        if base in self.balances_data['mm2']:
-            locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
-            balance = round(float(self.balances_data['mm2'][base]['total']),8)
-        else:
-            locked_text = round(float(0),8)
-            balance = round(float(0),8)
+        try:
+            if base in self.balances_data['mm2']:
+                locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
+                balance = round(float(self.balances_data['mm2'][base]['total']),8)
+            else:
+                locked_text = round(float(0),8)
+                balance = round(float(0),8)
+        except:
+                locked_text = '-'
+                balance = '-'
         self.orderbook_sell_balance_lbl.setText("Available: "+str(balance)+" "+base)
         self.orderbook_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+base)
-        if rel in self.balances_data['mm2']:
-            locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
-            balance = round(float(self.balances_data['mm2'][rel]['total']),8)
-        else:
-            locked_text = round(float(0),8)
-            balance = round(float(0),8)
+        try:
+            if rel in self.balances_data['mm2']:
+                locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
+                balance = round(float(self.balances_data['mm2'][rel]['total']),8)
+            else:
+                locked_text = round(float(0),8)
+                balance = round(float(0),8)
+        except:
+                locked_text = '-'
+                balance = '-'
+
         self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+rel)
         self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
         
@@ -1864,13 +1873,12 @@ class Ui(QTabWidget):
         params += '&buy_list='+buy_items
         params += '&margin='+str(self.strat_margin_spinbox.value())
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
-        params += '&balances_pct='+str(self.strat_bal_pct_spinbox.value())
+        params += '&balance_pct='+str(self.strat_bal_pct_spinbox.value())
         params += '&cex_list='+cex_items
         print('http://127.0.0.1:8000/strategies/create?'+params)
         resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
         QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
-
 
     def start_strat(self):
         selected_row = self.strategies_table.currentRow()
@@ -2058,7 +2066,7 @@ class Ui(QTabWidget):
         log_msg = get_time_str()+" Bot stopped"
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#267F00'))
-        self.trading_logs_list.addItem(log_row)
+        #self.trading_logs_list.addItem(log_row)
 
     def start_bot_trading(self):
         buys = 0
@@ -2080,7 +2088,7 @@ class Ui(QTabWidget):
             log_msg = get_time_str()+" Bot started"
             log_row = QListWidgetItem(log_msg)
             log_row.setForeground(QColor('#267F00'))
-            self.trading_logs_list.addItem(log_row)
+            #self.trading_logs_list.addItem(log_row)
         else:
             msg = 'Please activate at least one sell coin and at least one different buy coin (Binance compatible). '
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -2089,11 +2097,11 @@ class Ui(QTabWidget):
     def update_bot_log(self, uuid, log_msg, log_result=''):
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#00137F'))
-        self.trading_logs_list.addItem(log_row)
+        #self.trading_logs_list.addItem(log_row)
         if log_result != '':
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
-            self.trading_logs_list.addItem(log_row)
+            #self.trading_logs_list.addItem(log_row)
 
     def update_trading_log(self, sender, log_msg, log_result=''):
         timestamp = int(time.time())
@@ -2102,11 +2110,11 @@ class Ui(QTabWidget):
         log_msg = prefix+log_msg
         log_row = QListWidgetItem(log_msg)
         log_row.setForeground(QColor('#00137F'))
-        self.trading_logs_list.addItem(log_row)
+        #self.trading_logs_list.addItem(log_row)
         if log_result != '':
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
-            self.trading_logs_list.addItem(log_row)
+            #self.trading_logs_list.addItem(log_row)
 
     def recover_swap(self):
         # TODO: add input to allow import of swap json for failed swap
