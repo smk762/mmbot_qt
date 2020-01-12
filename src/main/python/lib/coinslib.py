@@ -600,7 +600,7 @@ coin_api_codes = {
 coin_explorers = {
    'AXE':{
       'tx_explorer':'https://etherscan.io/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://etherscan.io/address'
    },
    'AWC':{
       'tx_explorer':'https://etherscan.io/tx',
@@ -612,7 +612,7 @@ coin_explorers = {
    },
    'BCH':{
       'tx_explorer':'https://explorer.bitcoin.com/bch/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://explorer.bitcoin.com/bch/address'
    },
    'BOTS':{
       'tx_explorer':'https://bots.explorer.dexstats.info/tx',
@@ -620,15 +620,15 @@ coin_explorers = {
    },
    'BTC':{
       'tx_explorer':'https://explorer.bitcoin.com/btc/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://explorer.bitcoin.com/btc/address'
    },
    'BTCH':{
       'tx_explorer':'https://btch.explorer.dexstats.info/tx',
       'addr_explorer':'https://btch.explorer.dexstats.info/address'
    },
    'CHIPS':{
-      'tx_explorer':'',
-      'addr_explorer':''
+      'tx_explorer':'http://chips.komodochainz.info/tx',
+      'addr_explorer':'http://chips.komodochainz.info/address'
    },
    'COQUI':{
       'tx_explorer':'https://coqui.explorer.dexstats.info/tx',
@@ -644,7 +644,7 @@ coin_explorers = {
    },
    'DASH':{
       'tx_explorer':'https://explorer.dash.org/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://explorer.dash.org/address'
    },
    'DEX':{
       'tx_explorer':'https://dex.explorer.dexstats.info/tx',
@@ -652,7 +652,7 @@ coin_explorers = {
    },
    'DGB':{
       'tx_explorer':'https://digiexplorer.info/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://digiexplorer.info/address'
    },
    'DOGE':{
       'tx_explorer':'https://live.blockcypher.com/doge/tx',
@@ -700,7 +700,7 @@ coin_explorers = {
    },
    'QTUM':{
       'tx_explorer':'https://qtum.info/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://qtum.info/address'
    },
    'REVS':{
       'tx_explorer':'https://revs.explorer.dexstats.info/tx',
@@ -708,7 +708,7 @@ coin_explorers = {
    },
    'RVN':{
       'tx_explorer':'https://ravencoin.network/tx',
-      'addr_explorer':''
+      'addr_explorer':'https://ravencoin.network/address'
    },
    'RFOX':{
       'tx_explorer':'https://rfox.explorer.dexstats.info/tx',
@@ -740,7 +740,7 @@ coin_explorers = {
    },
    'ZEC':{
       'tx_explorer':'https://explorer.zcha.in/transactions',
-      'addr_explorer':''
+      'addr_explorer':'https://explorer.zcha.in/accounts'
    },
    'ZEXO':{
       'tx_explorer':'https://zexo.explorer.dexstats.info/tx',

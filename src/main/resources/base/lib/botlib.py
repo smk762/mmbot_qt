@@ -316,8 +316,8 @@ def get_binance_orders_status(bn_key, bn_secret, history):
                     print(symbol)
                     print(history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid])
                     if 'orderId' in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]:
-                        orderID = history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]['orderId']
-                        resp = binance_api.get_order(bn_key, bn_secret, symbol, orderID)
+                        orderId = history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]['orderId']
+                        resp = binance_api.get_order(bn_key, bn_secret, symbol, orderId)
                         if "status" in resp:
                             if resp['status'] == 'FILLED':
                                 # move to "completed"
@@ -330,6 +330,16 @@ def get_binance_orders_status(bn_key, bn_secret, history):
                                 add_symbols.append({symbol:resp})
                         else:
                             print(resp)
+                    elif 'error' in history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]:
+                        resp = history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid][symbol]
+                        if resp["type"] == "SELL":
+                            reorder = binance_api.create_sell_order(bn_key, bn_secret, symbol, resp["Amount"], resp["Price"])
+                            if 'orderId' in reorder:
+                                history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].update({symbol: reorder})
+                        elif resp["type"] == "BUY":
+                            reorder = binance_api.create_buy_order(bn_key, bn_secret, symbol, resp["Amount"], resp["Price"])
+                            if 'orderId' in reorder:
+                                history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].update({symbol: reorder})
                 for symbol_resp in add_symbols:
                     history['Sessions'][session]["CEX open orders"]["Binance"][mm2_uuid].update(symbol_resp)
                 for symbol in rem_symbols:
@@ -374,14 +384,14 @@ def start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_sw
         price = binance_api.round_to_tick(symbol, price)
         # Sell 10000 KMD for 0.79254 BTC
         resp = binance_api.create_sell_order(bn_key, bn_secret, symbol, spend_amount, price)
-        if 'orderID' in resp:
+        if 'orderId' in resp:
             history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
         else:
             history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: {
                         "error": "Sell "+symbol+" failed - "+resp['msg'],
                         "type":"SELL",
                         "Amount":spend_amount,
-                        "Price":price
+                        "Price":format_num_10f(price)
                     }
                 })
     else:
@@ -395,14 +405,14 @@ def start_direct_trade(bn_key, bn_secret, strategy, history, session_num, mm2_sw
         price = binance_api.round_to_tick(symbol, price)
         # Replenish 10000 KMD, spending 0.7614 BTC
         resp = binance_api.create_buy_order(bn_key, bn_secret, symbol, replenish_amount, price)
-        if 'orderID' in resp:
+        if 'orderId' in resp:
             history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: resp})
         else:
             history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({symbol: {
                         "error": "Sell "+symbol+" failed - "+resp['msg'],
                         "type":"BUY",
                         "Amount":replenish_amount,
-                        "Price":price
+                        "Price":format_num_10f(price)
                     }
                 })
     return history
@@ -447,27 +457,27 @@ def start_indirect_trade(bn_key, bn_secret, strategy, history, session_num, mm2_
         rep_quote_amount = spend_amount*spend_quote_price
     # Replenish spent BTC, spending DASH
     resp = binance_api.create_sell_order(bn_key, bn_secret, spend_symbol, float(spend_amount), spend_quote_price)
-    if 'orderID' in resp:
+    if 'orderId' in resp:
         history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: resp})
     else:
         history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({spend_symbol: {
                     "error": "Sell "+spend_symbol+" failed - "+resp['msg'],
                     "type":"SELL",
                     "Amount":spend_amount,
-                    "Price":spend_quote_price
+                    "Price":format_num_10f(spend_quote_price)
                 }
             })
 
     # Replenish 100 KMD, spending BTC 
     resp = binance_api.create_buy_order(bn_key, bn_secret, replenish_symbol, float(replenish_amount), replenish_quote_price)
-    if 'orderID' in resp:
+    if 'orderId' in resp:
         history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: resp})
     else:
         history['Sessions'][session_num]["CEX open orders"]["Binance"][mm2_swap_uuid].update({replenish_symbol: {
                     "error": "Sell "+replenish_symbol+" failed - "+resp['msg'],
                     "type":"SELL",
                     "Amount":replenish_amount,
-                    "Price":replenish_quote_price
+                    "Price":format_num_10f(replenish_quote_price)
                 }
             })
     return history
