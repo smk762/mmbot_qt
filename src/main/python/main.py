@@ -835,12 +835,6 @@ class Ui(QTabWidget):
             self.rpc_ip_text_input.setText(self.creds[4])
             self.binance_key_text_input.setText(self.creds[5])
             self.binance_secret_text_input.setText(self.creds[6])
-            self.countertrade_timeout_input.setValue(float(self.creds[9]))
-            if self.creds[8] == "Marketmaker & Binance":
-                self.bot_mode_comboBox.setCurrentIndex(1)
-            else:
-                self.bot_mode_comboBox.setCurrentIndex(0)
-
             if self.creds[4] == '127.0.0.1':
                 self.checkbox_local_only.setChecked(True)
             else:
@@ -2005,9 +1999,6 @@ class Ui(QTabWidget):
         binance_secret = self.binance_secret_text_input.text()
         margin = float(self.creds[7])
         netid = self.netid_input.text()
-        index = self.bot_mode_comboBox.currentIndex()
-        bot_mode = self.bot_mode_comboBox.itemText(index)
-        countertrade_timeout = float(self.countertrade_timeout_input.text())
         if passphrase == '':
             msg += 'No seed phrase input! \n'
         if rpc_password == '':
@@ -2138,6 +2129,11 @@ class Ui(QTabWidget):
             log_row = QListWidgetItem(">>> "+str(log_result))
             log_row.setForeground(QColor('#7F0000'))
             #self.trading_logs_list.addItem(log_row)
+
+    def import_swap_data(self):
+        swap_data = json.loads(self.import_swaps_input.toPlainText())
+        resp = rpclib.import_swaps(self.creds[0], self.creds[1], swap_data).json()
+        QMessageBox.information(self, 'Import Swap Data', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def recover_swap(self):
         # TODO: add input to allow import of swap json for failed swap
@@ -2344,7 +2340,6 @@ class Ui(QTabWidget):
                                     self.bot_swap_history[mm2_order_uuid].update({
                                             "mm2_rel":rel,
                                             "mm2_base":base,
-                                            "bot_mode":self.creds[8],
                                             "time":get_time_str(),
                                             "mm2_swaps": {
                                                 swap: {

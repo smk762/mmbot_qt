@@ -114,10 +114,10 @@ def help_mm2(node_ip, user_pass):
     r = requests.post(node_ip, json=params)
     return r.text
 
-def import_swaps(node_ip, user_pass, coin):
+def import_swaps(node_ip, user_pass, swaps):
     params = {'userpass': user_pass,
               'method': 'import_swaps',
-              'swaps': swaps
+              'swaps': [swaps]
               }
     r = requests.post(node_ip,json=params)
     return r
