@@ -525,6 +525,13 @@ class Ui(QTabWidget):
                 # stop zombie orders / strats
                 self.stop_all_strats()
                 rpclib.cancel_all(self.creds[0], self.creds[1]).json()
+                binance_acct = binance_api.get_account_info(self.creds[5], self.creds[6])
+                if 'code' in binance_acct:
+                    self.authenticated_binance = False
+                    self.binance_api_err = binance_acct['msg']
+                else:
+                    self.authenticated_binance = True
+                    self.binance_api_err = ''
                 # start data caching loop in other thread
                 self.datacache_thread = cachedata_thread()
                 self.datacache_thread.update_data.connect(self.update_cachedata)
@@ -797,6 +804,9 @@ class Ui(QTabWidget):
                 self.update_binance_depth_table()
                 self.update_binance_orders_table()
                 self.update_binance_labels(base, rel)
+                if not self.authenticated_binance:
+                    msg = self.binance_api_err+"\n"
+                    QMessageBox.information(self, 'Binance API Error!', msg, QMessageBox.Ok, QMessageBox.Ok)
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -876,6 +886,7 @@ class Ui(QTabWidget):
         rpclib.stop_mm2(window.creds[0], window.creds[1])
         api_proc.kill()
         self.authenticated = False
+        self.authenticated_binance = False
         self.username = ''
         self.password = ''
         self.creds = ['','','','','','','','','','']

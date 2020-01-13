@@ -567,6 +567,8 @@ def get_binance_countertrade_symbols(bn_key, bn_secret, binance_balances, replen
     # If no match is found
     return False, False
 
+    
+
 exch_info = get_exchange_info()
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]

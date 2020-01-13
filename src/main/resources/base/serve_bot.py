@@ -197,6 +197,7 @@ class bn_balances_update_thread(object):
         thread.start()                                  # Start the execution
 
     def run(self):
+        global balances_data
         while self.signal == True:
             bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret, addresses_data)
             balances_data["Binance"].update(bn_balances_data)
