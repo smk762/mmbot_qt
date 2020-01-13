@@ -456,7 +456,8 @@ class Ui(QTabWidget):
         try:
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
             # check if already running?
-            subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+            global api_proc
+            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
             time.sleep(2)
             if self.creds[5] == '':
                 key = 'x'
@@ -2624,4 +2625,5 @@ if __name__ == '__main__':
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
+    api_proc.kill()
     sys.exit(exit_code)
