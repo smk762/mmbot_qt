@@ -83,9 +83,9 @@ def mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin):
         mm2_coin_balance_data = {
             coin: {
                     "address":address,
-                    "total":total,
-                    "locked":locked,
-                    "available":available,
+                    "total":format_num_10f(total),
+                    "locked":format_num_10f(locked),
+                    "available":format_num_10f(available),
                 }                
             }
     else:
@@ -110,9 +110,9 @@ def bn_balances_loop(bn_key, bn_secret):
         total = binance_balances[coin]['total']
         bn_balances_data.update({coin: {
             "address":address,
-            "total":total,
-            "locked":locked,
-            "available":available,
+            "total":format_num_10f(total),
+            "locked":format_num_10f(locked),
+            "available":format_num_10f(available),
             }                
         })
     return bn_balances_data

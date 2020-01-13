@@ -81,6 +81,14 @@ def ETH_JSONtoAmount(value):
 def ETH_AmountToJSON(amount):
     return float(amount / 1e18)
 
+def format_num_10f(val):
+    if val != 0:
+        try:
+            val = "{:.10f}".format(round(float(val),10))
+        except:
+            pass
+    return val
+
 # THREADED OPERATIONS
 
 # request and cache external balance and pricing data in thread
@@ -1056,7 +1064,7 @@ class Ui(QTabWidget):
                     except Exception as e:
                         # no float value for coin
                         pass
-                balance_row = [coin, total, usd_val, btc_val]
+                balance_row = [coin, format_num_10f(total), format_num_10f(usd_val), format_num_10f(btc_val)]
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 row += 1
             except Exception as e:
@@ -1450,7 +1458,7 @@ class Ui(QTabWidget):
                 available = float(self.balances_data["Binance"][coin]['available'])
                 total = float(self.balances_data["Binance"][coin]['total'])
                 locked = float(self.balances_data["Binance"][coin]['locked'])
-                balance_row = [coin, total, available, locked]
+                balance_row = [coin, format_num_10f(total), format_num_10f(available), format_num_10f(locked)]
                 self.add_row(row, balance_row, self.binance_balances_table)
                 row += 1
         self.binance_balances_table.setSortingEnabled(True)
@@ -1711,13 +1719,13 @@ class Ui(QTabWidget):
             usd_price = 'No Data'
             btc_price = 'No Data'
         if quote == 'USD':
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+str(usd_price)+'</span></div>'
-        if quote == 'KMD':
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+format_num_10f(usd_price)+'</span></div>'
+        elif quote == 'KMD':
             kmd_price = priceslib.get_paprika_price(coinslib.coin_api_codes['KMD']['paprika_id']).json()['price_btc']
             kmd_price = float(btc_price)/float(kmd_price)
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current KMD Price: '+str(kmd_price)+'</span></div>'
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current KMD Price: '+format_num_10f(kmd_price)+'</span></div>'
         else:
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: $'+str(btc_price)+'</span></div>'
+            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: '+format_num_10f(btc_price)+'</span></div>'
         text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
         self.binance_history_graph.addItem(text)
         text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
@@ -2138,6 +2146,7 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
+
         self.prices_table.setSortingEnabled(False)
         headers = ['COIN', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
         self.prices_table.setColumnCount(len(headers))
@@ -2156,30 +2165,32 @@ class Ui(QTabWidget):
             average_usd_price = '-'
             if coin in self.prices_data['average']:
                 if 'BTC' in self.prices_data['average'][coin]:
-                    average_btc_price = self.prices_data['average'][coin]['BTC']
+                    average_btc_price = format_num_10f(self.prices_data['average'][coin]['BTC'])
                 if 'USD' in self.prices_data['average'][coin]:
-                    average_usd_price = self.prices_data['average'][coin]['USD']
+                    average_usd_price = format_num_10f(self.prices_data['average'][coin]['USD'])
             if coin in self.prices_data["Binance"]:
                 if 'BTC' in self.prices_data["Binance"][coin]:
-                    bn_btc_price = self.prices_data["Binance"][coin]['BTC']
+                    bn_btc_price = format_num_10f(self.prices_data["Binance"][coin]['BTC'])
                 if 'TUSD' in self.prices_data["Binance"][coin]:
-                    bn_tusd_price = self.prices_data["Binance"][coin]['TUSD']
+                    bn_tusd_price = format_num_10f(self.prices_data["Binance"][coin]['TUSD'])
             if coin in self.prices_data['gecko']:
                 if 'BTC' in self.prices_data['gecko'][coin]:
-                    gk_btc_price = self.prices_data['gecko'][coin]['BTC']
+                    gk_btc_price = format_num_10f(self.prices_data['gecko'][coin]['BTC'])
                 if 'USD' in self.prices_data['gecko'][coin]:
-                    gk_usd_price = self.prices_data['gecko'][coin]['USD']
+                    gk_usd_price = format_num_10f(self.prices_data['gecko'][coin]['USD'])
             if coin in self.prices_data['paprika']:
                 if 'BTC' in self.prices_data['paprika'][coin]:
-                    pk_btc_price = self.prices_data['paprika'][coin]['BTC']
+                    pk_btc_price = format_num_10f(self.prices_data['paprika'][coin]['BTC'])
                 if 'USD' in self.prices_data['paprika'][coin]:
-                    pk_usd_price = self.prices_data['paprika'][coin]['USD']
-            price_row = [coin, bn_btc_price, gk_btc_price, pk_btc_price, average_btc_price, bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price]
+                    pk_usd_price = format_num_10f(self.prices_data['paprika'][coin]['USD'])
+            price_row = [coin, bn_btc_price, gk_btc_price, pk_btc_price, average_btc_price, 
+                        bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price]
             self.add_row(row, price_row, self.prices_table)
             row += 1
         self.prices_table.setSortingEnabled(True)
         self.prices_table.resizeColumnsToContents()
         self.prices_table.sortItems(0, Qt.AscendingOrder)
+
 
     def update_mm2_trade_history_table(self):
         if self.mm2_hide_failed_checkbox.isChecked():

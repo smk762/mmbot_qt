@@ -400,10 +400,10 @@ async def mm2_orderbook_pair_table(base, rel):
             table_data.append({
                     "Buy Coin":base,
                     "Sell Coin":rel,
-                    base+" Volume":basevolume,
-                    rel+" Price per "+base:relprice,
-                    "API Average Price":api_price,
-                    "Order Value in "+rel:order_value,
+                    base+" Volume":botlib.format_num_10f(basevolume),
+                    rel+" Price per "+base:botlib.format_num_10f(relprice),
+                    "API Average Price":botlib.format_num_10f(api_price),
+                    "Order Value in "+rel:botlib.format_num_10f(order_value),
                     "Age":item['age'],
                     "Pubkey":item['pubkey'],
                 })
@@ -457,7 +457,7 @@ async def get_binance_depth(symbol):
         table_data.append({
                 "Pair": symbol,
                 "Price": "{:.8f}".format(price),
-                "Volume": volume,
+                "Volume": botlib.format_num_10f(volume),
                 "Bid/Ask":'Bid'
             })
     for item in depth['asks']:
@@ -466,7 +466,7 @@ async def get_binance_depth(symbol):
         table_data.append({
                 "Pair": symbol,
                 "Price": "{:.8f}".format(price),
-                "Volume": volume,
+                "Volume": botlib.format_num_10f(volume),
                 "Bid/Ask":'Ask'
             })
     return {"table_data":table_data}
@@ -492,17 +492,17 @@ async def mm2_history_table():
             status = event_type
             role = swap['type']
             uuid = swap['uuid']
-            my_amount = round(float(swap['my_info']['my_amount']),8)
+            my_amount = botlib.format_num_10f(swap['my_info']['my_amount'])
             my_coin = swap['my_info']['my_coin']
-            other_amount = round(float(swap['my_info']['other_amount']),8)
+            other_amount = botlib.format_num_10f(swap['my_info']['other_amount'])
             other_coin = swap['my_info']['other_coin']
             started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
             if swap['type'] == 'Taker':
-                buy_price = round(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']),8)
+                buy_price = botlib.format_num_10f(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']))
                 sell_price = '-'
             else:
                 buy_price = '-'
-                sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
+                sell_price = botlib.format_num_10f(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']))
             table_data.append({
                     "Start Time":started_at,
                     "Role":role,
@@ -532,9 +532,9 @@ async def strategies_history_table():
                         "Start Time": datetime.datetime.fromtimestamp(round(swap_info["Start time"]/1000)*1000),
                         "API":"MM2",
                         "Buy Coin":swap_info["Recieved coin"],
-                        "Buy Amount":swap_info["Recieved amount"],
-                        "Sell Coin":swap_info["Sent amount"],
-                        "Sell Amount":swap_info["Sent amount"],
+                        "Buy Amount":botlib.format_num_10f(swap_info["Recieved amount"]),
+                        "Sell Coin":swap_info["Sent coin"],
+                        "Sell Amount":botlib.format_num_10f(swap_info["Sent amount"]),
                         "MM2 UUID":uuid,
                         "Binance OrderID":"-",
                         "Status": "Complete"
@@ -547,7 +547,7 @@ async def strategies_history_table():
                             swap_spent_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
                             swap_rec_amount = order_info["origQty"]
                             if float(order_info["origQty"])*float(order_info["price"]) != 0:
-                                swap_spent_amount = "{:.10f}".format(round(float(order_info["origQty"])*float(order_info["price"]),10))
+                                swap_spent_amount = botlib.format_num_10f(float(order_info["origQty"])*float(order_info["price"]))
                             else:
                                 swap_rec_amount = 0
                         elif order_info['side'] == 'SELL':
@@ -555,7 +555,7 @@ async def strategies_history_table():
                             swap_rec_coin = binance_api.binance_pair_info[symbol]['quoteAsset']
                             swap_spent_amount = order_info["origQty"]
                             if float(order_info["origQty"])*float(order_info["price"]) != 0:
-                                swap_rec_amount = "{:.10f}".format(round(float(order_info["origQty"])*float(order_info["price"]),10))
+                                swap_rec_amount = botlib.format_num_10f(float(order_info["origQty"])*float(order_info["price"]))
                             else:
                                 swap_rec_amount = 0
                         table_data.append({
@@ -587,9 +587,9 @@ async def strategies_history_table():
                             "Start Time": datetime.datetime.fromtimestamp(round(order_info["time"]/1000)),
                             "API":"Binance",
                             "Buy Coin":swap_rec_coin,
-                            "Buy Amount":swap_rec_amount,
+                            "Buy Amount":botlib.format_num_10f(swap_rec_amount),
                             "Sell Coin":swap_spent_coin,
-                            "Sell Amount":swap_spent_amount,
+                            "Sell Amount":botlib.format_num_10f(swap_spent_amount),
                             "MM2 UUID":uuid,
                             "Binance OrderID":order_info["orderId"],
                             "Status": "Complete"
@@ -660,7 +660,7 @@ async def bot_strategy_summary(strategy_name):
             delta_coins.sort()
             for coin in delta_coins:
                 if float(history['Sessions'][session]['Balance Deltas'][coin]) != 0:
-                    session_data.update({coin:"{:.10f}".format(round(float(history['Sessions'][session]['Balance Deltas'][coin]),10))})
+                    session_data.update({coin:botlib.format_num_10f(float(history['Sessions'][session]['Balance Deltas'][coin]))})
                 else:
                     session_data.update({coin:0})
             cex_err = []
@@ -686,7 +686,7 @@ async def bot_strategy_summary(strategy_name):
         delta_coins.sort()
         for coin in delta_coins:
             if float(history['Total balance deltas'][coin]) != 0:
-                total_data.update({coin:"{:.10f}".format(round(float(history['Total balance deltas'][coin]),10))})
+                total_data.update({coin:botlib.format_num_10f(float(history['Total balance deltas'][coin]))})
             else:
                 total_data.update({coin:0})
         total_data.update({"CEX errors":"-"})
