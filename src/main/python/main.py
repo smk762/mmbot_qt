@@ -106,11 +106,11 @@ class cachedata_thread(QThread):
                 prices_data = requests.get('http://127.0.0.1:8000/all_prices').json()
                 balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
                 self.update_data.emit(prices_data, balances_data)
-                time.sleep(10)
             except Exception as e:
-                print('cache_data error')
-                print(e)
                 pass
+                #print('cache_data error')
+                #print(e)
+            time.sleep(10)
 
 # Process mm2 coin activation
 class activation_thread(QThread):
@@ -871,6 +871,34 @@ class Ui(QTabWidget):
                     self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
                 elif resp == QMessageBox.No:
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+
+    def logout(self):
+        rpclib.stop_mm2(window.creds[0], window.creds[1])
+        api_proc.kill()
+        self.authenticated = False
+        self.username = ''
+        self.password = ''
+        self.creds = ['','','','','','','','','','']
+        text_inputs = [self.seed_text_input, self.rpcpass_text_input, self.binance_key_text_input, self.binance_secret_text_input,
+                       self.import_swaps_input, self.swap_recover_uuid]
+        for text_input in text_inputs:
+            text_input.setText('')
+        tables = [self.orderbook_table, self.mm2_orders_table, self.binance_balances_table, self.binance_orders_table, 
+                  self.wallet_balances_table, self.strategies_table, self.strat_summary_table, self.mm2_trades_table,
+                  self.strategy_trades_table]
+        for table in tables:
+            self.clear_table(table)
+            table.setRowCount(0)
+        labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_usd_value, self.wallet_btc_value, 
+                  self.orderbook_buy_balance_lbl, self.orderbook_buy_locked_lbl, self.orderbook_sell_balance_lbl,
+                  self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
+                  self.binance_quote_balance_lbl, self.binance_quote_locked_lbl, self.binance_addr_coin_lbl,
+                  self.wallet_btc_total, self.wallet_usd_total] 
+        for label in labels:
+            label.setText('')
+        time.sleep(0.2)
+        self.prepare_tab()
+
 
     def activate_coins(self):
         coins_to_activate = []

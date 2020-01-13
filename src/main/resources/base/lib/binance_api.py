@@ -488,16 +488,10 @@ def get_binance_balances(key, secret):
             available = float(item['free'])
             locked = float(item['locked'])
             balance = locked + available
-            resp = get_deposit_addr(key, secret, coin)
-            if 'address' in resp:
-                addr_text = resp['address']
-            else:
-                addr_text = 'Address not found - create it at Binance.com'
             binance_balances.update({coin:{
                     'available':available,
                     'locked':locked,
-                    'total':balance,
-                    'address':addr_text
+                    'total':balance
                 }
             })
     return binance_balances

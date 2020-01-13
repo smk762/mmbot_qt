@@ -197,9 +197,8 @@ class bn_balances_update_thread(object):
         thread.start()                                  # Start the execution
 
     def run(self):
-        global balances_data
         while self.signal == True:
-            bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret)
+            bn_balances_data = botlib.bn_balances_loop(bn_key, bn_secret, addresses_data)
             balances_data["Binance"].update(bn_balances_data)
             time.sleep(self.interval)
 
@@ -285,10 +284,6 @@ async def set_creds(ip: str, rpc_pass: str, key: str, secret: str, username: str
     orderbook_thread = orderbook_update_thread()
     prices_thread = price_update_thread()
     bot_thread = bot_update_thread()        
-
-@app.post("/logout")
-async def logout():
-    pass
 
 # TABLE FORMATTED 
 
@@ -427,7 +422,6 @@ async def binance_open_orders():
     table_data = []
     open_orders = binance_api.get_open_orders(bn_key, bn_secret)
     for item in open_orders:
-        print(item)
         if 'orderId' in item:
             order_id = item['orderId']
             side = item['side']

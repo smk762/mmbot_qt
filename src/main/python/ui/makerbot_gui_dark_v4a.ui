@@ -114,7 +114,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -2835,8 +2835,8 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>266</width>
-                            <height>368</height>
+                            <width>280</width>
+                            <height>408</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_14">
@@ -3928,7 +3928,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>283</width>
-                            <height>296</height>
+                            <height>408</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout">
@@ -4827,7 +4827,29 @@ color: rgb(0, 0, 0);</string>
                  <property name="spacing">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0">
+                 <item row="0" column="1">
+                  <widget class="QPushButton" name="btn_logout">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>120</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true"/>
+                   </property>
+                   <property name="text">
+                    <string>Logout</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
                   <widget class="QPushButton" name="btn_activate">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
@@ -4848,6 +4870,48 @@ color: rgb(0, 0, 0);</string>
                     <string>Activate</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="0" column="4">
+                  <spacer name="horizontalSpacer_28">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="0">
+                  <spacer name="horizontalSpacer_29">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <spacer name="verticalSpacer_28">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeType">
+                    <enum>QSizePolicy::Minimum</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </widget>
@@ -12938,8 +13002,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>generate_seed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>479</x>
-     <y>281</y>
+     <x>735</x>
+     <y>234</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -12954,8 +13018,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1199</x>
-     <y>657</y>
+     <x>1114</x>
+     <y>600</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -12986,8 +13050,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>489</x>
-     <y>73</y>
+     <x>1345</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -13050,8 +13114,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>set_localonly()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1559</x>
-     <y>443</y>
+     <x>1295</x>
+     <y>452</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -13066,8 +13130,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>535</x>
-     <y>109</y>
+     <x>949</x>
+     <y>714</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -13082,8 +13146,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_utxo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>662</x>
-     <y>117</y>
+     <x>996</x>
+     <y>205</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -13098,8 +13162,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>481</x>
-     <y>73</y>
+     <x>911</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -13114,8 +13178,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>484</x>
-     <y>73</y>
+     <x>1101</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -13130,8 +13194,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>487</x>
-     <y>73</y>
+     <x>1299</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -13210,8 +13274,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>683</x>
-     <y>117</y>
+     <x>1354</x>
+     <y>205</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -13227,7 +13291,7 @@ background-color: rgb(85, 87, 83);</string>
    <hints>
     <hint type="sourcelabel">
      <x>640</x>
-     <y>117</y>
+     <y>205</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -13274,8 +13338,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>recover_swap()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1255</x>
-     <y>757</y>
+     <x>1302</x>
+     <y>952</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -13923,6 +13987,22 @@ background-color: rgb(85, 87, 83);</string>
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_logout</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>logout()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1029</x>
+     <y>699</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>activate_coins()</slot>
@@ -14004,5 +14084,6 @@ background-color: rgb(85, 87, 83);</string>
   <slot>update_binance_wallet()</slot>
   <slot>update_price_history_graph()</slot>
   <slot>import_swap_data()</slot>
+  <slot>logout()</slot>
  </slots>
 </ui>

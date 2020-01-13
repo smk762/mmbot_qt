@@ -99,12 +99,15 @@ def mm2_balances_loop(mm2_ip, mm2_rpc_pass, coin):
             }
     return mm2_coin_balance_data
 
-def bn_balances_loop(bn_key, bn_secret):
+def bn_balances_loop(bn_key, bn_secret, addresses_data):
     # get binance balances
     binance_balances = binance_api.get_binance_balances(bn_key, bn_secret)
     bn_balances_data = {}
     for coin in binance_balances:
-        address = binance_balances[coin]['address']
+        if coin in addresses_data: 
+            address = addresses_data[coin]
+        else:
+            address = ""
         available = binance_balances[coin]['available']
         locked = binance_balances[coin]['locked']
         total = binance_balances[coin]['total']
