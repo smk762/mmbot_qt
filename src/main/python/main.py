@@ -239,7 +239,7 @@ class Ui(QTabWidget):
         except:
             self.mm2_bin = self.ctx.get_resource('mm2.exe')
         # define local bot api script
-        self.bot_api = self.ctx.get_resource('serve_bot.py')
+        self.bot_api = self.ctx.get_resource('mmbot_api')
         # define coins file path and set envornment variable for mm2 launch
         self.coins_file = self.ctx.get_resource('coins')
         os.environ['MM_COINS_PATH'] = self.coins_file
