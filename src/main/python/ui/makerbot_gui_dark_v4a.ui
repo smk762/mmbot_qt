@@ -79,7 +79,7 @@
          </property>
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>1100</width>
            <height>0</height>
           </size>
          </property>
@@ -114,7 +114,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -5376,6 +5376,9 @@ color: rgb(46, 52, 54);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>215</width>
@@ -5391,6 +5394,12 @@ color: rgb(46, 52, 54);</string>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>1000</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="styleSheet">
           <string/>
@@ -5462,7 +5471,7 @@ color: rgb(46, 52, 54);</string>
                        <widget class="QFrame" name="frame_73">
                         <property name="minimumSize">
                          <size>
-                          <width>350</width>
+                          <width>300</width>
                           <height>75</height>
                          </size>
                         </property>
@@ -5799,7 +5808,7 @@ color: rgb(46, 52, 54);</string>
                         </property>
                         <property name="minimumSize">
                          <size>
-                          <width>0</width>
+                          <width>350</width>
                           <height>75</height>
                          </size>
                         </property>
@@ -6014,7 +6023,7 @@ color: rgb(46, 52, 54);</string>
                        <widget class="QFrame" name="frame_8">
                         <property name="minimumSize">
                          <size>
-                          <width>0</width>
+                          <width>300</width>
                           <height>75</height>
                          </size>
                         </property>
@@ -6146,7 +6155,7 @@ color: rgb(46, 52, 54);</string>
                         </property>
                         <property name="minimumSize">
                          <size>
-                          <width>0</width>
+                          <width>350</width>
                           <height>75</height>
                          </size>
                         </property>
@@ -6542,6 +6551,9 @@ color: rgb(46, 52, 54);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>214</width>
@@ -6561,6 +6573,12 @@ color: rgb(46, 52, 54);</string>
         <verstretch>0</verstretch>
        </sizepolicy>
       </property>
+      <property name="minimumSize">
+       <size>
+        <width>1100</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
       </property>
@@ -6572,6 +6590,9 @@ color: rgb(46, 52, 54);</string>
         <spacer name="horizontalSpacer_12">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -6916,6 +6937,9 @@ color: rgb(46, 52, 54);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>59</width>
@@ -6988,6 +7012,12 @@ color: rgb(46, 52, 54);</string>
     </item>
     <item row="0" column="1" rowspan="2">
      <widget class="QFrame" name="frame_41">
+      <property name="minimumSize">
+       <size>
+        <width>1100</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -6997,6 +7027,12 @@ color: rgb(46, 52, 54);</string>
       <layout class="QGridLayout" name="gridLayout_111">
        <item row="0" column="0">
         <widget class="QFrame" name="frame_42">
+         <property name="minimumSize">
+          <size>
+           <width>700</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -7012,6 +7048,12 @@ color: rgb(46, 52, 54);</string>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>820</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="font">
              <font>
               <pointsize>16</pointsize>
@@ -7025,7 +7067,7 @@ color: rgb(46, 52, 54);</string>
               <widget class="QFrame" name="frame_22">
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>700</width>
                  <height>230</height>
                 </size>
                </property>
@@ -7043,6 +7085,12 @@ color: rgb(46, 52, 54);</string>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
@@ -7220,6 +7268,12 @@ color: rgb(46, 52, 54);</string>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>200</width>
+                    <height>0</height>
+                   </size>
                   </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
@@ -7427,6 +7481,18 @@ color: rgb(46, 52, 54);</string>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>250</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>300</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
                   </property>
@@ -7444,7 +7510,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -7683,7 +7749,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -7728,7 +7794,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -7797,7 +7863,7 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -7828,6 +7894,12 @@ color: rgb(46, 52, 54);</string>
              </item>
              <item row="2" column="0">
               <widget class="QFrame" name="frame_40">
+               <property name="minimumSize">
+                <size>
+                 <width>700</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
                </property>
@@ -7891,6 +7963,12 @@ color: rgb(46, 52, 54);</string>
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
+                     </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>350</width>
+                       <height>0</height>
+                      </size>
                      </property>
                      <property name="font">
                       <font>
@@ -8055,6 +8133,12 @@ color: rgb(46, 52, 54);</string>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
+                     <property name="minimumSize">
+                      <size>
+                       <width>350</width>
+                       <height>0</height>
+                      </size>
+                     </property>
                      <property name="font">
                       <font>
                        <pointsize>11</pointsize>
@@ -8200,6 +8284,12 @@ color: rgb(46, 52, 54);</string>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>700</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="font">
              <font>
@@ -8508,6 +8598,12 @@ color: rgb(46, 52, 54);</string>
        </item>
        <item row="0" column="1">
         <widget class="QFrame" name="frame_47">
+         <property name="minimumSize">
+          <size>
+           <width>360</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="frameShape">
           <enum>QFrame::StyledPanel</enum>
          </property>
@@ -9032,6 +9128,12 @@ color: rgb(46, 52, 54);</string>
     </item>
     <item row="1" column="1">
      <widget class="QFrame" name="frame_50">
+      <property name="minimumSize">
+       <size>
+        <width>390</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -9041,6 +9143,12 @@ color: rgb(46, 52, 54);</string>
       <layout class="QGridLayout" name="gridLayout_93">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_6">
+         <property name="minimumSize">
+          <size>
+           <width>375</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="title">
           <string>Marketmaker Portfolio</string>
          </property>
@@ -9076,7 +9184,7 @@ color: rgb(46, 52, 54);</string>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>350</width>
                  <height>0</height>
                 </size>
                </property>
@@ -9189,6 +9297,12 @@ color: rgb(46, 52, 54);</string>
     </item>
     <item row="1" column="2">
      <widget class="QFrame" name="frame_55">
+      <property name="minimumSize">
+       <size>
+        <width>700</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -9200,7 +9314,7 @@ color: rgb(46, 52, 54);</string>
         <widget class="QFrame" name="frame_53">
          <property name="minimumSize">
           <size>
-           <width>0</width>
+           <width>690</width>
            <height>125</height>
           </size>
          </property>
@@ -9268,8 +9382,16 @@ color: rgb(46, 52, 54);</string>
               <height>35</height>
              </size>
             </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
             <property name="styleSheet">
              <string notr="true"/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -9283,7 +9405,7 @@ color: rgb(46, 52, 54);</string>
             </property>
             <property name="minimumSize">
              <size>
-              <width>220</width>
+              <width>120</width>
               <height>0</height>
              </size>
             </property>
@@ -9351,6 +9473,9 @@ color: rgb(46, 52, 54);</string>
             <property name="styleSheet">
              <string notr="true"/>
             </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
             <property name="decimals">
              <number>6</number>
             </property>
@@ -9369,6 +9494,12 @@ color: rgb(46, 52, 54);</string>
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
             </property>
             <property name="maximumSize">
              <size>
@@ -9853,6 +9984,12 @@ color: rgb(46, 52, 54);</string>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>900</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="title">
                 <string>Bot Trading Strategies</string>
                </property>
@@ -10012,6 +10149,9 @@ color: rgb(46, 52, 54);</string>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -10024,6 +10164,9 @@ color: rgb(46, 52, 54);</string>
               <spacer name="horizontalSpacer_63">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -10085,6 +10228,12 @@ color: rgb(46, 52, 54);</string>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize">
+                <size>
+                 <width>900</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="title">
                 <string>Create Bot Trading Strategy</string>
                </property>
@@ -10099,7 +10248,7 @@ color: rgb(46, 52, 54);</string>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>180</width>
                     <height>200</height>
                    </size>
                   </property>
@@ -10171,7 +10320,7 @@ background-color: rgb(85, 87, 83);</string>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>180</width>
                     <height>200</height>
                    </size>
                   </property>
@@ -10243,7 +10392,7 @@ background-color: rgb(85, 87, 83);</string>
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>0</width>
+                    <width>180</width>
                     <height>200</height>
                    </size>
                   </property>
@@ -10307,6 +10456,12 @@ background-color: rgb(85, 87, 83);</string>
                 </item>
                 <item row="0" column="6">
                  <widget class="QFrame" name="frame_21">
+                  <property name="minimumSize">
+                   <size>
+                    <width>240</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
                   </property>
@@ -10318,7 +10473,7 @@ background-color: rgb(85, 87, 83);</string>
                     <widget class="QSpinBox" name="strat_refresh_spinbox">
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -10347,7 +10502,7 @@ background-color: rgb(85, 87, 83);</string>
                     <widget class="QDoubleSpinBox" name="strat_margin_spinbox">
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -10372,7 +10527,7 @@ background-color: rgb(85, 87, 83);</string>
                     <widget class="QComboBox" name="strat_type_combo">
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -10399,7 +10554,7 @@ background-color: rgb(85, 87, 83);</string>
                     <widget class="QLineEdit" name="strat_name">
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -10443,7 +10598,7 @@ background-color: rgb(85, 87, 83);</string>
                     <widget class="QSpinBox" name="strat_bal_pct_spinbox">
                      <property name="minimumSize">
                       <size>
-                       <width>0</width>
+                       <width>120</width>
                        <height>25</height>
                       </size>
                      </property>
@@ -10518,6 +10673,12 @@ background-color: rgb(85, 87, 83);</string>
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>900</width>
+                 <height>0</height>
+                </size>
                </property>
                <property name="title">
                 <string>Bot Strategy Summary</string>
@@ -10663,6 +10824,9 @@ background-color: rgb(85, 87, 83);</string>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -10675,6 +10839,9 @@ background-color: rgb(85, 87, 83);</string>
               <spacer name="horizontalSpacer_78">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -10745,6 +10912,12 @@ background-color: rgb(85, 87, 83);</string>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>900</width>
+           <height>0</height>
+          </size>
          </property>
          <property name="title">
           <string>Coin API Prices</string>
@@ -10884,6 +11057,9 @@ background-color: rgb(85, 87, 83);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>40</width>
@@ -10896,6 +11072,9 @@ background-color: rgb(85, 87, 83);</string>
         <spacer name="horizontalSpacer_26">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -11025,6 +11204,12 @@ background-color: rgb(85, 87, 83);</string>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>900</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="frameShape">
        <enum>QFrame::NoFrame</enum>
@@ -11383,6 +11568,12 @@ background-color: rgb(85, 87, 83);</string>
     </item>
     <item row="3" column="1" colspan="2">
      <widget class="QFrame" name="frame_3">
+      <property name="minimumSize">
+       <size>
+        <width>900</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -11632,6 +11823,9 @@ background-color: rgb(85, 87, 83);</string>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
            <width>40</width>
@@ -11644,6 +11838,9 @@ background-color: rgb(85, 87, 83);</string>
         <spacer name="horizontalSpacer_81">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
          </property>
          <property name="sizeHint" stdset="0">
           <size>
@@ -11665,6 +11862,12 @@ background-color: rgb(85, 87, 83);</string>
    <layout class="QGridLayout" name="gridLayout_105">
     <item row="3" column="1">
      <widget class="QFrame" name="frame_56">
+      <property name="minimumSize">
+       <size>
+        <width>900</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
@@ -11920,6 +12123,12 @@ background-color: rgb(85, 87, 83);</string>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>900</width>
+        <height>0</height>
+       </size>
       </property>
       <property name="title">
        <string>Antara Marketmaker Settings</string>
