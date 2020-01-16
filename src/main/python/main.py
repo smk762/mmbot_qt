@@ -466,7 +466,7 @@ class Ui(QTabWidget):
     def start_api(self, logfile='bot_api_output.log'):
         try:
             if platform.system() == 'Windows':
-                subprocess.Popen(["tskill", "-9", "mmbot_api"])
+                subprocess.Popen(["tskill", "-9", "mmbot_api.exe"])
             else:
                 subprocess.Popen(["pkill", "-9", "mmbot_api"])                
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
@@ -499,7 +499,7 @@ class Ui(QTabWidget):
             if self.creds[0] != '':
                 version = ''
                 if platform.system() == 'Windows':
-                    subprocess.Popen(["tskill", "-9", "mm2"])
+                    subprocess.Popen(["tskill", "-9", "mm2.exe"])
                 else:
                     subprocess.Popen(["pkill", "-9", "mm2"])
                 
@@ -1789,8 +1789,13 @@ class Ui(QTabWidget):
         if coin != '' and address != '':
             self.update_mm2_wallet_labels()
 
-    def update_mm2_wallet_labels(self):
-        index = self.wallet_combo.currentIndex()
+    def update_mm2_wallet_labels(self):      
+        self.wallet_balance.setText('')
+        self.wallet_address.setText('Loading...')
+        self.wallet_locked_by_swaps.setText('')
+        self.wallet_btc_value.setText("")
+        self.wallet_usd_value.setText("")
+        index = self.wallet_combo.currentIndex()     
         if index != -1:
             coin = self.wallet_combo.itemText(index)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
@@ -1817,13 +1822,6 @@ class Ui(QTabWidget):
                     except Exception as e:
                         print('update wallet labels err')
                         print(e)
-                        self.wallet_btc_value.setText("")
-                        self.wallet_usd_value.setText("")
-                        pass
-                else:
-                    print('no price data for '+coin)
-                    self.wallet_btc_value.setText("")
-                    self.wallet_usd_value.setText("")
 
     def show_mm2_qr_popup(self):
         index = self.wallet_combo.currentIndex()
@@ -2185,7 +2183,10 @@ class Ui(QTabWidget):
         self.prices_table.setColumnCount(len(headers))
         self.prices_table.setHorizontalHeaderLabels(headers)
         self.clear_table(self.prices_table)
-        self.prices_table.setRowCount(len(self.prices_data['average']))
+        prices_length = len(self.prices_data['average'])
+        if prices_length > 0:
+            prices_table_msg.setText('')
+        self.prices_table.setRowCount(prices_length)
         row = 0
         for coin in self.prices_data['average']:
             bn_btc_price = '-'
