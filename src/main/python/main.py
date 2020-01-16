@@ -465,15 +465,11 @@ class Ui(QTabWidget):
 
     def start_api(self, logfile='bot_api_output.log'):
         try:
-            if platform.system() == 'Windows':
-                subprocess.Popen(["tskill", "-9", "mmbot_api.exe"])
-            else:
-                subprocess.Popen(["pkill", "-9", "mmbot_api"])                
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
             # check if already running?
             global api_proc
             api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
-            time.sleep(2)
+            time.sleep(1)
             if self.creds[5] == '':
                 key = 'x'
             else:
@@ -497,36 +493,46 @@ class Ui(QTabWidget):
             # hide login page, show activation page
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
-                version = ''
                 if platform.system() == 'Windows':
                     subprocess.Popen(["tskill", "-9", "mm2.exe"])
                 else:
-                    subprocess.Popen(["pkill", "-9", "mm2"])
-                
+                    subprocess.Popen(["pkill", "-9", "mm2"])                
                 i = 0
+                version = ''
                 while version == '':
                     try:
                         self.start_mm2()
                         time.sleep(0.6)
                         version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                        print("mm2 version: "+version)
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
                     except Exception as e:
                         print('mm2 not start')
                         print(e)
                         pass
+                        i += 1
+                        if i > 10:
+                            QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
+                if platform.system() == 'Windows':
+                    subprocess.Popen(["tskill", "-9", "mmbot_api.exe"])
+                else:
+                    subprocess.Popen(["pkill", "-9", "mmbot_api"])   
+                i = 0  
+                version = ''
+                while version == '':
                     try:
                         self.start_api()
-                        time.sleep(0.6)
+                        time.sleep(0.8)
                         version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
-                        print(version)
+                        print("Bot version: "+version)
                         self.api_version_lbl.setText("Makerbot API version: "+version+" ")
                     except Exception as e:
                         print('bot not start')
-                        i += 1
                         print(e)
+                        pass
                         if i > 10:
-                            QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
-                        # TODO: MESSAGEBOX AND EXIT
+                            QMessageBox.information(self, 'Error', "Bot API failed to start.\nCheck logs tab, or "+config_path+self.username+"_bot_output.log", QMessageBox.Ok, QMessageBox.Ok)
+
                 # purge MM2.json cleartext
                 with open(config_path+"MM2.json", 'w+') as j:
                     j.write('')

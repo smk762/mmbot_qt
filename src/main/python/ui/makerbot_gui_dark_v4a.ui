@@ -24,14 +24,14 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>1024</width>
-    <height>920</height>
+    <width>1200</width>
+    <height>1000</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1920</width>
-    <height>1080</height>
+    <width>2049</width>
+    <height>1184</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>8</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -114,7 +114,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -5321,6 +5321,9 @@ color: rgb(46, 52, 54);</string>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
@@ -5336,10 +5339,13 @@ color: rgb(46, 52, 54);</string>
     <string>Marketmaker</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_54">
-    <item row="3" column="1">
+    <item row="4" column="1">
      <spacer name="verticalSpacer_2">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -5353,6 +5359,9 @@ color: rgb(46, 52, 54);</string>
      <spacer name="horizontalSpacer_19">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
@@ -5371,22 +5380,6 @@ color: rgb(46, 52, 54);</string>
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_23">
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>215</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="1">
         <widget class="QFrame" name="frame_59">
          <property name="sizePolicy">
@@ -6546,26 +6539,10 @@ color: rgb(46, 52, 54);</string>
          </layout>
         </widget>
        </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer_9">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>214</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="3" column="1">
      <widget class="QFrame" name="frame_70">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -6951,40 +6928,49 @@ color: rgb(46, 52, 54);</string>
       </layout>
      </widget>
     </item>
-    <item row="1" column="0">
-     <spacer name="verticalSpacer_5">
+    <item row="2" column="1">
+     <spacer name="horizontalSpacer_22">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Minimum</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>40</height>
+        <width>40</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
     <item row="1" column="2">
-     <spacer name="verticalSpacer_6">
+     <spacer name="horizontalSpacer_9">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>20</height>
        </size>
       </property>
      </spacer>
     </item>
-    <item row="4" column="1">
-     <spacer name="horizontalSpacer_20">
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_7">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>40</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -7002,9 +6988,12 @@ color: rgb(46, 52, 54);</string>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>159</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -9095,9 +9084,12 @@ color: rgb(46, 52, 54);</string>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>158</width>
+        <width>20</width>
         <height>20</height>
        </size>
       </property>
@@ -9228,6 +9220,22 @@ color: rgb(46, 52, 54);</string>
                </column>
               </widget>
              </item>
+             <item row="1" column="0">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
            </widget>
           </item>
@@ -9269,22 +9277,6 @@ color: rgb(46, 52, 54);</string>
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
-             </item>
-             <item row="0" column="0">
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::MinimumExpanding</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </widget>
@@ -9883,6 +9875,22 @@ color: rgb(46, 52, 54);</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_103">
     <item row="1" column="0">
+     <spacer name="horizontalSpacer_58">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="1">
      <widget class="QFrame" name="frame_37">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -9891,38 +9899,6 @@ color: rgb(46, 52, 54);</string>
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_101">
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer_58">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>328</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="2">
-        <spacer name="horizontalSpacer_59">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>348</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="1" rowspan="2">
         <widget class="QFrame" name="frame_54">
          <property name="frameShape">
@@ -10154,7 +10130,7 @@ color: rgb(46, 52, 54);</string>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10170,7 +10146,7 @@ color: rgb(46, 52, 54);</string>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10212,9 +10188,12 @@ color: rgb(46, 52, 54);</string>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>224</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10630,9 +10609,12 @@ background-color: rgb(85, 87, 83);</string>
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::MinimumExpanding</enum>
+               </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>223</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10640,22 +10622,6 @@ background-color: rgb(85, 87, 83);</string>
              </item>
             </layout>
            </widget>
-          </item>
-          <item row="6" column="0">
-           <spacer name="verticalSpacer_16">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::MinimumExpanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
           <item row="5" column="0">
            <widget class="QFrame" name="frame_52">
@@ -10829,7 +10795,7 @@ background-color: rgb(85, 87, 83);</string>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10845,7 +10811,7 @@ background-color: rgb(85, 87, 83);</string>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
+                 <width>30</width>
                  <height>20</height>
                 </size>
                </property>
@@ -10854,27 +10820,43 @@ background-color: rgb(85, 87, 83);</string>
             </layout>
            </widget>
           </item>
-          <item row="7" column="0">
-           <spacer name="horizontalSpacer_69">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Minimum</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>1895</width>
-              <height>13</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
          </layout>
         </widget>
        </item>
       </layout>
      </widget>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_59">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="2" column="1">
+     <spacer name="verticalSpacer_16">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
@@ -10883,7 +10865,7 @@ background-color: rgb(85, 87, 83);</string>
     <string>Prices</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_60">
-    <item row="4" column="0">
+    <item row="4" column="1">
      <spacer name="horizontalSpacer_21">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -10896,7 +10878,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
      </spacer>
     </item>
-    <item row="1" column="0" rowspan="2">
+    <item row="1" column="1" rowspan="2">
      <widget class="QFrame" name="frame_20">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -11052,42 +11034,10 @@ background-color: rgb(85, 87, 83);</string>
          </layout>
         </widget>
        </item>
-       <item row="0" column="2">
-        <spacer name="horizontalSpacer_16">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0">
-        <spacer name="horizontalSpacer_26">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </widget>
     </item>
-    <item row="0" column="0">
+    <item row="0" column="1">
      <spacer name="horizontalSpacer_24">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -11100,15 +11050,50 @@ background-color: rgb(85, 87, 83);</string>
       </property>
      </spacer>
     </item>
-    <item row="3" column="0">
+    <item row="3" column="1">
      <spacer name="verticalSpacer_17">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
         <height>40</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="2">
+     <spacer name="horizontalSpacer_16">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="1" column="0">
+     <spacer name="horizontalSpacer_26">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
@@ -11143,7 +11128,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>454</width>
+        <width>40</width>
         <height>20</height>
        </size>
       </property>
@@ -11159,7 +11144,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>454</width>
+        <width>40</width>
         <height>20</height>
        </size>
       </property>
@@ -11175,7 +11160,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>454</width>
+        <width>40</width>
         <height>20</height>
        </size>
       </property>
@@ -11191,7 +11176,7 @@ background-color: rgb(85, 87, 83);</string>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>454</width>
+        <width>40</width>
         <height>20</height>
        </size>
       </property>
@@ -12719,6 +12704,9 @@ background-color: rgb(85, 87, 83);</string>
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
@@ -12734,7 +12722,23 @@ background-color: rgb(85, 87, 83);</string>
     <string>Logs</string>
    </attribute>
    <layout class="QGridLayout" name="gridLayout_9">
-    <item row="3" column="1" colspan="2">
+    <item row="2" column="0">
+     <spacer name="horizontalSpacer_60">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>40</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="3" column="0" colspan="2">
      <widget class="QFrame" name="frame_12">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -12807,7 +12811,7 @@ background-color: rgb(85, 87, 83);</string>
       </layout>
      </widget>
     </item>
-    <item row="1" column="1" colspan="2">
+    <item row="1" column="0" colspan="2">
      <widget class="QFrame" name="frame_4">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -12880,11 +12884,14 @@ background-color: rgb(85, 87, 83);</string>
       </layout>
      </widget>
     </item>
-    <item row="4" column="1">
+    <item row="4" column="0">
      <spacer name="horizontalSpacer_53">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
+      </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>40</width>
@@ -12893,54 +12900,18 @@ background-color: rgb(85, 87, 83);</string>
       </property>
      </spacer>
     </item>
-    <item row="0" column="1">
+    <item row="0" column="0">
      <spacer name="horizontalSpacer_52">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>40</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="2" column="1">
-     <spacer name="horizontalSpacer_60">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="sizeType">
+       <enum>QSizePolicy::MinimumExpanding</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
         <width>40</width>
         <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="3" rowspan="3">
-     <spacer name="verticalSpacer_19">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0" rowspan="3">
-     <spacer name="verticalSpacer_18">
-      <property name="orientation">
-       <enum>Qt::Vertical</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>20</width>
-        <height>40</height>
        </size>
       </property>
      </spacer>
