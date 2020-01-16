@@ -470,18 +470,6 @@ class Ui(QTabWidget):
             global api_proc
             api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
             time.sleep(1)
-            if self.creds[5] == '':
-                key = 'x'
-            else:
-                key = self.creds[5]
-            if self.creds[6] == '':
-                secret = 'x'
-            else:
-                secret = self.creds[6]
-            endpoint = 'http://127.0.0.1:8000/set_creds?'
-            params = 'ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+key+'&secret='+secret+'&username='+self.username
-            url = endpoint+params
-            requests.post(url)
         except Exception as e:
             print('bot not start')
             print(e)
@@ -532,7 +520,18 @@ class Ui(QTabWidget):
                         pass
                         if i > 10:
                             QMessageBox.information(self, 'Error', "Bot API failed to start.\nCheck logs tab, or "+config_path+self.username+"_bot_output.log", QMessageBox.Ok, QMessageBox.Ok)
-
+                if self.creds[5] == '':
+                    key = 'x'
+                else:
+                    key = self.creds[5]
+                if self.creds[6] == '':
+                    secret = 'x'
+                else:
+                    secret = self.creds[6]
+                endpoint = 'http://127.0.0.1:8000/set_creds?'
+                params = 'ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+key+'&secret='+secret+'&username='+self.username
+                url = endpoint+params
+                requests.post(url)
                 # purge MM2.json cleartext
                 with open(config_path+"MM2.json", 'w+') as j:
                     j.write('')
