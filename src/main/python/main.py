@@ -457,7 +457,7 @@ class Ui(QTabWidget):
             subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
             time.sleep(1)
         except Exception as e:
-            QMessageBox.information(self, "Progress status", 'No mm2!')
+            QMessageBox.information(self, "MM2 status", 'No mm2 binary!')
             print(e)
 
     def start_api(self, logfile='bot_api_output.log'):
@@ -491,15 +491,9 @@ class Ui(QTabWidget):
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
                 version = ''
-                stopped = False
+                subprocess.Popen(["pkill", "-9", "mm2"])
+                i = 0
                 while version == '':
-                    # check if mm2 running, and stop if it is.
-                    if not stopped:
-                        try:
-                            rpclib.stop_mm2(self.creds[0], self.creds[1])
-                        except:
-                            stopped = True
-                            pass
                     try:
                         self.start_mm2()
                         time.sleep(0.6)
@@ -508,6 +502,7 @@ class Ui(QTabWidget):
                     except Exception as e:
                         print('mm2 not start')
                         print(e)
+                        pass
                     try:
                         self.start_api()
                         time.sleep(0.6)
@@ -516,7 +511,10 @@ class Ui(QTabWidget):
                         self.api_version_lbl.setText("Makerbot API version: "+version+" ")
                     except Exception as e:
                         print('bot not start')
+                        i += 1
                         print(e)
+                        if i > 10:
+                            QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
                         # TODO: MESSAGEBOX AND EXIT
                 # purge MM2.json cleartext
                 with open(config_path+"MM2.json", 'w+') as j:
@@ -829,7 +827,7 @@ class Ui(QTabWidget):
 
     def show_prices_tab(self):
         self.update_prices_table()
-        self.update_price_history_graph()
+        # self.update_price_history_graph()
 
     def show_history_tab(self):
         print('show_history_tab')
@@ -1883,6 +1881,7 @@ class Ui(QTabWidget):
 
     ## STRATEGIES TAB
     def populate_strategy_lists(self):
+        print('populate_strategy_lists')
         self.strat_buy_list.clear()
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
@@ -1898,8 +1897,10 @@ class Ui(QTabWidget):
             list_item = QListWidgetItem(item)
             list_item.setTextAlignment(Qt.AlignHCenter)
             self.strat_cex_list.addItem(list_item)
+        print('populated_strategy_lists')
 
     def update_strategies_table(self):
+        print('update_strategies_table')
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
         for row in range(self.strategies_table.rowCount()):
             if self.strategies_table.item(row, 10).text() == 'active':
@@ -1907,6 +1908,7 @@ class Ui(QTabWidget):
             elif self.strategies_table.item(row, 10).text() != 'inactive':
                 self.colorize_row(self.strategies_table, row, QColor(255, 233, 127))
         self.strategies_table.clearSelection()
+        print('updated_strategies_table')
 
     def create_strat(self):
         params = 'name='+self.strat_name.text()
@@ -1941,12 +1943,13 @@ class Ui(QTabWidget):
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             resp = requests.post('http://127.0.0.1:8000/strategies/start/'+strategy_name).json()
+            QMessageBox.information(self, 'Strategy '+strategy_name+' started', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         else:
             resp = {
                 "response": "error",
                 "message": "No strategy row selected!"
             }
-        QMessageBox.information(self, 'Strategy '+strategy_name+' started', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+            QMessageBox.information(self, 'No strategy row selected!', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.update_strategies_table()
 
     def stop_strat(self):
@@ -2051,7 +2054,8 @@ class Ui(QTabWidget):
                 if not confirm == QMessageBox.Yes:
                     overwrite = False
             if overwrite:
-                passwd, ok = QInputDialog.getText(self, 'Enter Password', 'Enter your login password: ')
+
+                passwd, ok = QInputDialog.getText(self, 'Enter Password', 'Enter your login password: ', QLineEdit.Password)
                 if ok:
                     if passwd == self.password:
                         data = {}
@@ -2104,20 +2108,6 @@ class Ui(QTabWidget):
 
 
     ### FUCTIONS TO REVIEW ###
-
-    def stop_bot_trading(self):
-        self.bot_trade_thread.stop()
-        bot_order_count = self.bot_mm2_orders_table.rowCount()
-        if bot_order_count > 0:
-            resp = QMessageBox.information(self, 'Cancel orders?', 'Cancel all orders?\nAlternatively, you can cancel individually\nby selecting orders from the open orders table. ', QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-            if resp == QMessageBox.Yes:
-                self.mm2_cancel_all_orders()
-        self.bot_status_lbl.setText("STOPPED")
-        self.bot_status_lbl.setStyleSheet("color: rgb(164, 0, 0);\nbackground-color: rgb(177, 179, 186);")
-        log_msg = get_time_str()+" Bot stopped"
-        log_row = QListWidgetItem(log_msg)
-        log_row.setForeground(QColor('#267F00'))
-        #self.trading_logs_list.addItem(log_row)
 
     def start_bot_trading(self):
         buys = 0
