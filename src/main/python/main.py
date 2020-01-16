@@ -239,7 +239,10 @@ class Ui(QTabWidget):
         except:
             self.mm2_bin = self.ctx.get_resource('mm2.exe')
         # define local bot api script
-        self.bot_api = self.ctx.get_resource('mmbot_api')
+        try:
+            self.bot_api = self.ctx.get_resource('mmbot_api')
+        except:
+            self.bot_api = self.ctx.get_resource('mmbot_api.exe')
         # define coins file path and set envornment variable for mm2 launch
         self.coins_file = self.ctx.get_resource('coins')
         os.environ['MM_COINS_PATH'] = self.coins_file
@@ -462,6 +465,10 @@ class Ui(QTabWidget):
 
     def start_api(self, logfile='bot_api_output.log'):
         try:
+            if platform.system() == 'Windows':
+                subprocess.Popen(["tskill", "-9", "mmbot_api"])
+            else:
+                subprocess.Popen(["pkill", "-9", "mmbot_api"])                
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
             # check if already running?
             global api_proc
@@ -491,7 +498,11 @@ class Ui(QTabWidget):
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
                 version = ''
-                subprocess.Popen(["pkill", "-9", "mm2"])
+                if platform.system() == 'Windows':
+                    subprocess.Popen(["tskill", "-9", "mm2"])
+                else:
+                    subprocess.Popen(["pkill", "-9", "mm2"])
+                
                 i = 0
                 while version == '':
                     try:
@@ -2169,9 +2180,8 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
-
         self.prices_table.setSortingEnabled(False)
-        headers = ['COIN', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
+        headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
         self.prices_table.setColumnCount(len(headers))
         self.prices_table.setHorizontalHeaderLabels(headers)
         self.clear_table(self.prices_table)
