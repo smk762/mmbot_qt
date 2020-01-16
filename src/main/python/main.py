@@ -860,14 +860,21 @@ class Ui(QTabWidget):
                 self.checkbox_local_only.setChecked(False)
 
     def show_logs_tab(self):
-        logfile='mm2_output.log'
-        mm2_output = open(config_path+self.username+"_"+logfile,'r')
+        mm2_output = open(config_path+self.username+"_mm2_output.log",'r')
         with mm2_output as f:
             log_text = f.read()
             lines = f.readlines()
-            self.scrollbar = self.console_logs.verticalScrollBar()
-            self.console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
-            self.console_logs.setPlainText(log_text)
+            self.scrollbar = self.mm2_console_logs.verticalScrollBar()
+            self.mm2_console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
+            self.mm2_console_logs.setPlainText(log_text)
+            self.scrollbar.setValue(10000)
+        api_output = open(config_path+self.username+"_bot_api_output.log",'r')
+        with api_output as f:
+            log_text = f.read()
+            lines = f.readlines()
+            self.scrollbar = self.api_console_logs.verticalScrollBar()
+            self.api_console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
+            self.api_console_logs.setPlainText(log_text)
             self.scrollbar.setValue(10000)
 
     ## LOGIN / ACTIVATE TAB FUNCTIONS
@@ -2185,7 +2192,7 @@ class Ui(QTabWidget):
         self.clear_table(self.prices_table)
         prices_length = len(self.prices_data['average'])
         if prices_length > 0:
-            prices_table_msg.setText('')
+            self.prices_table_msg.setText('')
         self.prices_table.setRowCount(prices_length)
         row = 0
         for coin in self.prices_data['average']:
