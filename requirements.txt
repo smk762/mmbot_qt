@@ -1,5 +1,5 @@
-setuptools
-wheel 
+setuptools==39.0.1
+pyinstaller==3.4
 PyQt5==5.9.2
 fbs==0.8.4
 slick-bitcoinrpc==0.1.4
@@ -16,3 +16,4 @@ fastapi==0.44.1
 uvicorn==0.10.8
 pydantic==1.2
 python-multipart==0.0.5
+pypiwin32

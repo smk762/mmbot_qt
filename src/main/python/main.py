@@ -20,6 +20,7 @@ from dateutil import parser
 from zipfile import ZipFile 
 import platform
 import subprocess
+from subprocess import CREATE_NO_WINDOW
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
@@ -456,8 +457,9 @@ class Ui(QTabWidget):
     # start MM2 for specific user
     def start_mm2(self, logfile='mm2_output.log'):
         try:
+            global mm2_proc
             mm2_output = open(config_path+self.username+"_"+logfile,'w+')
-            subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True)
+            mm2_proc = subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True, creationflags=CREATE_NO_WINDOW)
             time.sleep(1)
         except Exception as e:
             QMessageBox.information(self, "MM2 status", 'No mm2 binary!')
@@ -465,10 +467,9 @@ class Ui(QTabWidget):
 
     def start_api(self, logfile='bot_api_output.log'):
         try:
-            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-            # check if already running?
             global api_proc
-            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True)
+            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
+            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True, creationflags=CREATE_NO_WINDOW)
             time.sleep(1)
         except Exception as e:
             print('bot not start')
@@ -482,15 +483,16 @@ class Ui(QTabWidget):
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
                 if platform.system() == 'Windows':
-                    subprocess.Popen(["tskill", "-9", "mm2.exe"])
+                    kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], creationflags=CREATE_NO_WINDOW)
                 else:
-                    subprocess.Popen(["pkill", "-9", "mm2"])                
+                    kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], creationflags=CREATE_NO_WINDOW)
+                kill_mm2.wait()
                 i = 0
                 version = ''
                 while version == '':
                     try:
                         self.start_mm2()
-                        time.sleep(0.6)
+                        time.sleep(1)
                         version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
                         print("mm2 version: "+version)
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
@@ -502,15 +504,16 @@ class Ui(QTabWidget):
                         if i > 10:
                             QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
                 if platform.system() == 'Windows':
-                    subprocess.Popen(["tskill", "-9", "mmbot_api.exe"])
+                    kill_api = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], creationflags=CREATE_NO_WINDOW)
                 else:
-                    subprocess.Popen(["pkill", "-9", "mmbot_api"])   
+                    kill_api = subprocess.Popen(["pkill", "-9", "mmbot_api"], creationflags=CREATE_NO_WINDOW)
+                kill_api.wait()
                 i = 0  
                 version = ''
                 while version == '':
                     try:
                         self.start_api()
-                        time.sleep(0.8)
+                        time.sleep(1)
                         version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
                         print("Bot version: "+version)
                         self.api_version_lbl.setText("Makerbot API version: "+version+" ")
@@ -2368,5 +2371,6 @@ if __name__ == '__main__':
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
     rpclib.stop_mm2(window.creds[0], window.creds[1])
-    api_proc.kill()
+    api_proc.terminate()
+    mm2_proc.terminate()
     sys.exit(exit_code)
