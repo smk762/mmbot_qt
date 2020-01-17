@@ -2373,7 +2373,9 @@ if __name__ == '__main__':
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
     if 'api_proc' in locals():
+        print("Kill api_proc")
         api_proc.terminate()
     if 'mm2_proc' in locals():
+        print("Kill mm2_proc")
         mm2_proc.terminate()
     sys.exit(exit_code)
