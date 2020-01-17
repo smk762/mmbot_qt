@@ -2376,7 +2376,7 @@ if __name__ == '__main__':
         api_proc.kill()
         api_proc.wait()
         if platform.system() == 'Windows':
-            kill_mm2 = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], startupinfo=startupinfo)
+            kill_mm2 = subprocess.Popen(["tskill", "mmbot_api.exe"], startupinfo=startupinfo)
         else:
             kill_mm2 = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
         kill_mm2.wait()
@@ -2385,7 +2385,7 @@ if __name__ == '__main__':
         mm2_proc.kill()
         mm2_proc.wait()
         if platform.system() == 'Windows':
-            kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], startupinfo=startupinfo)
+            kill_mm2 = subprocess.Popen(["tskill", "mm2.exe"], startupinfo=startupinfo)
         else:
             kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
         kill_mm2.wait()
