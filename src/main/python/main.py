@@ -2376,8 +2376,18 @@ if __name__ == '__main__':
         print("Kill api_proc")
         api_proc.kill()
         api_proc.wait()
+        if platform.system() == 'Windows':
+            kill_mm2 = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], startupinfo=startupinfo)
+        else:
+            kill_mm2 = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
+        kill_mm2.wait()
     if 'mm2_proc' in locals():
         print("Kill mm2_proc")
         mm2_proc.kill()
         mm2_proc.wait()
+        if platform.system() == 'Windows':
+            kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], startupinfo=startupinfo)
+        else:
+            kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
+        kill_mm2.wait()
     sys.exit(exit_code)
