@@ -42,7 +42,6 @@ home = expanduser("~")
 if platform.system() == 'Windows':
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    startupinfo.dwFlags |= subprocess.CREATE_NO_WINDOW
     startupinfo.wShowWindow = subprocess.SW_HIDE
 else:
     startupinfo = None
