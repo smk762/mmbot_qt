@@ -20,7 +20,6 @@ from dateutil import parser
 from zipfile import ZipFile 
 import platform
 import subprocess
-from subprocess import CREATE_NO_WINDOW
 import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
@@ -43,7 +42,10 @@ home = expanduser("~")
 if platform.system() == 'Windows':
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.dwFlags |= subprocess.CREATE_NO_WINDOW
     startupinfo.wShowWindow = subprocess.SW_HIDE
+else:
+    startupinfo = None
 
 # scaling for high DPI vs SD monitors. Awaiting feedback from other users if any buttons etc are too small.
 os.environ["QT_SCALE_FACTOR"] = "1"  
@@ -459,7 +461,7 @@ class Ui(QTabWidget):
         try:
             global mm2_proc
             mm2_output = open(config_path+self.username+"_"+logfile,'w+')
-            mm2_proc = subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True, creationflags=CREATE_NO_WINDOW)
+            mm2_proc = subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True, startupinfo=startupinfo)
             time.sleep(1)
         except Exception as e:
             QMessageBox.information(self, "MM2 status", 'No mm2 binary!')
@@ -469,7 +471,7 @@ class Ui(QTabWidget):
         try:
             global api_proc
             bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True, creationflags=CREATE_NO_WINDOW)
+            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True, startupinfo=startupinfo)
             time.sleep(1)
         except Exception as e:
             print('bot not start')
@@ -483,9 +485,9 @@ class Ui(QTabWidget):
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
                 if platform.system() == 'Windows':
-                    kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], creationflags=CREATE_NO_WINDOW)
+                    kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], startupinfo=startupinfo)
                 else:
-                    kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], creationflags=CREATE_NO_WINDOW)
+                    kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
                 kill_mm2.wait()
                 i = 0
                 version = ''
@@ -504,9 +506,9 @@ class Ui(QTabWidget):
                         if i > 10:
                             QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
                 if platform.system() == 'Windows':
-                    kill_api = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], creationflags=CREATE_NO_WINDOW)
+                    kill_api = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], startupinfo=startupinfo)
                 else:
-                    kill_api = subprocess.Popen(["pkill", "-9", "mmbot_api"], creationflags=CREATE_NO_WINDOW)
+                    kill_api = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
                 kill_api.wait()
                 i = 0  
                 version = ''
@@ -2370,7 +2372,8 @@ if __name__ == '__main__':
     window = Ui(appctxt)
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
-    rpclib.stop_mm2(window.creds[0], window.creds[1])
-    api_proc.terminate()
-    mm2_proc.terminate()
+    if 'api_proc' in locals():
+        api_proc.terminate()
+    if 'mm2_proc' in locals():
+        mm2_proc.terminate()
     sys.exit(exit_code)
