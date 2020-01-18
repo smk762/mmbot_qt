@@ -450,6 +450,7 @@ class Ui(QTabWidget):
         self.update_strategy_history_table()
         self.update_strategies_table()
         self.view_strat_summary()
+        self.update_mm2_orderbook_table()
         self.update_mm2_orders_table()
 
         # TODO: Add gui update functions as req here.
@@ -484,7 +485,7 @@ class Ui(QTabWidget):
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
                 if platform.system() == 'Windows':
-                    kill_mm2 = subprocess.Popen(["tskill", "-9", "mm2.exe"], startupinfo=startupinfo)
+                    kill_mm2 = subprocess.Popen(["tskill", "mm2.exe"], startupinfo=startupinfo)
                 else:
                     kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
                 kill_mm2.wait()
@@ -505,7 +506,7 @@ class Ui(QTabWidget):
                         if i > 10:
                             QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
                 if platform.system() == 'Windows':
-                    kill_api = subprocess.Popen(["tskill", "-9", "mmbot_api.exe"], startupinfo=startupinfo)
+                    kill_api = subprocess.Popen(["tskill", "mmbot_api.exe"], startupinfo=startupinfo)
                 else:
                     kill_api = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
                 kill_api.wait()
@@ -790,14 +791,11 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            # get/populate coin combo box selections
+            self.update_mm2_orderbook_table()
+            self.update_mm2_orders_table()
             baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
             base = baserel[0]
             rel = baserel[1]
-            # refresh tables
-            self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
-            self.update_mm2_orders_table()
-            # Update labels
             self.update_mm2_orderbook_labels(base, rel)
 
     def show_binance_trading_tab(self):
@@ -934,7 +932,6 @@ class Ui(QTabWidget):
             label.setText('')
         time.sleep(0.2)
         self.prepare_tab()
-
 
     def activate_coins(self):
         coins_to_activate = []
@@ -1167,6 +1164,13 @@ class Ui(QTabWidget):
             row += 1
         self.mm2_trades_table.setSortingEnabled(True)
         self.mm2_trades_table.resizeColumnsToContents()
+
+    def update_mm2_orderbook_table(self):
+        baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
+        base = baserel[0]
+        rel = baserel[1]
+        # refresh tables
+        self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
 
     def update_mm2_orders_table(self):
         self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
