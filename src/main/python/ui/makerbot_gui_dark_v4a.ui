@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -2835,8 +2835,8 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>280</width>
-                            <height>408</height>
+                            <width>266</width>
+                            <height>368</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_14">
@@ -3928,7 +3928,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>283</width>
-                            <height>408</height>
+                            <height>296</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout">
@@ -5391,7 +5391,7 @@ color: rgb(46, 52, 54);</string>
          <property name="minimumSize">
           <size>
            <width>1000</width>
-           <height>0</height>
+           <height>450</height>
           </size>
          </property>
          <property name="styleSheet">
@@ -5426,7 +5426,7 @@ color: rgb(46, 52, 54);</string>
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>375</height>
+                 <height>390</height>
                 </size>
                </property>
                <property name="frameShape">
@@ -5444,6 +5444,12 @@ color: rgb(46, 52, 54);</string>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>250</height>
+                   </size>
+                  </property>
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
                   </property>
@@ -5453,6 +5459,12 @@ color: rgb(46, 52, 54);</string>
                   <layout class="QGridLayout" name="gridLayout_10">
                    <item row="0" column="1" rowspan="2">
                     <widget class="QFrame" name="frame_23">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>235</height>
+                      </size>
+                     </property>
                      <property name="frameShape">
                       <enum>QFrame::NoFrame</enum>
                      </property>
@@ -5465,7 +5477,7 @@ color: rgb(46, 52, 54);</string>
                         <property name="minimumSize">
                          <size>
                           <width>300</width>
-                          <height>75</height>
+                          <height>95</height>
                          </size>
                         </property>
                         <property name="frameShape">
@@ -5684,7 +5696,7 @@ color: rgb(46, 52, 54);</string>
                             <item row="1" column="6">
                              <widget class="QComboBox" name="orderbook_sell_combo">
                               <property name="sizePolicy">
-                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                               <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                                 <horstretch>0</horstretch>
                                 <verstretch>0</verstretch>
                                </sizepolicy>
@@ -5709,7 +5721,7 @@ color: rgb(46, 52, 54);</string>
                             <item row="1" column="4">
                              <widget class="QComboBox" name="orderbook_buy_combo">
                               <property name="sizePolicy">
-                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                               <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
                                 <horstretch>0</horstretch>
                                 <verstretch>0</verstretch>
                                </sizepolicy>
@@ -5802,7 +5814,7 @@ color: rgb(46, 52, 54);</string>
                         <property name="minimumSize">
                          <size>
                           <width>350</width>
-                          <height>75</height>
+                          <height>80</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -6017,7 +6029,7 @@ color: rgb(46, 52, 54);</string>
                         <property name="minimumSize">
                          <size>
                           <width>300</width>
-                          <height>75</height>
+                          <height>110</height>
                          </size>
                         </property>
                         <property name="frameShape">
@@ -6149,7 +6161,7 @@ color: rgb(46, 52, 54);</string>
                         <property name="minimumSize">
                          <size>
                           <width>350</width>
-                          <height>75</height>
+                          <height>80</height>
                          </size>
                         </property>
                         <property name="maximumSize">
@@ -6358,6 +6370,12 @@ color: rgb(46, 52, 54);</string>
                 </item>
                 <item row="1" column="0">
                  <widget class="QFrame" name="frame_11">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>90</height>
+                   </size>
+                  </property>
                   <property name="frameShape">
                    <enum>QFrame::StyledPanel</enum>
                   </property>
@@ -9218,6 +9236,11 @@ color: rgb(46, 52, 54);</string>
                  <string>BTC Value</string>
                 </property>
                </column>
+               <column>
+                <property name="text">
+                 <string>KMD Value</string>
+                </property>
+               </column>
               </widget>
              </item>
              <item row="1" column="0">
@@ -9272,6 +9295,21 @@ color: rgb(46, 52, 54);</string>
                </property>
                <property name="text">
                 <string>Total USD Value $0.00</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="wallet_kmd_total">
+               <property name="font">
+                <font>
+                 <pointsize>14</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Total KMD Value: 0.00</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>

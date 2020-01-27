@@ -145,6 +145,12 @@ coin_activation = {
       ],
       'type':'utxo'
    },
+    "ECA":{
+     "activate_with":"electrum",
+     "electrum": [{"url":"electrum1.cipig.net:10052"},
+                  {"url":"electrum2.cipig.net:10052"},
+                  {"url":"electrum3.cipig.net:10052"}],
+    },
    'ETH':{
       'activate_with':'electrum',
       'electrum':[
@@ -155,6 +161,12 @@ coin_activation = {
       'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
       'type':'erc20'
    },
+    "FTC":{
+        "activate_with":"electrum",
+        "electrum": [{"url":"electrum1.cipig.net:10054"},
+                     {"url":"electrum2.cipig.net:10054"},
+                     {"url":"electrum3.cipig.net:10054"}],
+    },
    'HUSH':{
       'activate_with':'electrum',
       'electrum':[
@@ -457,12 +469,24 @@ coin_api_codes = {
       'paprika_id':'doge-dogecoin',
       'name':'Dogecoin'
    },
+    "ECA":{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':''
+    },
    'ETH':{
       'coingecko_id':'ethereum',
       'binance_id':'ETH',
       'paprika_id':'eth-ethereum',
       'name':'Ethereum'
    },
+    "FTC":{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':''
+    },
    'HUSH':{
       'coingecko_id':'hush',
       'binance_id':'',
@@ -658,9 +682,17 @@ coin_explorers = {
       'tx_explorer':'https://live.blockcypher.com/doge/tx',
       'addr_explorer':'https://live.blockcypher.com/doge/address'
    },
+    "ECA":{
+     "tx_explorer":"https://explorer.electraproject.org/tx",
+     "addr_explorer":"https://explorer.electraproject.org/address",
+    },
    'ETH':{
       'tx_explorer':'https://etherscan.io/tx',
       'addr_explorer':'https://etherscan.io/address'
+   },
+   'ETH':{
+        "tx_explorer":"https://fsight.chain.tips/tx",
+        "addr_explorer":"https://fsight.chain.tips/address",
    },
    'HUSH':{
       'tx_explorer':'https://hush.explorer.dexstats.info/tx',

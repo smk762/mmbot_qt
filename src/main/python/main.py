@@ -24,6 +24,14 @@ import numpy as np
 import pyqtgraph as pg
 from pyqtgraph.Point import Point
 import decimal
+import logging
+
+logger = logging.getLogger()
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+logger.setLevel(logging.INFO)
 
 '''
 # TODOS #
@@ -72,17 +80,6 @@ if settings.value('users') is None:
 def get_time_str():
     return str(datetime.datetime.fromtimestamp(int(time.time())))
 
-# https://en.bitcoin.it/wiki/Proper_Money_Handling_%28JSON-RPC%29
-def JSONtoAmount(value):
-    return long(round(value * 1e8))
-def AmountToJSON(amount):
-    return float(amount / 1e8)
-
-def ETH_JSONtoAmount(value):
-    return long(round(value * 1e18))
-def ETH_AmountToJSON(amount):
-    return float(amount / 1e18)
-
 def format_num_10f(val):
     if val != 0:
         try:
@@ -110,8 +107,8 @@ class cachedata_thread(QThread):
                 self.update_data.emit(prices_data, balances_data)
             except Exception as e:
                 pass
-                #print('cache_data error')
-                #print(e)
+                #logger.info('cache_data error')
+                #logger.info(e)
             time.sleep(10)
 
 # Process mm2 coin activation
@@ -130,7 +127,7 @@ class activation_thread(QThread):
         for coin in self.coins:
             if coin[0] not in active_coins:
                 r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
-                print(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
+                logger.info(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.activate.emit(coin[0])
 
 # Get price graph history
@@ -432,25 +429,24 @@ class Ui(QTabWidget):
                 
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     def update_cachedata(self, prices_dict, balances_dict):
+        logger.info("Updating cache data from API")
         self.prices_data = prices_dict
         self.balances_data['mm2'].update(balances_dict['mm2'])
         self.balances_data["Binance"].update(balances_dict["Binance"])
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
         base = baserel[0]
         rel = baserel[1]
-        self.update_mm2_orderbook_labels(base, rel)
+        if base != '' and rel != '':
+            self.update_mm2_orderbook_labels(base, rel)
+            self.update_mm2_orderbook_table()
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
-        baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
-        base = baserel[0]
-        rel = baserel[1]
         self.update_binance_balance_table()
         self.update_prices_table()
         self.update_mm2_trade_history_table()
         self.update_strategy_history_table()
         self.update_strategies_table()
         self.view_strat_summary()
-        self.update_mm2_orderbook_table()
         self.update_mm2_orders_table()
 
         # TODO: Add gui update functions as req here.
@@ -465,7 +461,7 @@ class Ui(QTabWidget):
             time.sleep(1)
         except Exception as e:
             QMessageBox.information(self, "MM2 status", 'No mm2 binary!')
-            print(e)
+            logger.info("MM2 Binary not found!")
 
     def start_api(self, logfile='bot_api_output.log'):
         try:
@@ -474,8 +470,7 @@ class Ui(QTabWidget):
             api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True, startupinfo=startupinfo)
             time.sleep(1)
         except Exception as e:
-            print('bot not start')
-            print(e)
+            logger.info("MM2 Bot API did not start!")
 
     def launch_mm2(self):
         if self.username in settings.value('users'):
@@ -496,11 +491,11 @@ class Ui(QTabWidget):
                         self.start_mm2()
                         time.sleep(1)
                         version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
-                        print("mm2 version: "+version)
+                        logger.info("mm2 version: "+version)
                         self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
                     except Exception as e:
-                        print('mm2 not start')
-                        print(e)
+                        logger.info('mm2 not start')
+                        logger.info(e)
                         pass
                         i += 1
                         if i > 10:
@@ -517,11 +512,11 @@ class Ui(QTabWidget):
                         self.start_api()
                         time.sleep(1)
                         version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
-                        print("Bot version: "+version)
+                        logger.info("Bot version: "+version)
                         self.api_version_lbl.setText("Makerbot API version: "+version+" ")
                     except Exception as e:
-                        print('bot not start')
-                        print(e)
+                        logger.info('bot not start')
+                        logger.info(e)
                         pass
                         if i > 10:
                             QMessageBox.information(self, 'Error', "Bot API failed to start.\nCheck logs tab, or "+config_path+self.username+"_bot_output.log", QMessageBox.Ok, QMessageBox.Ok)
@@ -579,14 +574,14 @@ class Ui(QTabWidget):
                     self.authenticated = True
                 except:
                     # did not decode, bad password
-                    print("decrypting failed")
+                    logger.info("decrypting failed")
                     pass
         jsonfile = config_path+"MM2.json"
         try:
             self.creds = guilib.get_creds(jsonfile)
         except Exception as e:
-            print("get_credentials failed")
-            print(e)
+            logger.info("get_credentials failed")
+            logger.info(e)
             self.creds = ['','','','','','','','','','']
             pass
 
@@ -671,8 +666,8 @@ class Ui(QTabWidget):
                         msg = "No results in table..."
                     msg_lbl.setText(msg)
         else:
-            print(r)
-            print(r.text)
+            logger.info(r)
+            logger.info(r.text)
 
     def add_row(self, row, row_data, table, bgcol='', align=''):
         col = 0
@@ -848,7 +843,7 @@ class Ui(QTabWidget):
         # self.update_price_history_graph()
 
     def show_history_tab(self):
-        print('show_history_tab')
+        logger.info('show_history_tab')
         self.update_mm2_trade_history_table()
         self.update_strategy_history_table()
 
@@ -965,7 +960,7 @@ class Ui(QTabWidget):
         self.activate_thread.activate.connect(self.update_active)
         self.activate_thread.start()
         # TODO: autoactivate coins needing kickstart
-        print("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
+        logger.info("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
         self.show_activation_tab()
 
     def update_activation_labels(self):
@@ -1103,30 +1098,36 @@ class Ui(QTabWidget):
         row = 0
         usd_total = 0
         btc_total = 0
+        kmd_total = 0
         for coin in self.active_coins:
             usd_val = '-'
             btc_val = '-'
+            kmd_val = '-'
             try:
                 total = self.balances_data['mm2'][coin]['total']
                 if coin in self.prices_data['average']:
                     usd_price = self.prices_data['average'][coin]['USD']
                     btc_price = self.prices_data['average'][coin]['BTC']
+                    kmd_price = self.prices_data['average'][coin]['KMD']
                     try:
                         usd_val = round(float(usd_price)*float(total),4)
+                        kmd_val = round(float(kmd_price)*float(total),4)
                         btc_val = round(float(btc_price)*float(total),8)
                         usd_total += usd_val
                         btc_total += btc_val
+                        kmd_total += kmd_val
                     except Exception as e:
                         # no float value for coin
                         pass
-                balance_row = [coin, format_num_10f(total), format_num_10f(usd_val), format_num_10f(btc_val)]
+                balance_row = [coin, format_num_10f(total), format_num_10f(usd_val), format_num_10f(btc_val), format_num_10f(kmd_val)]
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 row += 1
             except Exception as e:
-                print("mm2_bal_tbl err: "+str(e))
+                logger.warning(coin+" mm2 balance not ready")
                 balance_row = [coin, "-", '-', '-']
                 self.add_row(row, balance_row, self.wallet_balances_table)
                 row += 1
+        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(kmd_total,4)))
         self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
         self.wallet_btc_total.setText("Total BTC Value: "+str(round(btc_total,8)))
         self.wallet_balances_table.setSortingEnabled(True)
@@ -1170,7 +1171,8 @@ class Ui(QTabWidget):
         base = baserel[0]
         rel = baserel[1]
         # refresh tables
-        self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
+        if base != '' and rel != '':
+            self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
 
     def update_mm2_orders_table(self):
         self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
@@ -1213,7 +1215,7 @@ class Ui(QTabWidget):
         
     # Order form button slots
     def mm2_orderbook_get_price(self):
-        print('get_price_from_orderbook')        
+        logger.info('get_price_from_orderbook')        
         selected_row = self.orderbook_table.currentRow()
         if selected_row != -1 and self.orderbook_table.item(selected_row,1) is not None:
             buy_coin = self.orderbook_table.item(selected_row,0).text()
@@ -1224,7 +1226,7 @@ class Ui(QTabWidget):
             value = self.orderbook_table.item(selected_row,4).text()
 
     def mm2_orderbook_combo_box_switch(self):
-        print('combo_box_switch')
+        logger.info('combo_box_switch')
         active_coins_selection = self.active_coins[:]
         index = self.orderbook_buy_combo.currentIndex()
         if index != -1:
@@ -1284,7 +1286,7 @@ class Ui(QTabWidget):
             sent_by = self.sender().objectName()
         else:
             sent_by = source
-        print("update mm2 values amounts (source: "+sent_by+")")
+        logger.info("update mm2 values amounts (source: "+sent_by+")")
         orderbook_price_val = self.orderbook_buy_price_spinbox.value()
         orderbook_sell_amount_val = self.orderbook_sell_amount_spinbox.value()
         orderbook_buy_amount_val = self.orderbook_buy_amount_spinbox.value()
@@ -1360,7 +1362,7 @@ class Ui(QTabWidget):
                 for swap_uuid in order_info['order']['started_swaps']:
                     swap_status = rpclib.my_swap_status(self.creds[0], self.creds[1], swap_uuid).json()
                     # TODO: Need an order with started swaps to test this further.
-                    print(swap_status)
+                    logger.info(swap_status)
                 if len(swaps_in_progress) != 0:
                     msg = "This order has swaps in progress, are you sure you want to cancel it?"
                     msg += "\nSwaps in progress: \n"
@@ -1394,7 +1396,7 @@ class Ui(QTabWidget):
         if self.mm2_trades_table.rowCount() != 0:
             for i in range(self.mm2_trades_table.rowCount()):
                 if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
-                    print(self.mm2_trades_table.item(i,2).text())
+                    logger.info(self.mm2_trades_table.item(i,2).text())
                     pending += 1
             if pending > 0:
                 msg = str(pending)+" order(s) have swaps in progress, are you sure you want to cancel all?"
@@ -1422,7 +1424,7 @@ class Ui(QTabWidget):
    
     ## Binance Tab
     def bn_update_balance_from_thread(self, bal_info):
-        print('bn update_balance_from_thread')
+        logger.info('bn update_balance_from_thread')
         for coin in bal_info:
             total = bal_info[coin]['total']
             locked = bal_info[coin]['locked']
@@ -1485,7 +1487,7 @@ class Ui(QTabWidget):
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
 
     def update_binance_orders_table(self):
-        print('update_binance_orders_table')
+        logger.info('update_binance_orders_table')
         # populate binance depth table
         self.populate_table("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
@@ -1503,7 +1505,7 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
-        print("show Binance QR code msgbox")
+        logger.info("show Binance QR code msgbox")
         msgBox.exec()
 
     def update_binance_balance_table(self):
@@ -1577,7 +1579,7 @@ class Ui(QTabWidget):
             sent_by = self.sender().objectName()
         else:
             sent_by = source
-        print("update binance values amounts (source: "+sent_by+")")
+        logger.info("update binance values amounts (source: "+sent_by+")")
         index = self.binance_base_combo.currentIndex()
         baseAsset = self.binance_base_combo.itemText(index)
         index = self.binance_rel_combo.currentIndex()
@@ -1623,7 +1625,7 @@ class Ui(QTabWidget):
         index = self.binance_rel_combo.currentIndex()
         quoteAsset = self.binance_rel_combo.itemText(index)
         symbol = baseAsset+quoteAsset
-        print(binance_api.binance_pair_info[symbol])
+        logger.info(binance_api.binance_pair_info[symbol])
         min_notional = float(binance_api.binance_pair_info[symbol]['minNotional'])
         if float(quote_qty) < min_notional:
             QMessageBox.information(self, 'Buy Order Failed', "Trade value must be over "+str(min_notional)+" "+quoteAsset, QMessageBox.Ok, QMessageBox.Ok)
@@ -1722,7 +1724,7 @@ class Ui(QTabWidget):
 
     ## Prices Tab
     def update_price_history_graph(self):
-        print("update_price_history_graph")
+        logger.info("update_price_history_graph")
         index = self.history_quote_combobox.currentIndex()
         if index == -1:
             index = 0
@@ -1741,7 +1743,7 @@ class Ui(QTabWidget):
     def draw_price_history_graph(self, coin, quote, x, y, time_ticks):
         # deactivate "loading" overlay
         
-        print('drawing graph')
+        logger.info('drawing graph')
         self.binance_history_graph.clear()
         price_curve = self.binance_history_graph.plot(
                 x,
@@ -1778,8 +1780,8 @@ class Ui(QTabWidget):
             usd_price = float(price[coin_id]['usd'])
             btc_price = float(price[coin_id]['btc'])
         else:
-            usd_price = 'No Data'
-            btc_price = 'No Data'
+            usd_price = '-'
+            btc_price = '-'
         if quote == 'USD':
             txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+format_num_10f(usd_price)+'</span></div>'
         elif quote == 'KMD':
@@ -1840,13 +1842,17 @@ class Ui(QTabWidget):
                         self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
                         self.wallet_btc_value.setText(str(btc_val)+" BTC")
                     except Exception as e:
-                        print('update wallet labels err')
-                        print(e)
+                        usd_val = round(float(usd_price)*float(0),4)
+                        btc_val = round(float(btc_price)*float(0),8)
+                        self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
+                        self.wallet_btc_value.setText(str(btc_val)+" BTC")
+                        logger.info('update wallet labels err (likely no price, setting to zero value')
+                        logger.info(e)
 
     def show_mm2_qr_popup(self):
         index = self.wallet_combo.currentIndex()
         coin = self.wallet_combo.itemText(index)
-        addr_txt = self.wallet_address.text()
+        addr_txt = self.balances_data["mm2"][coin]["address"]
         qr_img = qrcode.make(addr_txt, image_factory=QR_image)
         self.qr_lbl = QLabel(self)
         self.qr_lbl.setText(addr_txt)
@@ -1857,6 +1863,7 @@ class Ui(QTabWidget):
         l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
         l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
         msgBox.addButton("Close", QMessageBox.NoRole)
+        logger.info("show Marketmaker QR code msgbox")
         msgBox.exec()
 
     def select_wallet_from_table(self):
@@ -1878,7 +1885,7 @@ class Ui(QTabWidget):
             msg = ''
             resp = rpclib.withdraw(self.creds[0], self.creds[1], cointag, recipient_addr, amount).json()
             if 'error' in resp:
-                print(resp['error'])
+                logger.info(resp['error'])
                 if resp['error'].find("Invalid Address!") > -1:
                     msg += "Invalid Address"
                 elif resp['error'].find("Not sufficient balance!") > -1:
@@ -1910,7 +1917,7 @@ class Ui(QTabWidget):
 
     ## STRATEGIES TAB
     def populate_strategy_lists(self):
-        print('populate_strategy_lists')
+        logger.info('Populating strategy lists')
         self.strat_buy_list.clear()
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
@@ -1926,10 +1933,9 @@ class Ui(QTabWidget):
             list_item = QListWidgetItem(item)
             list_item.setTextAlignment(Qt.AlignHCenter)
             self.strat_cex_list.addItem(list_item)
-        print('populated_strategy_lists')
 
     def update_strategies_table(self):
-        print('update_strategies_table')
+        logger.info('Updating strategies table')
         self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
         for row in range(self.strategies_table.rowCount()):
             if self.strategies_table.item(row, 10).text() == 'active':
@@ -1937,7 +1943,6 @@ class Ui(QTabWidget):
             elif self.strategies_table.item(row, 10).text() != 'inactive':
                 self.colorize_row(self.strategies_table, row, QColor(255, 233, 127))
         self.strategies_table.clearSelection()
-        print('updated_strategies_table')
 
     def create_strat(self):
         params = 'name='+self.strat_name.text()
@@ -1962,7 +1967,7 @@ class Ui(QTabWidget):
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
         params += '&balance_pct='+str(self.strat_bal_pct_spinbox.value())
         params += '&cex_list='+cex_items
-        print('http://127.0.0.1:8000/strategies/create?'+params)
+        logger.info('http://127.0.0.1:8000/strategies/create?'+params)
         resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
         QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
@@ -2105,12 +2110,12 @@ class Ui(QTabWidget):
                             j.write(bytes.decode(enc_data))
                         QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
 
-                        print("stop_mm2 with old creds")
+                        logger.info("stop_mm2 with old creds")
                         try:
                             rpclib.stop_mm2(self.creds[0], self.creds[1])
                         except Exception as e:
-                            print("cache error")
-                            print(e)
+                            logger.info("cache error")
+                            logger.info(e)
                             pass
                         self.authenticated = False
                         self.show_login_tab()
@@ -2148,7 +2153,7 @@ class Ui(QTabWidget):
             if coin in coinslib.binance_coins and coin in self.active_coins:
                 sells += 1
         if (buys == 1 and sells == 1 and buy_coins != sell_coins) or (buys > 0 and sells > 0):
-            print("starting bot")            
+            logger.info("starting bot")            
             self.bot_trade_thread = bot_trading_thread(self.creds, self.sell_coins, self.buy_coins, self.active_coins)
             self.bot_trade_thread.check_status.connect(self.check_mm_bot_order_swaps)
             self.bot_trade_thread.trigger.connect(self.update_bot_log)
@@ -2199,7 +2204,7 @@ class Ui(QTabWidget):
 
     def update_prices_table(self):
         self.prices_table.setSortingEnabled(False)
-        headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD']
+        headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD', 'Marketmaker BTC', 'Marketmaker USD', 'Marketmaker KMD',]
         self.prices_table.setColumnCount(len(headers))
         self.prices_table.setHorizontalHeaderLabels(headers)
         self.clear_table(self.prices_table)
@@ -2215,6 +2220,9 @@ class Ui(QTabWidget):
             gk_usd_price = '-'
             pk_btc_price = '-'
             pk_usd_price = '-'
+            mm_btc_price = '-'
+            mm_usd_price = '-'
+            mm_kmd_price = '-'
             average_btc_price = '-'
             average_usd_price = '-'
             if coin in self.prices_data['average']:
@@ -2237,8 +2245,15 @@ class Ui(QTabWidget):
                     pk_btc_price = format_num_10f(self.prices_data['paprika'][coin]['BTC'])
                 if 'USD' in self.prices_data['paprika'][coin]:
                     pk_usd_price = format_num_10f(self.prices_data['paprika'][coin]['USD'])
+            if coin in self.prices_data['mm2_orderbook']:
+                if 'BTC' in self.prices_data['mm2_orderbook'][coin]:
+                    mm_btc_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['BTC'])
+                if 'USD' in self.prices_data['mm2_orderbook'][coin]:
+                    mm_usd_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['USD'])
+                if 'KMD' in self.prices_data['mm2_orderbook'][coin]:
+                    mm_kmd_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['KMD'])
             price_row = [coin, bn_btc_price, gk_btc_price, pk_btc_price, average_btc_price, 
-                        bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price]
+                        bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price, mm_btc_price, mm_usd_price, mm_kmd_price]
             self.add_row(row, price_row, self.prices_table)
             row += 1
         self.prices_table.setSortingEnabled(True)
@@ -2277,7 +2292,7 @@ class Ui(QTabWidget):
             pass
         QCoreApplication.processEvents()
         if self.authenticated:
-            print("authenticated")
+            logger.info("authenticated")
             self.stacked_login.setCurrentIndex(1)
             index = self.currentIndex()
             if self.creds[0] == '':
@@ -2285,42 +2300,42 @@ class Ui(QTabWidget):
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))              
             elif index == 0:
                 # activate
-                print('show_activation_tab')
+                logger.info('show_activation_tab')
                 self.show_activation_tab()
             elif index == 1:
                 # order book
-                print('show_mm2_orderbook_tab')
+                logger.info('show_mm2_orderbook_tab')
                 self.show_mm2_orderbook_tab()
             elif index == 2:
                 # binance acct
-                print('show_binance_tab')
+                logger.info('show_binance_tab')
                 self.show_binance_trading_tab()
             elif index == 3:
                 # wallet
-                print('show_mm2_wallet_tab')
+                logger.info('show_mm2_wallet_tab')
                 self.show_mm2_wallet_tab()
             elif index == 4:
                 # strategies
-                print('show_strategies_tab')
+                logger.info('show_strategies_tab')
                 self.show_strategies_tab()
             elif index == 5:
                 # Prices
-                print('show_prices_tab')
+                logger.info('show_prices_tab')
                 self.show_prices_tab()
             elif index == 6:
                 # history
-                print('show_history_tab')
+                logger.info('show_history_tab')
                 self.show_history_tab()
             elif index == 7:
                 # config
-                print('show_config_tab')
+                logger.info('show_config_tab')
                 self.show_config_tab()
             elif index == 8:
                 # logs
-                print('show_logs_tab')
+                logger.info('show_logs_tab')
                 self.show_logs_tab()
         else:
-            print('show_activation_tab - login')
+            logger.info('show_activation_tab - login')
             self.stacked_login.setCurrentIndex(0)
             index = self.currentIndex()
             if index != 0:
@@ -2370,13 +2385,13 @@ if __name__ == '__main__':
     appctxt = ApplicationContext()
     screen_resolution = appctxt.app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
-    print("Screen width: "+str(width))
-    print("Screen height: "+str(height))
+    logger.info("Screen width: "+str(width))
+    logger.info("Screen height: "+str(height))
     window = Ui(appctxt)
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
     if 'api_proc' in locals():
-        print("Kill api_proc")
+        logger.info("Kill api_proc")
         api_proc.kill()
         api_proc.wait()
         if platform.system() == 'Windows':
@@ -2385,7 +2400,7 @@ if __name__ == '__main__':
             kill_mm2 = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
         kill_mm2.wait()
     if 'mm2_proc' in locals():
-        print("Kill mm2_proc")
+        logger.info("Kill mm2_proc")
         mm2_proc.kill()
         mm2_proc.wait()
         if platform.system() == 'Windows':
