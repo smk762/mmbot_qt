@@ -1905,9 +1905,10 @@ class Ui(QTabWidget):
                     else:
                         txid_str = txid
                     if coinslib.coin_explorers[cointag]['tx_explorer'] != '':
-                        msg = "Sent! \n<a href='"+coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str+"'>[Link to block explorer]</a>"
+                        txid_link = coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str
+                        msg = "Sent! <br /><a style='color:white !important' href='"+txid_link+"'>"+txid_link+"</a>"
                     else:
-                        msg = "Sent! \nTXID: ["+txid_str+"]"
+                        msg = "Sent! <br />TXID: ["+txid_str+"]"
                 self.wallet_recipient.setText("")
                 self.wallet_amount.setValue(0)
             else:
