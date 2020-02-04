@@ -7,8 +7,8 @@ The Antara Makerbot includes a number of tabbed pages as summarised below.
 
 **Table of Contents**
 
-* **[Activate](https://github.com/smk762/mmbot_qt/docs/README.md#activate)** - For authentication, loading coins and selecting which trade
-* **[Marketmaker](marketmaker)** - Allows manual order placement of selected pairs via Marketmaker, and shows a table of open orders.
+* **[Activate](#activate)** - For authentication, loading coins and selecting which trade
+* **[Marketmaker](#marketmaker)** - Allows manual order placement of selected pairs via Marketmaker, and shows a table of open orders.
 * **[Binance](binance)** - View Binance balances, open orders, and perform manual order placement for pair symbols.
 * **[Wallet](wallet)** - Simple interface for sending, recieving and viewing the balances of Marketmaker activated coins.
 * **[Strategies](strategies)** - Create automated buy/sell strategies with selected coin pairs on Marketmaker, including countertrades on completion via Binance (if API keys and funds available).
