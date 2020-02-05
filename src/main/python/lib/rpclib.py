@@ -16,14 +16,14 @@ maker_success_events = ['Started', 'Negotiated', 'TakerFeeValidated', 'MakerPaym
                         'TakerPaymentValidatedAndConfirmed', 'TakerPaymentSpent', 'Finished']
 
 maker_errors_events = ['StartFailed', 'NegotiateFailed', 'TakerFeeValidateFailed', 'MakerPaymentTransactionFailed', 'MakerPaymentDataSendFailed',
-                      'TakerPaymentValidateFailed', 'TakerPaymentSpendFailed', 'MakerPaymentRefunded', 'MakerPaymentRefundFailed', 'TakerPaymentWaitConfirmFailed']
+                      'TakerPaymentValidateFailed', 'TakerPaymentSpendFailed', 'MakerPaymentRefunded', 'MakerPaymentRefundFailed', 'TakerPaymentWaitConfirmFailed', 'MakerPaymentWaitRefundStarted']
 
 taker_success_events = ['Started', 'Negotiated', 'TakerFeeSent', 'MakerPaymentReceived', 'MakerPaymentWaitConfirmStarted',
                         'MakerPaymentValidatedAndConfirmed', 'TakerPaymentSent', 'TakerPaymentSpent', 'MakerPaymentSpent', 'Finished']
 
 taker_errors_events = ['StartFailed', 'NegotiateFailed', 'TakerFeeSendFailed', 'MakerPaymentValidateFailed', 'TakerPaymentTransactionFailed',
                       'TakerPaymentDataSendFailed', 'TakerPaymentWaitForSpendFailed', 'MakerPaymentSpendFailed', 'TakerPaymentRefunded',
-                      'TakerPaymentRefundFailed', 'MakerPaymentWaitConfirmFailed']
+                      'TakerPaymentRefundFailed', 'MakerPaymentWaitConfirmFailed', 'TakerPaymentWaitRefundStarted']
 
 error_events = list(set(taker_errors_events + maker_errors_events))
 
