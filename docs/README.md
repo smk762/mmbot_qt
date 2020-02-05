@@ -21,7 +21,7 @@ The Antara Makerbot includes a number of tabbed pages as summarised below.
  Upon loading the Makerbot app, you'll see a login page.
  ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/makerbot_login.png "Makerbot login page")
 
-To create a new user, simply enter a username, along with password. If the username has not previously been used on the computer you have installed the app on, you'll be given the option to create a new user, then generate a wallet seed phrase and set some other settings in the [config tab](config). 
+To create a new user, simply enter a username, along with password. If the username has not previously been used on the computer you have installed the app on, you'll be given the option to create a new user, then generate a wallet seed phrase and set some other settings in the [config tab](#config). 
 
 _User settings (wallet seed, api keys etc) are encrypted and stored on your device, with your password as the decryption key _
 
@@ -37,6 +37,11 @@ Once you've made your selection, click the Activate button to begin activating c
 _Note: Some tabs require one or more coins to be activated before they are accessible_
  
  #### Marketmaker
+ The Marketmaker tab features two drop down menus to select coins for buy / sell, with your current balance of the selected coins displayed alongside their respective logos. Changing the dropdown coin selection will populate the orderbook table with available trades - clicking on a row will populate the price input, and clicking the percentage buttons will populate the sell quantity input (though you can also input price and amount manually to create a new order). Changing an input value for price / buy qty / sell qty will automatically update other input fields so you can see, for example, how many DASH you will recieve for the input quantity of KMD for a given price.
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/mm_orderbook.png "Marketmaker Trade Page")
+
+ 
+ 
  #### Binance
  #### Wallet
  #### Strategies
