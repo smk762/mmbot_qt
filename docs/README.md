@@ -19,8 +19,22 @@ The Antara Makerbot includes a number of tabbed pages as summarised below.
  
  #### Activate
  Upon loading the Makerbot app, you'll see a login page.
- 
- 
+ ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/makerbot_login.png "Makerbot login page")
+
+To create a new user, simply enter a username, along with password. If the username has not previously been used on the computer you have installed the app on, you'll be given the option to create a new user, then generate a wallet seed phrase and set some other settings in the [config tab](config). 
+
+_User settings (wallet seed, api keys etc) are encrypted and stored on your device, with your password as the decryption key _
+
+Once the user has been created, enter your username and password to access the activation page. 
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/activating.png "Makerbot coin activation page")
+
+Here you can select the coins to activate by clicking on the coin's checkbox. The activation lists are categorised by coin type (KMD/Smartchain, UTXO or ETH/ERC20). 
+
+Via the bar at the top, the coins lists can be filtered by using the search input, and bulk selections can be made for the subsets of coins which are compatible with Binance or the CoinGecko and CoinPaprika price APIs.
+
+Once you've made your selection, click the Activate button to begin activating coins. 
+
+_Note: Some tabs require one or more coins to be activated before they are accessible_
  
  #### Marketmaker
  #### Binance
