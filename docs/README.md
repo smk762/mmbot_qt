@@ -37,10 +37,15 @@ Once you've made your selection, click the Activate button to begin activating c
 _Note: Some tabs require one or more coins to be activated before they are accessible_
  
  #### Marketmaker
- The Marketmaker tab features two drop down menus to select coins for buy / sell, with your current balance of the selected coins displayed alongside their respective logos. Changing the dropdown coin selection will populate the orderbook table with available trades - clicking on a row will populate the price input, and clicking the percentage buttons will populate the sell quantity input (though you can also input price and amount manually to create a new order). Changing an input value for price / buy qty / sell qty will automatically update other input fields so you can see, for example, how many DASH you will recieve for the input quantity of KMD for a given price.
+The Marketmaker tab features two drop down menus to select coins for buy / sell, with your current balance of the selected coins displayed alongside their respective logos.
+ 
+Changing the dropdown coin selection will populate the orderbook table with available trades - clicking on a row will populate the price input, and clicking the percentage buttons will populate the sell quantity input (though you can also input price and amount manually to create a new order).
+
+Changing an input value for price / buy qty / sell qty will automatically update other input fields so you can see, for example, how many DASH you will recieve for the input quantity of KMD for a given price.
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/mm_orderbook.png "Marketmaker Trade Page")
 
- 
+Any open orders you have in the orderbook will also be displayed in the lower table. By selecting a row in the table, you can view or cancel the order (or all orders) clicking the buttons at the bottom.
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/open_orders.png "Marketmaker Open Orders")
  
  #### Binance
  #### Wallet
