@@ -48,6 +48,21 @@ Any open orders you have in the orderbook will also be displayed in the lower ta
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/open_orders.png "Marketmaker Open Orders")
  
  #### Binance
+ The Binance tab requires valid API keys to be setup in the [config tab](#config) for full functionality (though this is not required to use the Makerbot app for manual trades or to send/recieve funds). With or without API keys, you can check the current price and depth of a supported pair of coins.
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/binance_depth.png "Binance Depth")
+
+If you have setup API keys, this tab will also display the balance of coins in your Binance account...
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bn_bal.png "Binance balances")
+
+...and any open orders you have placed via Binance. 
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bn_orders.png "Binance Open Orders")
+ 
+Below the balances table, the Binance recieving address for a given coin can be seen by selecting it in the dropdown menu (or clicking a row in the balances table). Click the QR code button to reveal a scanable QR code of the address to make a deposit.
+
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bn_withdraw.png "Binance Open Orders")
+ 
+You also have the option to withdraw funds from Binance and send them to any valid address, by using the inputs at the bottom of the balances table.
+ 
  #### Wallet
  #### Strategies
  #### Prices
