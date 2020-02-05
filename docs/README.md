@@ -23,7 +23,7 @@ The Antara Makerbot includes a number of tabbed pages as summarised below.
 
 To create a new user, simply enter a username, along with password. If the username has not previously been used on the computer you have installed the app on, you'll be given the option to create a new user, then generate a wallet seed phrase and set some other settings in the [config tab](#config). 
 
-_User settings (wallet seed, api keys etc) are encrypted and stored on your device, with your password as the decryption key _
+_User settings (wallet seed, api keys etc) are encrypted and stored on your device, with your password as the decryption key_
 
 Once the user has been created, enter your username and password to access the activation page. 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/activating.png "Makerbot coin activation page")
@@ -64,10 +64,22 @@ Below the balances table, the Binance recieving address for a given coin can be 
 You also have the option to withdraw funds from Binance and send them to any valid address, by using the inputs at the bottom of the balances table.
  
  #### Wallet
+ 
+ 
+ 
  #### Strategies
+ 
  #### Prices
+ 
  #### History
+ 
  #### Config
+ 
  #### Logs
+ 
+This tab shows the raw output logs from the mm2 binary (top table) and the makerbot API (bottom table) for convenience, and to assist in debugging.
+
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/logs.png "Logs Tab")
+
  
  
