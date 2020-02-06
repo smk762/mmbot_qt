@@ -25,6 +25,7 @@ import pyqtgraph as pg
 from pyqtgraph.Point import Point
 import decimal
 import logging
+from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -88,6 +89,11 @@ def format_num_10f(val):
             pass
     return val
 
+def clearLayout(layout):
+  while layout.count():
+    child = layout.takeAt(0)
+    c.widget().deleteLater()
+
 # THREADED OPERATIONS
 
 # request and cache external balance and pricing data in thread
@@ -129,6 +135,7 @@ class activation_thread(QThread):
                 r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
                 logger.info(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.activate.emit(coin[0])
+
 
 # Get price graph history
 class graph_history_thread(QThread):
@@ -206,6 +213,21 @@ class QR_image(qrcode.image.base.BaseImage):
     def save(self, stream, kind=None):
         pass
 
+class Web(QWebEngineView):
+
+    def load(self, url):
+        self.setUrl(QUrl(url))
+
+    def load_html(self, html):
+        self.setHtml(html)
+
+    def adjustTitle(self):
+        self.setWindowTitle(self.title())
+
+    def disableJS(self):
+        settings = QWebEngineSettings.globalSettings()
+        settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
+
 class ScrollMessageBox(QMessageBox):
     def __init__(self, json_data, *args, **kwargs):
         QMessageBox.__init__(self, *args, **kwargs)
@@ -227,7 +249,7 @@ class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
         # Load the User interface from file
-        uifile = QFile(":/ui/makerbot_gui_dark_v4b.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark_v4c.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) 
         self.ctx = ctx 
@@ -253,6 +275,8 @@ class Ui(QTabWidget):
                 
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
+        self.webframe_layout = QHBoxLayout()
+        self.webframe.setLayout(self.webframe_layout)
         self.authenticated = False
         self.mm2_downloading = False
         self.bot_trading = False
@@ -827,6 +851,50 @@ class Ui(QTabWidget):
             self.update_combo(self.wallet_combo,self.active_coins,selected)
             self.update_mm2_wallet_labels()
             self.update_mm2_balance_table()
+            
+            html = '<!DOCTYPE html>'
+            html += '<html>'
+            html += '<head>'
+            html += '<title></title>'
+            html += '</head>'
+            html += '<body style="background:#333; margin:auto">'
+
+            html += '<!-- TradingView Widget BEGIN --> \
+                    <div class="tradingview-widget-container"> \
+                      <div id="tradingview_41435"></div> \
+                      <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BINANCE-KMDBTC/" rel="noopener" target="_blank"><span class="blue-text">KMDBTC Chart</span></a> by TradingView</div> \
+                      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script> \
+                      <script type="text/javascript"> \
+                      new TradingView.widget( \
+                      { \
+                      "width": 1400, \
+                      "height": 260, \
+                      "symbol": "BINANCE:KMDBTC", \
+                      "interval": "240", \
+                      "timezone": "Etc/UTC", \
+                      "theme": "Dark", \
+                      "style": "3", \
+                      "locale": "en", \
+                      "toolbar_bg": "#f1f3f6", \
+                      "enable_publishing": false, \
+                      "allow_symbol_change": true, \
+                      "container_id": "tradingview_41435" \
+                    } \
+                      ); \
+                      </script> \
+                    </div> \
+                    <!-- TradingView Widget END -->' 
+
+            html += '</body>'
+            html += '</html>'
+
+            web = Web()
+            #web.load("https://www.tradingview.com/chart/?symbol=BINANCE%3AKMDBTC")
+            web.load_html(html) 
+            
+            clearLayout(self.webframe_layout)
+            self.webframe_layout.addWidget(web)
+  
 
     def show_strategies_tab(self):
         self.update_strategies_table()
@@ -1812,8 +1880,8 @@ class Ui(QTabWidget):
                         self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
                         self.wallet_btc_value.setText(str(btc_val)+" BTC")
                     except Exception as e:
-                        usd_val = round(float(usd_price)*float(0),4)
-                        btc_val = round(float(btc_price)*float(0),8)
+                        usd_val = '-'
+                        btc_val = '-'
                         self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
                         self.wallet_btc_value.setText(str(btc_val)+" BTC")
                         logger.info('update wallet labels err (likely no price, setting to zero value')
