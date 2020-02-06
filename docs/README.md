@@ -19,6 +19,7 @@ The Antara Makerbot includes a number of tabbed pages as summarised below.
  
  #### Activate
  Upon loading the Makerbot app, you'll see a login page.
+ 
  ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/makerbot_login.png "Makerbot login page")
 
 To create a new user, simply enter a username, along with password. If the username has not previously been used on the computer you have installed the app on, you'll be given the option to create a new user, then generate a wallet seed phrase and set some other settings in the [config tab](#config). 
@@ -26,6 +27,7 @@ To create a new user, simply enter a username, along with password. If the usern
 _User settings (wallet seed, api keys etc) are encrypted and stored on your device, with your password as the decryption key_
 
 Once the user has been created, enter your username and password to access the activation page. 
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/activating.png "Makerbot coin activation page")
 
 Here you can select the coins to activate by clicking on the coin's checkbox. The activation lists are categorised by coin type (KMD/Smartchain, UTXO or ETH/ERC20). 
@@ -42,19 +44,24 @@ The Marketmaker tab features two drop down menus to select coins for buy / sell,
 Changing the dropdown coin selection will populate the orderbook table with available trades - clicking on a row will populate the price input, and clicking the percentage buttons will populate the sell quantity input (though you can also input price and amount manually to create a new order).
 
 Changing an input value for price / buy qty / sell qty will automatically update other input fields so you can see, for example, how many DASH you will recieve for the input quantity of KMD for a given price.
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/mm_orderbook.png "Marketmaker Trade Page")
 
 Any open orders you have in the orderbook will also be displayed in the lower table. By selecting a row in the table, you can view or cancel the order (or all orders) clicking the buttons at the bottom.
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/open_orders.png "Marketmaker Open Orders")
  
  #### Binance
  The Binance tab requires valid API keys to be setup in the [config tab](#config) for full functionality (though this is not required to use the Makerbot app for manual trades or to send/recieve funds). With or without API keys, you can check the current price and depth of a supported pair of coins.
+ 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/binance_depth.png "Binance Depth")
 
 If you have setup API keys, this tab will also display the balance of coins in your Binance account...
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bn_bal.png "Binance balances")
 
 ...and any open orders you have placed via Binance. 
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bn_orders.png "Binance Open Orders")
  
 Below the balances table, the Binance recieving address for a given coin can be seen by selecting it in the dropdown menu (or clicking a row in the balances table). Click the QR code button to reveal a scanable QR code of the address to make a deposit.
@@ -81,6 +88,7 @@ Margin mode creates Maker orders on the Marketmaker orderbook, and once an order
 Arbitrage mode will periodically scan the Marketmaker orderbook and compare available orders against potential counter trades on Binance (or other CEX platforms - in future). If an arbitrage opportunity is detected, the qualifying Marketmaker trade will initiate, and once completed, initiate a CEX countertrade.
 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/strats.png "Marketmaker Strategy")
+
 _Note: Trades of less than $10 in value do not initiate a countertrade._
 
 As CEX platforms are generally limited in trade pairs, countertrades initiated after a Marketmaker swap are likely to require two CEX trades via a common quote asset. Consider the two examples below, with the strategy margin percentage is set to 5%.
@@ -100,6 +108,7 @@ Indirect counter trade (ZEC to KMD):
 * The second leg of the CEX countertrade buys 1 ZEC for 0.01 BTC.
 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/strats.png "Marketmaker Strategy")
+
 _Note: CEX countertrades will require sufficient available balance in CEX wallets to be performed.
 
 In both cases, the coin sold in the Marketmaker trade is replenished by purchasing the equvalent amount via Binance, which is paid for by selling the equivalent amount of the coin recieved in the Makertmaker swap via Binance (after applying the strategy margin percentage). 
@@ -118,6 +127,7 @@ Details of individual legs of strategy trades are available to review in lower t
  #### Prices
  
  The prices tab features a table of price data from Binance, CoinGecko and CoinPaprika APIs. The mean volume weighted price of Marketmaker KMD pairs currently on the orderbook is also listed for reference. 
+ 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/prices.png "Marketmaker and API Prices Table")
  
  #### History
@@ -125,9 +135,11 @@ Details of individual legs of strategy trades are available to review in lower t
 This tab includes two tables listing the history of your trades.
 
 The top table lists all trades made via Marketmaker, whether automated or placed manually. Trades in progress are updated in realtime to show which step the pending trade is at until completion.
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/swap_in_progress.png "Marketmaker Swap History Table")
 
 The lower table lists trades performed as part of an automated strategy, both via Marketmaker and via Binance.
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/strat_trade_history.png "Marketmaker Strategy History")
 
  
@@ -135,6 +147,7 @@ The lower table lists trades performed as part of an automated strategy, both vi
  
  In this tab you setup your Marketmaker wallet seed, NetID, RPC credentials, and Binance API keys (optional).
  Any changes made will require you to log in again.
+ 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/config_settings.png "Config settings")
 
 * You can generate a new seed by clicking the "Generate" button.
@@ -146,6 +159,7 @@ The lower table lists trades performed as part of an automated strategy, both vi
 More information about the required mm2 binanry settings are available on the [Komodo developer documentation website](https://developers.komodoplatform.com/basic-docs/atomicdex/introduction-to-atomicdex.html)
 
 The lower panel of the config tab also allows for recovery of a stuck swap. In the event of a swap faling due to one of the parties of the trade running outdated version or encountering connectivity problems, generally the trade is automatically refunded after a period of time, though in some cases this may get "stuck". By inputing the json data of a stack swap, along with the swap UUID, refunds for stuck swaps can be kickstarted.
+
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/unstuck.png "Unstuck swap")
 
 
@@ -156,5 +170,8 @@ This tab shows the raw output logs from the mm2 binary (top table) and the maker
 
 ![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/logs.png "Logs Tab")
 
+#### Report a bug or issue
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/bug.png "Report Bug")
+
  
- 
+If you encounter any problems while running the Antara Makerbot app, please [submit an issue](https://github.com/smk762/mmbot_qt/issues), and/or reach out to the [#support channel](https://discord.gg/RRZ8hzc) on the Komodo Discord server
