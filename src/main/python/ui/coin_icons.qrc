@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="ui">
+    <file>makerbot_gui_dark_v4b.ui</file>
     <file>makerbot_gui_dark_v4a.ui</file>
     <file>img/other/switch-arrow3.png</file>
     <file>img/other/switch-arrow2.png</file>

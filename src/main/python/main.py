@@ -227,7 +227,7 @@ class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
         # Load the User interface from file
-        uifile = QFile(":/ui/makerbot_gui_dark_v4a.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark_v4b.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) 
         self.ctx = ctx 
@@ -270,155 +270,151 @@ class Ui(QTabWidget):
             "Binance": {}
         }
 
-        # dict for the checkbox and combobox elements use on the coins activation page. Might be a better way to do this.
+        # dict for the checkbox and label elements use on the coins activation page. Might be a better way to do this.
         self.gui_coins = {
             "BTC": {
                 "checkbox": self.checkBox_btc, 
-                "combo": self.btc_combo,    
+                "label": self.btc_label,    
             },
             "ETH": {
                 "checkbox": self.checkBox_eth, 
-                "combo": self.eth_combo,
+                "label": self.eth_label,
             },
             "KMD": {
                 "checkbox": self.checkBox_kmd, 
-                "combo": self.kmd_combo,
+                "label": self.kmd_label,
             },
             "LABS": {
                 "checkbox": self.checkBox_labs, 
-                "combo": self.labs_combo,
+                "label": self.labs_label,
             },
             "BCH": {
                 "checkbox": self.checkBox_bch, 
-                "combo": self.bch_combo,
+                "label": self.bch_label,
             },
             "BAT": {
                 "checkbox": self.checkBox_bat, 
-                "combo": self.bat_combo,
+                "label": self.bat_label,
             },
             "DOGE": {
                 "checkbox": self.checkBox_doge, 
-                "combo": self.doge_combo,
+                "label": self.doge_label,
             },
             "DGB": {
                 "checkbox": self.checkBox_dgb, 
-                "combo": self.dgb_combo,
+                "label": self.dgb_label,
             },
             "DASH": {
                 "checkbox": self.checkBox_dash, 
-                "combo": self.dash_combo,
+                "label": self.dash_label,
             },
             "LTC": {
                 "checkbox": self.checkBox_ltc, 
-                "combo": self.ltc_combo,
+                "label": self.ltc_label,
             },
             "ZEC": {
                 "checkbox": self.checkBox_zec, 
-                "combo": self.zec_combo,
+                "label": self.zec_label,
             },
             "QTUM": {
                 "checkbox": self.checkBox_qtum, 
-                "combo": self.qtum_combo,
+                "label": self.qtum_label,
             },
             "AXE": {
                 "checkbox": self.checkBox_axe, 
-                "combo": self.axe_combo,
+                "label": self.axe_label,
             },
             "VRSC": {
                 "checkbox": self.checkBox_vrsc, 
-                "combo": self.vrsc_combo,
+                "label": self.vrsc_label,
             },
             "RFOX": {
                 "checkbox": self.checkBox_rfox, 
-                "combo": self.rfox_combo,
+                "label": self.rfox_label,
             },
             "ZILLA": {
                 "checkbox": self.checkBox_zilla, 
-                "combo": self.zilla_combo,
+                "label": self.zilla_label,
             },
             "HUSH": {
                 "checkbox": self.checkBox_hush, 
-                "combo": self.hush_combo,
+                "label": self.hush_label,
             },
             "OOT": {
                 "checkbox": self.checkBox_oot, 
-                "combo": self.oot_combo,
+                "label": self.oot_label,
             },
             "USDC": {
                 "checkbox": self.checkBox_usdc, 
-                "combo": self.usdc_combo,
+                "label": self.usdc_label,
             },
             "AWC": {
                 "checkbox": self.checkBox_awc, 
-                "combo": self.awc_combo,
+                "label": self.awc_label,
             },
             "TUSD": {
                 "checkbox": self.checkBox_tusd, 
-                "combo": self.tusd_combo,
+                "label": self.tusd_label,
             },
             "PAX": {
                 "checkbox": self.checkBox_pax, 
-                "combo": self.pax_combo,
+                "label": self.pax_label,
             },
             "RICK": {
                 "checkbox": self.checkBox_rick, 
-                "combo": self.rick_combo,
+                "label": self.rick_label,
             },
             "MORTY": {
                 "checkbox": self.checkBox_morty, 
-                "combo": self.morty_combo,
+                "label": self.morty_label,
             },
             "DAI": {
                 "checkbox": self.checkBox_dai, 
-                "combo": self.dai_combo,
+                "label": self.dai_label,
             },
             "RVN": {
                 "checkbox": self.checkBox_rvn, 
-                "combo": self.rvn_combo,
+                "label": self.rvn_label,
             },
             "BOTS":{ 
                 "checkbox":self.checkBox_bots, 
-                "combo":self.bots_combo, 
+                "label":self.bots_label, 
             },
             "BTCH":{ 
                 "checkbox":self.checkBox_btch, 
-                "combo":self.btch_combo, 
+                "label":self.btch_label, 
             },
             "CHIPS":{ 
                 "checkbox":self.checkBox_chips, 
-                "combo":self.chips_combo, 
+                "label":self.chips_label, 
             },
             "COQUI":{ 
                 "checkbox":self.checkBox_coqui, 
-                "combo":self.coqui_combo, 
+                "label":self.coqui_label, 
             },
             "CRYPTO":{ 
                 "checkbox":self.checkBox_crypto, 
-                "combo":self.crypto_combo, 
+                "label":self.crypto_label, 
             },
             "DEX":{ 
                 "checkbox":self.checkBox_dex, 
-                "combo":self.dex_combo, 
+                "label":self.dex_label, 
             },
             "LINK":{ 
                 "checkbox":self.checkBox_link, 
-                "combo":self.link_combo, 
+                "label":self.link_label, 
             },
             "REVS":{ 
                 "checkbox":self.checkBox_revs, 
-                "combo":self.revs_combo, 
+                "label":self.revs_label, 
             },
             "SUPERNET":{ 
                 "checkbox":self.checkBox_supernet, 
-                "combo":self.supernet_combo, 
+                "label":self.supernet_label, 
             },
             "THC":{ 
                 "checkbox":self.checkBox_thc, 
-                "combo":self.thc_combo, 
-            },
-            "ZEXO":{ 
-                "checkbox":self.checkBox_zexo, 
-                "combo":self.zexo_combo, 
+                "label":self.thc_label, 
             },
         }               
         self.show_login_tab()
@@ -761,9 +757,11 @@ class Ui(QTabWidget):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
         for coin in self.gui_coins:
             if coin in self.active_coins:
-                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(78, 154, 6)")
+                self.gui_coins[coin]['label'].setStyleSheet("background-color: rgb(78, 154, 6)")
+                self.gui_coins[coin]['label'].setText("ACTIVE")
             else:
-                self.gui_coins[coin]['combo'].setStyleSheet("background-color: rgb(52, 101, 164)")
+                self.gui_coins[coin]['label'].setStyleSheet("background-color: rgb(85, 87, 83)")
+                self.gui_coins[coin]['label'].setText("INACTIVE")
 
     ## TABS ##
     def show_login_tab(self):
@@ -927,27 +925,16 @@ class Ui(QTabWidget):
     def activate_coins(self):
         coins_to_activate = []
         autoactivate = []
-        self.buy_coins = []
-        self.sell_coins = []
         for coin in self.gui_coins:
-            combo = self.gui_coins[coin]['combo']
+            label = self.gui_coins[coin]['label']
             checkbox = self.gui_coins[coin]['checkbox']
             # update buy/sell and autoactivate lists.
             if checkbox.isChecked():
                 autoactivate.append(coin)
                 if coin not in self.active_coins:
-                    coins_to_activate.append([coin,combo])
-            if combo.itemText(combo.currentIndex()) == 'Buy':
-                self.buy_coins.append(coin)
-            elif combo.itemText(combo.currentIndex()) == 'Sell':
-                self.sell_coins.append(coin)
-            elif combo.itemText(combo.currentIndex()) == 'Buy/Sell':
-                self.buy_coins.append(coin)
-                self.sell_coins.append(coin)
+                    coins_to_activate.append([coin,label])
             activate_list = {
                 "autoactivate":autoactivate,
-                "buy_coins":self.buy_coins,
-                "sell_coins":self.sell_coins
             }
         with open(config_path+self.username+"_coins.json", 'w') as j:
             j.write(json.dumps(activate_list))
@@ -980,7 +967,7 @@ class Ui(QTabWidget):
         display_coins_smartchain = []
         search_txt = self.search_activate.text().lower()
         for coin in self.gui_coins:
-            self.gui_coins[coin]['combo'].hide()
+            self.gui_coins[coin]['label'].hide()
             if coin.lower().find(search_txt) > -1 or self.gui_coins[coin]['checkbox'].text().lower().find(search_txt) > -1 or len(search_txt) == 0:
                 if coinslib.coin_activation[coin]['type'] == 'utxo':
                     display_coins_utxo.append(coin)
@@ -1000,33 +987,20 @@ class Ui(QTabWidget):
             with open(config_path+self.username+"_coins.json", 'r') as j:
                 user_coins = json.loads(j.read())
                 user_autoactivate = user_coins['autoactivate']
-                user_buy_coins = user_coins['buy_coins']
-                user_sell_coins = user_coins['sell_coins']
         else:
             user_autoactivate = []
-            user_buy_coins = []
-            user_sell_coins = []
 
         row = 0
         for coin in display_coins:
             self.gui_coins[coin]['checkbox'].show()
-            self.gui_coins[coin]['combo'].show()
+            self.gui_coins[coin]['label'].show()
             layout.addWidget(self.gui_coins[coin]['checkbox'], row, 0, 1, 1)
-            layout.addWidget(self.gui_coins[coin]['combo'], row, 1, 1, 1)
+            layout.addWidget(self.gui_coins[coin]['label'], row, 1, 1, 1)
             # set checkbox to ticked if in autoactivate list
             if coin in user_autoactivate:
                 self.gui_coins[coin]['checkbox'].setChecked(True)
             else:
                 self.gui_coins[coin]['checkbox'].setChecked(False)
-            # set combobox value base on presence in user's buy / sell lists
-            if coin in user_buy_coins and coin in user_sell_coins:
-                self.gui_coins[coin]['combo'].setCurrentIndex(3)
-            elif coin in user_buy_coins:
-                self.gui_coins[coin]['combo'].setCurrentIndex(1)
-            elif coin in user_sell_coins:
-                self.gui_coins[coin]['combo'].setCurrentIndex(2)
-            else:
-                self.gui_coins[coin]['combo'].setCurrentIndex(0)
             # set icon
             icon = QIcon()
             icon.addPixmap(QPixmap(":/32/img/32/"+coin.lower()+".png"), QIcon.Normal, QIcon.Off)

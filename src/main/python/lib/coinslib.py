@@ -770,10 +770,6 @@ coin_explorers = {
       'tx_explorer':'https://explorer.zcha.in/transactions',
       'addr_explorer':'https://explorer.zcha.in/accounts'
    },
-   'ZEXO':{
-      'tx_explorer':'https://zexo.explorer.dexstats.info/tx',
-      'addr_explorer':'https://zexo.explorer.dexstats.info/address'
-   },
    'ZILLA':{
       'tx_explorer':'https://zilla.explorer.dexstats.info/tx',
       'addr_explorer':'https://zilla.explorer.dexstats.info/address'
