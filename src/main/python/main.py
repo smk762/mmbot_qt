@@ -400,10 +400,6 @@ class Ui(QTabWidget):
                 "checkbox":self.checkBox_dex, 
                 "combo":self.dex_combo, 
             },
-            "KMDICE":{ 
-                "checkbox":self.checkBox_kmdice, 
-                "combo":self.kmdice_combo, 
-            },
             "LINK":{ 
                 "checkbox":self.checkBox_link, 
                 "combo":self.link_combo, 

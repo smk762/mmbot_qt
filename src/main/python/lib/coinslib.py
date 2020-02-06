@@ -702,10 +702,6 @@ coin_explorers = {
       'tx_explorer':'https://kmd.explorer.dexstats.info/tx',
       'addr_explorer':'https://kmd.explorer.dexstats.info/address'
    },
-   'KMDICE':{
-      'tx_explorer':'https://kmdice.explorer.dexstats.info/tx',
-      'addr_explorer':'https://kmdice.explorer.dexstats.info/address'
-   },
    'LABS':{
       'tx_explorer':'https://labs.explorer.dexstats.info/tx',
       'addr_explorer':'https://labs.explorer.dexstats.info/address'

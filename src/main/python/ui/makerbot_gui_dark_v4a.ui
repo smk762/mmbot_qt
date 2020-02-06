@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>1</number>
+   <number>0</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -114,7 +114,7 @@
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="login_page">
              <layout class="QGridLayout" name="gridLayout_25">
@@ -849,9 +849,9 @@ color: rgb(0, 0, 0);</string>
                           <property name="geometry">
                            <rect>
                             <x>0</x>
-                            <y>0</y>
-                            <width>240</width>
-                            <height>728</height>
+                            <y>-229</y>
+                            <width>266</width>
+                            <height>692</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_13">
@@ -875,7 +875,41 @@ color: rgb(0, 0, 0);</string>
                              <property name="spacing">
                               <number>12</number>
                              </property>
-                             <item row="16" column="1">
+                             <item row="5" column="0">
+                              <widget class="QCheckBox" name="checkBox_rfox">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>16777215</width>
+                                 <height>25</height>
+                                </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>11</pointsize>
+                                </font>
+                               </property>
+                               <property name="layoutDirection">
+                                <enum>Qt::RightToLeft</enum>
+                               </property>
+                               <property name="text">
+                                <string>RedFox</string>
+                               </property>
+                               <property name="icon">
+                                <iconset>
+                                 <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
+                               </property>
+                               <property name="checked">
+                                <bool>false</bool>
+                               </property>
+                              </widget>
+                             </item>
+                             <item row="15" column="1">
                               <widget class="QComboBox" name="revs_combo">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -934,67 +968,8 @@ color: rgb(0, 0, 0);</string>
                                </item>
                               </widget>
                              </item>
-                             <item row="18" column="1">
+                             <item row="17" column="1">
                               <widget class="QComboBox" name="thc_combo">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="minimumSize">
-                                <size>
-                                 <width>0</width>
-                                 <height>0</height>
-                                </size>
-                               </property>
-                               <property name="maximumSize">
-                                <size>
-                                 <width>16777215</width>
-                                 <height>25</height>
-                                </size>
-                               </property>
-                               <property name="font">
-                                <font>
-                                 <pointsize>10</pointsize>
-                                </font>
-                               </property>
-                               <property name="styleSheet">
-                                <string notr="true"/>
-                               </property>
-                               <property name="currentText">
-                                <string>View</string>
-                               </property>
-                               <property name="currentIndex">
-                                <number>0</number>
-                               </property>
-                               <property name="maxVisibleItems">
-                                <number>4</number>
-                               </property>
-                               <item>
-                                <property name="text">
-                                 <string>View</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Buy</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Sell</string>
-                                </property>
-                               </item>
-                               <item>
-                                <property name="text">
-                                 <string>Buy/Sell</string>
-                                </property>
-                               </item>
-                              </widget>
-                             </item>
-                             <item row="15" column="1">
-                              <widget class="QComboBox" name="kmdice_combo">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                                  <horstretch>0</horstretch>
@@ -1204,40 +1179,6 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="5" column="0">
-                              <widget class="QCheckBox" name="checkBox_rfox">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="maximumSize">
-                                <size>
-                                 <width>16777215</width>
-                                 <height>25</height>
-                                </size>
-                               </property>
-                               <property name="font">
-                                <font>
-                                 <pointsize>11</pointsize>
-                                </font>
-                               </property>
-                               <property name="layoutDirection">
-                                <enum>Qt::RightToLeft</enum>
-                               </property>
-                               <property name="text">
-                                <string>RedFox</string>
-                               </property>
-                               <property name="icon">
-                                <iconset>
-                                 <normaloff>:/sml/img/32/color/kmd.png</normaloff>:/sml/img/32/color/kmd.png</iconset>
-                               </property>
-                               <property name="checked">
-                                <bool>false</bool>
-                               </property>
-                              </widget>
-                             </item>
                              <item row="12" column="0">
                               <widget class="QCheckBox" name="checkBox_crypto">
                                <property name="sizePolicy">
@@ -1272,7 +1213,7 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="19" column="1">
+                             <item row="18" column="1">
                               <widget class="QComboBox" name="zexo_combo">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1331,7 +1272,7 @@ color: rgb(0, 0, 0);</string>
                                </item>
                               </widget>
                              </item>
-                             <item row="18" column="0">
+                             <item row="17" column="0">
                               <widget class="QCheckBox" name="checkBox_thc">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1948,7 +1889,7 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="17" column="1">
+                             <item row="16" column="1">
                               <widget class="QComboBox" name="supernet_combo">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2295,7 +2236,7 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="16" column="0">
+                             <item row="15" column="0">
                               <widget class="QCheckBox" name="checkBox_revs">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2329,7 +2270,7 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="17" column="0">
+                             <item row="16" column="0">
                               <widget class="QCheckBox" name="checkBox_supernet">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2420,40 +2361,6 @@ color: rgb(0, 0, 0);</string>
                                  <string>Buy/Sell</string>
                                 </property>
                                </item>
-                              </widget>
-                             </item>
-                             <item row="15" column="0">
-                              <widget class="QCheckBox" name="checkBox_kmdice">
-                               <property name="sizePolicy">
-                                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                 <horstretch>0</horstretch>
-                                 <verstretch>0</verstretch>
-                                </sizepolicy>
-                               </property>
-                               <property name="maximumSize">
-                                <size>
-                                 <width>16777215</width>
-                                 <height>25</height>
-                                </size>
-                               </property>
-                               <property name="font">
-                                <font>
-                                 <pointsize>11</pointsize>
-                                </font>
-                               </property>
-                               <property name="layoutDirection">
-                                <enum>Qt::RightToLeft</enum>
-                               </property>
-                               <property name="text">
-                                <string>KMDICE</string>
-                               </property>
-                               <property name="icon">
-                                <iconset>
-                                 <normaloff>:/sml/img/32/color/labs.png</normaloff>:/sml/img/32/color/labs.png</iconset>
-                               </property>
-                               <property name="checked">
-                                <bool>false</bool>
-                               </property>
                               </widget>
                              </item>
                              <item row="9" column="1">
@@ -2549,7 +2456,7 @@ color: rgb(0, 0, 0);</string>
                                </property>
                               </widget>
                              </item>
-                             <item row="19" column="0">
+                             <item row="18" column="0">
                               <widget class="QCheckBox" name="checkBox_zexo">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -2835,8 +2742,8 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>238</width>
-                            <height>368</height>
+                            <width>280</width>
+                            <height>408</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_14">
@@ -3928,7 +3835,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>283</width>
-                            <height>296</height>
+                            <height>408</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout">
@@ -9846,18 +9753,18 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>30</width>
-                       <height>0</height>
+                       <width>35</width>
+                       <height>35</height>
                       </size>
                      </property>
                      <property name="maximumSize">
                       <size>
-                       <width>30</width>
-                       <height>16777215</height>
+                       <width>35</width>
+                       <height>35</height>
                       </size>
                      </property>
                      <property name="styleSheet">
-                      <string notr="true">background-color: rgb(46, 52, 54);</string>
+                      <string notr="true">background-color: rgb(114, 159, 207);</string>
                      </property>
                      <property name="text">
                       <string/>
