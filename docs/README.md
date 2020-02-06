@@ -64,10 +64,48 @@ Below the balances table, the Binance recieving address for a given coin can be 
 You also have the option to withdraw funds from Binance and send them to any valid address, by using the inputs at the bottom of the balances table.
  
  #### Wallet
+
+The wallet tab is exactly what it sounds like. Here you can send / recieve coins in your Marketmaker wallet. Balances are listed in a table on the left, with USD, BTC, and KMD values for each coin and your portfolio as a whole for reference. 
  
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/wallet.png "Marketmaker Wallet Tab")
  
+Transaction history is available by clicking on your address, which will open it on a block explorer. There is also a QR code button to display a scanable QR code for recieving funds.
  
  #### Strategies
+In this tab, you can set automated strategies for trading between subsets of activated coins at a preset margin. There are two modes: Margin and Arbitrage. Valid API keys must be set in the [config tab](#config) to allow CEX countertrades to be performed.
+
+Margin mode creates Maker orders on the Marketmaker orderbook, and once an order is matched and completed, it will initiate a counter trade on Binance (with other CEX integrations planned for future releases). 
+
+Arbitrage mode will periodically scan the Marketmaker orderbook and compare available orders against potential counter trades on Binance (or other CEX platforms - in future). If an arbitrage opportunity is detected, the qualifying Marketmaker trade will initiate, and once completed, initiate a CEX countertrade.
+
+_Note: Trades of less than $10 in value do not initiate a countertrade._
+
+As CEX platforms are generally limited in trade pairs, countertrades initiated after a Marketmaker swap are likely to require two CEX trades via a common quote asset. Consider the two examples below, with the strategy margin percentage is set to 5%.
+
+Direct counter trade (BTC to KMD):
+* For convenience, assume the Binance price for KMDBTC is 0.0001 (10,000 KMD per BTC)
+* Marketmaker bot creates a Maker order with selling 1 BTC for 10,500 KMD. The order is matched and the swap completes.
+* Binance has a KMDBTC pair, so a direct trade is possible.
+* A CEX counter trade is submitted to with the price set to buy 1 BTC for 10,000 KMD, netting 500 KMD profit.
+
+Indirect counter trade (ZEC to KMD):
+* For convenience, assume the Binance price for KMDBTC is 0.0001 (10,000 KMD per BTC), and the ZECBTC price is 0.001 (1000 ZEC per BTC)
+* Marketmaker bot trade selling 1 ZEC for 105 KMD completes.
+* Binance does not have a KMDZEC pair, so a direct trade is not possible.
+* There is a KMDBTC pair, and a ZECBTC pair though, so the countertrade can be done via BTC.
+* The strategy margin percentage is set to 5%, so the first leg of the CEX counter trade is submitted to with the price set to sell 100 KMD for 0.01 BTC.
+* The second leg of the CEX countertrade buys 1 ZEC for 0.01 BTC.
+
+_Note: CEX countertrades will require sufficient available balance in CEX wallets to be performed.
+
+In both cases, the coin sold in the Marketmaker trade is replenished by purchasing the equvalent amount via Binance, which is paid for by selling the equivalent amount of the coin recieved in the Makertmaker swap via Binance (after applying the strategy margin percentage). 
+
+As a result your Binance balance for coin A decreases and for coin B it increases, with the opposite being true for the respective balances in Marketmaker, with with a modest 5% bonus above the trade value.
+
+_Note: Due to the enforced quantity and price increments on Binance (and other CEX platforms), it is rarely so exact as Marketmaker trade price and volumes are generally of greater precision. As a result, countertrades are performed as close as possible to the original Marketmaker price & amount that is allowable on the CEX platform. This will often cause the 5% bonus to be partially spread across the coins involved in the trade._ 
+
+The Bot strategy summary table will display the status of Marketmaker trades and their countertrades, along with the delta values of each coin involed in the trades for each bot trading session and cummulatively over time. 
+
  
  #### Prices
  
