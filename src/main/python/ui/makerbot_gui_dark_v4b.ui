@@ -851,7 +851,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>266</width>
-                            <height>674</height>
+                            <height>638</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_13">
@@ -879,15 +879,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="kmd_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -901,15 +906,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="rick_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -923,15 +933,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="chips_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -945,15 +960,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="btch_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1001,15 +1021,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="zilla_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1023,15 +1048,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="dex_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1045,15 +1075,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="hush_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1645,15 +1680,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="rfox_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1667,15 +1707,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="crypto_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1689,15 +1734,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="oot_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1711,15 +1761,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="labs_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1733,15 +1788,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="morty_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1755,15 +1815,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="bots_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1777,15 +1842,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="vrsc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1799,15 +1869,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="supernet_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1821,15 +1896,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="revs_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1843,15 +1923,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="coqui_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -1865,15 +1950,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="thc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2388,15 +2478,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="qtum_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2410,15 +2505,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="rvn_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2432,15 +2532,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="ltc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2454,15 +2559,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="dash_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2476,15 +2586,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="zec_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2498,15 +2613,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="doge_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2520,15 +2640,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="bch_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2542,15 +2667,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="btc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2564,15 +2694,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="axe_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2586,15 +2721,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="dgb_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -2765,7 +2905,7 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>296</width>
+                            <width>291</width>
                             <height>394</height>
                            </rect>
                           </property>
@@ -3126,15 +3266,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="eth_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3148,15 +3293,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="dai_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3170,15 +3320,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="bat_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3192,15 +3347,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="usdc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3214,15 +3374,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="tusd_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3236,15 +3401,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="pax_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3258,15 +3428,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="awc_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
@@ -3280,15 +3455,20 @@ color: rgb(0, 0, 0);</string>
                               <widget class="QLabel" name="link_label">
                                <property name="minimumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
                                </property>
                                <property name="maximumSize">
                                 <size>
-                                 <width>90</width>
-                                 <height>25</height>
+                                 <width>85</width>
+                                 <height>20</height>
                                 </size>
+                               </property>
+                               <property name="font">
+                                <font>
+                                 <pointsize>8</pointsize>
+                                </font>
                                </property>
                                <property name="text">
                                 <string>INACTIVE</string>
