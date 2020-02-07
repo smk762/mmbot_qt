@@ -74,9 +74,11 @@ You also have the option to withdraw funds from Binance and send them to any val
 
 The wallet tab is exactly what it sounds like. Here you can send / recieve coins in your Marketmaker wallet. Balances are listed in a table on the left, with USD, BTC, and KMD values for each coin and your portfolio as a whole for reference. 
  
-![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/wallet.png "Marketmaker Wallet Tab")
+![alt text](https://raw.githubusercontent.com/smk762/mmbot_qt/api/docs/img/wallet_graph.png "Marketmaker Wallet Tab")
  
 Transaction history is available by clicking on your address, which will open it on a block explorer. There is also a QR code button to display a scanable QR code for recieving funds.
+
+For coins which are available on [TradingView](http://www.tradingview.com), a graph of it's BTC price will display at the bottom of the page. For BTC, the price graph is displayed against USDC, and for non supported coins... it'll show the graph for TESLA.
  
  #### Strategies
 In this tab, you can set automated strategies for trading between subsets of activated coins at a preset margin. There are two modes: Margin and Arbitrage. Valid API keys must be set in the [config tab](#config) to allow CEX countertrades to be performed.
