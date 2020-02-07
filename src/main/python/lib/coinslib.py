@@ -620,7 +620,6 @@ coin_api_codes = {
       'name':'ChainZilla'
    }
 }
-
 coin_explorers = {
    'AXE':{
       'tx_explorer':'https://etherscan.io/tx',
@@ -775,7 +774,193 @@ coin_explorers = {
       'addr_explorer':'https://zilla.explorer.dexstats.info/address'
    }
 }
-
+coin_graph = {
+   'AXE':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'AWC':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'BAT':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-BATBTC/',
+      'title':'BATBTC Chart',
+      'symbol':'BINANCE:BATBTC'
+   },
+   'BCH':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-BCHBTC/',
+      'title':'BATBTC Chart',
+      'symbol':'BINANCE:BCHBTC'
+   },
+   'BOTS':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'BTC':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-BTCUSDC/',
+      'title':'BTCUSDC Chart',
+      'symbol':'BINANCE:BTCUSDC'
+   },
+   'BTCH':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'CHIPS':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'COQUI':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'CRYPTO':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'DAI':{
+      'url': 'https://www.tradingview.com/symbols/BITREX-DAIBTC/',
+      'title':'DAIBTC Chart',
+      'symbol':'BITREX:DAIBTC'
+   },
+   'DASH':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-DASHBTC/',
+      'title':'DASHBTC Chart',
+      'symbol':'BINANCE:DASHBTC'
+   },
+   'DEX':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'DGB':{
+      'url': 'https://www.tradingview.com/symbols/BITREX-DGBBTC/',
+      'title':'DGBBTC Chart',
+      'symbol':'BITREX:DGBBTC'
+   },
+   'DOGE':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-DOGEBTC/',
+      'title':'DOGEBTC Chart',
+      'symbol':'BINANCE:DOGEBTC'
+   },
+    "ECA":{
+      'url':'',
+      'title':'',
+      'symbol':''
+    },
+   'ETH':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-ETHBTC/',
+      'title':'ETHBTC Chart',
+      'symbol':'BINANCE:ETHBTC'
+   },
+   'HUSH':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'KMD':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-KMDBTC/',
+      'title':'KMDBTC Chart',
+      'symbol':'BINANCE:KMDBTC'
+   },
+   'LABS':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'LINK':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-LINKBTC/',
+      'title':'LINKBTC Chart',
+      'symbol':'BINANCE:LINKBTC'
+   },
+   'LTC':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-LTCBTC/',
+      'title':'LTCBTC Chart',
+      'symbol':'BINANCE:LTCBTC'
+   },
+   'MORTY':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'OOT':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'PAX':{
+      'url': 'https://www.tradingview.com/symbols/BITREX-PAXBTC/',
+      'title':'PAXBTC Chart',
+      'symbol':'BITREX:PAXBTC'
+   },
+   'QTUM':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-QTUMBTC/',
+      'title':'QTUMBTC Chart',
+      'symbol':'BINANCE:QTUMBTC'
+   },
+   'REVS':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'RVN':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-RVNBTC/',
+      'title':'RVNBTC Chart',
+      'symbol':'BINANCE:RVNBTC'
+   },
+   'RFOX':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'RICK':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'SUPERNET':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'THC':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'USDC':{
+      'url': 'https://www.tradingview.com/symbols/BITBAY-USDCUSD/',
+      'title':'USDCUSD Chart',
+      'symbol':'BITBAY:USDCUSD'
+   },
+   'TUSD':{
+      'url': 'https://www.tradingview.com/symbols/BITREX-TUSDUSD/',
+      'title':'USDCUSD Chart',
+      'symbol':'BITREX:TUSDUSD'
+   },
+   'VRSC':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'ZEC':{
+      'url': 'https://www.tradingview.com/symbols/BINANCE-ZECBTC/',
+      'title':'ZECBTC Chart',
+      'symbol':'BINANCE:ZECBTC'
+   },
+   'ZILLA':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   }
+}
 cointags = []
 for ticker in coin_activation:
     cointags.append(ticker)

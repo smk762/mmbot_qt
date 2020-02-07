@@ -92,7 +92,7 @@ def format_num_10f(val):
 def clearLayout(layout):
   while layout.count():
     child = layout.takeAt(0)
-    c.widget().deleteLater()
+    child.widget().deleteLater()
 
 # THREADED OPERATIONS
 
@@ -851,7 +851,12 @@ class Ui(QTabWidget):
             self.update_combo(self.wallet_combo,self.active_coins,selected)
             self.update_mm2_wallet_labels()
             self.update_mm2_balance_table()
-            
+            if selected == '':
+                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
+            tv_url = coinslib.coin_graph[selected]['url']
+            tv_symbol = coinslib.coin_graph[selected]['symbol']
+            tv_title = coinslib.coin_graph[selected]['title']
+
             html = '<!DOCTYPE html>'
             html += '<html>'
             html += '<head>'
@@ -862,14 +867,14 @@ class Ui(QTabWidget):
             html += '<!-- TradingView Widget BEGIN --> \
                     <div class="tradingview-widget-container"> \
                       <div id="tradingview_41435"></div> \
-                      <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BINANCE-KMDBTC/" rel="noopener" target="_blank"><span class="blue-text">KMDBTC Chart</span></a> by TradingView</div> \
+                      <div class="tradingview-widget-copyright"><a href="'+tv_url+'" rel="noopener" target="_blank"><span class="blue-text">'+tv_symbol+'</span></a> by TradingView</div> \
                       <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script> \
                       <script type="text/javascript"> \
                       new TradingView.widget( \
                       { \
                       "width": 1400, \
                       "height": 260, \
-                      "symbol": "BINANCE:KMDBTC", \
+                      "symbol": "'+tv_symbol+'", \
                       "interval": "240", \
                       "timezone": "Etc/UTC", \
                       "theme": "Dark", \
