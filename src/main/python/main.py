@@ -857,6 +857,12 @@ class Ui(QTabWidget):
             tv_symbol = coinslib.coin_graph[selected]['symbol']
             tv_title = coinslib.coin_graph[selected]['title']
 
+            if tv_url == '':
+                tv_url = 'https://www.tradingview.com/symbols/NASDAQ-TSLA/'
+                tv_symbol = 'NASDAQ:TSLA'
+                tv_title = 'TESLA CHART'
+            
+
             html = '<!DOCTYPE html>'
             html += '<html>'
             html += '<head>'
