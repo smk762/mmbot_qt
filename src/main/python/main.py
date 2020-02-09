@@ -453,9 +453,11 @@ class Ui(QTabWidget):
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
         base = baserel[0]
         rel = baserel[1]
+        '''
         if base != '' and rel != '':
             self.update_mm2_orderbook_labels(base, rel)
             self.update_mm2_orderbook_table()
+        '''
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
         self.update_binance_balance_table()
@@ -1273,7 +1275,7 @@ class Ui(QTabWidget):
             sell_coin = self.orderbook_table.item(selected_row,1).text()
             volume = self.orderbook_table.item(selected_row,2).text()
             price = self.orderbook_table.item(selected_row,3).text()
-            self.orderbook_buy_price_spinbox.setValue(float(price))
+            self.orderbook_price_spinbox.setValue(float(price))
             value = self.orderbook_table.item(selected_row,4).text()
 
     def mm2_orderbook_combo_box_switch(self):
@@ -1294,21 +1296,21 @@ class Ui(QTabWidget):
         rel = self.update_combo(self.orderbook_buy_combo,active_coins_selection,old_base)
         active_coins_selection.remove(rel)
         base = self.update_combo(self.orderbook_sell_combo,active_coins_selection,old_rel)
-        self.orderbook_buy_price_spinbox.setValue(0)
+        self.orderbook_price_spinbox.setValue(0)
         self.orderbook_buy_amount_spinbox.setValue(0)
         self.orderbook_sell_amount_spinbox.setValue(0)
         self.show_mm2_orderbook_tab()
 
     def mm2_orderbook_combo_box_change(self):
-        self.orderbook_buy_price_spinbox.setValue(0)
+        self.orderbook_price_spinbox.setValue(0)
         self.orderbook_buy_amount_spinbox.setValue(0)
         self.orderbook_sell_amount_spinbox.setValue(0)
         self.show_mm2_orderbook_tab()
 
     def mm2_orderbook_sell_pct(self, val):
         self.orderbook_sell_amount_spinbox.setValue(val)
-        if self.orderbook_buy_price_spinbox.value() != 0:
-            price = self.orderbook_buy_price_spinbox.value()
+        if self.orderbook_price_spinbox.value() != 0:
+            price = self.orderbook_price_spinbox.value()
             self.orderbook_buy_amount_spinbox.setValue(val/price)
 
     def get_bal_pct(self, pct):
@@ -1338,10 +1340,10 @@ class Ui(QTabWidget):
         else:
             sent_by = source
         logger.info("update mm2 values amounts (source: "+sent_by+")")
-        orderbook_price_val = self.orderbook_buy_price_spinbox.value()
+        orderbook_price_val = self.orderbook_price_spinbox.value()
         orderbook_sell_amount_val = self.orderbook_sell_amount_spinbox.value()
         orderbook_buy_amount_val = self.orderbook_buy_amount_spinbox.value()
-        if sent_by == 'orderbook_buy_price_spinbox':
+        if sent_by == 'orderbook_price_spinbox':
             if orderbook_price_val != 0:
                 if orderbook_buy_amount_val != 0:
                     orderbook_sell_amount_val = orderbook_buy_amount_val*orderbook_price_val
@@ -1349,19 +1351,19 @@ class Ui(QTabWidget):
                 elif orderbook_sell_amount_val != 0:
                     orderbook_buy_amount_val = orderbook_sell_amount_val/orderbook_price_val
                     self.orderbook_buy_amount_spinbox.setValue(orderbook_buy_amount_val)
-        elif sent_by == 'orderbook_sell_amount_spinbox':
-            if orderbook_sell_amount_val != 0:
-                if orderbook_price_val != 0:
-                    orderbook_buy_amount_val = orderbook_sell_amount_val/orderbook_price_val
-                    self.orderbook_buy_amount_spinbox.setValue(orderbook_buy_amount_val)
         elif sent_by == 'orderbook_buy_amount_spinbox':
             if orderbook_buy_amount_val != 0:
                 if orderbook_price_val != 0:                
                     orderbook_sell_amount_val = orderbook_buy_amount_val*orderbook_price_val
                     self.orderbook_sell_amount_spinbox.setValue(orderbook_sell_amount_val)
+        elif sent_by == 'orderbook_sell_amount_spinbox':
+            if orderbook_sell_amount_val != 0:
+                if orderbook_price_val != 0:
+                    orderbook_buy_amount_val = orderbook_sell_amount_val/orderbook_price_val
+                    self.orderbook_buy_amount_spinbox.setValue(orderbook_buy_amount_val)
 
     def mm2_orderbook_buy_price_changed(self):
-        self.update_mm2_orderbook_amounts('orderbook_buy_price_spinbox')
+        self.update_mm2_orderbook_amounts('orderbook_price_spinbox')
 
     def mm2_orderbook_buy_amount_changed(self):
         self.update_mm2_orderbook_amounts('orderbook_buy_amount_spinbox')
@@ -1374,8 +1376,9 @@ class Ui(QTabWidget):
         rel = self.orderbook_sell_combo.itemText(index)
         index = self.orderbook_buy_combo.currentIndex()
         base = self.orderbook_buy_combo.itemText(index)
-        price = self.orderbook_buy_price_spinbox.value()
+        price = self.orderbook_price_spinbox.value()
         vol = self.orderbook_buy_amount_spinbox.value()
+        #fee = get_fee(node_ip, user_pass, coin)
         trade_val = round(float(price)*float(vol),8)
         resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, vol, price).json()
         log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel
@@ -1714,8 +1717,6 @@ class Ui(QTabWidget):
             self.update_trading_log('Binance', log_msg, str(resp))
         self.update_binance_orders_table()
 
-    
-
     def binance_withdraw(self):
         index = self.binance_asset_comboBox.currentIndex()
         coin = self.binance_asset_comboBox.itemText(index)
@@ -1973,14 +1974,16 @@ class Ui(QTabWidget):
         self.strat_buy_list.clear()
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
-        for item in self.active_coins:
-            buy_list_item = QListWidgetItem(item)
-            buy_list_item.setTextAlignment(Qt.AlignHCenter)
-            self.strat_buy_list.addItem(buy_list_item)
-            sell_list_item = QListWidgetItem(item)
-            sell_list_item.setTextAlignment(Qt.AlignHCenter)
-            self.strat_sell_list.addItem(sell_list_item)
+        for coin in self.active_coins:
+            if coin in self.prices_data['average']:
+                buy_list_item = QListWidgetItem(coin)
+                buy_list_item.setTextAlignment(Qt.AlignHCenter)
+                self.strat_buy_list.addItem(buy_list_item)
+                sell_list_item = QListWidgetItem(coin)
+                sell_list_item.setTextAlignment(Qt.AlignHCenter)
+                self.strat_sell_list.addItem(sell_list_item)
         cex_list = requests.get('http://127.0.0.1:8000/cex/list').json()['cex_list']
+        self.strat_cex_list.addItem("None")
         for item in cex_list:
             list_item = QListWidgetItem(item)
             list_item.setTextAlignment(Qt.AlignHCenter)

@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -4494,6 +4494,33 @@ color: rgb(46, 52, 54);</string>
                             <property name="verticalSpacing">
                              <number>0</number>
                             </property>
+                            <item row="0" column="4">
+                             <widget class="QLabel" name="orderbook_sell_lbl">
+                              <property name="sizePolicy">
+                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                                <horstretch>0</horstretch>
+                                <verstretch>0</verstretch>
+                               </sizepolicy>
+                              </property>
+                              <property name="minimumSize">
+                               <size>
+                                <width>0</width>
+                                <height>25</height>
+                               </size>
+                              </property>
+                              <property name="font">
+                               <font>
+                                <pointsize>18</pointsize>
+                               </font>
+                              </property>
+                              <property name="text">
+                               <string>SELL</string>
+                              </property>
+                              <property name="alignment">
+                               <set>Qt::AlignCenter</set>
+                              </property>
+                             </widget>
+                            </item>
                             <item row="1" column="5">
                              <widget class="QPushButton" name="orderbook_switch_btn">
                               <property name="sizePolicy">
@@ -4523,7 +4550,7 @@ color: rgb(46, 52, 54);</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="6">
+                            <item row="1" column="4">
                              <widget class="QComboBox" name="orderbook_sell_combo">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -4548,7 +4575,7 @@ color: rgb(46, 52, 54);</string>
                               </property>
                              </widget>
                             </item>
-                            <item row="1" column="4">
+                            <item row="1" column="6">
                              <widget class="QComboBox" name="orderbook_buy_combo">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -4574,33 +4601,6 @@ color: rgb(46, 52, 54);</string>
                              </widget>
                             </item>
                             <item row="0" column="6">
-                             <widget class="QLabel" name="orderbook_sell_lbl">
-                              <property name="sizePolicy">
-                               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                                <horstretch>0</horstretch>
-                                <verstretch>0</verstretch>
-                               </sizepolicy>
-                              </property>
-                              <property name="minimumSize">
-                               <size>
-                                <width>0</width>
-                                <height>25</height>
-                               </size>
-                              </property>
-                              <property name="font">
-                               <font>
-                                <pointsize>16</pointsize>
-                               </font>
-                              </property>
-                              <property name="text">
-                               <string>SELL</string>
-                              </property>
-                              <property name="alignment">
-                               <set>Qt::AlignCenter</set>
-                              </property>
-                             </widget>
-                            </item>
-                            <item row="0" column="4">
                              <widget class="QLabel" name="orderbook_buy_lbl">
                               <property name="sizePolicy">
                                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -4616,7 +4616,7 @@ color: rgb(46, 52, 54);</string>
                               </property>
                               <property name="font">
                                <font>
-                                <pointsize>16</pointsize>
+                                <pointsize>18</pointsize>
                                </font>
                               </property>
                               <property name="text">
@@ -4663,62 +4663,8 @@ color: rgb(46, 52, 54);</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_50">
-                         <item row="0" column="1" colspan="2">
-                          <widget class="QLabel" name="orderbook_buy_balance_lbl">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>25</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>11</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>Balance: </string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="4" rowspan="3">
-                          <widget class="QLabel" name="orderbook_buy_bal_icon">
-                           <property name="minimumSize">
-                            <size>
-                             <width>64</width>
-                             <height>64</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>64</width>
-                             <height>64</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>10</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="1" column="1" colspan="2">
-                          <widget class="QLabel" name="orderbook_buy_locked_lbl">
+                          <widget class="QLabel" name="orderbook_sell_locked_lbl">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -4764,7 +4710,7 @@ color: rgb(46, 52, 54);</string>
                           </spacer>
                          </item>
                          <item row="2" column="1">
-                          <widget class="QLabel" name="orderbook_buy_amount_lbl">
+                          <widget class="QLabel" name="orderbook_sell_amount_lbl">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -4797,7 +4743,7 @@ color: rgb(46, 52, 54);</string>
                           </widget>
                          </item>
                          <item row="2" column="2">
-                          <widget class="QDoubleSpinBox" name="orderbook_buy_amount_spinbox">
+                          <widget class="QDoubleSpinBox" name="orderbook_sell_amount_spinbox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -4850,6 +4796,60 @@ color: rgb(46, 52, 54);</string>
                             </size>
                            </property>
                           </spacer>
+                         </item>
+                         <item row="0" column="1" colspan="2">
+                          <widget class="QLabel" name="orderbook_sell_balance_lbl">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>11</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>Balance: </string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="4" rowspan="3">
+                          <widget class="QLabel" name="orderbook_sell_bal_icon">
+                           <property name="minimumSize">
+                            <size>
+                             <width>64</width>
+                             <height>64</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>64</width>
+                             <height>64</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>10</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
@@ -4924,7 +4924,7 @@ color: rgb(46, 52, 54);</string>
                            </property>
                            <property name="font">
                             <font>
-                             <pointsize>14</pointsize>
+                             <pointsize>16</pointsize>
                             </font>
                            </property>
                            <property name="text">
@@ -4936,7 +4936,7 @@ color: rgb(46, 52, 54);</string>
                           </widget>
                          </item>
                          <item row="1" column="0">
-                          <widget class="QDoubleSpinBox" name="orderbook_buy_price_spinbox">
+                          <widget class="QDoubleSpinBox" name="orderbook_price_spinbox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -5010,59 +5010,8 @@ color: rgb(46, 52, 54);</string>
                          <enum>QFrame::Raised</enum>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_49">
-                         <item row="0" column="2" colspan="2">
-                          <widget class="QLabel" name="orderbook_sell_balance_lbl">
-                           <property name="sizePolicy">
-                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                             <horstretch>0</horstretch>
-                             <verstretch>0</verstretch>
-                            </sizepolicy>
-                           </property>
-                           <property name="minimumSize">
-                            <size>
-                             <width>0</width>
-                             <height>25</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>11</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>Balance: </string>
-                           </property>
-                          </widget>
-                         </item>
-                         <item row="0" column="0" rowspan="3">
-                          <widget class="QLabel" name="orderbook_sell_bal_icon">
-                           <property name="minimumSize">
-                            <size>
-                             <width>64</width>
-                             <height>64</height>
-                            </size>
-                           </property>
-                           <property name="maximumSize">
-                            <size>
-                             <width>64</width>
-                             <height>64</height>
-                            </size>
-                           </property>
-                           <property name="font">
-                            <font>
-                             <pointsize>10</pointsize>
-                            </font>
-                           </property>
-                           <property name="text">
-                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                           </property>
-                           <property name="alignment">
-                            <set>Qt::AlignCenter</set>
-                           </property>
-                          </widget>
-                         </item>
                          <item row="2" column="2">
-                          <widget class="QLabel" name="orderbook_sell_amount_lbl">
+                          <widget class="QLabel" name="orderbook_buy_amount_lbl">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                              <horstretch>0</horstretch>
@@ -5095,7 +5044,7 @@ color: rgb(46, 52, 54);</string>
                           </widget>
                          </item>
                          <item row="1" column="2" colspan="2">
-                          <widget class="QLabel" name="orderbook_sell_locked_lbl">
+                          <widget class="QLabel" name="orderbook_buy_locked_lbl">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -5132,7 +5081,7 @@ color: rgb(46, 52, 54);</string>
                           </spacer>
                          </item>
                          <item row="2" column="3">
-                          <widget class="QDoubleSpinBox" name="orderbook_sell_amount_spinbox">
+                          <widget class="QDoubleSpinBox" name="orderbook_buy_amount_spinbox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
                              <horstretch>0</horstretch>
@@ -5188,6 +5137,57 @@ color: rgb(46, 52, 54);</string>
                             </size>
                            </property>
                           </spacer>
+                         </item>
+                         <item row="0" column="2" colspan="2">
+                          <widget class="QLabel" name="orderbook_buy_balance_lbl">
+                           <property name="sizePolicy">
+                            <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                             <horstretch>0</horstretch>
+                             <verstretch>0</verstretch>
+                            </sizepolicy>
+                           </property>
+                           <property name="minimumSize">
+                            <size>
+                             <width>0</width>
+                             <height>25</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>11</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>Balance: </string>
+                           </property>
+                          </widget>
+                         </item>
+                         <item row="0" column="0" rowspan="3">
+                          <widget class="QLabel" name="orderbook_buy_bal_icon">
+                           <property name="minimumSize">
+                            <size>
+                             <width>64</width>
+                             <height>64</height>
+                            </size>
+                           </property>
+                           <property name="maximumSize">
+                            <size>
+                             <width>64</width>
+                             <height>64</height>
+                            </size>
+                           </property>
+                           <property name="font">
+                            <font>
+                             <pointsize>10</pointsize>
+                            </font>
+                           </property>
+                           <property name="text">
+                            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;img src=&quot;:/64/img/64/placeholder.png&quot;/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                           </property>
+                           <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                           </property>
+                          </widget>
                          </item>
                         </layout>
                        </widget>
@@ -5482,7 +5482,7 @@ color: rgb(46, 52, 54);</string>
                 <enum>QFrame::Sunken</enum>
                </property>
                <property name="sizeAdjustPolicy">
-                <enum>QAbstractScrollArea::AdjustToContents</enum>
+                <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
                </property>
                <property name="editTriggers">
                 <set>QAbstractItemView::NoEditTriggers</set>
@@ -5512,7 +5512,7 @@ color: rgb(46, 52, 54);</string>
                 <bool>true</bool>
                </attribute>
                <attribute name="horizontalHeaderDefaultSectionSize">
-                <number>160</number>
+                <number>153</number>
                </attribute>
                <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                 <bool>true</bool>
@@ -12393,10 +12393,10 @@ background-color: rgb(85, 87, 83);</string>
    </hints>
   </connection>
   <connection>
-   <sender>orderbook_sell_amount_spinbox</sender>
+   <sender>orderbook_buy_amount_spinbox</sender>
    <signal>valueChanged(QString)</signal>
    <receiver>MainTabs</receiver>
-   <slot>mm2_orderbook_sell_amount_changed()</slot>
+   <slot>mm2_orderbook_buy_amount_changed()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1373</x>
@@ -12409,7 +12409,7 @@ background-color: rgb(85, 87, 83);</string>
    </hints>
   </connection>
   <connection>
-   <sender>orderbook_buy_price_spinbox</sender>
+   <sender>orderbook_price_spinbox</sender>
    <signal>valueChanged(QString)</signal>
    <receiver>MainTabs</receiver>
    <slot>mm2_orderbook_buy_price_changed()</slot>
@@ -12425,10 +12425,10 @@ background-color: rgb(85, 87, 83);</string>
    </hints>
   </connection>
   <connection>
-   <sender>orderbook_buy_amount_spinbox</sender>
+   <sender>orderbook_sell_amount_spinbox</sender>
    <signal>valueChanged(QString)</signal>
    <receiver>MainTabs</receiver>
-   <slot>mm2_orderbook_buy_amount_changed()</slot>
+   <slot>mm2_orderbook_sell_amount_changed()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>602</x>
