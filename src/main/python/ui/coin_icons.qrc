@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="ui">
+    <file>makerbot_gui_dark_v4c_nograph.ui</file>
     <file>makerbot_gui_dark_v4c.ui</file>
     <file>makerbot_gui_dark_v4b.ui</file>
     <file>makerbot_gui_dark_v4a.ui</file>

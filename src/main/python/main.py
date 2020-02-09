@@ -25,7 +25,7 @@ import pyqtgraph as pg
 from pyqtgraph.Point import Point
 import decimal
 import logging
-from PyQt5.QtWebEngineWidgets import QWebEngineView
+#from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 logger = logging.getLogger()
 handler = logging.StreamHandler()
@@ -212,7 +212,7 @@ class QR_image(qrcode.image.base.BaseImage):
 
     def save(self, stream, kind=None):
         pass
-
+'''
 class Web(QWebEngineView):
 
     def load(self, url):
@@ -227,6 +227,7 @@ class Web(QWebEngineView):
     def disableJS(self):
         settings = QWebEngineSettings.globalSettings()
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
+'''
 
 class ScrollMessageBox(QMessageBox):
     def __init__(self, json_data, *args, **kwargs):
@@ -249,7 +250,7 @@ class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
         # Load the User interface from file
-        uifile = QFile(":/ui/makerbot_gui_dark_v4c.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark_v4c_nograph.ui")
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) 
         self.ctx = ctx 
@@ -275,8 +276,8 @@ class Ui(QTabWidget):
                 
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
-        self.webframe_layout = QHBoxLayout()
-        self.webframe.setLayout(self.webframe_layout)
+        #self.webframe_layout = QHBoxLayout()
+        #self.webframe.setLayout(self.webframe_layout)
         self.authenticated = False
         self.mm2_downloading = False
         self.bot_trading = False
@@ -853,6 +854,7 @@ class Ui(QTabWidget):
             self.update_mm2_balance_table()
             if selected == '':
                 selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
+            '''
             tv_url = coinslib.coin_graph[selected]['url']
             tv_symbol = coinslib.coin_graph[selected]['symbol']
             tv_title = coinslib.coin_graph[selected]['title']
@@ -905,7 +907,7 @@ class Ui(QTabWidget):
             
             clearLayout(self.webframe_layout)
             self.webframe_layout.addWidget(web)
-  
+  '''
 
     def show_strategies_tab(self):
         self.update_strategies_table()
