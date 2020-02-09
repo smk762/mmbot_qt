@@ -37,3 +37,10 @@ If all goes well, you can freeze the app with `fbs freeze`, which will create a 
 To create a .deb installer file, run `fbs installer`
 
 Creating an installer on Mac/Win is very much the same as the above, with some slight changes in activating the virtual environment or installing fman (refer to https://github.com/mherrmann/fbs-tutorial for details)
+
+
+# Notes:
+use python 3.6.x
+mac requires pyinstaller==3.4
+windows needs additional dlls (more info to come)
+windows needs hiddenimport for (more info to come)
