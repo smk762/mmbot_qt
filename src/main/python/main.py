@@ -137,6 +137,41 @@ class activation_thread(QThread):
                 self.activate.emit(coin[0])
 
 
+class api_request_thread(QThread):
+    update_data = pyqtSignal(object, object, object, str, str)
+    def __init__(self, endpoint, table, msg_lbl, msg, row_filter):
+        QThread.__init__(self)
+        self.endpoint = endpoint
+        self.table = table
+        self.msg_lbl = msg_lbl
+        self.msg = msg
+        self.row_filter = row_filter
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        url = "http://127.0.0.1:8000/"+self.endpoint
+        r = requests.get(url)
+        self.update_data.emit(r, self.table, self.msg_lbl, self.msg, self.row_filter)
+
+
+class addr_request_thread(QThread):
+    resp = pyqtSignal(dict, str)
+    def __init__(self, creds_5, creds_6, coin):
+        QThread.__init__(self)
+        self.coin = coin
+        self.creds_5 = creds_5
+        self.creds_6 = creds_6
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        r = binance_api.get_deposit_addr(self.creds_5, self.creds_6, self.coin)
+        self.resp.emit(r, self.coin)
+        
+
 # Get price graph history
 class graph_history_thread(QThread):
     get_history = pyqtSignal(str, str, list, list, list)
@@ -648,9 +683,17 @@ class Ui(QTabWidget):
                 col += 1
             row += 1
 
-    def populate_table(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
-        url = "http://127.0.0.1:8000/"+endpoint
-        r = requests.get(url)
+    def request_table_data(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
+        # start in other thread
+        self.table_request_thread = api_request_thread(endpoint, table, msg_lbl, msg, row_filter)
+        self.table_request_thread.update_data.connect(self.populate_table)
+        self.table_request_thread.start()
+
+    def populate_table(self, r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
+        if r == '':
+            # dont thread
+            url = "http://127.0.0.1:8000/"+endpoint
+            r = requests.get(url)
         if r.status_code == 200:
             table.setSortingEnabled(False)
             self.clear_table(table)
@@ -853,14 +896,14 @@ class Ui(QTabWidget):
                 self.binance_base_amount_spinbox.setSingleStep(float(step_size))
                 self.binance_base_amount_spinbox.setRange(float(min_qty), float(max_qty))
                 self.update_binance_depth_table()
-                self.update_binance_orders_table()
-                self.update_binance_labels(base, rel)
                 if not self.authenticated_binance:
                     msg = self.binance_api_err+"\n"
                     self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
                     self.groupBox_bn_orderbook.setTitle("Binance API Orderbook - "+msg)
                     self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
-                    #QMessageBox.information(self, 'Binance API Error!', msg, QMessageBox.Ok, QMessageBox.Ok)
+                else:
+                    #self.update_binance_orders_table()
+                    self.update_binance_labels(base, rel)
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -1247,10 +1290,10 @@ class Ui(QTabWidget):
         rel = baserel[1]
         # refresh tables
         if base != '' and rel != '':
-            self.populate_table("table/mm2_orderbook/"+rel+"/"+base, self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook")
+            self.populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
 
     def update_mm2_orders_table(self):
-        self.populate_table("table/mm2_open_orders", self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order")
+        self.populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
         for row in range(self.mm2_orders_table.rowCount()):
             if self.mm2_orders_table.item(row, 10).text() != '0':
                 self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
@@ -1540,21 +1583,24 @@ class Ui(QTabWidget):
             balance = "loading balance..."
         self.binance_base_balance_lbl.setText(balance)
         self.binance_base_locked_lbl.setText(locked_text)
-        self.update_binance_addr()
+        self.get_binance_addr()
 
     def update_binance_wallet(self):
         selected_row = self.binance_balances_table.currentRow()
         if selected_row != -1 and self.binance_balances_table.item(selected_row,0) is not None:
             coin = self.binance_balances_table.item(selected_row,0).text()
             self.update_combo(self.binance_asset_comboBox,coinslib.binance_coins,coin)
-            self.update_binance_addr()
+            self.get_binance_addr()
 
-    def update_binance_addr(self):
-        # TODO: Isn't this cached?
-        # Wallet address
+    def get_binance_addr(self):
         index = self.binance_asset_comboBox.currentIndex()
         coin = self.binance_asset_comboBox.itemText(index)
-        resp = binance_api.get_deposit_addr(self.creds[5], self.creds[6], coin)
+        # start in other thread
+        self.thread_addr_request = addr_request_thread(self.creds[5], self.creds[6], coin)
+        self.thread_addr_request.resp.connect(self.update_binance_addr)
+        self.thread_addr_request.start()
+
+    def update_binance_addr(self, resp, coin):
         if 'address' in resp:
             addr_text = resp['address']
         else:
@@ -1565,7 +1611,7 @@ class Ui(QTabWidget):
     def update_binance_orders_table(self):
         logger.info('update_binance_orders_table')
         # populate binance depth table
-        self.populate_table("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
+        self.request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def show_qr_popup(self):
         # create popup for Binance address QR code
@@ -1616,12 +1662,12 @@ class Ui(QTabWidget):
         self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
         ticker_pair = base+rel
         # populate binance depth table
-        self.populate_table("table/get_binance_depth/"+ticker_pair,
+        self.request_table_data("table/get_binance_depth/"+ticker_pair,
                             self.binance_depth_table_bid,
                             "",
                             "",
                             "3|Bid|INCLUDE")
-        self.populate_table("table/get_binance_depth/"+ticker_pair,
+        self.request_table_data("table/get_binance_depth/"+ticker_pair,
                             self.binance_depth_table_ask,
                             "",
                             "",
@@ -2021,7 +2067,7 @@ class Ui(QTabWidget):
 
     def update_strategies_table(self):
         logger.info('Updating strategies table')
-        self.populate_table("table/bot_strategies", self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary")
+        self.populate_table('', self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary","","table/bot_strategies")
         for row in range(self.strategies_table.rowCount()):
             if self.strategies_table.item(row, 10).text() == 'active':
                 self.colorize_row(self.strategies_table, row, QColor(218, 255, 127))
@@ -2112,9 +2158,9 @@ class Ui(QTabWidget):
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             if self.summary_hide_empty_checkbox.isChecked():
-                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "4|0|EXCLUDE")
+                self.populate_table('', self.strat_summary_table, "", "", "4|0|EXCLUDE" ,"table/bot_strategy/summary/"+strategy_name)
             else:
-                self.populate_table("table/bot_strategy/summary/"+strategy_name, self.strat_summary_table)
+                self.populate_table('',"table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "", "table/bot_strategy/summary/"+strategy_name)
             for row in range(self.strat_summary_table.rowCount()):
                 if self.strat_summary_table.item(row, 4).text() != '0':
                     self.colorize_row(self.strat_summary_table, row, QColor(218, 255, 127))
@@ -2358,9 +2404,9 @@ class Ui(QTabWidget):
 
     def update_mm2_trade_history_table(self):
         if self.mm2_hide_failed_checkbox.isChecked():
-            self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE")
+            self.populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
         else:
-            self.populate_table("table/mm2_history", self.mm2_trades_table, self.mm2_trades_msg_lbl, "")
+            self.populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "","table/mm2_history")
         if self.mm2_trades_table.rowCount() > 0:
             for row in range(self.mm2_trades_table.rowCount()):
                 if self.mm2_trades_table.item(row, 2).text() == 'Finished':
@@ -2371,7 +2417,7 @@ class Ui(QTabWidget):
                     self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
 
     def update_strategy_history_table(self):
-        self.populate_table("table/strategies_history", self.strategy_trades_table, self.strategy_trades_msg_lbl, "")  
+        self.populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
         for row in range(self.strategy_trades_table.rowCount()):
             if self.strategy_trades_table.item(row, 8).text() == 'Complete':
                 self.colorize_row(self.strategy_trades_table, row, QColor(218, 255, 127))
