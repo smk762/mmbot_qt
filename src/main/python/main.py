@@ -2013,7 +2013,11 @@ class Ui(QTabWidget):
         for item in cex_list:
             list_item = QListWidgetItem(item)
             list_item.setTextAlignment(Qt.AlignHCenter)
-            self.strat_cex_list.addItem(list_item)
+            if item == 'Binance':
+                if self.authenticated_binance:
+                    self.strat_cex_list.addItem(list_item)
+            else:
+                self.strat_cex_list.addItem(list_item)
 
     def update_strategies_table(self):
         logger.info('Updating strategies table')
