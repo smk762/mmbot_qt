@@ -225,6 +225,7 @@ class Web(QWebEngineView):
         self.setWindowTitle(self.title())
 
     def disableJS(self):
+
         settings = QWebEngineSettings.globalSettings()
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
 '''
@@ -276,6 +277,8 @@ class Ui(QTabWidget):
                 
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
+
+
         #self.webframe_layout = QHBoxLayout()
         #self.webframe.setLayout(self.webframe_layout)
         self.authenticated = False
@@ -651,16 +654,25 @@ class Ui(QTabWidget):
         if r.status_code == 200:
             table.setSortingEnabled(False)
             self.clear_table(table)
+            table.clearSelection()
             if 'table_data' in r.json():
                 data = r.json()['table_data']
                 table.setRowCount(len(data))
                 row = 0
+                max_col_str = {}
                 if len(data) > 0:
                     headers = list(data[0].keys())
                     table.setColumnCount(len(headers))
                     table.setHorizontalHeaderLabels(headers)
+                    for i in range(len(headers)):
+                        max_col_str[i] = str(headers[i])
                     for item in data:
                         row_data = list(item.values())
+                        col_num = 0
+                        for cell in row_data:
+                            if len(str(cell)) > len(str(max_col_str[col_num])):
+                                max_col_str[col_num] = str(cell)
+                            col_num += 1
                         if row_filter == '':
                             self.add_row(row, row_data, table)
                             row += 1
@@ -677,13 +689,20 @@ class Ui(QTabWidget):
                                 if filter_type == 'EXCLUDE':
                                     self.add_row(row, row_data, table)
                                     row += 1
+                    
                 table.setRowCount(row)
                 table.setSortingEnabled(True)
-                table.resizeColumnsToContents()
+                #table.resizeColumnsToContents()
+                fontinfo = QFontInfo(table.font())
+                for i in max_col_str:
+                    fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
+                    str_width = fm.width(max_col_str[i])
+                    table.setColumnWidth(i, str_width+10)
                 if msg_lbl != '':
                     if len(data) == 0:
                         msg = "No results in table..."
                     msg_lbl.setText(msg)
+
         else:
             logger.info(r)
             logger.info(r.text)
@@ -838,7 +857,10 @@ class Ui(QTabWidget):
                 self.update_binance_labels(base, rel)
                 if not self.authenticated_binance:
                     msg = self.binance_api_err+"\n"
-                    QMessageBox.information(self, 'Binance API Error!', msg, QMessageBox.Ok, QMessageBox.Ok)
+                    self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
+                    self.groupBox_bn_orderbook.setTitle("Binance API Orderbook - "+msg)
+                    self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
+                    #QMessageBox.information(self, 'Binance API Error!', msg, QMessageBox.Ok, QMessageBox.Ok)
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -1184,8 +1206,8 @@ class Ui(QTabWidget):
         self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
         self.wallet_btc_total.setText("Total BTC Value: "+str(round(btc_total,8)))
         self.wallet_balances_table.setSortingEnabled(True)
-        self.wallet_balances_table.resizeColumnsToContents()
-        self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
+        #self.wallet_balances_table.resizeColumnsToContents()
+        #self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
 
     def update_mm2_trades_table(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
@@ -1217,7 +1239,7 @@ class Ui(QTabWidget):
             self.add_row(row, trade_row, self.mm2_trades_table)
             row += 1
         self.mm2_trades_table.setSortingEnabled(True)
-        self.mm2_trades_table.resizeColumnsToContents()
+        #self.mm2_trades_table.resizeColumnsToContents()
 
     def update_mm2_orderbook_table(self):
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
@@ -1580,8 +1602,8 @@ class Ui(QTabWidget):
                 self.add_row(row, balance_row, self.binance_balances_table)
                 row += 1
         self.binance_balances_table.setSortingEnabled(True)
-        self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
-        self.binance_balances_table.resizeColumnsToContents()
+        #self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
+        #self.binance_balances_table.resizeColumnsToContents()
 
     def update_binance_depth_table(self):
         index = self.binance_base_combo.currentIndex()
@@ -1975,15 +1997,19 @@ class Ui(QTabWidget):
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
         for coin in self.active_coins:
-            if coin in self.prices_data['average']:
-                buy_list_item = QListWidgetItem(coin)
-                buy_list_item.setTextAlignment(Qt.AlignHCenter)
-                self.strat_buy_list.addItem(buy_list_item)
-                sell_list_item = QListWidgetItem(coin)
-                sell_list_item.setTextAlignment(Qt.AlignHCenter)
-                self.strat_sell_list.addItem(sell_list_item)
+            logger.info(coin+": "+str(self.prices_data['average'][coin]))
+            if len(self.prices_data['average'][coin]['btc_sources']) > 0:
+                if 'mm2_orderbook' not in self.prices_data['average'][coin]['btc_sources']:
+                    buy_list_item = QListWidgetItem(coin)
+                    buy_list_item.setTextAlignment(Qt.AlignHCenter)
+                    self.strat_buy_list.addItem(buy_list_item)
+                    sell_list_item = QListWidgetItem(coin)
+                    sell_list_item.setTextAlignment(Qt.AlignHCenter)
+                    self.strat_sell_list.addItem(sell_list_item)
         cex_list = requests.get('http://127.0.0.1:8000/cex/list').json()['cex_list']
-        self.strat_cex_list.addItem("None")
+        list_item = QListWidgetItem("None (mm2 only)")
+        list_item.setTextAlignment(Qt.AlignHCenter)
+        self.strat_cex_list.addItem(list_item)
         for item in cex_list:
             list_item = QListWidgetItem(item)
             list_item.setTextAlignment(Qt.AlignHCenter)
@@ -2022,9 +2048,19 @@ class Ui(QTabWidget):
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
         params += '&balance_pct='+str(self.strat_bal_pct_spinbox.value())
         params += '&cex_list='+cex_items
-        logger.info('http://127.0.0.1:8000/strategies/create?'+params)
-        resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
-        QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        if 'Binance' in cex_items:
+            selected_coins = list(set(list(buy_list)+list(sell_list)))
+            incompatible_coins = []
+            for coin in selected_coins:
+                if coin not in coinslib.binance_coins:
+                    incompatible_coins.append(coin)
+        if len(incompatible_coins) > 0:
+            resp = "The selected CEX "+str(cex_items)+" does not support "+str(incompatible_coins)+"!\n Please refine your selection..."
+            QMessageBox.information(self, 'CEX Incompatible coins selected!', str(resp), QMessageBox.Ok, QMessageBox.Ok)
+        else:
+            logger.info('http://127.0.0.1:8000/strategies/create?'+params)
+            resp = requests.post('http://127.0.0.1:8000/strategies/create?'+params).json()
+            QMessageBox.information(self, 'Create Bot Strategy', str(resp), QMessageBox.Ok, QMessageBox.Ok)
         self.show_strategies_tab()
 
     def start_strat(self):
@@ -2312,8 +2348,8 @@ class Ui(QTabWidget):
             self.add_row(row, price_row, self.prices_table)
             row += 1
         self.prices_table.setSortingEnabled(True)
-        self.prices_table.resizeColumnsToContents()
-        self.prices_table.sortItems(0, Qt.AscendingOrder)
+        #self.prices_table.resizeColumnsToContents()
+        #self.prices_table.sortItems(0, Qt.AscendingOrder)
 
 
     def update_mm2_trade_history_table(self):
