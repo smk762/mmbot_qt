@@ -1462,7 +1462,7 @@ class Ui(QTabWidget):
         trade_val = round(float(price)*float(vol),8)
         # get fee estimate
         try:
-            trade_fee_resp = rpclib.get_fee(self.creds[0], self.creds[1], base).json()
+            trade_fee_resp = rpclib.get_fee(self.creds[0], self.creds[1], rel).json()
             logger.info("trade_fee_resp: "+str(trade_fee_resp))
             trade_fee = float(trade_fee_resp['result']['amount'])
         except Exception as e:
@@ -1470,6 +1470,15 @@ class Ui(QTabWidget):
             trade_fee = 0.001
         trade_vol = vol - float(trade_fee)*2
         resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
+        if 'error' in resp:
+            while resp['error'].find("too low, required") > -1:
+                time.sleep(0.01)
+                logger.info("trade_vol error: "+str(resp['error']))
+                logger.info("reducing trade vol 1% and trying again...")
+                trade_vol = trade_vol*0.99
+                resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
+                if 'error' not in resp:
+                    break
         log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")"
         if 'error' in resp:
             if resp['error'].find("larger than available") > -1:
@@ -1500,6 +1509,7 @@ class Ui(QTabWidget):
         if self.mm2_orders_table.item(selected_row,7) is not None:
             mm2_order_uuid = self.mm2_orders_table.item(selected_row,7).text()
             order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
+            logger.info("order_info: "+str(order_info))
             if len(order_info['order']['started_swaps']) != 0:
                 swaps_in_progress = {}
                 for swap_uuid in order_info['order']['started_swaps']:
