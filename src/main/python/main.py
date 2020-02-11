@@ -745,6 +745,18 @@ class Ui(QTabWidget):
                     if len(data) == 0:
                         msg = "No results in table..."
                     msg_lbl.setText(msg)
+            # apply BG color
+            for row in range(self.binance_depth_table_ask.rowCount()):
+                if self.binance_depth_table_ask.item(row,3) is not None:
+                    bgcol = QColor(164, 0, 0)
+                    for col in range(self.binance_depth_table_ask.columnCount()):
+                        self.binance_depth_table_ask.item(row,col).setBackground(bgcol)
+
+            for row in range(self.binance_depth_table_bid.rowCount()):
+                if self.binance_depth_table_bid.item(row,3) is not None:
+                    bgcol = QColor(78, 154, 6)
+                    for col in range(self.binance_depth_table_bid.columnCount()):
+                        self.binance_depth_table_bid.item(row,col).setBackground(bgcol)
 
         else:
             logger.info(r)
@@ -895,7 +907,6 @@ class Ui(QTabWidget):
                 max_qty = binance_api.base_asset_info[base]['maxQty']
                 self.binance_base_amount_spinbox.setSingleStep(float(step_size))
                 self.binance_base_amount_spinbox.setRange(float(min_qty), float(max_qty))
-                self.update_binance_depth_table()
                 if not self.authenticated_binance:
                     msg = self.binance_api_err+"\n"
                     self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
@@ -903,7 +914,8 @@ class Ui(QTabWidget):
                     self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
                 else:
                     self.update_binance_orders_table()
-                    self.update_binance_labels(base, rel)
+                self.update_binance_labels(base, rel)
+                self.update_binance_depth_table()
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -1597,26 +1609,32 @@ class Ui(QTabWidget):
         self.show_binance_trading_tab()
 
     def update_binance_labels(self, base, rel):
-        # Quote coin icon and balances
         self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-        if rel in self.balances_data["Binance"]:
-            locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][rel]['locked']),8))
-            balance = "Balance: "+str(round(float(self.balances_data["Binance"][rel]['total']),8))
-        else:
-            locked_text = ""
-            balance = "loading balance..."
-        self.binance_quote_balance_lbl.setText(balance)
-        self.binance_quote_locked_lbl.setText(locked_text)
-        # Base coin icon and balances
         self.binance_base_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
-        if base in self.balances_data["Binance"]:
-            locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][base]['locked']),8))
-            balance = "Balance: "+str(round(float(self.balances_data["Binance"][base]['total']),8))
+        if not self.authenticated_binance:
+            self.binance_quote_balance_lbl.setText('Balance: Invalid API key!')
+            self.binance_quote_locked_lbl.setText('Locked: Invalid API key!')
+            self.binance_base_balance_lbl.setText('Balance: Invalid API key!')
+            self.binance_base_locked_lbl.setText('Locked: Invalid API key!')    
         else:
-            locked_text = ""
-            balance = "loading balance..."
-        self.binance_base_balance_lbl.setText(balance)
-        self.binance_base_locked_lbl.setText(locked_text)
+            # Quote coin icon and balances
+            if rel in self.balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][rel]['locked']),8))
+                balance = "Balance: "+str(round(float(self.balances_data["Binance"][rel]['total']),8))
+            else:
+                locked_text = ""
+                balance = "loading balance..."
+            self.binance_quote_balance_lbl.setText(balance)
+            self.binance_quote_locked_lbl.setText(locked_text)
+            # Base coin icon and balances
+            if base in self.balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][base]['locked']),8))
+                balance = "Balance: "+str(round(float(self.balances_data["Binance"][base]['total']),8))
+            else:
+                locked_text = ""
+                balance = "loading balance..."
+            self.binance_base_balance_lbl.setText(balance)
+            self.binance_base_locked_lbl.setText(locked_text)
         self.get_binance_addr()
 
     def update_binance_wallet(self):
@@ -1627,18 +1645,25 @@ class Ui(QTabWidget):
             self.get_binance_addr()
 
     def get_binance_addr(self):
-        index = self.binance_asset_comboBox.currentIndex()
-        coin = self.binance_asset_comboBox.itemText(index)
-        # start in other thread
-        self.thread_addr_request = addr_request_thread(self.creds[5], self.creds[6], coin)
-        self.thread_addr_request.resp.connect(self.update_binance_addr)
-        self.thread_addr_request.start()
+        if not self.authenticated_binance:
+            self.binance_qr_code_link.hide()
+            self.binance_addr_lbl.setText("Invalid API key")
+            self.binance_addr_coin_lbl.setText("")
+        else:            
+            index = self.binance_asset_comboBox.currentIndex()
+            coin = self.binance_asset_comboBox.itemText(index)
+            # start in other thread
+            self.thread_addr_request = addr_request_thread(self.creds[5], self.creds[6], coin)
+            self.thread_addr_request.resp.connect(self.update_binance_addr)
+            self.thread_addr_request.start()
 
     def update_binance_addr(self, resp, coin):
         if 'address' in resp:
             addr_text = resp['address']
+            self.binance_qr_code_link.show()
         else:
             addr_text = 'Address not found - create it at Binance.com'
+            self.binance_qr_code_link.hide()
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
 
@@ -1666,24 +1691,25 @@ class Ui(QTabWidget):
 
     def update_binance_balance_table(self):
         self.clear_table(self.binance_balances_table)
-        row_count = len(self.balances_data["Binance"])
-        self.binance_balances_table.setRowCount(row_count)
-        self.binance_balances_table.setSortingEnabled(False)
-        row = 0
-        if row_count == 0:
-            self.binance_balances_msg_lbl.setText('Balances loading...')
-        else:
-            self.binance_balances_msg_lbl.setText('')
-            for coin in self.balances_data["Binance"]:
-                available = float(self.balances_data["Binance"][coin]['available'])
-                total = float(self.balances_data["Binance"][coin]['total'])
-                locked = float(self.balances_data["Binance"][coin]['locked'])
-                balance_row = [coin, format_num_10f(total), format_num_10f(available), format_num_10f(locked)]
-                self.add_row(row, balance_row, self.binance_balances_table)
-                row += 1
-        self.binance_balances_table.setSortingEnabled(True)
-        #self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
-        #self.binance_balances_table.resizeColumnsToContents()
+        if self.authenticated_binance:
+            row_count = len(self.balances_data["Binance"])
+            self.binance_balances_table.setRowCount(row_count)
+            self.binance_balances_table.setSortingEnabled(False)
+            row = 0
+            if row_count == 0:
+                self.binance_balances_msg_lbl.setText('Balances loading...')
+            else:
+                self.binance_balances_msg_lbl.setText('')
+                for coin in self.balances_data["Binance"]:
+                    available = float(self.balances_data["Binance"][coin]['available'])
+                    total = float(self.balances_data["Binance"][coin]['total'])
+                    locked = float(self.balances_data["Binance"][coin]['locked'])
+                    balance_row = [coin, format_num_10f(total), format_num_10f(available), format_num_10f(locked)]
+                    self.add_row(row, balance_row, self.binance_balances_table)
+                    row += 1
+            self.binance_balances_table.setSortingEnabled(True)
+            #self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
+            #self.binance_balances_table.resizeColumnsToContents()
 
     def update_binance_depth_table(self):
         index = self.binance_base_combo.currentIndex()
@@ -1706,18 +1732,6 @@ class Ui(QTabWidget):
                             "",
                             "",
                             "3|Ask|INCLUDE")
-        # apply BG color
-        for row in range(self.binance_depth_table_ask.rowCount()):
-            if self.binance_depth_table_ask.item(row,3) is not None:
-                bgcol = QColor(164, 0, 0)
-                for col in range(self.binance_depth_table_ask.columnCount()):
-                    self.binance_depth_table_ask.item(row,col).setBackground(bgcol)
-
-        for row in range(self.binance_depth_table_bid.rowCount()):
-            if self.binance_depth_table_bid.item(row,3) is not None:
-                bgcol = QColor(78, 154, 6)
-                for col in range(self.binance_depth_table_bid.columnCount()):
-                    self.binance_depth_table_bid.item(row,col).setBackground(bgcol)
         # update button text
         self.binance_sell_btn.setText("Sell "+base)
         self.binance_buy_btn.setText("Buy "+base)
@@ -2087,7 +2101,7 @@ class Ui(QTabWidget):
                     sell_list_item.setTextAlignment(Qt.AlignHCenter)
                     self.strat_sell_list.addItem(sell_list_item)
         cex_list = requests.get('http://127.0.0.1:8000/cex/list').json()['cex_list']
-        list_item = QListWidgetItem("None (mm2 only)")
+        list_item = QListWidgetItem("None")
         list_item.setTextAlignment(Qt.AlignHCenter)
         self.strat_cex_list.addItem(list_item)
         for item in cex_list:
@@ -2132,9 +2146,9 @@ class Ui(QTabWidget):
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
         params += '&balance_pct='+str(self.strat_bal_pct_spinbox.value())
         params += '&cex_list='+cex_items
+        incompatible_coins = []
         if 'Binance' in cex_items:
             selected_coins = list(set(list(buy_list)+list(sell_list)))
-            incompatible_coins = []
             for coin in selected_coins:
                 if coin not in coinslib.binance_coins:
                     incompatible_coins.append(coin)
@@ -2194,7 +2208,7 @@ class Ui(QTabWidget):
             if self.summary_hide_empty_checkbox.isChecked():
                 self.populate_table('', self.strat_summary_table, "", "", "4|0|EXCLUDE" ,"table/bot_strategy/summary/"+strategy_name)
             else:
-                self.populate_table('',"table/bot_strategy/summary/"+strategy_name, self.strat_summary_table, "", "", "", "table/bot_strategy/summary/"+strategy_name)
+                self.populate_table('', self.strat_summary_table, "", "", "",  "table/bot_strategy/summary/"+strategy_name)
             for row in range(self.strat_summary_table.rowCount()):
                 if self.strat_summary_table.item(row, 4).text() != '0':
                     self.colorize_row(self.strat_summary_table, row, QColor(218, 255, 127))
