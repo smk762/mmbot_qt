@@ -902,7 +902,7 @@ class Ui(QTabWidget):
                     self.groupBox_bn_orderbook.setTitle("Binance API Orderbook - "+msg)
                     self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
                 else:
-                    #self.update_binance_orders_table()
+                    self.update_binance_orders_table()
                     self.update_binance_labels(base, rel)
 
     def show_mm2_wallet_tab(self):
@@ -1336,12 +1336,27 @@ class Ui(QTabWidget):
         logger.info('get_price_from_orderbook')        
         selected_row = self.orderbook_table.currentRow()
         if selected_row != -1 and self.orderbook_table.item(selected_row,1) is not None:
-            buy_coin = self.orderbook_table.item(selected_row,0).text()
-            sell_coin = self.orderbook_table.item(selected_row,1).text()
-            volume = self.orderbook_table.item(selected_row,2).text()
-            price = self.orderbook_table.item(selected_row,3).text()
-            self.orderbook_price_spinbox.setValue(float(price))
-            value = self.orderbook_table.item(selected_row,4).text()
+            if self.orderbook_table.item(selected_row,3).text() != '':
+                buy_coin = self.orderbook_table.item(selected_row,0).text()
+                sell_coin = self.orderbook_table.item(selected_row,1).text()
+                volume = self.orderbook_table.item(selected_row,2).text()
+                price = self.orderbook_table.item(selected_row,3).text()
+                value = self.orderbook_table.item(selected_row,4).text()
+                sell_amount = self.orderbook_table.item(selected_row,5).text()
+                try:
+                    available_balance = float(self.balances_data['mm2'][sell_coin]['available'])
+                except:
+                    available_balance = 0
+                logger.info("price: "+str(price))
+                logger.info("available_balance: "+str(available_balance)+" "+sell_coin)
+                logger.info("sell_amount: "+str(sell_amount)+" "+sell_coin)
+                if float(sell_amount) > float(available_balance):
+                    logger.info("using available balance")
+                    sell_amount = float(available_balance)
+                # set price and buy amount inputs from row selection
+                self.orderbook_price_spinbox.setValue(float(price))
+                self.orderbook_sell_amount_spinbox.setValue(float(sell_amount))
+
 
     def mm2_orderbook_combo_box_switch(self):
         logger.info('combo_box_switch')
@@ -1416,16 +1431,16 @@ class Ui(QTabWidget):
                 elif orderbook_sell_amount_val != 0:
                     orderbook_buy_amount_val = orderbook_sell_amount_val/orderbook_price_val
                     self.orderbook_buy_amount_spinbox.setValue(orderbook_buy_amount_val)
-        elif sent_by == 'orderbook_buy_amount_spinbox':
-            if orderbook_buy_amount_val != 0:
-                if orderbook_price_val != 0:                
-                    orderbook_sell_amount_val = orderbook_buy_amount_val*orderbook_price_val
-                    self.orderbook_sell_amount_spinbox.setValue(orderbook_sell_amount_val)
         elif sent_by == 'orderbook_sell_amount_spinbox':
             if orderbook_sell_amount_val != 0:
                 if orderbook_price_val != 0:
                     orderbook_buy_amount_val = orderbook_sell_amount_val/orderbook_price_val
                     self.orderbook_buy_amount_spinbox.setValue(orderbook_buy_amount_val)
+        elif sent_by == 'orderbook_buy_amount_spinbox':
+            if orderbook_buy_amount_val != 0:
+                if orderbook_price_val != 0:                
+                    orderbook_sell_amount_val = orderbook_buy_amount_val*orderbook_price_val
+                    self.orderbook_sell_amount_spinbox.setValue(orderbook_sell_amount_val)
 
     def mm2_orderbook_buy_price_changed(self):
         self.update_mm2_orderbook_amounts('orderbook_price_spinbox')
@@ -1445,8 +1460,17 @@ class Ui(QTabWidget):
         vol = self.orderbook_buy_amount_spinbox.value()
         #fee = get_fee(node_ip, user_pass, coin)
         trade_val = round(float(price)*float(vol),8)
-        resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, vol, price).json()
-        log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel
+        # get fee estimate
+        try:
+            trade_fee_resp = rpclib.get_fee(self.creds[0], self.creds[1], base).json()
+            logger.info("trade_fee_resp: "+str(trade_fee_resp))
+            trade_fee = float(trade_fee_resp['result']['amount'])
+        except Exception as e:
+            logger.info("get_fee failed "+str(e))
+            trade_fee = 0.001
+        trade_vol = vol - float(trade_fee)*2
+        resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
+        log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")"
         if 'error' in resp:
             if resp['error'].find("larger than available") > -1:
                 msg = "Insufficient funds to complete order."
@@ -1454,7 +1478,7 @@ class Ui(QTabWidget):
                 msg = resp
         elif 'result' in resp:
             msg = "Order Submitted.\n"
-            msg += "Buying "+str(vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel
+            msg += "Buying "+str(vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel+"\nFee estimate: "+str(trade_fee)+" "+rel
         else:
             msg = resp
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)

@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>1</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -850,7 +850,7 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>266</width>
+                            <width>248</width>
                             <height>638</height>
                            </rect>
                           </property>
@@ -2073,8 +2073,8 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>280</width>
-                            <height>408</height>
+                            <width>246</width>
+                            <height>378</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout_14">
@@ -2906,7 +2906,7 @@ color: rgb(0, 0, 0);</string>
                             <x>0</x>
                             <y>0</y>
                             <width>291</width>
-                            <height>408</height>
+                            <height>304</height>
                            </rect>
                           </property>
                           <layout class="QGridLayout" name="gridLayout">
@@ -9381,13 +9381,16 @@ background-color: rgb(85, 87, 83);</string>
                       <set>Qt::AlignCenter</set>
                      </property>
                      <property name="suffix">
-                      <string> min</string>
+                      <string> sec</string>
                      </property>
                      <property name="minimum">
-                      <number>10</number>
+                      <number>30</number>
                      </property>
                      <property name="maximum">
-                      <number>60</number>
+                      <number>1800</number>
+                     </property>
+                     <property name="singleStep">
+                      <number>15</number>
                      </property>
                     </widget>
                    </item>
@@ -12290,7 +12293,7 @@ background-color: rgb(85, 87, 83);</string>
    <sender>orderbook_sell_combo</sender>
    <signal>activated(int)</signal>
    <receiver>MainTabs</receiver>
-   <slot>show_mm2_orderbook_tab()</slot>
+   <slot>mm2_orderbook_combo_box_change()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>1058</x>
