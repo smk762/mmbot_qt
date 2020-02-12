@@ -923,6 +923,8 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+            self.wallet_recipient.setText('')
+            self.wallet_amount.setValue(0)
             self.wallet_recipient.setFocus()
             if self.wallet_combo.currentIndex() != -1:
                 selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
@@ -2012,10 +2014,9 @@ class Ui(QTabWidget):
                     except Exception as e:
                         usd_val = '-'
                         btc_val = '-'
-                        self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
-                        self.wallet_btc_value.setText(str(btc_val)+" BTC")
-                        logger.info('update wallet labels err (likely no price, setting to zero value')
-                        logger.info(e)
+                        self.wallet_usd_value.setText("$"+str(0)+" USD")
+                        self.wallet_btc_value.setText(str(0)+" BTC")
+                        logger.info('update wallet labels err (likely no price, setting to zero value)')
 
     def show_mm2_qr_popup(self):
         index = self.wallet_combo.currentIndex()
@@ -2042,16 +2043,35 @@ class Ui(QTabWidget):
             self.update_combo(self.wallet_combo,self.active_coins,coin)
             self.show_mm2_wallet_tab()
 
+    def set_max_withdraw(self):
+        index = self.wallet_combo.currentIndex()
+        coin = self.wallet_combo.itemText(index)
+        balance = self.balances_data["mm2"][coin]["available"]
+        logger.info("send max "+balance)
+        self.wallet_amount.setValue(float(balance))
+
+    def set_self_withdraw(self):
+        index = self.wallet_combo.currentIndex()
+        coin = self.wallet_combo.itemText(index)
+        addr_txt = self.balances_data["mm2"][coin]["address"]
+        logger.info("self send to "+addr_txt)
+        self.wallet_recipient.setText(addr_txt)
+
     # process withdrawl from wallet tab
     def send_funds(self):
         index = self.wallet_combo.currentIndex()
-        cointag = self.wallet_combo.itemText(index)
+        coin = self.wallet_combo.itemText(index)
         recipient_addr = self.wallet_recipient.text()
         amount = self.wallet_amount.text()
-        confirm = QMessageBox.question(self, 'Confirm send?', "Confirm sending "+str(amount)+" "+cointag+" to "+recipient_addr+"?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        confirm = QMessageBox.question(self, 'Confirm send?', "Confirm sending "+str(amount)+" "+coin+" to "+recipient_addr+"?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if confirm == QMessageBox.Yes:
             msg = ''
-            resp = rpclib.withdraw(self.creds[0], self.creds[1], cointag, recipient_addr, amount).json()
+            if float(amount) == float(self.balances_data["mm2"][coin]["available"]):
+                logger.info("withdrawing max "+coin)
+                resp = rpclib.withdraw_max(self.creds[0], self.creds[1], coin, recipient_addr).json()
+            else:
+                logger.info("withdrawing "+amount+" "+coin)
+                resp = rpclib.withdraw(self.creds[0], self.creds[1], coin, recipient_addr, amount).json()
             if 'error' in resp:
                 logger.info(resp['error'])
                 if resp['error'].find("Invalid Address!") > -1:
@@ -2064,7 +2084,7 @@ class Ui(QTabWidget):
                     msg = str(resp['error'])
             elif 'tx_hex' in resp:
                 raw_hex = resp['tx_hex']
-                resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], cointag, raw_hex).json()
+                resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], coin, raw_hex).json()
                 # hyperlink tx in explorer if url in coinslib
                 if 'tx_hash' in resp:
                     txid = resp['tx_hash']
@@ -2072,8 +2092,8 @@ class Ui(QTabWidget):
                         txid_str = '0x'+txid
                     else:
                         txid_str = txid
-                    if coinslib.coin_explorers[cointag]['tx_explorer'] != '':
-                        txid_link = coinslib.coin_explorers[cointag]['tx_explorer']+"/"+txid_str
+                    if coinslib.coin_explorers[coin]['tx_explorer'] != '':
+                        txid_link = coinslib.coin_explorers[coin]['tx_explorer']+"/"+txid_str
                         msg = "Sent! <br /><a style='color:white !important' href='"+txid_link+"'>"+txid_link+"</a>"
                     else:
                         msg = "Sent! <br />TXID: ["+txid_str+"]"

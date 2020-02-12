@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>4</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -850,7 +850,7 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>248</width>
+                            <width>266</width>
                             <height>638</height>
                            </rect>
                           </property>
@@ -2073,7 +2073,7 @@ color: rgb(0, 0, 0);</string>
                            <rect>
                             <x>0</x>
                             <y>0</y>
-                            <width>246</width>
+                            <width>266</width>
                             <height>378</height>
                            </rect>
                           </property>
@@ -8574,40 +8574,7 @@ color: rgb(46, 52, 54);</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="wallet_recipient">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>400</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
+          <item row="0" column="4">
            <widget class="QComboBox" name="wallet_combo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -8623,7 +8590,7 @@ color: rgb(46, 52, 54);</string>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
+              <width>120</width>
               <height>35</height>
              </size>
             </property>
@@ -8668,7 +8635,124 @@ color: rgb(46, 52, 54);</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="4">
+           <widget class="QPushButton" name="wallet_send_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>120</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>WITHDRAW</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="wallet_recipient">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>400</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="wallet_self_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>SELF</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="wallet_max_btn">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>50</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <property name="text">
+             <string>MAX</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
            <widget class="QDoubleSpinBox" name="wallet_amount">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -8689,41 +8773,13 @@ color: rgb(46, 52, 54);</string>
              <set>Qt::AlignCenter</set>
             </property>
             <property name="decimals">
-             <number>6</number>
+             <number>13</number>
             </property>
             <property name="maximum">
              <double>99999999999.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.001000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="wallet_send_btn">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>120</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>35</height>
-             </size>
-            </property>
-            <property name="styleSheet">
-             <string notr="true"/>
-            </property>
-            <property name="text">
-             <string>withdraw</string>
             </property>
            </widget>
           </item>
@@ -11912,7 +11968,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>generate_seed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>735</x>
+     <x>609</x>
      <y>234</y>
     </hint>
     <hint type="destinationlabel">
@@ -11928,7 +11984,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>save_config()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1114</x>
+     <x>1088</x>
      <y>600</y>
     </hint>
     <hint type="destinationlabel">
@@ -11944,8 +12000,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1513</x>
-     <y>824</y>
+     <x>1613</x>
+     <y>814</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -11960,8 +12016,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1345</x>
-     <y>85</y>
+     <x>433</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>860</x>
@@ -12040,8 +12096,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>949</x>
-     <y>714</y>
+     <x>479</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -12056,8 +12112,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_utxo()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>996</x>
-     <y>205</y>
+     <x>606</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12072,8 +12128,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>911</x>
-     <y>74</y>
+     <x>425</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12088,8 +12144,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1101</x>
-     <y>74</y>
+     <x>428</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12104,8 +12160,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1299</x>
-     <y>74</y>
+     <x>431</x>
+     <y>73</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12136,7 +12192,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>binance_withdraw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1679</x>
+     <x>1645</x>
      <y>1017</y>
     </hint>
     <hint type="destinationlabel">
@@ -12152,7 +12208,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>binance_cancel_selected_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>739</x>
+     <x>687</x>
      <y>1026</y>
     </hint>
     <hint type="destinationlabel">
@@ -12184,8 +12240,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_erc20()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1354</x>
-     <y>205</y>
+     <x>627</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12200,8 +12256,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>select_all_smart()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>640</x>
-     <y>205</y>
+     <x>584</x>
+     <y>117</y>
     </hint>
     <hint type="destinationlabel">
      <x>799</x>
@@ -12216,7 +12272,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>show_qr_popup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1698</x>
+     <x>1653</x>
      <y>913</y>
     </hint>
     <hint type="destinationlabel">
@@ -12232,8 +12288,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1513</x>
-     <y>874</y>
+     <x>1613</x>
+     <y>863</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12280,8 +12336,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_orderbook_combo_box_change()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>863</x>
-     <y>183</y>
+     <x>1077</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12296,8 +12352,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_orderbook_combo_box_change()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1058</x>
-     <y>183</y>
+     <x>882</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12328,8 +12384,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>bal_25pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>831</x>
-     <y>218</y>
+     <x>819</x>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12344,8 +12400,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>bal_50pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>917</x>
-     <y>218</y>
+     <x>905</x>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12360,8 +12416,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>bal_75pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1003</x>
-     <y>218</y>
+     <x>991</x>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12376,8 +12432,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>bal_100pct()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1089</x>
-     <y>218</y>
+     <x>1077</x>
+     <y>235</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12392,8 +12448,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_orderbook_combo_box_switch()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>960</x>
-     <y>183</y>
+     <x>928</x>
+     <y>204</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12424,8 +12480,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_orderbook_buy_price_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>960</x>
-     <y>293</y>
+     <x>1070</x>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12456,8 +12512,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_orderbook_buy()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>960</x>
-     <y>324</y>
+     <x>1070</x>
+     <y>353</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12472,7 +12528,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>export_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1378</x>
+     <x>1366</x>
      <y>220</y>
     </hint>
     <hint type="destinationlabel">
@@ -12488,7 +12544,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>update_mm2_trade_history_table()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1240</x>
+     <x>1189</x>
      <y>220</y>
     </hint>
     <hint type="destinationlabel">
@@ -12504,8 +12560,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_cancel_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1675</x>
-     <y>767</y>
+     <x>1589</x>
+     <y>784</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12520,8 +12576,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1761</x>
-     <y>767</y>
+     <x>1675</x>
+     <y>784</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12616,8 +12672,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>binance_sell()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>825</x>
-     <y>295</y>
+     <x>824</x>
+     <y>306</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12664,8 +12720,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>binance_quote_amount_changed()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>825</x>
-     <y>201</y>
+     <x>824</x>
+     <y>212</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12776,8 +12832,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_view_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1533</x>
-     <y>752</y>
+     <x>1489</x>
+     <y>784</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12792,7 +12848,7 @@ background-color: rgb(85, 87, 83);</string>
    <slot>mm2_view_swap()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1331</x>
+     <x>1280</x>
      <y>220</y>
     </hint>
     <hint type="destinationlabel">
@@ -12808,8 +12864,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>view_strat_summary()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>927</x>
-     <y>719</y>
+     <x>975</x>
+     <y>731</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12856,8 +12912,8 @@ background-color: rgb(85, 87, 83);</string>
    <slot>import_swap_data()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>666</x>
-     <y>827</y>
+     <x>580</x>
+     <y>839</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12872,11 +12928,43 @@ background-color: rgb(85, 87, 83);</string>
    <slot>logout()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1029</x>
-     <y>699</y>
+     <x>530</x>
+     <y>109</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wallet_max_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>set_max_withdraw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1462</x>
+     <y>846</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>908</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>wallet_self_btn</sender>
+   <signal>clicked()</signal>
+   <receiver>MainTabs</receiver>
+   <slot>set_self_withdraw()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1462</x>
+     <y>797</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>908</x>
      <y>539</y>
     </hint>
    </hints>
@@ -12963,5 +13051,7 @@ background-color: rgb(85, 87, 83);</string>
   <slot>update_price_history_graph()</slot>
   <slot>import_swap_data()</slot>
   <slot>logout()</slot>
+  <slot>set_max_withdraw()</slot>
+  <slot>set_self_withdraw()</slot>
  </slots>
 </ui>

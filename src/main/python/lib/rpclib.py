@@ -252,8 +252,15 @@ def withdraw(node_ip, user_pass, cointag, address, amount, maxvolume=False):
               'coin': cointag,
               'to': address,
               'amount': amount,}
-    if maxvolume:
-        params.update({"maxvolume":maxvolume})
+    r = requests.post(node_ip, json=params)
+    return r 
+
+def withdraw_max(node_ip, user_pass, cointag, address, maxvolume=True):
+    params = {'userpass': user_pass,
+              'method': 'withdraw',
+              'coin': cointag,
+              'to': address,
+              'max':maxvolume,}
     r = requests.post(node_ip, json=params)
     return r 
 
