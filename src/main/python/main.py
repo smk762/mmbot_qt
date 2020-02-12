@@ -1223,6 +1223,7 @@ class Ui(QTabWidget):
                 })
 
     def update_mm2_balance_table(self): 
+        logger.info("Updating MM2 balance table")
         self.clear_table(self.wallet_balances_table)
         self.wallet_balances_table.setSortingEnabled(False)
         row_count = len(self.active_coins)
@@ -1307,6 +1308,7 @@ class Ui(QTabWidget):
             self.populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
 
     def update_mm2_orders_table(self):
+        logger.info("Updating MM2 orders table")
         self.populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
         for row in range(self.mm2_orders_table.rowCount()):
             if self.mm2_orders_table.item(row, 10).text() != '0':
@@ -1694,6 +1696,7 @@ class Ui(QTabWidget):
     def update_binance_balance_table(self):
         self.clear_table(self.binance_balances_table)
         if self.authenticated_binance:
+            logger.info("Updating Binance balance table")
             row_count = len(self.balances_data["Binance"])
             self.binance_balances_table.setRowCount(row_count)
             self.binance_balances_table.setSortingEnabled(False)
@@ -2223,6 +2226,7 @@ class Ui(QTabWidget):
 
     def view_strat_summary(self):
         selected_row = self.strategies_table.currentRow()
+        logger.info("Updating Strategy summary table")
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             if self.summary_hide_empty_checkbox.isChecked():
@@ -2412,6 +2416,7 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
+        logger.info("Updating Prices table")
         self.prices_table.setSortingEnabled(False)
         headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD', 'Marketmaker BTC', 'Marketmaker USD', 'Marketmaker KMD',]
         self.prices_table.setColumnCount(len(headers))
@@ -2471,6 +2476,7 @@ class Ui(QTabWidget):
 
 
     def update_mm2_trade_history_table(self):
+        logger.info("Updating MM2 trade history table")
         if self.mm2_hide_failed_checkbox.isChecked():
             self.populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
         else:
@@ -2485,9 +2491,10 @@ class Ui(QTabWidget):
                     self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
 
     def update_strategy_history_table(self):
+        logger.info("Updating Strategy history table")
         self.populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
         for row in range(self.strategy_trades_table.rowCount()):
-            if self.strategy_trades_table.item(row, 8).text() == 'Complete':
+            if self.strategy_trades_table.item(row, 9).text() == 'Complete':
                 self.colorize_row(self.strategy_trades_table, row, QColor(218, 255, 127))
             else:
                 self.colorize_row(self.strategy_trades_table, row, QColor(255, 233, 127))

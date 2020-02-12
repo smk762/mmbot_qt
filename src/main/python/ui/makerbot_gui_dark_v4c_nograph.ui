@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>4</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -9231,7 +9231,7 @@ background-color: rgb(85, 87, 83);</string>
                       <set>QAbstractItemView::NoEditTriggers</set>
                      </property>
                      <property name="selectionMode">
-                      <enum>QAbstractItemView::MultiSelection</enum>
+                      <enum>QAbstractItemView::SingleSelection</enum>
                      </property>
                      <property name="movement">
                       <enum>QListView::Static</enum>
