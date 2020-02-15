@@ -12,6 +12,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api, botlib
 from lib.qrcode import qr_popup
+from lib.widgets import ScrollMessageBox
 from lib.util import export_table
 import qrcode
 import random
