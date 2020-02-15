@@ -11,6 +11,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api, botlib
+from lib.qrcode import qr_popup
+from lib.util import export_table
 import qrcode
 import random
 from ui import resources
@@ -28,21 +30,23 @@ import logging
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 logger = logging.getLogger()
-handler = logging.StreamHandler()
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+
+# console logging
 logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+logger.addHandler(handler)
+
+# File logging
+fh = logging.FileHandler(sys.path[0]+'/debug.log')
+fh.setLevel(logging.DEBUG)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 '''
 # TODOS #
- - create tablification scripts for data returned from api or mm2.
- - remove code deprecated by API
- - autoactivate coins needing kickstart
  - https://api.hitbtc.com/
  - https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
- - Add orderbook table view from API loop
-
 '''
 
 home = expanduser("~")
@@ -136,7 +140,6 @@ class activation_thread(QThread):
                 logger.info(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
                 self.activate.emit(coin[0])
 
-
 class api_request_thread(QThread):
     update_data = pyqtSignal(object, object, object, str, str)
     def __init__(self, endpoint, table, msg_lbl, msg, row_filter):
@@ -224,29 +227,6 @@ class graph_history_thread(QThread):
         # emit signal to draw graph with xy data
         self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
 
-# Creates a QR code from a string. Can misbehave if pixmap area size not ideal.
-class QR_image(qrcode.image.base.BaseImage):
-    def __init__(self, border, width, box_size):
-        self.border = border
-        self.width = width
-        self.box_size = box_size
-        size = (width + border * 2) * box_size
-        self._image = QImage(size, size, QImage.Format_RGB16)
-        self._image.fill(Qt.white)
-
-    def pixmap(self):
-        return QPixmap.fromImage(self._image)
-
-    def drawrect(self, row, col):
-        painter = QPainter(self._image)
-        painter.fillRect(
-            (col + self.border) * self.box_size,
-            (row + self.border) * self.box_size,
-            self.box_size, self.box_size,
-            Qt.black)
-
-    def save(self, stream, kind=None):
-        pass
 '''
 class Web(QWebEngineView):
 
@@ -265,20 +245,6 @@ class Web(QWebEngineView):
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
 '''
 
-class ScrollMessageBox(QMessageBox):
-    def __init__(self, json_data, *args, **kwargs):
-        QMessageBox.__init__(self, *args, **kwargs)
-        scroll = QScrollArea(self)
-        scroll.setWidgetResizable(True)
-        self.content = QWidget()
-        scroll.setWidget(self.content)
-        lay = QVBoxLayout(self.content)
-        json_lines = json.dumps(json_data, indent=4)
-        msg_data = QTextEdit(json_lines, self)
-        msg_data.setReadOnly(True)
-        lay.addWidget(msg_data)
-        self.layout().addWidget(scroll, 0, 0, 1, self.layout().columnCount())
-        self.setStyleSheet("QScrollArea{min-width:800 px; min-height: 800px}")
 
 # UI Class
 
@@ -642,46 +608,6 @@ class Ui(QTabWidget):
             self.creds = ['','','','','','','','','','']
             pass
 
-    ## File operations
-    def saveFileDialog(self):
-        filename = ''
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getSaveFileName(self,"Save Trade data to CSV","","Text Files (*.csv)", options=options)
-        return fileName
-
-    # Table operations
-    def export_table(self):
-        #TODO: add sender, get headers dynamically
-        table_csv = 'Date, Status, Sell coin, Sell volume, Buy coin, Buy volume, Sell price, UUID\r\n'
-        for i in range(self.mm2_trades_table.rowCount()):
-            row_list = []
-            for j in range(self.mm2_trades_table.columnCount()):
-                try:
-                    row_list.append(self.mm2_trades_table.item(i,j).text())
-                except:
-                    pass
-            table_csv += ','.join(row_list)+'\r\n'
-        now = datetime.datetime.now()
-        timestamp = datetime.datetime.timestamp(now)
-        filename = self.saveFileDialog()
-        if filename != '':
-            with open(filename, 'w') as f:
-                f.write(table_csv)
-
-    def clear_table(self, table):
-        row = 0
-        row_count = table.rowCount()
-        col_count = table.columnCount()
-        while row_count > row:
-            row_items = []
-            for i in range(col_count):
-                row_items.append(QTableWidgetItem(''))
-            col = 0
-            for cell in row_items:
-                table.setItem(row,col,cell)
-                col += 1
-            row += 1
 
     def request_table_data(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
         # start in other thread
@@ -696,8 +622,7 @@ class Ui(QTabWidget):
             r = requests.get(url)
         if r.status_code == 200:
             table.setSortingEnabled(False)
-            self.clear_table(table)
-            table.clearSelection()
+            table.clearContents()
             if 'table_data' in r.json():
                 data = r.json()['table_data']
                 table.setRowCount(len(data))
@@ -1072,8 +997,7 @@ class Ui(QTabWidget):
                   self.wallet_balances_table, self.strategies_table, self.strat_summary_table, self.mm2_trades_table,
                   self.strategy_trades_table]
         for table in tables:
-            self.clear_table(table)
-            table.setRowCount(0)
+            table.clearContents()
         labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_usd_value, self.wallet_btc_value, 
                   self.orderbook_buy_balance_lbl, self.orderbook_buy_locked_lbl, self.orderbook_sell_balance_lbl,
                   self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
@@ -1224,48 +1148,46 @@ class Ui(QTabWidget):
 
     def update_mm2_balance_table(self): 
         logger.info("Updating MM2 balance table")
-        self.clear_table(self.wallet_balances_table)
+        self.wallet_balances_table.clearContents()
         self.wallet_balances_table.setSortingEnabled(False)
-        row_count = len(self.active_coins)
-        self.wallet_balances_table.setRowCount(row_count)
-        row = 0
-        usd_total = 0
-        btc_total = 0
-        kmd_total = 0
-        for coin in self.active_coins:
-            usd_val = '-'
-            btc_val = '-'
-            kmd_val = '-'
-            try:
-                total = self.balances_data['mm2'][coin]['total']
-                if coin in self.prices_data['average']:
-                    usd_price = self.prices_data['average'][coin]['USD']
-                    btc_price = self.prices_data['average'][coin]['BTC']
-                    kmd_price = self.prices_data['average'][coin]['KMD']
-                    try:
-                        usd_val = round(float(usd_price)*float(total),4)
-                        kmd_val = round(float(kmd_price)*float(total),4)
-                        btc_val = round(float(btc_price)*float(total),8)
-                        usd_total += usd_val
-                        btc_total += btc_val
-                        kmd_total += kmd_val
-                    except Exception as e:
-                        # no float value for coin
-                        pass
-                balance_row = [coin, format_num_10f(total), format_num_10f(usd_val), format_num_10f(btc_val), format_num_10f(kmd_val)]
-                self.add_row(row, balance_row, self.wallet_balances_table)
-                row += 1
-            except Exception as e:
-                logger.warning(coin+" mm2 balance not ready")
-                balance_row = [coin, "-", '-', '-']
-                self.add_row(row, balance_row, self.wallet_balances_table)
-                row += 1
-        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(kmd_total,4)))
-        self.wallet_usd_total.setText("Total USD Value: $"+str(round(usd_total,4)))
-        self.wallet_btc_total.setText("Total BTC Value: "+str(round(btc_total,8)))
+        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                table_data = r.json()['table_data']
+                self.wallet_balances_table.setRowCount(len(table_data)-1)
+                row = 0
+                for row_data in table_data:
+                    if row_data['Coin'] != 'TOTAL':
+                        self.add_row(row, row_data.values(), self.wallet_balances_table)
+                        row += 1
+                self.adjust_cols(self.wallet_balances_table, table_data)
+        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
+        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
+        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
         self.wallet_balances_table.setSortingEnabled(True)
-        #self.wallet_balances_table.resizeColumnsToContents()
-        #self.wallet_balances_table.sortItems(3, Qt.DescendingOrder)
+        self.wallet_balances_table.resizeColumnsToContents()
+        self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
+
+    def adjust_cols(self, table, data):
+        max_col_str = {}
+        if len(data) > 0:
+            headers = list(data[0].keys())
+            table.setColumnCount(len(headers))
+            table.setHorizontalHeaderLabels(headers)
+            for i in range(len(headers)):
+                max_col_str[i] = str(headers[i])
+            for item in data:
+                row_data = list(item.values())
+                for i in range(len(row_data)):
+                    if len(str(row_data[i])) > len(str(max_col_str[i])):
+                        max_col_str[i] = str(row_data[i])
+        fontinfo = QFontInfo(table.font())
+        print(max_col_str)
+        for i in max_col_str:
+            fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
+            str_width = fm.width(max_col_str[i])
+            table.setColumnWidth(i, str_width+10)
+
 
     def update_mm2_trades_table(self):
         swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
@@ -1677,24 +1599,14 @@ class Ui(QTabWidget):
         self.request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def show_qr_popup(self):
-        # create popup for Binance address QR code
         coin = self.binance_addr_coin_lbl.text().split()[1]
         addr_txt = self.binance_addr_lbl.text()
-        qr_img = qrcode.make(addr_txt, image_factory=QR_image)
-        self.qr_lbl = QLabel(self)
-        self.qr_lbl.setText(addr_txt)
-        self.qr_img_lbl = QLabel(self)
-        self.qr_img_lbl.setPixmap(qr_img.pixmap())
-        msgBox = QMessageBox(QMessageBox.NoIcon, "Binance "+coin+" Address QR Code ", addr_txt)
-        l = msgBox.layout()
-        l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
-        l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
-        msgBox.addButton("Close", QMessageBox.NoRole)
-        logger.info("show Binance QR code msgbox")
-        msgBox.exec()
+        mm2_qr = qr_popup("Binance "+coin+" Address QR Code", addr_txt)
+        mm2_qr.show()
+
 
     def update_binance_balance_table(self):
-        self.clear_table(self.binance_balances_table)
+        self.binance_balances_table.clearContents()
         if self.authenticated_binance:
             logger.info("Updating Binance balance table")
             row_count = len(self.balances_data["Binance"])
@@ -1896,77 +1808,6 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
 
     ## Prices Tab
-    def update_price_history_graph(self):
-        logger.info("update_price_history_graph")
-        index = self.history_quote_combobox.currentIndex()
-        if index == -1:
-            index = 0
-        quote = self.history_quote_combobox.itemText(index)
-        index = self.history_coin_combobox.currentIndex()
-        if index == -1:
-            coin = self.update_combo(self.history_coin_combobox,coinslib.paprika_coins,0)
-        else:
-            coin = self.history_coin_combobox.itemText(index)
-        coin_id = coinslib.coin_api_codes[coin]['paprika_id']
-        self.draw_graph_thread = graph_history_thread(coin ,coin_id, quote)
-        self.draw_graph_thread.get_history.connect(self.draw_price_history_graph)
-        self.draw_graph_thread.start()
-        # activate "loading" overlay
-
-    def draw_price_history_graph(self, coin, quote, x, y, time_ticks):
-        # deactivate "loading" overlay
-        
-        logger.info('drawing graph')
-        self.binance_history_graph.clear()
-        price_curve = self.binance_history_graph.plot(
-                x,
-                y, 
-                pen={'color':(78,155,46)},
-                fillLevel=0, brush=(50,50,200,100),
-            )
-        self.binance_history_graph.setXRange(min(x),max(x), padding=0)
-        self.binance_history_graph.setYRange(0,max(y)*1.1, padding=0)
-        self.binance_history_graph.addItem(price_curve)
-        if quote == 'USD':
-            self.binance_history_graph.setLabel('left', '$USD')
-        elif quote == 'KMD':
-            self.binance_history_graph.setLabel('left', 'KMD')
-        else:
-            self.binance_history_graph.setLabel('left', 'BTC')
-        self.binance_history_graph.setLabel('bottom', '', units=None)
-        self.binance_history_graph.showGrid(x=True, y=True, alpha=0.2)
-        price_ticks = self.binance_history_graph.getAxis('left')
-        date_ticks = self.binance_history_graph.getAxis('bottom')    
-        date_ticks.setTicks([time_ticks])
-        date_ticks.enableAutoSIPrefix(enable=False)
-        self.binance_history_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+coin.lower()+".png\"/></p></body></html>")
-        if coin in self.prices_data:
-            usd_price = self.prices_data['average'][coin]['USD']
-            btc_price = self.prices_data['average'][coin]['BTC']
-        elif coinslib.coin_api_codes[coin]['paprika_id'] != '':
-            price = priceslib.get_paprika_price(coinslib.coin_api_codes[coin]['paprika_id']).json()
-            usd_price = float(price['price_usd'])
-            btc_price = float(price['price_btc'])
-        elif coinslib.coin_api_codes[coin]['coingecko_id'] != '':
-            coin_id = coinslib.coin_api_codes[self.coin]['coingecko_id']
-            price = priceslib.gecko_fiat_prices(coinslib.coin_api_codes[coin]['coingecko_id'], 'usd,btc').json()
-            usd_price = float(price[coin_id]['usd'])
-            btc_price = float(price[coin_id]['btc'])
-        else:
-            usd_price = '-'
-            btc_price = '-'
-        if quote == 'USD':
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current USD Price: $'+format_num_10f(usd_price)+'</span></div>'
-        elif quote == 'KMD':
-            kmd_price = priceslib.get_paprika_price(coinslib.coin_api_codes['KMD']['paprika_id']).json()['price_btc']
-            kmd_price = float(btc_price)/float(kmd_price)
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current KMD Price: '+format_num_10f(kmd_price)+'</span></div>'
-        else:
-            txt='<div style="text-align: center"><span style="color: #FFF;font-size:10pt;">Current BTC Price: '+format_num_10f(btc_price)+'</span></div>'
-        text = pg.TextItem(html=txt, anchor=(0,0), border='w', fill=(0, 0, 255, 100))
-        self.binance_history_graph.addItem(text)
-        text.setPos(min(x)+(max(x)-min(x))*0.02,max(y))
-
     ## WALLET TAB
     def update_mm2_wallet_from_thread(self, bal_info):
         coin = bal_info['coin']
@@ -2025,18 +1866,8 @@ class Ui(QTabWidget):
         index = self.wallet_combo.currentIndex()
         coin = self.wallet_combo.itemText(index)
         addr_txt = self.balances_data["mm2"][coin]["address"]
-        qr_img = qrcode.make(addr_txt, image_factory=QR_image)
-        self.qr_lbl = QLabel(self)
-        self.qr_lbl.setText(addr_txt)
-        self.qr_img_lbl = QLabel(self)
-        self.qr_img_lbl.setPixmap(qr_img.pixmap())
-        msgBox = QMessageBox(QMessageBox.NoIcon, "MM2 "+coin+" Address QR Code ", addr_txt)
-        l = msgBox.layout()
-        l.addWidget(self.qr_img_lbl,0, 0, 1, l.columnCount(), Qt.AlignCenter)
-        l.addWidget(self.qr_lbl,1, 0, 1, l.columnCount(), Qt.AlignCenter)
-        msgBox.addButton("Close", QMessageBox.NoRole)
-        logger.info("show Marketmaker QR code msgbox")
-        msgBox.exec()
+        mm2_qr = qr_popup("MM2 "+coin+" Address QR Code ", addr_txt)
+        mm2_qr.show()
 
     def select_wallet_from_table(self):
         selected_row = self.wallet_balances_table.currentRow()
@@ -2421,7 +2252,7 @@ class Ui(QTabWidget):
         headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD', 'Marketmaker BTC', 'Marketmaker USD', 'Marketmaker KMD',]
         self.prices_table.setColumnCount(len(headers))
         self.prices_table.setHorizontalHeaderLabels(headers)
-        self.clear_table(self.prices_table)
+        self.prices_table.clearContents()
         prices_length = len(self.prices_data['average'])
         if prices_length > 0:
             self.prices_table_msg.setText('')
@@ -2473,7 +2304,6 @@ class Ui(QTabWidget):
         self.prices_table.setSortingEnabled(True)
         #self.prices_table.resizeColumnsToContents()
         #self.prices_table.sortItems(0, Qt.AscendingOrder)
-
 
     def update_mm2_trade_history_table(self):
         logger.info("Updating MM2 trade history table")
@@ -2557,15 +2387,6 @@ class Ui(QTabWidget):
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
             self.show_login_tab()
-
-    # inactive functions, might be useful later
-    def update_dl_progressbar(self, value):
-        self.dl_progressBar.setValue(value)
-        if value == 100:
-            QMessageBox.information(self, "Progress status", 'Download complete!')
-
-    def export_logs(self):
-        pass
 
     # parse out user order uuids as a list
     def get_mm2_order_uuids(self):
