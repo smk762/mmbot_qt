@@ -2,7 +2,6 @@
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import os
 import sys
-import stat
 import json
 import requests
 from os.path import expanduser
@@ -16,18 +15,11 @@ from lib.widgets import ScrollMessageBox
 from lib.util import *
 from lib.threads import *
 from lib.logging import *
-import qrcode
 import random
 from ui import resources
-import datetime
 import time
-from dateutil import parser
-from zipfile import ZipFile 
 import platform
 import subprocess
-import numpy as np
-import pyqtgraph as pg
-from pyqtgraph.Point import Point
 import decimal
 import logging
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
@@ -61,9 +53,6 @@ os.environ["QT_SCALE_FACTOR"] = "1"
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
-# graph foreground / background colors
-pg.setConfigOption('background', (64,64,64))
-pg.setConfigOption('foreground', (78,155,46))
 
 # Setup local settings config ini.
 QSettings.setDefaultFormat(QSettings.IniFormat)
@@ -509,6 +498,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+            self.update_binance_orderbook()
             if not self.authenticated_binance:
                 msg = self.binance_api_err+"\n"
                 self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
@@ -516,7 +506,6 @@ class Ui(QTabWidget):
                 self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
             else:
                 self.update_binance_orders_table()
-            self.update_binance_orderbook()
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -1189,7 +1178,10 @@ class Ui(QTabWidget):
         self.binance_base_amount_lbl.setText("Amount ("+base+")")
         self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
         ticker_pair = base+rel
+        self.binance_sell_btn.setText("Sell "+base)
+        self.binance_buy_btn.setText("Buy "+base)
         # populate binance depth table
+        QApplication.processEvents()
         request_table_data("table/get_binance_depth/"+ticker_pair,
                             self.binance_depth_table_bid,
                             "",
@@ -1201,8 +1193,6 @@ class Ui(QTabWidget):
                             "",
                             "3|Ask|INCLUDE")
         # update button text
-        self.binance_sell_btn.setText("Sell "+base)
-        self.binance_buy_btn.setText("Buy "+base)
 
     def update_binance_price_val(self):
         # sets trade price to selected/clicked row on depth tables
