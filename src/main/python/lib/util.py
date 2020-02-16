@@ -179,3 +179,37 @@ def populate_table(r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
     else:
         logger.info(r)
         logger.info(r.text)
+
+# Selection menu operations
+def update_combo(combo,options,selected):
+    combo.clear()
+    options.sort()
+    combo.addItems(options)
+    if selected in options:
+        for i in range(combo.count()):
+            if combo.itemText(i) == selected:
+                combo.setCurrentIndex(i)
+    else:
+        combo.setCurrentIndex(0)
+        selected = combo.itemText(combo.currentIndex())
+    return selected
+
+def adjust_cols(table, data):
+    max_col_str = {}
+    if len(data) > 0:
+        headers = list(data[0].keys())
+        table.setColumnCount(len(headers))
+        table.setHorizontalHeaderLabels(headers)
+        for i in range(len(headers)):
+            max_col_str[i] = str(headers[i])
+        for item in data:
+            row_data = list(item.values())
+            for i in range(len(row_data)):
+                if len(str(row_data[i])) > len(str(max_col_str[i])):
+                    max_col_str[i] = str(row_data[i])
+    fontinfo = QFontInfo(table.font())
+    print(max_col_str)
+    for i in max_col_str:
+        fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
+        str_width = fm.width(max_col_str[i])
+        table.setColumnWidth(i, str_width+10)

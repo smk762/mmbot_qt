@@ -293,3 +293,31 @@ def get_mm2_balances(node_ip, user_pass, active_coins):
                 'available':available
             })
     return balances_data
+
+# parse out user order uuids as a list
+def get_mm2_order_uuids(node_ip, user_pass):
+    orders = my_orders(node_ip, user_pass).json()
+    mm2_order_uuids = []
+    if 'maker_orders' in orders['result']:
+        maker_orders = orders['result']['maker_orders']
+        for item in maker_orders:
+            mm2_order_uuids.append(item)
+    if 'taker_orders' in orders['result']:
+        taker_orders = orders['result']['taker_orders']
+        for item in taker_orders:
+            mm2_order_uuids.append(item)
+    return mm2_order_uuids
+
+def get_mm2_swap_events(events):
+    event_types = []
+    failed = False
+    fail_event = False
+    finished = False
+    for event in events:
+        event_types.append(event['event']['type'])
+        if event['event']['type'] in error_events: 
+            failed = True
+            fail_event = event['event']['type']
+        if event['event']['type'] == 'Finished':
+            finished = event['timestamp']
+    return failed, fail_event, finished, event_types
