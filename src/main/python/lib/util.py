@@ -213,3 +213,7 @@ def adjust_cols(table, data):
         fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
         str_width = fm.width(max_col_str[i])
         table.setColumnWidth(i, str_width+10)
+
+def clear_labels(label_list):
+    for label in label_list:
+        label.setText('')

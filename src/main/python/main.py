@@ -108,18 +108,14 @@ class Ui(QTabWidget):
         with open(self.qss_file, 'r') as file:
             qss = file.read()
             self.setStyleSheet(qss)
-                
         self.setWindowTitle("Komodo Platform's Antara Makerbot")
         self.setWindowIcon(QIcon(':/32/img/32/kmd.png'))
-
-
         #self.webframe_layout = QHBoxLayout()
         #self.webframe.setLayout(self.webframe_layout)
         self.authenticated = False
         self.mm2_downloading = False
         self.bot_trading = False
         self.countertrade_delay_limit = 1800
-
         self.last_price_update = 0
         self.prices_data = {
             "gecko":{},
@@ -131,7 +127,6 @@ class Ui(QTabWidget):
             "mm2": {},
             "Binance": {}
         }
-
         # dict for the checkbox and label elements use on the coins activation page. Might be a better way to do this.
         self.gui_coins = {
             "BTC": {
@@ -514,28 +509,14 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            tickers = coinslib.binance_coins
-            if tickers is not None:
-                # wallet combobox
-                update_combo(self.binance_asset_comboBox,tickers,tickers[0])
-                # trade combobox
-                baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
-                base = baserel[0]
-                rel = baserel[1]
-                step_size = binance_api.base_asset_info[base]['stepSize']
-                min_qty = binance_api.base_asset_info[base]['minQty']
-                max_qty = binance_api.base_asset_info[base]['maxQty']
-                self.binance_base_amount_spinbox.setSingleStep(float(step_size))
-                self.binance_base_amount_spinbox.setRange(float(min_qty), float(max_qty))
-                if not self.authenticated_binance:
-                    msg = self.binance_api_err+"\n"
-                    self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
-                    self.groupBox_bn_orderbook.setTitle("Binance API Orderbook - "+msg)
-                    self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
-                else:
-                    self.update_binance_orders_table()
-                self.update_binance_labels(base, rel)
-                self.update_binance_depth_table()
+            if not self.authenticated_binance:
+                msg = self.binance_api_err+"\n"
+                self.groupBox_bn_orders.setTitle("Binance API open Orders - "+msg)
+                self.groupBox_bn_orderbook.setTitle("Binance API Orderbook - "+msg)
+                self.groupBox_bn_balances.setTitle("Binance Balances - "+msg)
+            else:
+                self.update_binance_orders_table()
+            self.update_binance_orderbook()
 
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
@@ -555,60 +536,6 @@ class Ui(QTabWidget):
             self.update_mm2_balance_table()
             if selected == '':
                 selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
-            '''
-            tv_url = coinslib.coin_graph[selected]['url']
-            tv_symbol = coinslib.coin_graph[selected]['symbol']
-            tv_title = coinslib.coin_graph[selected]['title']
-
-            if tv_url == '':
-                tv_url = 'https://www.tradingview.com/symbols/NASDAQ-TSLA/'
-                tv_symbol = 'NASDAQ:TSLA'
-                tv_title = 'TESLA CHART'
-            
-
-            html = '<!DOCTYPE html>'
-            html += '<html>'
-            html += '<head>'
-            html += '<title></title>'
-            html += '</head>'
-            html += '<body style="background:#333; margin:auto">'
-
-            html += '<!-- TradingView Widget BEGIN --> \
-                    <div class="tradingview-widget-container"> \
-                      <div id="tradingview_41435"></div> \
-                      <div class="tradingview-widget-copyright"><a href="'+tv_url+'" rel="noopener" target="_blank"><span class="blue-text">'+tv_symbol+'</span></a> by TradingView</div> \
-                      <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script> \
-                      <script type="text/javascript"> \
-                      new TradingView.widget( \
-                      { \
-                      "width": 1400, \
-                      "height": 260, \
-                      "symbol": "'+tv_symbol+'", \
-                      "interval": "240", \
-                      "timezone": "Etc/UTC", \
-                      "theme": "Dark", \
-                      "style": "3", \
-                      "locale": "en", \
-                      "toolbar_bg": "#f1f3f6", \
-                      "enable_publishing": false, \
-                      "allow_symbol_change": true, \
-                      "container_id": "tradingview_41435" \
-                    } \
-                      ); \
-                      </script> \
-                    </div> \
-                    <!-- TradingView Widget END -->' 
-
-            html += '</body>'
-            html += '</html>'
-
-            web = Web()
-            #web.load("https://www.tradingview.com/chart/?symbol=BINANCE%3AKMDBTC")
-            web.load_html(html) 
-            
-            clearLayout(self.webframe_layout)
-            self.webframe_layout.addWidget(web)
-  '''
 
     def show_strategies_tab(self):
         self.update_strategies_table()
@@ -677,6 +604,7 @@ class Ui(QTabWidget):
                     QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
 
     def logout(self):
+        logger.info("Logging out...")
         rpclib.stop_mm2(window.creds[0], window.creds[1])
         api_proc.kill()
         self.authenticated = False
@@ -698,10 +626,9 @@ class Ui(QTabWidget):
                   self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
                   self.binance_quote_balance_lbl, self.binance_quote_locked_lbl, self.binance_addr_coin_lbl,
                   self.wallet_btc_total, self.wallet_usd_total] 
-        for label in labels:
-            label.setText('')
+        clear_labels(labels)
         time.sleep(0.2)
-        self.prepare_tab()
+        self.show_login_tab()
 
     def activate_coins(self):
         coins_to_activate = []
@@ -723,7 +650,6 @@ class Ui(QTabWidget):
         self.activate_thread = activation_thread(self.creds, coins_to_activate)
         self.activate_thread.activate.connect(self.update_active)
         self.activate_thread.start()
-        # TODO: autoactivate coins needing kickstart
         logger.info("Kickstart coins: "+str(rpclib.coins_needed_for_kick_start(self.creds[0], self.creds[1]).json()))
         self.show_activation_tab()
 
@@ -856,44 +782,13 @@ class Ui(QTabWidget):
                         add_row(row, row_data.values(), self.wallet_balances_table)
                         row += 1
                 adjust_cols(self.wallet_balances_table, table_data)
-        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
-        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
-        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
         self.wallet_balances_table.setSortingEnabled(True)
         self.wallet_balances_table.resizeColumnsToContents()
         self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
-
-    def update_mm2_trades_table(self):
-        swaps_info = rpclib.my_recent_swaps(self.creds[0], self.creds[1], limit=9999, from_uuid='').json()
-        row = 0
-        self.mm2_trades_table.setSortingEnabled(False)
-        row_count = len(swaps_info['result']['swaps'])
-        self.mm2_trades_table.setRowCount(row_count)
-        for swap in swaps_info['result']['swaps']:
-            for event in swap['events']:
-                event_type = event['event']['type']
-                if event_type in rpclib.error_events:
-                    event_type = 'Failed'
-                    break
-            status = event_type
-            role = swap['type']
-            uuid = swap['uuid']
-            my_amount = round(float(swap['my_info']['my_amount']),8)
-            my_coin = swap['my_info']['my_coin']
-            other_amount = round(float(swap['my_info']['other_amount']),8)
-            other_coin = swap['my_info']['other_coin']
-            started_at = datetime.datetime.fromtimestamp(round(swap['my_info']['started_at']/1000)*1000)
-            if swap['type'] == 'Taker':
-                buy_price = round(float(swap['my_info']['my_amount'])/float(swap['my_info']['other_amount']),8)
-                sell_price = '-'
-            else:
-                buy_price = '-'
-                sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
-            trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
-            add_row(row, trade_row, self.mm2_trades_table)
-            row += 1
-        self.mm2_trades_table.setSortingEnabled(True)
-        #self.mm2_trades_table.resizeColumnsToContents()
+        if row_data:
+            self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
+            self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
+            self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
 
     def update_mm2_orderbook_table(self):
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
@@ -906,7 +801,6 @@ class Ui(QTabWidget):
     def update_mm2_orders_table(self):
         logger.info("Updating MM2 orders table")
         populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
-
             
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
@@ -915,32 +809,26 @@ class Ui(QTabWidget):
         self.orderbook_sell_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
         self.orderbook_buy_bal_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
         self.orderbook_send_order_btn.setText("Buy "+rel)
-        try:
-            if base in self.balances_data['mm2']:
-                locked_text = round(float(self.balances_data['mm2'][base]['locked']),8)
-                balance = round(float(self.balances_data['mm2'][base]['total']),8)
-            else:
-                locked_text = round(float(0),8)
-                balance = round(float(0),8)
-        except:
-                locked_text = '-'
-                balance = '-'
-        self.orderbook_sell_balance_lbl.setText("Available: "+str(balance)+" "+base)
-        self.orderbook_sell_locked_lbl.setText("Locked: "+str(locked_text)+" "+base)
-        try:
-            if rel in self.balances_data['mm2']:
-                locked_text = round(float(self.balances_data['mm2'][rel]['locked']),8)
-                balance = round(float(self.balances_data['mm2'][rel]['total']),8)
-            else:
-                locked_text = round(float(0),8)
-                balance = round(float(0),8)
-        except:
-                locked_text = '-'
-                balance = '-'
+        locked_bal = self.get_locked_bal(base)
+        self.orderbook_sell_locked_lbl.setText("Locked: "+str(locked_bal[0])+" "+base)
+        self.orderbook_sell_balance_lbl.setText("Available: "+str(locked_bal[1])+" "+base)
+        locked_bal = self.get_locked_bal(rel)
+        self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_bal[0])+" "+rel)
+        self.orderbook_buy_balance_lbl.setText("Available: "+str(locked_bal[1])+" "+rel)
 
-        self.orderbook_buy_balance_lbl.setText("Available: "+str(balance)+" "+rel)
-        self.orderbook_buy_locked_lbl.setText("Locked: "+str(locked_text)+" "+rel)
-        
+    def get_locked_bal(self, coin):
+        try:
+            if coin in self.balances_data['mm2']:
+                locked_text = round(float(self.balances_data['mm2'][coin]['locked']),8)
+                balance = round(float(self.balances_data['mm2'][coin]['total']),8)
+            else:
+                locked_text = round(float(0),8)
+                balance = round(float(0),8)
+        except:
+                locked_text = '-'
+                balance = '-'
+        return locked_text, balance
+
     # Order form button slots
     def mm2_orderbook_get_price(self):
         logger.info('get_price_from_orderbook')        
@@ -957,11 +845,7 @@ class Ui(QTabWidget):
                     available_balance = float(self.balances_data['mm2'][sell_coin]['available'])
                 except:
                     available_balance = 0
-                logger.info("price: "+str(price))
-                logger.info("available_balance: "+str(available_balance)+" "+sell_coin)
-                logger.info("sell_amount: "+str(sell_amount)+" "+sell_coin)
                 if float(sell_amount) > float(available_balance):
-                    logger.info("using available balance")
                     sell_amount = float(available_balance)
                 # set price and buy amount inputs from row selection
                 self.orderbook_price_spinbox.setValue(float(price))
@@ -1102,6 +986,20 @@ class Ui(QTabWidget):
             msg = resp
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
         update_trading_log('mm2', log_msg, str(resp))
+
+    def update_binance_orderbook(self):
+        tickers = coinslib.binance_coins
+        # wallet combobox
+        update_combo(self.binance_asset_comboBox,tickers,tickers[0])
+        # trade combobox
+        baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
+        base = baserel[0]
+        rel = baserel[1]
+        assetinfo = binance_api.base_asset_info[base]
+        self.binance_base_amount_spinbox.setSingleStep(float(assetinfo['stepSize']))
+        self.binance_base_amount_spinbox.setRange(float(assetinfo['minQty']), float(assetinfo['maxQty']))
+        self.update_binance_labels(base, rel)
+        self.update_binance_depth_table()
 
     def mm2_view_order(self):
         cancel = True
@@ -1478,23 +1376,7 @@ class Ui(QTabWidget):
             self.update_binance_orders_table()
         QMessageBox.information(self, 'Order Cancelled', 'All orders cancelled!', QMessageBox.Ok, QMessageBox.Ok)
 
-    ## Prices Tab
     ## WALLET TAB
-    def update_mm2_wallet_from_thread(self, bal_info):
-        coin = bal_info['coin']
-        address = bal_info['address']
-        total = bal_info['balance']
-        locked = bal_info['locked_by_swaps']
-        available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
-        self.balances_data["mm2"].update({coin: {
-                "address":address,
-                "total":total,
-                "locked":locked,
-                "available":available,
-                }                
-            })
-        if coin != '' and address != '':
-            self.update_mm2_wallet_labels()
 
     def update_mm2_wallet_labels(self):      
         self.wallet_balance.setText('')
@@ -1769,73 +1651,53 @@ class Ui(QTabWidget):
 
     def save_config(self):
         # update user config and credentials
-        msg = ''
-        gui = 'Makerbot v0.0.1'
-        passphrase = self.seed_text_input.toPlainText()
-        rpc_password = self.rpcpass_text_input.text()
-        rpc_ip = self.rpc_ip_text_input.text()
-        local_only = self.checkbox_local_only.isChecked()
-        if local_only:
-            rpc_ip = '127.0.0.1'
-        ip_valid = guilib.validate_ip(rpc_ip)
-        if not ip_valid:
-            msg += 'RPC IP is invalid! \n'
-        binance_key = self.binance_key_text_input.text()
-        binance_secret = self.binance_secret_text_input.text()
-        margin = float(self.creds[7])
-        netid = self.netid_input.text()
-        if passphrase == '':
-            msg += 'No seed phrase input! \n'
-        if rpc_password == '':
-            msg += 'No RPC password input! \n'
-        if rpc_ip == '':
-            msg += 'No RPC IP input! \n'
+        msg = self.validate_config()
         if msg == '':
-            overwrite = True
             if os.path.isfile(config_path+self.username+"_MM2.enc"):
-                confirm = QMessageBox.question(self, 'Confirm overwrite', "Existing settings detected. Overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-                if not confirm == QMessageBox.Yes:
-                    overwrite = False
-            if overwrite:
-
-                passwd, ok = QInputDialog.getText(self, 'Enter Password', 'Enter your login password: ', QLineEdit.Password)
-                if ok:
-                    if passwd == self.password:
-                        data = {}
-                        data.update({"gui":gui})
-                        data.update({"rpc_password":rpc_password})
-                        data.update({"netid":int(netid)})
-                        data.update({"passphrase":passphrase})
-                        data.update({"userhome":home})
-                        data.update({"rpc_local_only":local_only})
-                        data.update({"rpc_allow_ip":rpc_ip})
-                        data.update({"bn_key":binance_key})
-                        data.update({"bn_secret":binance_secret})
-                        data.update({"margin":margin})
-                        data.update({"dbdir":config_path+"DB"})
-                        # encrypt and store the config / credentials
-                        enc_data = enc.encrypt_mm2_json(json.dumps(data), passwd)
-                        with open(config_path+self.username+"_MM2.enc", 'w') as j:
-                            j.write(bytes.decode(enc_data))
-                        QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
-
-                        logger.info("stop_mm2 with old creds")
-                        try:
-                            rpclib.stop_mm2(self.creds[0], self.creds[1])
-                        except Exception as e:
-                            logger.info("cache error")
-                            logger.info(e)
-                            pass
-                        self.authenticated = False
-                        self.show_login_tab()
-
-                    else:
-                        QMessageBox.information(self, 'Password incorrect!', 'Password incorrect!', QMessageBox.Ok, QMessageBox.Ok)
-                        pass
+                confirm = QMessageBox.question(self, 'Confirm overwrite', "Confirm settings overwrite?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if confirm == QMessageBox.Yes:
+                    passwd, ok = QInputDialog.getText(self, 'Enter Password', 'Enter your login password: ', QLineEdit.Password)
+                    if ok:
+                        if passwd == self.password:
+                            self.update_creds(passwd)
+                            QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
+                            self.logout()
+                        else:
+                            QMessageBox.information(self, 'Password incorrect!', 'Password incorrect!', QMessageBox.Ok, QMessageBox.Ok)
         else:
             QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
             pass
-    
+
+    def validate_config(self):
+        msg = ''
+        ip_valid = guilib.validate_ip(self.rpc_ip_text_input.text())
+        if not ip_valid:
+            msg += 'RPC IP is invalid! \n'
+        if self.seed_text_input.toPlainText() == '':
+            msg += 'No seed phrase input! \n'
+        if self.rpcpass_text_input.text() == '':
+            msg += 'No RPC password input! \n'
+        if self.rpc_ip_text_input.text() == '':
+            msg += 'No RPC IP input! \n'
+        return msg
+
+    def update_creds(self, passwd):
+        data = {}
+        data.update({"gui":'Makerbot v0.0.1'})
+        data.update({"rpc_password":self.rpcpass_text_input.text()})
+        data.update({"netid":int(self.netid_input.text())})
+        data.update({"passphrase":self.seed_text_input.toPlainText()})
+        data.update({"userhome":home})
+        data.update({"rpc_local_only":self.checkbox_local_only.isChecked()})
+        data.update({"rpc_allow_ip":self.rpc_ip_text_input.text()})
+        data.update({"bn_key":self.binance_key_text_input.text()})
+        data.update({"bn_secret":self.binance_secret_text_input.text()})
+        data.update({"dbdir":config_path+"DB"})
+        # encrypt and store the config / credentials
+        enc_data = enc.encrypt_mm2_json(json.dumps(data), passwd)
+        with open(config_path+self.username+"_MM2.enc", 'w') as j:
+            j.write(bytes.decode(enc_data))
+
     # Generate wallet seed
     # TODO: add other languages
     def generate_seed(self):
@@ -1885,7 +1747,6 @@ class Ui(QTabWidget):
         except:
             # if not logged in, no creds
             pass
-        QCoreApplication.processEvents()
         if self.authenticated:
             logger.info("authenticated")
             self.stacked_login.setCurrentIndex(1)
