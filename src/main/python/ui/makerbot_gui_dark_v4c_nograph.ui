@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>8</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -11666,12 +11666,16 @@ background-color: rgb(85, 87, 83);</string>
                <property name="font">
                 <font>
                  <family>Ubuntu</family>
-                 <pointsize>9</pointsize>
+                 <pointsize>10</pointsize>
                  <italic>false</italic>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">color:rgb(78, 154, 6); 
+background-color: rgb(12, 12, 12);</string>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOn</enum>
                </property>
                <property name="readOnly">
                 <bool>true</bool>
@@ -11739,12 +11743,16 @@ background-color: rgb(85, 87, 83);</string>
                <property name="font">
                 <font>
                  <family>Ubuntu</family>
-                 <pointsize>9</pointsize>
+                 <pointsize>10</pointsize>
                  <italic>false</italic>
                 </font>
                </property>
                <property name="styleSheet">
-                <string notr="true"/>
+                <string notr="true">color:rgb(78, 154, 6); 
+background-color: rgb(12, 12, 12);</string>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOn</enum>
                </property>
                <property name="readOnly">
                 <bool>true</bool>

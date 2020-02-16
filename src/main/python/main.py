@@ -570,7 +570,6 @@ class Ui(QTabWidget):
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.mm2_console_logs.verticalScrollBar()
-            self.mm2_console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
             self.mm2_console_logs.setPlainText(log_text)
             self.scrollbar.setValue(10000)
         api_output = open(config_path+self.username+"_bot_api_output.log",'r')
@@ -578,7 +577,6 @@ class Ui(QTabWidget):
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.api_console_logs.verticalScrollBar()
-            self.api_console_logs.setStyleSheet("color: rgb(0, 0, 0); background-color: rgb(186, 189, 182);")
             self.api_console_logs.setPlainText(log_text)
             self.scrollbar.setValue(10000)
 
@@ -945,16 +943,7 @@ class Ui(QTabWidget):
     def mm2_orderbook_sell_amount_changed(self):
         self.update_mm2_orderbook_amounts('orderbook_sell_amount_spinbox')
 
-    def mm2_orderbook_buy(self):
-        index = self.orderbook_sell_combo.currentIndex()
-        rel = self.orderbook_sell_combo.itemText(index)
-        index = self.orderbook_buy_combo.currentIndex()
-        base = self.orderbook_buy_combo.itemText(index)
-        price = self.orderbook_price_spinbox.value()
-        vol = self.orderbook_buy_amount_spinbox.value()
-        #fee = get_fee(node_ip, user_pass, coin)
-        trade_val = round(float(price)*float(vol),8)
-        # get fee estimate
+    def get_trade_fee(self, coin):
         try:
             trade_fee_resp = rpclib.get_fee(self.creds[0], self.creds[1], rel).json()
             logger.info("trade_fee_resp: "+str(trade_fee_resp))
@@ -962,7 +951,17 @@ class Ui(QTabWidget):
         except Exception as e:
             logger.info("get_fee failed "+str(e))
             trade_fee = 0.001
-        trade_vol = vol - float(trade_fee)*2
+        return trade_fee
+
+    def mm2_orderbook_buy(self):
+        index = self.orderbook_sell_combo.currentIndex()
+        rel = self.orderbook_sell_combo.itemText(index)
+        index = self.orderbook_buy_combo.currentIndex()
+        base = self.orderbook_buy_combo.itemText(index)
+        price = self.orderbook_price_spinbox.value()
+        trade_val = round(float(price)*float(vol),8)
+        trade_fee = self.get_trade_fee(rel)
+        trade_vol = self.orderbook_buy_amount_spinbox.value() - float(trade_fee)*2
         resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
         if 'error' in resp:
             while resp['error'].find("too low, required") > -1:
@@ -973,19 +972,15 @@ class Ui(QTabWidget):
                 resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
                 if 'error' not in resp:
                     break
-        log_msg = "Buying "+str(vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")"
-        if 'error' in resp:
             if resp['error'].find("larger than available") > -1:
                 msg = "Insufficient funds to complete order."
             else:
                 msg = resp
         elif 'result' in resp:
+            logger.info("Buying "+str(trade_vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")")
             msg = "Order Submitted.\n"
-            msg += "Buying "+str(vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel+"\nFee estimate: "+str(trade_fee)+" "+rel
-        else:
-            msg = resp
+            msg += "Buying "+str(trade_vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel+"\nFee estimate: "+str(trade_fee)+" "+rel
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
-        update_trading_log('mm2', log_msg, str(resp))
 
     def update_binance_orderbook(self):
         tickers = coinslib.binance_coins
@@ -1016,24 +1011,14 @@ class Ui(QTabWidget):
         selected_row = self.mm2_orders_table.currentRow()
         if self.mm2_orders_table.item(selected_row,7) is not None:
             mm2_order_uuid = self.mm2_orders_table.item(selected_row,7).text()
-            order_info = rpclib.order_status(self.creds[0], self.creds[1], mm2_order_uuid).json()
-            logger.info("order_info: "+str(order_info))
-            if len(order_info['order']['started_swaps']) != 0:
-                swaps_in_progress = {}
-                for swap_uuid in order_info['order']['started_swaps']:
-                    swap_status = rpclib.my_swap_status(self.creds[0], self.creds[1], swap_uuid).json()
-                    # TODO: Need an order with started swaps to test this further.
-                    logger.info(swap_status)
-                if len(swaps_in_progress) != 0:
-                    msg = "This order has swaps in progress, are you sure you want to cancel it?"
-                    msg += "\nSwaps in progress: \n"
-                    for swap in swaps_in_progress:
-                        msg += swap+": "+swaps_in_progress[swap]
-                    confirm = QMessageBox.question(self, 'Cancel Order', msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
-                    if confirm == QMessageBox.No:
-                        cancel = False
-                    elif confirm == QMessageBox.Cancel:
-                        cancel = False
+            if self.mm2_trades_table.item(selected_row,2).text() != 'Finished' and self.mm2_trades_table.item(selected_row ,2).text() != 'Failed':
+                msg = "This order has swaps in progress, are you sure you want to cancel it?"
+                msg += "\nSwaps in progress: \n"
+                for swap in swaps_in_progress:
+                    msg += swap+": "+swaps_in_progress[swap]
+                confirm = QMessageBox.question(self, 'Cancel Order', msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
+                if confirm != QMessageBox.Yes:
+                    cancel = False
             if cancel:
                 resp = rpclib.cancel_uuid(self.creds[0], self.creds[1], mm2_order_uuid).json()
                 msg = ''
@@ -1057,14 +1042,11 @@ class Ui(QTabWidget):
         if self.mm2_trades_table.rowCount() != 0:
             for i in range(self.mm2_trades_table.rowCount()):
                 if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
-                    logger.info(self.mm2_trades_table.item(i,2).text())
                     pending += 1
             if pending > 0:
                 msg = str(pending)+" order(s) have swaps in progress, are you sure you want to cancel all?"
                 confirm = QMessageBox.question(self, 'Confirm Cancel Orders', msg, QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel, QMessageBox.Cancel)
-                if confirm == QMessageBox.No:
-                    cancel = False
-                elif confirm == QMessageBox.Cancel:
+                if confirm != QMessageBox.Yes:
                     cancel = False
             if cancel:
                 resp = rpclib.cancel_all(self.creds[0], self.creds[1]).json()
