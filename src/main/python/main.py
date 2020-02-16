@@ -13,7 +13,8 @@ from PyQt5.QtCore import *
 from lib import guilib, rpclib, coinslib, wordlist, enc, priceslib, binance_api, botlib
 from lib.qrcode import qr_popup
 from lib.widgets import ScrollMessageBox
-from lib.util import export_table
+from lib.util import *
+from lib.threads import *
 import qrcode
 import random
 from ui import resources
@@ -43,12 +44,6 @@ fh = logging.FileHandler(sys.path[0]+'/debug.log')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 logger.addHandler(fh)
-
-'''
-# TODOS #
- - https://api.hitbtc.com/
- - https://documenter.getpostman.com/view/8180765/SVfTPnM8?version=latest#intro
-'''
 
 home = expanduser("~")
 
@@ -82,170 +77,6 @@ os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
 # Detect existing registered users
 if settings.value('users') is None:
     settings.setValue("users", [])
-
-def get_time_str():
-    return str(datetime.datetime.fromtimestamp(int(time.time())))
-
-def format_num_10f(val):
-    if val != 0:
-        try:
-            val = "{:.10f}".format(round(float(val),10))
-        except:
-            pass
-    return val
-
-def clearLayout(layout):
-  while layout.count():
-    child = layout.takeAt(0)
-    child.widget().deleteLater()
-
-# THREADED OPERATIONS
-
-# request and cache external balance and pricing data in thread
-class cachedata_thread(QThread):
-    update_data = pyqtSignal(dict, dict)
-    def __init__(self):
-        QThread.__init__(self)
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        while True:
-            try:
-                prices_data = requests.get('http://127.0.0.1:8000/all_prices').json()
-                balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
-                self.update_data.emit(prices_data, balances_data)
-            except Exception as e:
-                pass
-                #logger.info('cache_data error')
-                #logger.info(e)
-            time.sleep(10)
-
-# Process mm2 coin activation
-class activation_thread(QThread):
-    activate = pyqtSignal(str)
-    def __init__(self, creds, coins_to_activate):
-        QThread.__init__(self)
-        self.coins =  coins_to_activate
-        self.creds = creds
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        for coin in self.coins:
-            if coin[0] not in active_coins:
-                r = rpclib.electrum(self.creds[0], self.creds[1], coin[0])
-                logger.info(guilib.colorize("Activating "+coin[0]+" with electrum", 'cyan'))
-                self.activate.emit(coin[0])
-
-class api_request_thread(QThread):
-    update_data = pyqtSignal(object, object, object, str, str)
-    def __init__(self, endpoint, table, msg_lbl, msg, row_filter):
-        QThread.__init__(self)
-        self.endpoint = endpoint
-        self.table = table
-        self.msg_lbl = msg_lbl
-        self.msg = msg
-        self.row_filter = row_filter
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        url = "http://127.0.0.1:8000/"+self.endpoint
-        r = requests.get(url)
-        self.update_data.emit(r, self.table, self.msg_lbl, self.msg, self.row_filter)
-
-
-class addr_request_thread(QThread):
-    resp = pyqtSignal(dict, str)
-    def __init__(self, creds_5, creds_6, coin):
-        QThread.__init__(self)
-        self.coin = coin
-        self.creds_5 = creds_5
-        self.creds_6 = creds_6
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        r = binance_api.get_deposit_addr(self.creds_5, self.creds_6, self.coin)
-        self.resp.emit(r, self.coin)
-        
-
-# Get price graph history
-class graph_history_thread(QThread):
-    get_history = pyqtSignal(str, str, list, list, list)
-    def __init__(self, coin, coin_id, quote):
-        QThread.__init__(self)
-        self.coin = coin
-        self.coin_id = coin_id
-        self.quote = quote
-
-    def __del__(self):
-        self.wait()
-
-    def run(self): 
-        if self.quote == 'KMD':
-            kmd_btc_price =priceslib.get_paprika_price(coinslib.coin_api_codes['KMD']['paprika_id']).json()['price_btc']
-            history = priceslib.get_paprika_history(self.coin_id, 'year_ago', 'BTC')
-            kmd_history = priceslib.get_paprika_history(coinslib.coin_api_codes['KMD']['paprika_id'], 'year_ago', 'BTC')
-        else:
-            history = priceslib.get_paprika_history(self.coin_id, 'year_ago', self.quote)
-        x = []
-        x_str = []
-        y = []
-        time_ticks = []
-        val_ticks = []
-        self.xy = {}
-        last_time = ''
-        item_count = 0
-        for item in history:
-            # Calculate historical price in KMD
-            if self.quote == 'KMD':
-                kmd_btc_price = kmd_history[item_count]['price']
-                price_point = float(item['price'])/float(kmd_btc_price)
-                item_count += 1
-            else:
-                price_point = item['price']
-            # add value to y axis list
-            y.append(price_point)
-            
-            dt = parser.parse(item['timestamp'])
-
-            # add timestamp and timestring (for labels) to x axis list
-            x.append(int(datetime.datetime.timestamp(dt)))
-            x_str.append(item['timestamp'])
-            # derive time label ticks based on history timespan
-            month = time.ctime(int(datetime.datetime.timestamp(dt))).split(" ")[1]
-            if month != last_time:
-                if last_time != '':
-                    time_ticks.append((int(datetime.datetime.timestamp(dt)),month))
-                last_time = month
-        # emit signal to draw graph with xy data
-        self.get_history.emit(self.coin, self.quote, x, y, time_ticks)
-
-'''
-class Web(QWebEngineView):
-
-    def load(self, url):
-        self.setUrl(QUrl(url))
-
-    def load_html(self, html):
-        self.setHtml(html)
-
-    def adjustTitle(self):
-        self.setWindowTitle(self.title())
-
-    def disableJS(self):
-
-        settings = QWebEngineSettings.globalSettings()
-        settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
-'''
-
 
 # UI Class
 
@@ -458,11 +289,6 @@ class Ui(QTabWidget):
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
         base = baserel[0]
         rel = baserel[1]
-        '''
-        if base != '' and rel != '':
-            self.update_mm2_orderbook_labels(base, rel)
-            self.update_mm2_orderbook_table()
-        '''
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
         self.update_binance_balance_table()
@@ -610,123 +436,6 @@ class Ui(QTabWidget):
             pass
 
 
-    def request_table_data(self, endpoint, table, msg_lbl='', msg='', row_filter=''):
-        # start in other thread
-        self.table_request_thread = api_request_thread(endpoint, table, msg_lbl, msg, row_filter)
-        self.table_request_thread.update_data.connect(self.populate_table)
-        self.table_request_thread.start()
-
-    def populate_table(self, r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
-        if r == '':
-            # dont thread
-            url = "http://127.0.0.1:8000/"+endpoint
-            r = requests.get(url)
-        if r.status_code == 200:
-            table.setSortingEnabled(False)
-            table.clearContents()
-            if 'table_data' in r.json():
-                data = r.json()['table_data']
-                table.setRowCount(len(data))
-                row = 0
-                max_col_str = {}
-                if len(data) > 0:
-                    headers = list(data[0].keys())
-                    table.setColumnCount(len(headers))
-                    table.setHorizontalHeaderLabels(headers)
-                    for i in range(len(headers)):
-                        max_col_str[i] = str(headers[i])
-                    for item in data:
-                        row_data = list(item.values())
-                        col_num = 0
-                        for cell in row_data:
-                            if len(str(cell)) > len(str(max_col_str[col_num])):
-                                max_col_str[col_num] = str(cell)
-                            col_num += 1
-                        if row_filter == '':
-                            self.add_row(row, row_data, table)
-                            row += 1
-                        else:
-                            filter_param = row_filter.split('|')
-                            filter_col_num = filter_param[0]
-                            filter_col_text = filter_param[1]
-                            filter_type = filter_param[2]
-                            if str(row_data[int(filter_col_num)]) == str(filter_col_text):
-                                if filter_type == 'INCLUDE':
-                                    self.add_row(row, row_data, table)
-                                    row += 1
-                            else:
-                                if filter_type == 'EXCLUDE':
-                                    self.add_row(row, row_data, table)
-                                    row += 1
-                    
-                table.setRowCount(row)
-                table.setSortingEnabled(True)
-                #table.resizeColumnsToContents()
-                fontinfo = QFontInfo(table.font())
-                for i in max_col_str:
-                    fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
-                    str_width = fm.width(max_col_str[i])
-                    table.setColumnWidth(i, str_width+10)
-                if msg_lbl != '':
-                    if len(data) == 0:
-                        msg = "No results in table..."
-                    msg_lbl.setText(msg)
-            # apply BG color
-            for row in range(self.binance_depth_table_ask.rowCount()):
-                if self.binance_depth_table_ask.item(row,3) is not None:
-                    bgcol = QColor(164, 0, 0)
-                    for col in range(self.binance_depth_table_ask.columnCount()):
-                        self.binance_depth_table_ask.item(row,col).setBackground(bgcol)
-
-            for row in range(self.binance_depth_table_bid.rowCount()):
-                if self.binance_depth_table_bid.item(row,3) is not None:
-                    bgcol = QColor(78, 154, 6)
-                    for col in range(self.binance_depth_table_bid.columnCount()):
-                        self.binance_depth_table_bid.item(row,col).setBackground(bgcol)
-
-        else:
-            logger.info(r)
-            logger.info(r.text)
-
-    def add_row(self, row, row_data, table, bgcol='', align=''):
-        col = 0
-        for cell_data in row_data:
-            cell = QTableWidgetItem(str(cell_data))
-            table.setItem(row,col,cell)
-            if align == '':
-                cell.setTextAlignment(Qt.AlignCenter|Qt.AlignVCenter)  
-            elif align == 'left':
-                cell.setTextAlignment(Qt.AlignLeft|Qt.AlignVCenter)  
-            elif align == 'right':
-                cell.setTextAlignment(Qt.AlignRight|Qt.AlignVCenter)  
-            if bgcol != '' :
-                table.item(row,col).setBackground(bgcol)
-            col += 1
-
-    def colorize_row(self, table, row, bgcol):
-        for col in range(table.columnCount()):
-            table.item(row,col).setForeground(bgcol)
-
-    def get_cell_val(self, table, row='', column=''):
-        if row == '':
-           row = table.currentRow() 
-        if column == '':
-           column = table.currentColumn() 
-        if table.currentRow() != -1:
-            if table.item(row,column).text() != '':
-                return float(table.item(row,column).text())
-            else:
-                return 0
-        else:
-            return 0
-
-    def find_in_table(self, table, text):
-        for i in range(table.rowCount()):
-            for j in range(table.columnCount()):
-                if table.item(i,j) is not None:
-                    if text == table.item(i,j).text():
-                        return i,j
-        return -1, -1
 
     # spinbox operations
     def binance_bid_price_update(self):
@@ -1159,7 +868,7 @@ class Ui(QTabWidget):
                 row = 0
                 for row_data in table_data:
                     if row_data['Coin'] != 'TOTAL':
-                        self.add_row(row, row_data.values(), self.wallet_balances_table)
+                        add_row(row, row_data.values(), self.wallet_balances_table)
                         row += 1
                 self.adjust_cols(self.wallet_balances_table, table_data)
         self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
@@ -1217,7 +926,7 @@ class Ui(QTabWidget):
                 buy_price = '-'
                 sell_price = round(float(swap['my_info']['other_amount'])/float(swap['my_info']['my_amount']),8)
             trade_row = [started_at, role, status, other_coin, other_amount, buy_price, my_coin, my_amount, sell_price, uuid]
-            self.add_row(row, trade_row, self.mm2_trades_table)
+            add_row(row, trade_row, self.mm2_trades_table)
             row += 1
         self.mm2_trades_table.setSortingEnabled(True)
         #self.mm2_trades_table.resizeColumnsToContents()
@@ -1228,14 +937,12 @@ class Ui(QTabWidget):
         rel = baserel[1]
         # refresh tables
         if base != '' and rel != '':
-            self.populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
+            populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
 
     def update_mm2_orders_table(self):
         logger.info("Updating MM2 orders table")
-        self.populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
-        for row in range(self.mm2_orders_table.rowCount()):
-            if self.mm2_orders_table.item(row, 10).text() != '0':
-                self.colorize_row(self.mm2_orders_table, row, QColor(218, 255, 127))
+        populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
+
             
     def update_mm2_orderbook_labels(self, base, rel):
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
@@ -1597,7 +1304,7 @@ class Ui(QTabWidget):
     def update_binance_orders_table(self):
         logger.info('update_binance_orders_table')
         # populate binance depth table
-        self.request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
+        request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def show_qr_popup(self):
         coin = self.binance_addr_coin_lbl.text().split()[1]
@@ -1623,7 +1330,7 @@ class Ui(QTabWidget):
                     total = float(self.balances_data["Binance"][coin]['total'])
                     locked = float(self.balances_data["Binance"][coin]['locked'])
                     balance_row = [coin, format_num_10f(total), format_num_10f(available), format_num_10f(locked)]
-                    self.add_row(row, balance_row, self.binance_balances_table)
+                    add_row(row, balance_row, self.binance_balances_table)
                     row += 1
             self.binance_balances_table.setSortingEnabled(True)
             #self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
@@ -1640,12 +1347,12 @@ class Ui(QTabWidget):
         self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
         ticker_pair = base+rel
         # populate binance depth table
-        self.request_table_data("table/get_binance_depth/"+ticker_pair,
+        request_table_data("table/get_binance_depth/"+ticker_pair,
                             self.binance_depth_table_bid,
                             "",
                             "",
                             "3|Bid|INCLUDE")
-        self.request_table_data("table/get_binance_depth/"+ticker_pair,
+        request_table_data("table/get_binance_depth/"+ticker_pair,
                             self.binance_depth_table_ask,
                             "",
                             "",
@@ -1946,7 +1653,6 @@ class Ui(QTabWidget):
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
         for coin in self.active_coins:
-            logger.info(coin+": "+str(self.prices_data['average'][coin]))
             if len(self.prices_data['average'][coin]['btc_sources']) > 0:
                 if 'mm2_orderbook' not in self.prices_data['average'][coin]['btc_sources']:
                     buy_list_item = QListWidgetItem(coin)
@@ -1970,12 +1676,9 @@ class Ui(QTabWidget):
 
     def update_strategies_table(self):
         logger.info('Updating strategies table')
-        self.populate_table('', self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary","","table/bot_strategies")
-        for row in range(self.strategies_table.rowCount()):
-            if self.strategies_table.item(row, 10).text() == 'active':
-                self.colorize_row(self.strategies_table, row, QColor(218, 255, 127))
-            elif self.strategies_table.item(row, 10).text() != 'inactive':
-                self.colorize_row(self.strategies_table, row, QColor(255, 233, 127))
+        populate_table('', self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary","","table/bot_strategies")
+        row_fg(self.strategies_table, QColor(255, 233, 127), 10, ['inactive'], 'exclude')
+        row_fg(self.strategies_table, QColor(218, 255, 127), 10, ['active'], 'include')
         self.strategies_table.clearSelection()
 
     def create_strat(self):
@@ -2062,12 +1765,10 @@ class Ui(QTabWidget):
         if selected_row != -1 and self.strategies_table.item(selected_row,0) is not None:
             strategy_name = self.strategies_table.item(selected_row,0).text()
             if self.summary_hide_empty_checkbox.isChecked():
-                self.populate_table('', self.strat_summary_table, "", "", "4|0|EXCLUDE" ,"table/bot_strategy/summary/"+strategy_name)
+                populate_table('', self.strat_summary_table, "", "", "4|0|EXCLUDE" ,"table/bot_strategy/summary/"+strategy_name)
             else:
-                self.populate_table('', self.strat_summary_table, "", "", "",  "table/bot_strategy/summary/"+strategy_name)
-            for row in range(self.strat_summary_table.rowCount()):
-                if self.strat_summary_table.item(row, 4).text() != '0':
-                    self.colorize_row(self.strat_summary_table, row, QColor(218, 255, 127))
+                populate_table('', self.strat_summary_table, "", "", "",  "table/bot_strategy/summary/"+strategy_name)
+            row_fg(self.strat_summary_table, QColor(218, 255, 127), 4, ['0'], 'exclude')
 
     def delete_strat(self):
         selected_row = self.strategies_table.currentRow()
@@ -2242,93 +1943,31 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Import Swap Data', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def recover_swap(self):
-        # TODO: add input to allow import of swap json for failed swap
         uuid = self.swap_recover_uuid.text()
         resp = rpclib.recover_stuck_swap(self.creds[0], self.creds[1], uuid).json()
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
         logger.info("Updating Prices table")
-        self.prices_table.setSortingEnabled(False)
-        headers = ['Coin', 'Binance BTC', 'Gecko BTC', 'Paprika BTC', 'Average BTC', 'Binance TUSD', 'Gecko USD', 'Paprika USD', 'Average USD', 'Marketmaker BTC', 'Marketmaker USD', 'Marketmaker KMD',]
-        self.prices_table.setColumnCount(len(headers))
-        self.prices_table.setHorizontalHeaderLabels(headers)
-        self.prices_table.clearContents()
-        prices_length = len(self.prices_data['average'])
-        if prices_length > 0:
-            self.prices_table_msg.setText('')
-        self.prices_table.setRowCount(prices_length)
-        row = 0
-        for coin in self.prices_data['average']:
-            bn_btc_price = '-'
-            bn_tusd_price = '-'
-            gk_btc_price = '-'
-            gk_usd_price = '-'
-            pk_btc_price = '-'
-            pk_usd_price = '-'
-            mm_btc_price = '-'
-            mm_usd_price = '-'
-            mm_kmd_price = '-'
-            average_btc_price = '-'
-            average_usd_price = '-'
-            if coin in self.prices_data['average']:
-                if 'BTC' in self.prices_data['average'][coin]:
-                    average_btc_price = format_num_10f(self.prices_data['average'][coin]['BTC'])
-                if 'USD' in self.prices_data['average'][coin]:
-                    average_usd_price = format_num_10f(self.prices_data['average'][coin]['USD'])
-            if coin in self.prices_data["Binance"]:
-                if 'BTC' in self.prices_data["Binance"][coin]:
-                    bn_btc_price = format_num_10f(self.prices_data["Binance"][coin]['BTC'])
-                if 'TUSD' in self.prices_data["Binance"][coin]:
-                    bn_tusd_price = format_num_10f(self.prices_data["Binance"][coin]['TUSD'])
-            if coin in self.prices_data['gecko']:
-                if 'BTC' in self.prices_data['gecko'][coin]:
-                    gk_btc_price = format_num_10f(self.prices_data['gecko'][coin]['BTC'])
-                if 'USD' in self.prices_data['gecko'][coin]:
-                    gk_usd_price = format_num_10f(self.prices_data['gecko'][coin]['USD'])
-            if coin in self.prices_data['paprika']:
-                if 'BTC' in self.prices_data['paprika'][coin]:
-                    pk_btc_price = format_num_10f(self.prices_data['paprika'][coin]['BTC'])
-                if 'USD' in self.prices_data['paprika'][coin]:
-                    pk_usd_price = format_num_10f(self.prices_data['paprika'][coin]['USD'])
-            if coin in self.prices_data['mm2_orderbook']:
-                if 'BTC' in self.prices_data['mm2_orderbook'][coin]:
-                    mm_btc_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['BTC'])
-                if 'USD' in self.prices_data['mm2_orderbook'][coin]:
-                    mm_usd_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['USD'])
-                if 'KMD' in self.prices_data['mm2_orderbook'][coin]:
-                    mm_kmd_price = format_num_10f(self.prices_data['mm2_orderbook'][coin]['KMD'])
-            price_row = [coin, bn_btc_price, gk_btc_price, pk_btc_price, average_btc_price, 
-                        bn_tusd_price, gk_usd_price, pk_usd_price, average_usd_price, mm_btc_price, mm_usd_price, mm_kmd_price]
-            self.add_row(row, price_row, self.prices_table)
-            row += 1
-        self.prices_table.setSortingEnabled(True)
-        #self.prices_table.resizeColumnsToContents()
-        #self.prices_table.sortItems(0, Qt.AscendingOrder)
+        populate_table('', self.prices_table, self.prices_table_msg, "", "", "table/prices")
+
 
     def update_mm2_trade_history_table(self):
         logger.info("Updating MM2 trade history table")
         if self.mm2_hide_failed_checkbox.isChecked():
-            self.populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
+            populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
         else:
-            self.populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "","table/mm2_history")
+            populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "","table/mm2_history")
         if self.mm2_trades_table.rowCount() > 0:
-            for row in range(self.mm2_trades_table.rowCount()):
-                if self.mm2_trades_table.item(row, 2).text() == 'Finished':
-                    self.colorize_row(self.mm2_trades_table, row, QColor(218, 255, 127))
-                elif self.mm2_trades_table.item(row, 2).text() == 'Failed':
-                    self.colorize_row(self.mm2_trades_table, row, QColor(255, 127, 127))
-                else:
-                    self.colorize_row(self.mm2_trades_table, row, QColor(255, 233, 127))
+            row_fg(self.mm2_trades_table, QColor(218, 255, 127), 2, ['Finished'], 'include')
+            row_fg(self.mm2_trades_table, QColor(255, 127, 127), 2, ['Failed'], 'include')
+            row_fg(self.mm2_trades_table, QColor(255, 233, 127), 2, ['Failed','Finished'], 'exclude')
 
     def update_strategy_history_table(self):
         logger.info("Updating Strategy history table")
-        self.populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
-        for row in range(self.strategy_trades_table.rowCount()):
-            if self.strategy_trades_table.item(row, 9).text() == 'Complete':
-                self.colorize_row(self.strategy_trades_table, row, QColor(218, 255, 127))
-            else:
-                self.colorize_row(self.strategy_trades_table, row, QColor(255, 233, 127))
+        populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
+        row_fg(self.strategy_trades_table, QColor(218, 255, 127), 9, ['Complete'], 'include')
+        row_fg(self.strategy_trades_table, QColor(255, 233, 127), 9, ['Complete'], 'exclude')
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
