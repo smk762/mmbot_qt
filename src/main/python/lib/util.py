@@ -1,6 +1,8 @@
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from lib import pallete
+
 import requests
 import logging
 
@@ -174,8 +176,8 @@ def populate_table(r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
                     msg = "No results in table..."
                 msg_lbl.setText(msg)
         # apply BG color to binance depth tables
-        row_bg(table, QColor(164, 0, 0), 3, ['Ask'], 'include')
-        row_bg(table, QColor(78, 154, 6), 3, ['Bid'], 'include')
+        row_bg(table, pallete.dk_green, 3, ['Ask'], 'include')
+        row_bg(table, pallete.dk_red, 3, ['Bid'], 'include')
     else:
         logger.info(r)
         logger.info(r.text)

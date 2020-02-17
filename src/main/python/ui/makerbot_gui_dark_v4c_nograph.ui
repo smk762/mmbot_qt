@@ -11666,7 +11666,7 @@ background-color: rgb(85, 87, 83);</string>
                <property name="font">
                 <font>
                  <family>Ubuntu</family>
-                 <pointsize>10</pointsize>
+                 <pointsize>12</pointsize>
                  <italic>false</italic>
                 </font>
                </property>
@@ -11743,7 +11743,7 @@ background-color: rgb(12, 12, 12);</string>
                <property name="font">
                 <font>
                  <family>Ubuntu</family>
-                 <pointsize>10</pointsize>
+                 <pointsize>12</pointsize>
                  <italic>false</italic>
                 </font>
                </property>

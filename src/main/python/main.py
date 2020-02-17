@@ -15,6 +15,8 @@ from lib.widgets import ScrollMessageBox
 from lib.util import *
 from lib.threads import *
 from lib.logging import *
+from lib.models import *
+from lib import pallete
 import random
 from ui import resources
 import time
@@ -116,6 +118,7 @@ class Ui(QTabWidget):
             "mm2": {},
             "Binance": {}
         }
+        self.mm2_balanceTable_data = []
         # dict for the checkbox and label elements use on the coins activation page. Might be a better way to do this.
         self.gui_coins = {
             "BTC": {
@@ -385,6 +388,10 @@ class Ui(QTabWidget):
                 self.datacache_thread = cachedata_thread()
                 self.datacache_thread.update_data.connect(self.update_cachedata)
                 self.datacache_thread.start()
+                # start data caching loop in other thread
+                self.logs_thread = consoleLogs_thread()
+                self.logs_thread.update_logs.connect(self.update_console_logs)
+                self.logs_thread.start()
             else:
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
 
@@ -517,14 +524,12 @@ class Ui(QTabWidget):
             self.wallet_amount.setValue(0)
             self.wallet_recipient.setFocus()
             if self.wallet_combo.currentIndex() != -1:
-                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
+                selected = self.combo_selected(self.wallet_combo)
             else:
                 selected = self.wallet_combo.itemText(0)
             update_combo(self.wallet_combo,self.active_coins,selected)
             self.update_mm2_wallet_labels()
             self.update_mm2_balance_table()
-            if selected == '':
-                selected = self.wallet_combo.itemText(self.wallet_combo.currentIndex())
 
     def show_strategies_tab(self):
         self.update_strategies_table()
@@ -554,20 +559,24 @@ class Ui(QTabWidget):
                 self.checkbox_local_only.setChecked(False)
 
     def show_logs_tab(self):
+        self.update_console_logs()
+
+    def update_console_logs(self):
         mm2_output = open(config_path+self.username+"_mm2_output.log",'r')
         with mm2_output as f:
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.mm2_console_logs.verticalScrollBar()
             self.mm2_console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(10000)
+            self.scrollbar.setValue(self.scrollbar.maximum())
         api_output = open(config_path+self.username+"_bot_api_output.log",'r')
         with api_output as f:
             log_text = f.read()
             lines = f.readlines()
             self.scrollbar = self.api_console_logs.verticalScrollBar()
             self.api_console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(10000)
+            self.scrollbar.setValue(self.scrollbar.maximum())
+
 
     ## LOGIN / ACTIVATE TAB FUNCTIONS
     def login(self):
@@ -755,27 +764,31 @@ class Ui(QTabWidget):
                 })
 
     def update_mm2_balance_table(self): 
-        logger.info("Updating MM2 balance table")
-        self.wallet_balances_table.clearContents()
-        self.wallet_balances_table.setSortingEnabled(False)
         r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
         if r.status_code == 200:
             if 'table_data' in r.json():
                 table_data = r.json()['table_data']
-                self.wallet_balances_table.setRowCount(len(table_data)-1)
-                row = 0
-                for row_data in table_data:
-                    if row_data['Coin'] != 'TOTAL':
-                        add_row(row, row_data.values(), self.wallet_balances_table)
-                        row += 1
-                adjust_cols(self.wallet_balances_table, table_data)
-        self.wallet_balances_table.setSortingEnabled(True)
-        self.wallet_balances_table.resizeColumnsToContents()
-        self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
-        if row_data:
-            self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
-            self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
-            self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
+                if table_data != self.mm2_balanceTable_data:
+                    logger.info("Updating MM2 balance table")
+                    self.wallet_balances_table.clearContents()
+                    self.wallet_balances_table.setSortingEnabled(False)
+                    self.wallet_balances_table.setRowCount(len(table_data)-1)
+                    row = 0
+                    for row_data in table_data:
+                        if row_data['Coin'] != 'TOTAL':
+                            add_row(row, row_data.values(), self.wallet_balances_table)
+                            row += 1
+                    adjust_cols(self.wallet_balances_table, table_data)
+                    self.wallet_balances_table.setSortingEnabled(True)
+                    self.wallet_balances_table.resizeColumnsToContents()
+                    self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
+                    if row_data:
+                        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
+                        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
+                        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
+                        self.mm2_balanceTable_data = table_data
+                else:
+                    logger.info("MM2 balance table data unchanged, not updating...")
 
     def update_mm2_orderbook_table(self):
         baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
@@ -943,10 +956,8 @@ class Ui(QTabWidget):
         return trade_fee
 
     def mm2_orderbook_buy(self):
-        index = self.orderbook_sell_combo.currentIndex()
-        rel = self.orderbook_sell_combo.itemText(index)
-        index = self.orderbook_buy_combo.currentIndex()
-        base = self.orderbook_buy_combo.itemText(index)
+        rel = self.combo_selected(self.orderbook_sell_combo)
+        base = self.combo_selected(self.orderbook_buy_combo)
         price = self.orderbook_price_spinbox.value()
         trade_val = round(float(price)*float(vol),8)
         trade_fee = self.get_trade_fee(rel)
@@ -1116,9 +1127,8 @@ class Ui(QTabWidget):
             self.binance_qr_code_link.hide()
             self.binance_addr_lbl.setText("Invalid API key")
             self.binance_addr_coin_lbl.setText("")
-        else:            
-            index = self.binance_asset_comboBox.currentIndex()
-            coin = self.binance_asset_comboBox.itemText(index)
+        else:
+            coin = self.combo_selected(self.binance_asset_comboBox)
             # start in other thread
             self.thread_addr_request = addr_request_thread(self.creds[5], self.creds[6], coin)
             self.thread_addr_request.resp.connect(self.update_binance_addr)
@@ -1169,10 +1179,8 @@ class Ui(QTabWidget):
             #self.binance_balances_table.resizeColumnsToContents()
 
     def update_binance_depth_table(self):
-        index = self.binance_base_combo.currentIndex()
-        base = self.binance_base_combo.itemText(index)
-        index = self.binance_rel_combo.currentIndex()
-        rel = self.binance_rel_combo.itemText(index)
+        base = self.combo_selected(self.binance_base_combo)
+        rel = self.combo_selected(self.binance_rel_combo)
         self.binance_price_spinbox.setValue(0)
         self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
         self.binance_base_amount_lbl.setText("Amount ("+base+")")
@@ -1201,6 +1209,9 @@ class Ui(QTabWidget):
         order_type = self.binance_depth_table.item(selected_row,3).text()
         self.binance_price_spinbox.setValue(float(price))
 
+    def combo_selected(self, combo):
+        return combo.itemText(combo.currentIndex())
+
     # Dynamic order form price spinbox slots
     def update_binance_orderbook_amounts(self, source=''):
         if source == '':
@@ -1208,10 +1219,8 @@ class Ui(QTabWidget):
         else:
             sent_by = source
         logger.info("update binance values amounts (source: "+sent_by+")")
-        index = self.binance_base_combo.currentIndex()
-        baseAsset = self.binance_base_combo.itemText(index)
-        index = self.binance_rel_combo.currentIndex()
-        quoteAsset = self.binance_rel_combo.itemText(index)
+        baseAsset = self.combo_selected(self.binance_base_combo)
+        quoteAsset = self.combo_selected(self.binance_rel_combo)
         symbol = baseAsset+quoteAsset
         price_val = self.binance_price_spinbox.value()
         quote_amount_val = self.binance_quote_amount_spinbox.value()
@@ -1248,10 +1257,8 @@ class Ui(QTabWidget):
         qty = '{:.8f}'.format(self.binance_base_amount_spinbox.value())
         quote_qty = '{:.8f}'.format(self.binance_quote_amount_spinbox.value())
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
-        index = self.binance_base_combo.currentIndex()
-        baseAsset = self.binance_base_combo.itemText(index)
-        index = self.binance_rel_combo.currentIndex()
-        quoteAsset = self.binance_rel_combo.itemText(index)
+        baseAsset = self.combo_selected(self.binance_base_combo)
+        quoteAsset = self.combo_selected(self.binance_rel_combo) 
         symbol = baseAsset+quoteAsset
         logger.info(binance_api.binance_pair_info[symbol])
         min_notional = float(binance_api.binance_pair_info[symbol]['minNotional'])
@@ -1272,10 +1279,8 @@ class Ui(QTabWidget):
         qty = '{:.8f}'.format(self.binance_base_amount_spinbox.value())
         quote_qty = '{:.8f}'.format(self.binance_quote_amount_spinbox.value())
         price = '{:.8f}'.format(self.binance_price_spinbox.value())
-        index = self.binance_base_combo.currentIndex()
-        baseAsset = self.binance_base_combo.itemText(index)
-        index = self.binance_rel_combo.currentIndex()
-        quoteAsset = self.binance_rel_combo.itemText(index)
+        baseAsset = self.combo_selected(self.binance_base_combo)
+        quoteAsset = self.combo_selected(self.binance_rel_combo) 
         symbol = baseAsset+quoteAsset
         min_notional = binance_api.binance_pair_info[symbol]['minNotional']
         if float(quote_qty) < float(min_notional):
@@ -1292,8 +1297,7 @@ class Ui(QTabWidget):
         self.update_binance_orders_table()
 
     def binance_withdraw(self):
-        index = self.binance_asset_comboBox.currentIndex()
-        coin = self.binance_asset_comboBox.itemText(index)
+        coin = self.combo_selected(self.binance_asset_comboBox) 
         addr = self.binance_withdraw_addr_lineEdit.text()
         amount = self.binance_withdraw_amount_spinbox.value()
         msg = ''
@@ -1350,12 +1354,10 @@ class Ui(QTabWidget):
 
     ## WALLET TAB
 
-    def update_mm2_wallet_labels(self):      
-        self.wallet_balance.setText('')
+    def update_mm2_wallet_labels(self):
+        labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_btc_value, self.wallet_usd_value]
+        clear_labels(labels)
         self.wallet_address.setText('Loading...')
-        self.wallet_locked_by_swaps.setText('')
-        self.wallet_btc_value.setText("")
-        self.wallet_usd_value.setText("")
         index = self.wallet_combo.currentIndex()     
         if index != -1:
             coin = self.wallet_combo.itemText(index)
@@ -1364,32 +1366,27 @@ class Ui(QTabWidget):
                 address = self.balances_data["mm2"][coin]["address"]
                 total = self.balances_data["mm2"][coin]["total"]
                 locked = self.balances_data["mm2"][coin]["locked"]
-                available = self.balances_data["mm2"][coin]["available"]
                 if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'><span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
+                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'> \
+                                                 <span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
                 else:
                     self.wallet_address.setText(address)            
                 self.wallet_balance.setText(total)
                 self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked))
-                # TODO: add value in KMD
                 if coin in self.prices_data['average']:
                     usd_price = self.prices_data['average'][coin]['USD']
                     btc_price = self.prices_data['average'][coin]['BTC']
                     try:
                         usd_val = round(float(usd_price)*float(total),4)
                         btc_val = round(float(btc_price)*float(total),8)
-                        self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
-                        self.wallet_btc_value.setText(str(btc_val)+" BTC")
                     except Exception as e:
-                        usd_val = '-'
-                        btc_val = '-'
-                        self.wallet_usd_value.setText("$"+str(0)+" USD")
-                        self.wallet_btc_value.setText(str(0)+" BTC")
-                        logger.info('update wallet labels err (likely no price, setting to zero value)')
+                        usd_val = 0
+                        btc_val = 0
+                    self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
+                    self.wallet_btc_value.setText(str(btc_val)+" BTC")
 
     def show_mm2_qr_popup(self):
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
+        coin = self.combo_selected(self.wallet_combo)
         addr_txt = self.balances_data["mm2"][coin]["address"]
         mm2_qr = qr_popup("MM2 "+coin+" Address QR Code ", addr_txt)
         mm2_qr.show()
@@ -1403,23 +1400,20 @@ class Ui(QTabWidget):
             self.show_mm2_wallet_tab()
 
     def set_max_withdraw(self):
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
+        coin = self.combo_selected(self.wallet_combo)
         balance = self.balances_data["mm2"][coin]["available"]
         logger.info("send max "+balance)
         self.wallet_amount.setValue(float(balance))
 
     def set_self_withdraw(self):
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
+        coin = self.combo_selected(self.wallet_combo)
         addr_txt = self.balances_data["mm2"][coin]["address"]
         logger.info("self send to "+addr_txt)
         self.wallet_recipient.setText(addr_txt)
 
     # process withdrawl from wallet tab
     def send_funds(self):
-        index = self.wallet_combo.currentIndex()
-        coin = self.wallet_combo.itemText(index)
+        coin = self.combo_selected(self.wallet_combo)
         recipient_addr = self.wallet_recipient.text()
         amount = self.wallet_amount.text()
         confirm = QMessageBox.question(self, 'Confirm send?', "Confirm sending "+str(amount)+" "+coin+" to "+recipient_addr+"?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -1431,37 +1425,40 @@ class Ui(QTabWidget):
             else:
                 logger.info("withdrawing "+amount+" "+coin)
                 resp = rpclib.withdraw(self.creds[0], self.creds[1], coin, recipient_addr, amount).json()
-            if 'error' in resp:
-                logger.info(resp['error'])
-                if resp['error'].find("Invalid Address!") > -1:
-                    msg += "Invalid Address"
-                elif resp['error'].find("Not sufficient balance!") > -1:
-                    msg += "Insufficient balance"
-                elif resp['error'].find("less than dust amount") > -1:
-                    msg += "Transaction value too small!"
-                else:
-                    msg = str(resp['error'])
-            elif 'tx_hex' in resp:
-                raw_hex = resp['tx_hex']
-                resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], coin, raw_hex).json()
-                # hyperlink tx in explorer if url in coinslib
-                if 'tx_hash' in resp:
-                    txid = resp['tx_hash']
-                    if recipient_addr.startswith('0x'):
-                        txid_str = '0x'+txid
-                    else:
-                        txid_str = txid
-                    if coinslib.coin_explorers[coin]['tx_explorer'] != '':
-                        txid_link = coinslib.coin_explorers[coin]['tx_explorer']+"/"+txid_str
-                        msg = "Sent! <br /><a style='color:white !important' href='"+txid_link+"'>"+txid_link+"</a>"
-                    else:
-                        msg = "Sent! <br />TXID: ["+txid_str+"]"
-                self.wallet_recipient.setText("")
-                self.wallet_amount.setValue(0)
-            else:
-                msg = str(resp)
+            msg = self.process_tx(resp, coin, recipient_addr)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.update_mm2_wallet_labels()
+
+    def process_tx(self, resp, coin, recipient_addr):
+        if 'error' in resp:
+            logger.info(resp['error'])
+            if resp['error'].find("Invalid Address!") > -1:
+                msg += "Invalid Address"
+            elif resp['error'].find("Not sufficient balance!") > -1:
+                msg += "Insufficient balance"
+            elif resp['error'].find("less than dust amount") > -1:
+                msg += "Transaction value too small!"
+            else:
+                msg = str(resp['error'])
+        elif 'tx_hex' in resp:
+            resp = rpclib.send_raw_transaction(self.creds[0], self.creds[1], coin, resp['tx_hex']).json()
+            if 'tx_hash' in resp:
+                txid = resp['tx_hash']
+                if recipient_addr.startswith('0x'):
+                    txid_str = '0x'+txid
+                else:
+                    txid_str = txid
+                if coinslib.coin_explorers[coin]['tx_explorer'] != '':
+                    txid_link = coinslib.coin_explorers[coin]['tx_explorer']+"/"+txid_str
+                    msg = "Sent! <br /><a style='color:white !important' href='"+txid_link+"'>"+txid_str+"</a>"
+                else:
+                    msg = "Sent! <br />TXID: ["+txid_str+"]"
+            self.wallet_recipient.setText("")
+            self.wallet_amount.setValue(0)
+        else:
+            msg = str(resp)
+        return msg
+
 
     ## STRATEGIES TAB
     def populate_strategy_lists(self):
@@ -1494,14 +1491,13 @@ class Ui(QTabWidget):
     def update_strategies_table(self):
         logger.info('Updating strategies table')
         populate_table('', self.strategies_table, self.strategies_msg_lbl, "Highlight a row to view strategy trade summary","","table/bot_strategies")
-        row_fg(self.strategies_table, QColor(255, 233, 127), 10, ['inactive'], 'exclude')
-        row_fg(self.strategies_table, QColor(218, 255, 127), 10, ['active'], 'include')
+        row_fg(self.strategies_table, pallete.lt_orange, 10, ['inactive'], 'exclude')
+        row_fg(self.strategies_table, pallete.lt_green, 10, ['active'], 'include')
         self.strategies_table.clearSelection()
 
     def create_strat(self):
         params = 'name='+self.strat_name.text()
-        index = self.strat_type_combo.currentIndex()
-        strat_type = self.strat_type_combo.itemText(index)
+        strat_type = self.combo_selected(self.strat_type_combo)
         params += '&strategy_type='+strat_type
         buy_list = []
         for item in self.strat_buy_list.selectedItems():
@@ -1585,7 +1581,7 @@ class Ui(QTabWidget):
                 populate_table('', self.strat_summary_table, "", "", "4|0|EXCLUDE" ,"table/bot_strategy/summary/"+strategy_name)
             else:
                 populate_table('', self.strat_summary_table, "", "", "",  "table/bot_strategy/summary/"+strategy_name)
-            row_fg(self.strat_summary_table, QColor(218, 255, 127), 4, ['0'], 'exclude')
+            row_fg(self.strat_summary_table, pallete.lt_green, 4, ['0'], 'exclude')
 
     def delete_strat(self):
         selected_row = self.strategies_table.currentRow()
@@ -1702,15 +1698,15 @@ class Ui(QTabWidget):
         else:
             populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "","table/mm2_history")
         if self.mm2_trades_table.rowCount() > 0:
-            row_fg(self.mm2_trades_table, QColor(218, 255, 127), 2, ['Finished'], 'include')
-            row_fg(self.mm2_trades_table, QColor(255, 127, 127), 2, ['Failed'], 'include')
-            row_fg(self.mm2_trades_table, QColor(255, 233, 127), 2, ['Failed','Finished'], 'exclude')
+            row_fg(self.mm2_trades_table, pallete.lt_green, 2, ['Finished'], 'include')
+            row_fg(self.mm2_trades_table, pallete.lt_red, 2, ['Failed'], 'include')
+            row_fg(self.mm2_trades_table, pallete.lt_orange, 2, ['Failed','Finished'], 'exclude')
 
     def update_strategy_history_table(self):
         logger.info("Updating Strategy history table")
         populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
-        row_fg(self.strategy_trades_table, QColor(218, 255, 127), 9, ['Complete'], 'include')
-        row_fg(self.strategy_trades_table, QColor(255, 233, 127), 9, ['Complete'], 'exclude')
+        row_fg(self.strategy_trades_table, pallete.lt_green, 9, ['Complete'], 'include')
+        row_fg(self.strategy_trades_table, pallete.lt_orange, 9, ['Complete'], 'exclude')
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
