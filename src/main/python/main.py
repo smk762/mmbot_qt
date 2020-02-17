@@ -26,19 +26,6 @@ import decimal
 import logging
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
 
-logger = logging.getLogger()
-formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-
-# console logging
-logger.setLevel(logging.INFO)
-handler = logging.StreamHandler()
-logger.addHandler(handler)
-
-# File logging
-fh = logging.FileHandler(sys.path[0]+'/debug.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(formatter)
-logger.addHandler(fh)
 
 home = expanduser("~")
 
@@ -55,7 +42,6 @@ os.environ["QT_SCALE_FACTOR"] = "1"
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
 QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
-
 # Setup local settings config ini.
 QSettings.setDefaultFormat(QSettings.IniFormat)
 QCoreApplication.setOrganizationName("KomodoPlatform")
@@ -63,6 +49,24 @@ QCoreApplication.setApplicationName("AntaraMakerbot")
 settings = QSettings()
 ini_file = settings.fileName()
 config_path = settings.fileName().replace("AntaraMakerbot.ini", "")
+
+logger = logging.getLogger()
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+
+# console logging
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+logger.addHandler(handler)
+handler.setFormatter(formatter)
+
+# File logging
+if not os.path.exists(config_path+"/debug"):
+    os.makedirs(config_path+"/debug")
+debug_log = config_path+'/debug/debug_'+str(int(time.time()))+'.log'
+fh = logging.FileHandler(debug_log)
+fh.setLevel(logging.DEBUG)
+fh.setFormatter(formatter)
+logger.addHandler(fh)
 
 os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
 
@@ -576,7 +580,13 @@ class Ui(QTabWidget):
             self.scrollbar = self.api_console_logs.verticalScrollBar()
             self.api_console_logs.setPlainText(log_text)
             self.scrollbar.setValue(self.scrollbar.maximum())
-
+        app_output = open(debug_log, 'r')
+        with app_output as f:
+            log_text = f.read()
+            lines = f.readlines()
+            self.scrollbar = self.app_console_logs.verticalScrollBar()
+            self.app_console_logs.setPlainText(log_text)
+            self.scrollbar.setValue(self.scrollbar.maximum())
 
     ## LOGIN / ACTIVATE TAB FUNCTIONS
     def login(self):
@@ -1355,35 +1365,24 @@ class Ui(QTabWidget):
     ## WALLET TAB
 
     def update_mm2_wallet_labels(self):
-        labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_btc_value, self.wallet_usd_value]
-        clear_labels(labels)
-        self.wallet_address.setText('Loading...')
-        index = self.wallet_combo.currentIndex()     
+        index = self.wallet_combo.currentIndex()
         if index != -1:
+            wallet_labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_btc_value, self.wallet_usd_value, self.wallet_kmd_value]
+            clear_labels(wallet_labels)
             coin = self.wallet_combo.itemText(index)
+            label_data = requests.get('http://127.0.0.1:8000/labels/mm2_wallet/'+coin).json()
+            logger.info(label_data)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
-            if coin in self.balances_data["mm2"]:
-                address = self.balances_data["mm2"][coin]["address"]
-                total = self.balances_data["mm2"][coin]["total"]
-                locked = self.balances_data["mm2"][coin]["locked"]
-                if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+address+"'> \
-                                                 <span style='text-decoration: underline; color:#eeeeec;'>"+address+"</span></href>")
-                else:
-                    self.wallet_address.setText(address)            
-                self.wallet_balance.setText(total)
-                self.wallet_locked_by_swaps.setText("locked by swaps: "+str(locked))
-                if coin in self.prices_data['average']:
-                    usd_price = self.prices_data['average'][coin]['USD']
-                    btc_price = self.prices_data['average'][coin]['BTC']
-                    try:
-                        usd_val = round(float(usd_price)*float(total),4)
-                        btc_val = round(float(btc_price)*float(total),8)
-                    except Exception as e:
-                        usd_val = 0
-                        btc_val = 0
-                    self.wallet_usd_value.setText("$"+str(usd_val)+" USD")
-                    self.wallet_btc_value.setText(str(btc_val)+" BTC")
+            if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+label_data['address']+"'> \
+                                             <span style='text-decoration: underline; color:#eeeeec;'>"+label_data['address']+"</span></href>")
+            else:
+                self.wallet_address.setText(label_data['address']) 
+            self.wallet_balance.setText(str(round(label_data['total'],8))+" "+coin)
+            self.wallet_locked_by_swaps.setText("locked by swaps: "+str(round(label_data['locked'],8))+" "+coin)
+            self.wallet_usd_value.setText("$"+str(round(label_data['usd_val'],2))+" USD")
+            self.wallet_btc_value.setText(str(round(label_data['btc_val'],8))+" BTC")
+            self.wallet_kmd_value.setText(str(round(label_data['kmd_val'],4))+" KMD")
 
     def show_mm2_qr_popup(self):
         coin = self.combo_selected(self.wallet_combo)

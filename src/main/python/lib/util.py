@@ -2,11 +2,14 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from lib import pallete
-
 import requests
 import logging
 
 logger = logging.getLogger(__name__)
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+
+
+old_data = {}
 
 def colorize_row(table, row, bgcol):
     for col in range(table.columnCount()):
@@ -120,62 +123,69 @@ def add_row(row, row_data, table, bgcol='', align=''):
             table.item(row,col).setBackground(bgcol)
         col += 1
 
-
 def populate_table(r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
     if r == '':
         # dont thread
         url = "http://127.0.0.1:8000/"+endpoint
         r = requests.get(url)
     if r.status_code == 200:
-        table.setSortingEnabled(False)
-        table.clearContents()
         if 'table_data' in r.json():
+            table_name = endpoint.replace('/','_')
+            if table_name not in old_data:
+                old_data[table_name] = []
             data = r.json()['table_data']
-            table.setRowCount(len(data))
-            row = 0
-            max_col_str = {}
-            if len(data) > 0:
-                headers = list(data[0].keys())
-                table.setColumnCount(len(headers))
-                table.setHorizontalHeaderLabels(headers)
-                for i in range(len(headers)):
-                    max_col_str[i] = str(headers[i])
-                for item in data:
-                    row_data = list(item.values())
-                    col_num = 0
-                    for cell in row_data:
-                        if len(str(cell)) > len(str(max_col_str[col_num])):
-                            max_col_str[col_num] = str(cell)
-                        col_num += 1
-                    if row_filter == '':
-                        add_row(row, row_data, table)
-                        row += 1
-                    else:
-                        filter_param = row_filter.split('|')
-                        filter_col_num = filter_param[0]
-                        filter_col_text = filter_param[1]
-                        filter_type = filter_param[2]
-                        if str(row_data[int(filter_col_num)]) == str(filter_col_text):
-                            if filter_type == 'INCLUDE':
-                                add_row(row, row_data, table)
-                                row += 1
+            if data != old_data[table_name]:
+                logger.info("Updating "+table_name)
+                table.setSortingEnabled(False)
+                table.clearContents()
+                table.setRowCount(len(data))
+                row = 0
+                max_col_str = {}
+                if len(data) > 0:
+                    headers = list(data[0].keys())
+                    table.setColumnCount(len(headers))
+                    table.setHorizontalHeaderLabels(headers)
+                    for i in range(len(headers)):
+                        max_col_str[i] = str(headers[i])
+                    for item in data:
+                        row_data = list(item.values())
+                        col_num = 0
+                        for cell in row_data:
+                            if len(str(cell)) > len(str(max_col_str[col_num])):
+                                max_col_str[col_num] = str(cell)
+                            col_num += 1
+                        if row_filter == '':
+                            add_row(row, row_data, table)
+                            row += 1
                         else:
-                            if filter_type == 'EXCLUDE':
-                                add_row(row, row_data, table)
-                                row += 1
-                
-            table.setRowCount(row)
-            table.setSortingEnabled(True)
-            fontinfo = QFontInfo(table.font())
-            for i in max_col_str:
-                fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
-                str_width = fm.width(max_col_str[i])
-                table.setColumnWidth(i, str_width+10)
-            if msg_lbl != '':
-                if len(data) == 0:
-                    msg = "No results in table..."
-                msg_lbl.setText(msg)
-        # apply BG color to binance depth tables
+                            filter_param = row_filter.split('|')
+                            filter_col_num = filter_param[0]
+                            filter_col_text = filter_param[1]
+                            filter_type = filter_param[2]
+                            if str(row_data[int(filter_col_num)]) == str(filter_col_text):
+                                if filter_type == 'INCLUDE':
+                                    add_row(row, row_data, table)
+                                    row += 1
+                            else:
+                                if filter_type == 'EXCLUDE':
+                                    add_row(row, row_data, table)
+                                    row += 1
+                    
+                table.setRowCount(row)
+                table.setSortingEnabled(True)
+                fontinfo = QFontInfo(table.font())
+                for i in max_col_str:
+                    fm = QFontMetrics(QFont(fontinfo.family(), fontinfo.pointSize()))
+                    str_width = fm.width(max_col_str[i])
+                    table.setColumnWidth(i, str_width+10)
+                if msg_lbl != '':
+                    if len(data) == 0:
+                        msg = "No results in table..."
+                    msg_lbl.setText(msg)
+                old_data[table_name] = data
+            else:
+                logger.info("Not updating "+table_name+", no new data")
+        # apply BG color to binance depth tables (in this func due to request delay, probably better elsewhere...?)
         row_bg(table, pallete.dk_green, 3, ['Ask'], 'include')
         row_bg(table, pallete.dk_red, 3, ['Bid'], 'include')
     else:

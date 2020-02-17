@@ -9,6 +9,8 @@ import logging
 from .util import populate_table
 
 logger = logging.getLogger(__name__)
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+
 # THREADED OPERATIONS
 
 # request and cache external balance and pricing data in thread
