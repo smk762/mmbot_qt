@@ -1,56 +1,97 @@
-from PyQt5.QtWidgets import QTableWidget
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 
-class TableModel(QTableWidget):
-    def __init__(self, table_data):
-        super(TableModel,self).__init__()
-        self.table_data = []
+class prices_TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, jsondata):
+        super(prices_TableModel, self).__init__()
+        self._jsondata = jsondata
+        self._headers = []
+        self._data = []
+        if len(self._jsondata) > 0:
+            self._headers = list(self._jsondata[0].keys())
+            for item in self._jsondata:
+                self._data.append(list(item.values()))
+        print(self._data)
 
-    def rowCount(self,QModelIndex):
-        return self.rowCount()
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            return str(value)
 
-    def colCount(self,QModelIndex):
-        if len(self.table_data) > 0:
-            return self.columnCount()
-        else:
-            return 0
+    def rowCount(self, index):
+        return len(self._data)
 
-    def getHeaders(self):
-        if len(self.table_data) > 0:
-            return list(self.table_data[0].keys())
-        else:
-            return []
+    def columnCount(self, index):
+        if len(self._data) > 0:
+            return len(self._data[0])
+        return 0
+    
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._headers[section])
 
-    def getRow_list(self, row_num):
-        if len(self.table_data) > row_num:
-            return list(self.table_data[row_num].values())
-        else:
-            return []
+class bn_TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, jsondata):
+        super(bn_TableModel, self).__init__()
+        self._jsondata = jsondata
+        self._headers = []
+        self._data = []
+        if len(self._jsondata) > 0:
+            self._headers = list(self._jsondata[0].keys())
+            for item in self._jsondata:
+                self._data.append(list(item.values()))
+        print(self._data)
 
-    def getRow_dict(self, row_num):
-        if len(self.table_data) > row_num:
-            return self.table_data[row_num]
-        else:
-            return {}
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            return str(value)
 
-    def addRow(self, row_list, align='', bgcol='', fgcol=''):
-        row = self.rowCount()
-        col = 0
-        for cell_data in row_list:
-            cell = QTableWidgetItem(str(cell_data))
-            self.setItem(row,col,cell)
-            if align == '':
-                cell.setTextAlignment(Qt.AlignCenter|Qt.AlignVCenter)  
-            elif align == 'left':
-                cell.setTextAlignment(Qt.AlignLeft|Qt.AlignVCenter)  
-            elif align == 'right':
-                cell.setTextAlignment(Qt.AlignRight|Qt.AlignVCenter)  
-            if bgcol != '':
-                self.item(row,col).setBackground(bgcol)
-            if fgcol != '':
-                self.item(row,col).setForeground(fgcol)
-            col += 1
+    def rowCount(self, index):
+        return len(self._data)
 
-    def addData(self, align='', bgcol='', fgcol=''):
-        for i in range(self.table_data):
-            row_list = self.getRow_list(i)
-            self.addRow(row_list, align='', bgcol='', fgcol='')
+    def columnCount(self, index):
+        if len(self._data) > 0:
+            return len(self._data[0])
+        return 0
+    
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._headers[section])
+
+class mm2_TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, jsondata=None):
+        super(mm2_TableModel, self).__init__()
+        self._jsondata = jsondata or {}
+        self._headers = []
+        self._data = []
+        if len(self._jsondata) > 0:
+            self._headers = list(self._jsondata[0].keys())
+            for item in self._jsondata:
+                self._data.append(list(item.values()))
+        print(self._data)
+        #self.changePersistentIndexList()
+        self.layoutChanged()
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            return str(value)
+
+    def rowCount(self, index):
+        return len(self._data)
+
+    def columnCount(self, index):
+        if len(self._data) > 0:
+            return len(self._data[0])
+        return 0
+    
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._headers[section])

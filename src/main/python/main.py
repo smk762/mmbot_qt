@@ -675,33 +675,6 @@ class Ui(QTabWidget):
 
     ## MARKETMAKER TAB FUNCTIONS
 
-    def update_mm2_balance_table(self): 
-        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
-        if r.status_code == 200:
-            if 'table_data' in r.json():
-                table_data = r.json()['table_data']
-                if table_data != self.mm2_balanceTable_data:
-                    logger.info("Updating MM2 balance table")
-                    self.wallet_balances_table.clearContents()
-                    self.wallet_balances_table.setSortingEnabled(False)
-                    self.wallet_balances_table.setRowCount(len(table_data)-1)
-                    row = 0
-                    for row_data in table_data:
-                        if row_data['Coin'] != 'TOTAL':
-                            add_row(row, row_data.values(), self.wallet_balances_table)
-                            row += 1
-                    adjust_cols(self.wallet_balances_table, table_data)
-                    self.wallet_balances_table.setSortingEnabled(True)
-                    self.wallet_balances_table.resizeColumnsToContents()
-                    self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
-                    if row_data:
-                        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
-                        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
-                        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
-                        self.mm2_balanceTable_data = table_data
-                else:
-                    logger.info("MM2 balance table data unchanged, not updating...")
-
     def update_mm2_orderbook_table(self):
         baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
         base = baserel[0]
@@ -711,7 +684,6 @@ class Ui(QTabWidget):
             populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
 
     def update_mm2_orders_table(self):
-        logger.info("Updating MM2 orders table")
         populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
             
     def update_mm2_orderbook_labels(self):
@@ -1028,7 +1000,13 @@ class Ui(QTabWidget):
 
     def update_binance_balance_table(self):
         if self.authenticated_binance:
-            populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
+            r = requests.get("http://127.0.0.1:8000/table/binance_balances")
+            if r.status_code == 200:
+                if 'table_data' in r.json():
+                    self.bn_model = bn_TableModel(r.json()['table_data'])
+                    self.binance_balances_table.setModel(self.bn_model)
+                    logger.info("binance_balances_table changed")
+                #populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
         else:
             self.binance_balances_msg_lbl.setText('Invalid API key!')
 
@@ -1223,17 +1201,57 @@ class Ui(QTabWidget):
                                              <span style='text-decoration: underline; color:#eeeeec;'>"+label_data['address']+"</span></href>")
             else:
                 self.wallet_address.setText(label_data['address']) 
-            self.wallet_balance.setText(str(round(label_data['total'],8))+" "+coin)
-            self.wallet_locked_by_swaps.setText("locked by swaps: "+str(round(label_data['locked'],8))+" "+coin)
-            self.wallet_usd_value.setText("$"+str(round(label_data['usd_val'],2))+" USD")
-            self.wallet_btc_value.setText(str(round(label_data['btc_val'],8))+" BTC")
-            self.wallet_kmd_value.setText(str(round(label_data['kmd_val'],4))+" KMD")
+            try:
+                self.wallet_balance.setText(str(round(label_data['total'],8))+" "+coin)
+                self.wallet_locked_by_swaps.setText("locked by swaps: "+str(round(label_data['locked'],8))+" "+coin)
+                self.wallet_usd_value.setText("$"+str(round(label_data['usd_val'],2))+" USD")
+                self.wallet_btc_value.setText(str(round(label_data['btc_val'],8))+" BTC")
+                self.wallet_kmd_value.setText(str(round(label_data['kmd_val'],4))+" KMD")
+            except:
+                self.wallet_balance.setText("")
+                self.wallet_locked_by_swaps.setText("")
+                self.wallet_usd_value.setText("")
+                self.wallet_btc_value.setText("")
+                self.wallet_kmd_value.setText("")
 
     def show_mm2_qr_popup(self):
         coin = self.combo_selected(self.wallet_combo)
         addr_txt = self.balances_data["mm2"][coin]["address"]
         mm2_qr = qr_popup("MM2 "+coin+" Address QR Code ", addr_txt)
         mm2_qr.show()
+
+    def update_mm2_balance_table(self):
+        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                table_data = r.json()['table_data']
+                ''' Doesnt like data shape changing...
+                self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
+                self.wallet_balances_table.setModel(self.mm2_bal_model)
+                logger.info("MM2 Balance Updated")
+                '''
+                if table_data != self.mm2_balanceTable_data:
+                    logger.info("Updating MM2 balance table")
+                    self.wallet_balances_table.clearContents()
+                    self.wallet_balances_table.setSortingEnabled(False)
+                    self.wallet_balances_table.setRowCount(len(table_data)-1)
+                    row = 0
+                    for row_data in table_data:
+                        if row_data['Coin'] != 'TOTAL':
+                            add_row(row, row_data.values(), self.wallet_balances_table)
+                            row += 1
+                    adjust_cols(self.wallet_balances_table, table_data)
+                    self.wallet_balances_table.setSortingEnabled(True)
+                    self.wallet_balances_table.resizeColumnsToContents()
+                    self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
+                    if row_data:
+                        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
+                        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
+                        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
+                        self.mm2_balanceTable_data = table_data
+                else:
+                    logger.info("MM2 balance table data unchanged, not updating...")
+                
 
     def select_wallet_from_table(self):
         selected_row = self.wallet_balances_table.currentRow()
@@ -1340,9 +1358,6 @@ class Ui(QTabWidget):
         self.strategies_table.clearSelection()
 
     def create_strat(self):
-        params = 'name='+self.strat_name.text()
-        strat_type = self.combo_selected(self.strat_type_combo)
-        params += '&strategy_type='+strat_type
         buy_list = []
         for item in self.strat_buy_list.selectedItems():
             buy_list.append(item.text())
@@ -1352,21 +1367,15 @@ class Ui(QTabWidget):
         cex_list = []
         for item in self.strat_cex_list.selectedItems():
             cex_list.append(item.text())
-        buy_items = ','.join(buy_list)
-        sell_items = ','.join(sell_list)
-        cex_items = ','.join(cex_list)
-        params += '&sell_list='+sell_items
-        params += '&buy_list='+buy_items
+        params = 'name='+self.strat_name.text()
+        params += '&strategy_type='+self.combo_selected(self.strat_type_combo)
+        params += '&sell_list='+','.join(sell_list)
+        params += '&buy_list='+','.join(buy_list)
         params += '&margin='+str(self.strat_margin_spinbox.value())
         params += '&refresh_interval='+str(self.strat_refresh_spinbox.value())
         params += '&balance_pct='+str(self.strat_bal_pct_spinbox.value())
-        params += '&cex_list='+cex_items
-        incompatible_coins = []
-        if 'Binance' in cex_items:
-            selected_coins = list(set(list(buy_list)+list(sell_list)))
-            for coin in selected_coins:
-                if coin not in coinslib.binance_coins:
-                    incompatible_coins.append(coin)
+        params += '&cex_list='+','.join(cex_list)
+        incompatible_coins = coinslib.validate_selected_coins(cex_list, buy_list, sell_list)
         if len(incompatible_coins) > 0:
             resp = "The selected CEX "+str(cex_items)+" does not support "+str(incompatible_coins)+"!\n Please refine your selection..."
             QMessageBox.information(self, 'CEX Incompatible coins selected!', str(resp), QMessageBox.Ok, QMessageBox.Ok)
@@ -1529,7 +1538,14 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
-        populate_table('', self.prices_table, self.prices_table_msg, "", "", "table/prices")
+        r = requests.get("http://127.0.0.1:8000/table/prices")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                self.prices_model = prices_TableModel(r.json()['table_data'])
+                self.prices_table.setModel(self.prices_model)
+                logger.info("prices_table Updated")
+
+        #populate_table('', self.prices_table, self.prices_table_msg, "", "", "table/prices")
 
     def update_mm2_trade_history_table(self):
         if self.mm2_hide_failed_checkbox.isChecked():
@@ -1548,52 +1564,39 @@ class Ui(QTabWidget):
 
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
-        try:
-            self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
-        except:
-            # if not logged in, no creds
-            pass
         if self.authenticated:
             logger.info("authenticated")
+            self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
             self.stacked_login.setCurrentIndex(1)
             index = self.currentIndex()
             if self.creds[0] == '':
                 QMessageBox.information(self, 'Settings for user "'+self.username+'" not found!', "Settings not found. Please fill in the config form, save your settings and restart Antara Makerbot.", QMessageBox.Ok, QMessageBox.Ok)
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))              
             elif index == 0:
-                # activate
                 logger.info('show_activation_tab')
                 self.show_activation_tab()
             elif index == 1:
-                # order book
                 logger.info('show_mm2_orderbook_tab')
                 self.show_mm2_orderbook_tab()
             elif index == 2:
-                # binance acct
                 logger.info('show_binance_tab')
                 self.show_binance_trading_tab()
             elif index == 3:
-                # wallet
                 logger.info('show_mm2_wallet_tab')
                 self.show_mm2_wallet_tab()
             elif index == 4:
-                # strategies
                 logger.info('show_strategies_tab')
                 self.show_strategies_tab()
             elif index == 5:
-                # Prices
                 logger.info('show_prices_tab')
                 self.show_prices_tab()
             elif index == 6:
-                # history
                 logger.info('show_history_tab')
                 self.show_history_tab()
             elif index == 7:
-                # config
                 logger.info('show_config_tab')
                 self.show_config_tab()
             elif index == 8:
-                # logs
                 logger.info('show_logs_tab')
                 self.show_logs_tab()
         else:
@@ -1605,7 +1608,6 @@ class Ui(QTabWidget):
             self.show_login_tab()
 
 if __name__ == '__main__':
-    
     appctxt = ApplicationContext()
     screen_resolution = appctxt.app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()

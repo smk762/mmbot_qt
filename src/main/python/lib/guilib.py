@@ -164,11 +164,12 @@ def get_unfinished_swaps(node_ip, user_pass):
 
 def get_active_coins(node_ip, user_pass):
     active_cointags = []
-    active_coins = rpclib.get_enabled_coins(node_ip, user_pass).json()
-    if 'result' in active_coins:
-        active_coins = active_coins['result']
-        for coin in active_coins:
-            active_cointags.append(coin['ticker'])
-        return active_cointags 
-    else:
-      print(active_coins)
+    try:
+        active_coins = rpclib.get_enabled_coins(node_ip, user_pass).json()
+        if 'result' in active_coins:
+            active_coins = active_coins['result']
+            for coin in active_coins:
+                active_cointags.append(coin['ticker'])
+    except Exception as e:
+        print(e)
+    return active_cointags 

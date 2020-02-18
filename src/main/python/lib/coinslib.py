@@ -975,4 +975,11 @@ for coin in coin_api_codes:
     if coin == 'BTC' or coin_api_codes[coin]['paprika_id'] != '':
         paprika_coins.append(coin)
 
-
+def validate_selected_coins(cex_list, buy_list, sell_list):
+   incompatible_coins = []
+   if 'Binance' in cex_list:
+      selected_coins = list(set(list(buy_list)+list(sell_list)))
+      for coin in selected_coins:
+            if coin not in binance_coins:
+               incompatible_coins.append(coin)
+   return incompatible_coins
