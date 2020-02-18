@@ -4,10 +4,11 @@ from PyQt5.QtWidgets import *
 from lib import pallete
 import requests
 import logging
+from . import binance_api
+import random
 
 logger = logging.getLogger(__name__)
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
-
 
 old_data = {}
 
@@ -229,3 +230,34 @@ def adjust_cols(table, data):
 def clear_labels(label_list):
     for label in label_list:
         label.setText('')
+
+def get_seed():
+    seed_words_list = []
+    while len(seed_words_list) < 24:
+        word = random.choice(wordlist.wordlist)
+        if word not in seed_words_list:
+            seed_words_list.append(word)
+    seed_phrase = " ".join(seed_words_list)
+
+def get_base_rel_from_combos(base_combo, rel_combo, active_coins, api='mm2'):
+    base = ''
+    base_index = base_combo.currentIndex()
+    if base_index != -1:
+        base = base_combo.itemText(base_index)
+    rel = ''
+    rel_index = rel_combo.currentIndex()
+    if rel_index != -1:
+        rel = rel_combo.itemText(rel_index)
+    if api == 'mm2':
+        active_coins_selection = active_coins
+        if len(active_coins_selection) > 0:
+            rel = update_combo(rel_combo,active_coins_selection,rel)
+            active_coins_selection.remove(rel)
+            base = update_combo(base_combo,active_coins_selection,base)
+    elif api == "Binance":
+        base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(active_coins))
+        if len(base_coins_selection) > 0:                
+            base = update_combo(base_combo,base_coins_selection,base)
+            rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']
+            rel = update_combo(rel_combo,rel_coins_selection,rel)
+    return base, rel

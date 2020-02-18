@@ -73,7 +73,7 @@ class activation_thread(QThread):
                 self.activate.emit(coin[0])
 
 class api_request_thread(QThread):
-    update_data = pyqtSignal(object, object, object, str, str)
+    update_data = pyqtSignal(object, object, object, str, str, str)
     def __init__(self, endpoint, table, msg_lbl, msg, row_filter):
         QThread.__init__(self)
         self.endpoint = endpoint
@@ -88,7 +88,7 @@ class api_request_thread(QThread):
     def run(self):
         url = "http://127.0.0.1:8000/"+self.endpoint
         r = requests.get(url)
-        self.update_data.emit(r, self.table, self.msg_lbl, self.msg, self.row_filter)
+        self.update_data.emit(r, self.table, self.msg_lbl, self.msg, self.row_filter, self.endpoint)
 
 class addr_request_thread(QThread):
     resp = pyqtSignal(dict, str)

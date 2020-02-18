@@ -321,3 +321,35 @@ def get_mm2_swap_events(events):
         if event['event']['type'] == 'Finished':
             finished = event['timestamp']
     return failed, fail_event, finished, event_types
+
+def get_trade_fee(coin):
+    r = requests.get("http://127.0.0.1:8000/mm2_trade_fee/"+coin)
+    if r.status_code == 200:
+        trade_fee = t.text
+    else: 
+        trade_fee = 0.001
+    return trade_fee
+
+def process_mm2_buy(mm2_ip, mm2_pass, base, rel, vol, price):
+    trade_val = round(float(price)*float(vol),8)
+    trade_fee = get_trade_fee(rel)
+    trade_vol = vol - float(trade_fee)*2
+    resp = buy(mm2_ip, mm2_pass, base, rel, trade_vol, price).json()
+    if 'error' in resp:
+        while resp['error'].find("too low, required") > -1:
+            time.sleep(0.01)
+            logger.info("trade_vol error: "+str(resp['error']))
+            logger.info("reducing trade vol 1% and trying again...")
+            trade_vol = trade_vol*0.99
+            resp = buy(mm2_ip, mm2_pass, base, rel, trade_vol, price).json()
+            if 'error' not in resp:
+                break
+        if resp['error'].find("larger than available") > -1:
+            msg = "Insufficient funds to complete order."
+        else:
+            msg = resp
+    elif 'result' in resp:
+        logger.info("Buying "+str(trade_vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")")
+        msg = "Order Submitted.\n"
+        msg += "Buying "+str(trade_vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel+"\nFee estimate: "+str(trade_fee)+" "+rel
+    return msg

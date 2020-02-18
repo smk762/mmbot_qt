@@ -17,7 +17,7 @@ from lib.threads import *
 from lib.logging import *
 from lib.models import *
 from lib import pallete
-import random
+from lib.bins import *
 from ui import resources
 import time
 import platform
@@ -26,16 +26,7 @@ import decimal
 import logging
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
 
-
 home = expanduser("~")
-
-# Attempt to suppress console window in windows version. TODO: not working, find another way.
-if platform.system() == 'Windows':
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    startupinfo.wShowWindow = subprocess.SW_HIDE
-else:
-    startupinfo = None
 
 # scaling for high DPI vs SD monitors. Awaiting feedback from other users if any buttons etc are too small.
 os.environ["QT_SCALE_FACTOR"] = "1"  
@@ -75,7 +66,6 @@ if settings.value('users') is None:
     settings.setValue("users", [])
 
 # UI Class
-
 class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
@@ -92,9 +82,9 @@ class Ui(QTabWidget):
             self.mm2_bin = self.ctx.get_resource('mm2.exe')
         # define local bot api script
         try:
-            self.bot_api = self.ctx.get_resource('mmbot_api')
+            self.api_bin = self.ctx.get_resource('mmbot_api')
         except:
-            self.bot_api = self.ctx.get_resource('mmbot_api.exe')
+            self.api_bin = self.ctx.get_resource('mmbot_api.exe')
         # define coins file path and set envornment variable for mm2 launch
         self.coins_file = self.ctx.get_resource('coins')
         os.environ['MM_COINS_PATH'] = self.coins_file
@@ -108,16 +98,6 @@ class Ui(QTabWidget):
         #self.webframe_layout = QHBoxLayout()
         #self.webframe.setLayout(self.webframe_layout)
         self.authenticated = False
-        self.mm2_downloading = False
-        self.bot_trading = False
-        self.countertrade_delay_limit = 1800
-        self.last_price_update = 0
-        self.prices_data = {
-            "gecko":{},
-            "paprika":{},
-            "Binance":{},
-            "average":{}
-        }
         self.balances_data = {
             "mm2": {},
             "Binance": {}
@@ -275,12 +255,8 @@ class Ui(QTabWidget):
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     def update_cachedata(self, prices_dict, balances_dict):
         logger.info("Updating cache data from API")
-        self.prices_data = prices_dict
         self.balances_data['mm2'].update(balances_dict['mm2'])
         self.balances_data["Binance"].update(balances_dict["Binance"])
-        baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
-        base = baserel[0]
-        rel = baserel[1]
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
         self.update_binance_balance_table()
@@ -294,110 +270,79 @@ class Ui(QTabWidget):
         # TODO: Add gui update functions as req here.
 
     ## MM2 management
-    # start MM2 for specific user
-    def start_mm2(self, logfile='mm2_output.log'):
-        try:
-            global mm2_proc
-            mm2_output = open(config_path+self.username+"_"+logfile,'w+')
-            mm2_proc = subprocess.Popen([self.mm2_bin], stdout=mm2_output, stderr=mm2_output, universal_newlines=True, startupinfo=startupinfo)
-            time.sleep(1)
-        except Exception as e:
-            QMessageBox.information(self, "MM2 status", 'No mm2 binary!')
-            logger.info("MM2 Binary not found!")
-
-    def start_api(self, logfile='bot_api_output.log'):
-        try:
-            global api_proc
-            bot_api_output = open(config_path+self.username+"_"+logfile,'w+')
-            api_proc = subprocess.Popen([self.bot_api, config_path], stdout=bot_api_output, stderr=bot_api_output, universal_newlines=True, startupinfo=startupinfo)
-            time.sleep(1)
-        except Exception as e:
-            logger.info("MM2 Bot API did not start!")
-
-    def launch_mm2(self):
+    def launch_bins(self):
         if self.username in settings.value('users'):
             self.username_input.setText('')
             self.password_input.setText('')
-            # hide login page, show activation page
             self.stacked_login.setCurrentIndex(1)
             if self.creds[0] != '':
-                if platform.system() == 'Windows':
-                    kill_mm2 = subprocess.Popen(["tskill", "mm2.exe"], startupinfo=startupinfo)
-                else:
-                    kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
-                kill_mm2.wait()
-                i = 0
-                version = ''
-                while version == '':
-                    try:
-                        self.start_mm2()
-                        time.sleep(1)
-                        version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
-                        logger.info("mm2 version: "+version)
-                        self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
-                    except Exception as e:
-                        logger.info('mm2 not start')
-                        logger.info(e)
-                        pass
-                        i += 1
-                        if i > 10:
-                            QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
-                if platform.system() == 'Windows':
-                    kill_api = subprocess.Popen(["tskill", "mmbot_api.exe"], startupinfo=startupinfo)
-                else:
-                    kill_api = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
-                kill_api.wait()
-                i = 0  
-                version = ''
-                while version == '':
-                    try:
-                        self.start_api()
-                        time.sleep(1)
-                        version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
-                        logger.info("Bot version: "+version)
-                        self.api_version_lbl.setText("Makerbot API version: "+version+" ")
-                    except Exception as e:
-                        logger.info('bot not start')
-                        logger.info(e)
-                        pass
-                        if i > 10:
-                            QMessageBox.information(self, 'Error', "Bot API failed to start.\nCheck logs tab, or "+config_path+self.username+"_bot_output.log", QMessageBox.Ok, QMessageBox.Ok)
-                if self.creds[5] == '':
-                    key = 'x'
-                else:
-                    key = self.creds[5]
-                if self.creds[6] == '':
-                    secret = 'x'
-                else:
-                    secret = self.creds[6]
-                endpoint = 'http://127.0.0.1:8000/set_creds?'
-                params = 'ip='+self.creds[4]+'&rpc_pass='+self.creds[1]+'&key='+key+'&secret='+secret+'&username='+self.username
-                url = endpoint+params
-                requests.post(url)
+                kill_mm2()      
+                self.launch_mm2()
+                kill_api()
+                self.launch_api()
+                auth_api(self.creds[0], self.creds[1], self.creds[5], self.creds[6], self.username)
                 # purge MM2.json cleartext
-                with open(config_path+"MM2.json", 'w+') as j:
-                    j.write('')
+                purge_mm2_json(config_path)
                 self.show_activation_tab()
-                # stop zombie orders / strats
                 self.stop_all_strats()
                 rpclib.cancel_all(self.creds[0], self.creds[1]).json()
-                binance_acct = binance_api.get_account_info(self.creds[5], self.creds[6])
-                if 'code' in binance_acct:
-                    self.authenticated_binance = False
-                    self.binance_api_err = binance_acct['msg']
-                else:
-                    self.authenticated_binance = True
-                    self.binance_api_err = ''
-                # start data caching loop in other thread
-                self.datacache_thread = cachedata_thread()
-                self.datacache_thread.update_data.connect(self.update_cachedata)
-                self.datacache_thread.start()
-                # start data caching loop in other thread
-                self.logs_thread = consoleLogs_thread()
-                self.logs_thread.update_logs.connect(self.update_console_logs)
-                self.logs_thread.start()
+                self.check_binance_auth()
+                self.start_loop_threads()
             else:
                 self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
+
+    def launch_api(self):
+        i = 0  
+        version = ''
+        while version == '':
+            try:
+                start_api(self.api_bin, config_path, self.username)
+                version = requests.get('http://127.0.0.1:8000/api_version').json()['version']
+                logger.info("Bot version: "+version)
+                self.api_version_lbl.setText("Makerbot API version: "+version+" ")
+            except Exception as e:
+                logger.info('bot not start')
+                logger.info(e)
+            i += 1
+            if i > 10:
+                QMessageBox.information(self, 'Error', "Bot API failed to start.\nCheck logs tab, or "+config_path+self.username+"_bot_output.log", QMessageBox.Ok, QMessageBox.Ok)
+                sys.exit()
+
+    def launch_mm2(self):
+        i = 0
+        version = ''
+        while version == '':
+            try:
+                start_mm2(self.mm2_bin, config_path, self.username)
+                version = rpclib.version(self.creds[0], self.creds[1]).json()['result']
+                logger.info("mm2 version: "+version)
+                self.mm2_version_lbl.setText("MarketMaker version: "+version+" ")
+            except Exception as e:
+                logger.info('mm2 not start')
+                logger.info(e)
+            i += 1
+            if i > 10:
+                QMessageBox.information(self, 'Error', "MM2 failed to start.\nCheck logs tab, or "+config_path+self.username+"_mm2_output.log", QMessageBox.Ok, QMessageBox.Ok)
+                sys.exit()
+
+    def check_binance_auth(self):
+        binance_acct = binance_api.get_account_info(self.creds[5], self.creds[6])
+        if 'code' in binance_acct:
+            self.authenticated_binance = False
+            self.binance_api_err = binance_acct['msg']
+        else:
+            self.authenticated_binance = True
+            self.binance_api_err = ''
+
+    def start_loop_threads(self):
+        # start data caching loop in other thread
+        self.datacache_thread = cachedata_thread()
+        self.datacache_thread.update_data.connect(self.update_cachedata)
+        self.datacache_thread.start()
+        # start data caching loop in other thread
+        self.logs_thread = consoleLogs_thread()
+        self.logs_thread.update_logs.connect(self.update_console_logs)
+        self.logs_thread.start()
 
     def decrypt_creds(self):
         # create .enc if new user
@@ -429,7 +374,6 @@ class Ui(QTabWidget):
             logger.info("get_credentials failed")
             logger.info(e)
             self.creds = ['','','','','','','','','','']
-            pass
 
     # spinbox operations
     def binance_bid_price_update(self):
@@ -437,37 +381,12 @@ class Ui(QTabWidget):
         if selected_row != -1 and self.binance_depth_table_bid.item(selected_row,1) is not None:
             price = self.binance_depth_table_bid.item(selected_row,1).text()
             self.binance_price_spinbox.setValue(float(price))
-            #self.binance_depth_table_ask.clearSelection()
 
     def binance_ask_price_update(self):
         selected_row = self.binance_depth_table_ask.currentRow()
         if selected_row != -1 and self.binance_depth_table_ask.item(selected_row,1) is not None:
             price = self.binance_depth_table_ask.item(selected_row,1).text()
             self.binance_price_spinbox.setValue(float(price))
-            #self.binance_depth_table_bid.clearSelection()
-
-    def get_base_rel_from_combos(self, base_combo, rel_combo, api='mm2'):
-        base = ''
-        base_index = base_combo.currentIndex()
-        if base_index != -1:
-            base = base_combo.itemText(base_index)
-        rel = ''
-        rel_index = rel_combo.currentIndex()
-        if rel_index != -1:
-            rel = rel_combo.itemText(rel_index)
-        if api == 'mm2':
-            active_coins_selection = self.active_coins[:]
-            if len(active_coins_selection) > 0:
-                rel = update_combo(rel_combo,active_coins_selection,rel)
-                active_coins_selection.remove(rel)
-                base = update_combo(base_combo,active_coins_selection,base)
-        elif api == "Binance":
-            base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(self.active_coins[:]))
-            if len(base_coins_selection) > 0:                
-                base = update_combo(base_combo,base_coins_selection,base)
-                rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']
-                rel = update_combo(rel_combo,rel_coins_selection,rel)
-        return base, rel
 
     def update_active(self):
         self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
@@ -498,10 +417,7 @@ class Ui(QTabWidget):
         else:
             self.update_mm2_orderbook_table()
             self.update_mm2_orders_table()
-            baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
-            base = baserel[0]
-            rel = baserel[1]
-            self.update_mm2_orderbook_labels(base, rel)
+            self.update_mm2_orderbook_labels()
 
     def show_binance_trading_tab(self):
         if len(self.active_coins) < 1:
@@ -544,7 +460,6 @@ class Ui(QTabWidget):
         # self.update_price_history_graph()
 
     def show_history_tab(self):
-        logger.info('show_history_tab')
         self.update_mm2_trade_history_table()
         self.update_strategy_history_table()
 
@@ -566,27 +481,25 @@ class Ui(QTabWidget):
         self.update_console_logs()
 
     def update_console_logs(self):
-        mm2_output = open(config_path+self.username+"_mm2_output.log",'r')
-        with mm2_output as f:
-            log_text = f.read()
-            lines = f.readlines()
-            self.scrollbar = self.mm2_console_logs.verticalScrollBar()
-            self.mm2_console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(self.scrollbar.maximum())
-        api_output = open(config_path+self.username+"_bot_api_output.log",'r')
-        with api_output as f:
-            log_text = f.read()
-            lines = f.readlines()
-            self.scrollbar = self.api_console_logs.verticalScrollBar()
-            self.api_console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(self.scrollbar.maximum())
-        app_output = open(debug_log, 'r')
-        with app_output as f:
-            log_text = f.read()
-            lines = f.readlines()
-            self.scrollbar = self.app_console_logs.verticalScrollBar()
-            self.app_console_logs.setPlainText(log_text)
-            self.scrollbar.setValue(self.scrollbar.maximum())
+        if self.username != '':
+            mm2_output = open(config_path+self.username+"_mm2_output.log",'r')
+            with mm2_output as f:
+                log_text = f.read()
+                self.scrollbar = self.mm2_console_logs.verticalScrollBar()
+                self.mm2_console_logs.setPlainText(log_text)
+                self.scrollbar.setValue(self.scrollbar.maximum())
+            api_output = open(config_path+self.username+"_bot_api_output.log",'r')
+            with api_output as f:
+                log_text = f.read()
+                self.scrollbar = self.api_console_logs.verticalScrollBar()
+                self.api_console_logs.setPlainText(log_text)
+                self.scrollbar.setValue(self.scrollbar.maximum())
+            app_output = open(debug_log, 'r')
+            with app_output as f:
+                log_text = f.read()
+                self.scrollbar = self.app_console_logs.verticalScrollBar()
+                self.app_console_logs.setPlainText(log_text)
+                self.scrollbar.setValue(self.scrollbar.maximum())
 
     ## LOGIN / ACTIVATE TAB FUNCTIONS
     def login(self):
@@ -597,7 +510,7 @@ class Ui(QTabWidget):
         else:
             self.decrypt_creds()
             if self.authenticated:   
-                self.launch_mm2()
+                self.launch_bins()
             elif self.username in settings.value('users'):
                 QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
             else:
@@ -612,7 +525,11 @@ class Ui(QTabWidget):
     def logout(self):
         logger.info("Logging out...")
         rpclib.stop_mm2(window.creds[0], window.creds[1])
-        api_proc.kill()
+        self.logs_thread.terminate()
+        self.datacache_thread.terminate()
+        self.activate_thread.terminate()
+        kill_api()
+        kill_mm2()
         self.authenticated = False
         self.authenticated_binance = False
         self.username = ''
@@ -702,7 +619,6 @@ class Ui(QTabWidget):
                 user_autoactivate = user_coins['autoactivate']
         else:
             user_autoactivate = []
-
         row = 0
         for coin in display_coins:
             self.gui_coins[coin]['checkbox'].show()
@@ -758,20 +674,6 @@ class Ui(QTabWidget):
                 self.gui_coins[coin]['checkbox'].setChecked(False)
 
     ## MARKETMAKER TAB FUNCTIONS
-    def update_mm2_balance_from_thread(self, bal_info):
-        if 'coin' in bal_info:
-            coin = bal_info['coin']
-            address = bal_info['address']
-            total = bal_info['balance']
-            locked = bal_info['locked_by_swaps']
-            available = float(bal_info['balance']) - float(bal_info['locked_by_swaps'])
-            self.balances_data["mm2"].update({coin: {
-                    "address":address,
-                    "total":total,
-                    "locked":locked,
-                    "available":available,
-                    }                
-                })
 
     def update_mm2_balance_table(self): 
         r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
@@ -801,7 +703,7 @@ class Ui(QTabWidget):
                     logger.info("MM2 balance table data unchanged, not updating...")
 
     def update_mm2_orderbook_table(self):
-        baserel = self.get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, 'mm2')
+        baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
         base = baserel[0]
         rel = baserel[1]
         # refresh tables
@@ -812,7 +714,10 @@ class Ui(QTabWidget):
         logger.info("Updating MM2 orders table")
         populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
             
-    def update_mm2_orderbook_labels(self, base, rel):
+    def update_mm2_orderbook_labels(self):
+        baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
+        base = baserel[0]
+        rel = baserel[1]
         self.orderbook_buy_amount_lbl.setText(""+rel+" Buy Amount")
         self.orderbook_sell_amount_lbl.setText(""+base+" Sell Amount")
         self.orderbook_price_lbl.setText(""+rel+" Buy Price in "+base)
@@ -860,7 +765,6 @@ class Ui(QTabWidget):
                 # set price and buy amount inputs from row selection
                 self.orderbook_price_spinbox.setValue(float(price))
                 self.orderbook_sell_amount_spinbox.setValue(float(sell_amount))
-
 
     def mm2_orderbook_combo_box_switch(self):
         logger.info('combo_box_switch')
@@ -955,41 +859,12 @@ class Ui(QTabWidget):
     def mm2_orderbook_sell_amount_changed(self):
         self.update_mm2_orderbook_amounts('orderbook_sell_amount_spinbox')
 
-    def get_trade_fee(self, coin):
-        try:
-            trade_fee_resp = rpclib.get_fee(self.creds[0], self.creds[1], rel).json()
-            logger.info("trade_fee_resp: "+str(trade_fee_resp))
-            trade_fee = float(trade_fee_resp['result']['amount'])
-        except Exception as e:
-            logger.info("get_fee failed "+str(e))
-            trade_fee = 0.001
-        return trade_fee
-
     def mm2_orderbook_buy(self):
         rel = self.combo_selected(self.orderbook_sell_combo)
         base = self.combo_selected(self.orderbook_buy_combo)
+        vol = self.orderbook_buy_amount_spinbox.value()
         price = self.orderbook_price_spinbox.value()
-        trade_val = round(float(price)*float(vol),8)
-        trade_fee = self.get_trade_fee(rel)
-        trade_vol = self.orderbook_buy_amount_spinbox.value() - float(trade_fee)*2
-        resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
-        if 'error' in resp:
-            while resp['error'].find("too low, required") > -1:
-                time.sleep(0.01)
-                logger.info("trade_vol error: "+str(resp['error']))
-                logger.info("reducing trade vol 1% and trying again...")
-                trade_vol = trade_vol*0.99
-                resp = rpclib.buy(self.creds[0], self.creds[1], base, rel, trade_vol, price).json()
-                if 'error' not in resp:
-                    break
-            if resp['error'].find("larger than available") > -1:
-                msg = "Insufficient funds to complete order."
-            else:
-                msg = resp
-        elif 'result' in resp:
-            logger.info("Buying "+str(trade_vol)+" "+base +" for "+" "+str(trade_val)+" "+rel+" (fee estimate: "+str(trade_fee)+" "+rel+")")
-            msg = "Order Submitted.\n"
-            msg += "Buying "+str(trade_vol)+" "+base +"\nfor\n"+" "+str(trade_val)+" "+rel+"\nFee estimate: "+str(trade_fee)+" "+rel
+        msg = rpclib.process_mm2_buy(mm2_ip, mm2_pass, base, rel, vol, price)
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_binance_orderbook(self):
@@ -997,7 +872,7 @@ class Ui(QTabWidget):
         # wallet combobox
         update_combo(self.binance_asset_comboBox,tickers,tickers[0])
         # trade combobox
-        baserel = self.get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, "Binance")
+        baserel = get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, self.active_coins[:], "Binance")
         base = baserel[0]
         rel = baserel[1]
         assetinfo = binance_api.base_asset_info[base]
@@ -1076,19 +951,6 @@ class Ui(QTabWidget):
         self.show_mm2_orderbook_tab()
    
     ## Binance Tab
-    def bn_update_balance_from_thread(self, bal_info):
-        logger.info('bn update_balance_from_thread')
-        for coin in bal_info:
-            total = bal_info[coin]['total']
-            locked = bal_info[coin]['locked']
-            available = bal_info[coin]['available']
-            self.balances_data["Binance"].update({coin: {
-                    "total":total,
-                    "locked":locked,
-                    "available":available,
-                    "address":"Loading...",
-                    }                
-                })
 
     def binance_combo_box_change(self):
         self.binance_price_spinbox.setValue(0)
@@ -1097,6 +959,7 @@ class Ui(QTabWidget):
         self.show_binance_trading_tab()
 
     def update_binance_labels(self, base, rel):
+        balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
         self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
         self.binance_base_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
         if not self.authenticated_binance:
@@ -1106,18 +969,18 @@ class Ui(QTabWidget):
             self.binance_base_locked_lbl.setText('Locked: Invalid API key!')    
         else:
             # Quote coin icon and balances
-            if rel in self.balances_data["Binance"]:
-                locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][rel]['locked']),8))
-                balance = "Balance: "+str(round(float(self.balances_data["Binance"][rel]['total']),8))
+            if rel in balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(balances_data["Binance"][rel]['locked']),8))
+                balance = "Balance: "+str(round(float(balances_data["Binance"][rel]['total']),8))
             else:
                 locked_text = ""
                 balance = "loading balance..."
             self.binance_quote_balance_lbl.setText(balance)
             self.binance_quote_locked_lbl.setText(locked_text)
             # Base coin icon and balances
-            if base in self.balances_data["Binance"]:
-                locked_text = "Locked: "+str(round(float(self.balances_data["Binance"][base]['locked']),8))
-                balance = "Balance: "+str(round(float(self.balances_data["Binance"][base]['total']),8))
+            if base in balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(balances_data["Binance"][base]['locked']),8))
+                balance = "Balance: "+str(round(float(balances_data["Binance"][base]['total']),8))
             else:
                 locked_text = ""
                 balance = "loading balance..."
@@ -1155,8 +1018,6 @@ class Ui(QTabWidget):
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
 
     def update_binance_orders_table(self):
-        logger.info('update_binance_orders_table')
-        # populate binance depth table
         request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def show_qr_popup(self):
@@ -1166,27 +1027,10 @@ class Ui(QTabWidget):
         mm2_qr.show()
 
     def update_binance_balance_table(self):
-        self.binance_balances_table.clearContents()
         if self.authenticated_binance:
-            logger.info("Updating Binance balance table")
-            row_count = len(self.balances_data["Binance"])
-            self.binance_balances_table.setRowCount(row_count)
-            self.binance_balances_table.setSortingEnabled(False)
-            row = 0
-            if row_count == 0:
-                self.binance_balances_msg_lbl.setText('Balances loading...')
-            else:
-                self.binance_balances_msg_lbl.setText('')
-                for coin in self.balances_data["Binance"]:
-                    available = float(self.balances_data["Binance"][coin]['available'])
-                    total = float(self.balances_data["Binance"][coin]['total'])
-                    locked = float(self.balances_data["Binance"][coin]['locked'])
-                    balance_row = [coin, format_num_10f(total), format_num_10f(available), format_num_10f(locked)]
-                    add_row(row, balance_row, self.binance_balances_table)
-                    row += 1
-            self.binance_balances_table.setSortingEnabled(True)
-            #self.binance_balances_table.sortItems(1, Qt.DescendingOrder)
-            #self.binance_balances_table.resizeColumnsToContents()
+            populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
+        else:
+            self.binance_balances_msg_lbl.setText('Invalid API key!')
 
     def update_binance_depth_table(self):
         base = self.combo_selected(self.binance_base_combo)
@@ -1195,17 +1039,18 @@ class Ui(QTabWidget):
         self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
         self.binance_base_amount_lbl.setText("Amount ("+base+")")
         self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
-        ticker_pair = base+rel
         self.binance_sell_btn.setText("Sell "+base)
         self.binance_buy_btn.setText("Buy "+base)
         # populate binance depth table
         QApplication.processEvents()
-        request_table_data("table/get_binance_depth/"+ticker_pair,
+        logger.info("Get Binance bid depth")
+        request_table_data("table/get_binance_depth/"+base+rel+"/bids",
                             self.binance_depth_table_bid,
                             "",
                             "",
                             "3|Bid|INCLUDE")
-        request_table_data("table/get_binance_depth/"+ticker_pair,
+        logger.info("Get Binance ask depth")
+        request_table_data("table/get_binance_depth/"+base+rel+"/asks",
                             self.binance_depth_table_ask,
                             "",
                             "",
@@ -1458,16 +1303,16 @@ class Ui(QTabWidget):
             msg = str(resp)
         return msg
 
-
     ## STRATEGIES TAB
     def populate_strategy_lists(self):
         logger.info('Populating strategy lists')
         self.strat_buy_list.clear()
         self.strat_sell_list.clear()
         self.strat_cex_list.clear()
+        prices_data = requests.get('http://127.0.0.1:8000/all_prices').json()
         for coin in self.active_coins:
-            if len(self.prices_data['average'][coin]['btc_sources']) > 0:
-                if 'mm2_orderbook' not in self.prices_data['average'][coin]['btc_sources']:
+            if len(prices_data['average'][coin]['btc_sources']) > 0:
+                if 'mm2_orderbook' not in prices_data['average'][coin]['btc_sources']:
                     buy_list_item = QListWidgetItem(coin)
                     buy_list_item.setTextAlignment(Qt.AlignHCenter)
                     self.strat_buy_list.addItem(buy_list_item)
@@ -1617,7 +1462,6 @@ class Ui(QTabWidget):
             self.rpc_ip_text_input.setReadOnly(False)
 
     def save_config(self):
-        # update user config and credentials
         msg = self.validate_config()
         if msg == '':
             if os.path.isfile(config_path+self.username+"_MM2.enc"):
@@ -1627,13 +1471,16 @@ class Ui(QTabWidget):
                     if ok:
                         if passwd == self.password:
                             self.update_creds(passwd)
-                            QMessageBox.information(self, 'Settings file created', "Settings updated. Please login again.", QMessageBox.Ok, QMessageBox.Ok)
+                            msg_title = 'Settings updated!'
+                            msg = "Settings updated. Please login again."
                             self.logout()
                         else:
-                            QMessageBox.information(self, 'Password incorrect!', 'Password incorrect!', QMessageBox.Ok, QMessageBox.Ok)
+                            msg_title = 'Password incorrect!'
+                            msg = 'Password incorrect!'
+                        QMessageBox.information(self, msg_title, msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
-            QMessageBox.information(self, 'Validation failed', msg, QMessageBox.Ok, QMessageBox.Ok)
-            pass
+            msg_title = 'Validation failed'
+            QMessageBox.information(self, msg_title, msg, QMessageBox.Ok, QMessageBox.Ok)
 
     def validate_config(self):
         msg = ''
@@ -1668,12 +1515,7 @@ class Ui(QTabWidget):
     # Generate wallet seed
     # TODO: add other languages
     def generate_seed(self):
-        seed_words_list = []
-        while len(seed_words_list) < 24:
-            word = random.choice(wordlist.wordlist)
-            if word not in seed_words_list:
-                seed_words_list.append(word)
-        seed_phrase = " ".join(seed_words_list)
+        seed_phrase = get_seed()
         self.seed_text_input.setText(seed_phrase)
 
     def import_swap_data(self):
@@ -1687,11 +1529,9 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_prices_table(self):
-        logger.info("Updating Prices table")
         populate_table('', self.prices_table, self.prices_table_msg, "", "", "table/prices")
 
     def update_mm2_trade_history_table(self):
-        logger.info("Updating MM2 trade history table")
         if self.mm2_hide_failed_checkbox.isChecked():
             populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
         else:
@@ -1702,7 +1542,6 @@ class Ui(QTabWidget):
             row_fg(self.mm2_trades_table, pallete.lt_orange, 2, ['Failed','Finished'], 'exclude')
 
     def update_strategy_history_table(self):
-        logger.info("Updating Strategy history table")
         populate_table('', self.strategy_trades_table, self.strategy_trades_msg_lbl, "", "", "table/strategies_history")  
         row_fg(self.strategy_trades_table, pallete.lt_green, 9, ['Complete'], 'include')
         row_fg(self.strategy_trades_table, pallete.lt_orange, 9, ['Complete'], 'exclude')
@@ -1775,22 +1614,6 @@ if __name__ == '__main__':
     window = Ui(appctxt)
     window.resize(width, height)
     exit_code = appctxt.app.exec_()
-    if 'api_proc' in locals():
-        logger.info("Kill api_proc")
-        api_proc.kill()
-        api_proc.wait()
-        if platform.system() == 'Windows':
-            kill_mm2 = subprocess.Popen(["tskill", "mmbot_api.exe"], startupinfo=startupinfo)
-        else:
-            kill_mm2 = subprocess.Popen(["pkill", "-9", "mmbot_api"], startupinfo=startupinfo)
-        kill_mm2.wait()
-    if 'mm2_proc' in locals():
-        logger.info("Kill mm2_proc")
-        mm2_proc.kill()
-        mm2_proc.wait()
-        if platform.system() == 'Windows':
-            kill_mm2 = subprocess.Popen(["tskill", "mm2.exe"], startupinfo=startupinfo)
-        else:
-            kill_mm2 = subprocess.Popen(["pkill", "-9", "mm2"], startupinfo=startupinfo)
-        kill_mm2.wait()
+    kill_mm2()      
+    kill_api()      
     sys.exit(exit_code)
