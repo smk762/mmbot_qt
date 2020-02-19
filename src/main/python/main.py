@@ -1196,11 +1196,15 @@ class Ui(QTabWidget):
             label_data = requests.get('http://127.0.0.1:8000/labels/mm2_wallet/'+coin).json()
             logger.info(label_data)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
-            if coinslib.coin_explorers[coin]['addr_explorer'] != '':
-                self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+label_data['address']+"'> \
-                                             <span style='text-decoration: underline; color:#eeeeec;'>"+label_data['address']+"</span></href>")
+            if label_data['address'] != '':
+                if coinslib.coin_explorers[coin]['addr_explorer'] != '':
+                    self.wallet_address.setText("<a href='"+coinslib.coin_explorers[coin]['addr_explorer']+"/"+label_data['address']+"'> \
+                                                 <span style='text-decoration: underline; color:#eeeeec;'>"+label_data['address']+"</span></href>")
+                else:
+                    self.wallet_address.setText(label_data['address'])
+                self.mm2_qr_code_link.show()
             else:
-                self.wallet_address.setText(label_data['address']) 
+                self.mm2_qr_code_link.hide()
             try:
                 self.wallet_balance.setText(str(round(label_data['total'],8))+" "+coin)
                 self.wallet_locked_by_swaps.setText("locked by swaps: "+str(round(label_data['locked'],8))+" "+coin)
@@ -1230,11 +1234,11 @@ class Ui(QTabWidget):
         if r.status_code == 200:
             if 'table_data' in r.json():
                 table_data = r.json()['table_data']
-                # ''' Doesnt like data shape changing... ?
                 self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
-                self.wallet_balances_table.setModel(self.mm2_bal_model)
+                self.proxyModel = QSortFilterProxyModel()
+                self.proxyModel.setSourceModel(self.mm2_bal_model)
+                self.wallet_balances_table.setModel(self.proxyModel)
                 self.wallet_balances_table.setSortingEnabled(True)
-                #self.wallet_balances_table.clicked.connect(self.mm2_bal_model.update_wallet)
                 self.wallet_balances_table.clicked.connect(self.mm2_bal_model.update_wallet)    
                 self.mm2_bal_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
                 self.mm2_bal_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   

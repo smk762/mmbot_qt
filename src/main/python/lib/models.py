@@ -125,6 +125,5 @@ class mm2_TableModel(QtCore.QAbstractTableModel):
 
     def update_wallet(self, selectedIndexes):
         self._coin = self._data[selectedIndexes.row()][0]
-        print(self._coin)
         self.update_mm2_wallet.emit(self._coin)
 
