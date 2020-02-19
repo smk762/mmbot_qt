@@ -7994,6 +7994,9 @@ color: rgb(46, 52, 54);</string>
                   <property name="dragDropOverwriteMode">
                    <bool>false</bool>
                   </property>
+                  <property name="selectionMode">
+                   <enum>QAbstractItemView::SingleSelection</enum>
+                  </property>
                   <property name="selectionBehavior">
                    <enum>QAbstractItemView::SelectRows</enum>
                   </property>

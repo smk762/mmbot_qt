@@ -71,6 +71,7 @@ class bn_TableModel(QtCore.QAbstractTableModel):
 
 class mm2_TableModel(QtCore.QAbstractTableModel):
     update_sum_vals = pyqtSignal(float,float,float)
+    update_mm2_wallet  = pyqtSignal(str)
     def __init__(self, jsondata=None):
         super(mm2_TableModel, self).__init__()
         self._jsondata = jsondata or {}
@@ -92,7 +93,6 @@ class mm2_TableModel(QtCore.QAbstractTableModel):
                         self._btc_sum += val_row[3]
                     if val_row[4] != '-':
                         self._kmd_sum += val_row[4]
-        print(self._data)
 
     def data(self, index, role):
         if role == Qt.DisplayRole:
@@ -122,4 +122,9 @@ class mm2_TableModel(QtCore.QAbstractTableModel):
 
     def update_sum_val_labels(self):
         self.update_sum_vals.emit(self._btc_sum, self._kmd_sum, self._usd_sum)
+
+    def update_wallet(self, selectedIndexes):
+        self._coin = self._data[selectedIndexes.row()][0]
+        print(self._coin)
+        self.update_mm2_wallet.emit(self._coin)
 

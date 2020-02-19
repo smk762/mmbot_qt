@@ -1232,44 +1232,20 @@ class Ui(QTabWidget):
                 table_data = r.json()['table_data']
                 # ''' Doesnt like data shape changing... ?
                 self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
-                self.proxyModel = QSortFilterProxyModel()
-                self.proxyModel.setSourceModel(self.mm2_bal_model)
-                self.wallet_balances_table.setModel(self.proxyModel)
+                self.wallet_balances_table.setModel(self.mm2_bal_model)
                 self.wallet_balances_table.setSortingEnabled(True)
-                self.mm2_bal_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)       
+                #self.wallet_balances_table.clicked.connect(self.mm2_bal_model.update_wallet)
+                self.wallet_balances_table.clicked.connect(self.mm2_bal_model.update_wallet)    
+                self.mm2_bal_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
+                self.mm2_bal_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
+
                 self.mm2_bal_model.update_sum_val_labels()
                 logger.info("MM2 Balance Updated")
-                '''
-                if table_data != self.mm2_balanceTable_data:
-                    logger.info("Updating MM2 balance table")
-                    self.wallet_balances_table.clearContents()
-                    self.wallet_balances_table.setSortingEnabled(False)
-                    self.wallet_balances_table.setRowCount(len(table_data)-1)
-                    row = 0
-                    for row_data in table_data:
-                        if row_data['Coin'] != 'TOTAL':
-                            add_row(row, row_data.values(), self.wallet_balances_table)
-                            row += 1
-                    adjust_cols(self.wallet_balances_table, table_data)
-                    self.wallet_balances_table.setSortingEnabled(True)
-                    self.wallet_balances_table.resizeColumnsToContents()
-                    self.wallet_balances_table.sortItems(0, Qt.AscendingOrder)
-                    if row_data:
-                        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(row_data['KMD Value'],4)))
-                        self.wallet_usd_total.setText("Total USD Value: $"+str(round(row_data['USD Value'],4)))
-                        self.wallet_btc_total.setText("Total BTC Value: "+str(round(row_data['BTC Value'],8)))
-                        self.mm2_balanceTable_data = table_data
-                else:
-                    logger.info("MM2 balance table data unchanged, not updating...")
-                '''
 
-    def select_wallet_from_table(self):
-        selected_row = self.wallet_balances_table.currentRow()
-        if selected_row != -1 and self.wallet_balances_table.item(selected_row,0) is not None:
-            coin = self.wallet_balances_table.item(selected_row,0).text()
-            self.wallet_balances_table.setRangeSelected(QTableWidgetSelectionRange(selected_row, 0, selected_row, 3), False)
-            update_combo(self.wallet_combo,self.active_coins,coin)
-            self.show_mm2_wallet_tab()
+
+    def select_wallet_from_table(self, coin):
+        update_combo(self.wallet_combo,self.active_coins,coin)
+        self.show_mm2_wallet_tab()
 
     def set_max_withdraw(self):
         coin = self.combo_selected(self.wallet_combo)
