@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>5</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7999,6 +7999,9 @@ color: rgb(46, 52, 54);</string>
                   </property>
                   <attribute name="horizontalHeaderMinimumSectionSize">
                    <number>50</number>
+                  </attribute>
+                  <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+                   <bool>true</bool>
                   </attribute>
                   <attribute name="verticalHeaderVisible">
                    <bool>false</bool>

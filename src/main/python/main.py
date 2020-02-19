@@ -1220,6 +1220,11 @@ class Ui(QTabWidget):
         mm2_qr = qr_popup("MM2 "+coin+" Address QR Code ", addr_txt)
         mm2_qr.show()
 
+    def update_mm2_balance_sum_labels(self, sum_btc, sum_kmd, sum_usd):
+        self.wallet_btc_total.setText("Total BTC Value: "+str(round(sum_btc,8)))
+        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(sum_kmd,4)))
+        self.wallet_usd_total.setText("Total USD Value: $"+str(round(sum_usd,4)))
+
     def update_mm2_balance_table(self):
         r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
         if r.status_code == 200:
@@ -1227,7 +1232,12 @@ class Ui(QTabWidget):
                 table_data = r.json()['table_data']
                 # ''' Doesnt like data shape changing... ?
                 self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
-                self.wallet_balances_table.setModel(self.mm2_bal_model)
+                self.proxyModel = QSortFilterProxyModel()
+                self.proxyModel.setSourceModel(self.mm2_bal_model)
+                self.wallet_balances_table.setModel(self.proxyModel)
+                self.wallet_balances_table.setSortingEnabled(True)
+                self.mm2_bal_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)       
+                self.mm2_bal_model.update_sum_val_labels()
                 logger.info("MM2 Balance Updated")
                 '''
                 if table_data != self.mm2_balanceTable_data:
