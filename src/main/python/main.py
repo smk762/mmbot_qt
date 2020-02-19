@@ -1225,7 +1225,7 @@ class Ui(QTabWidget):
         if r.status_code == 200:
             if 'table_data' in r.json():
                 table_data = r.json()['table_data']
-                ''' Doesnt like data shape changing...
+                # ''' Doesnt like data shape changing... ?
                 self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
                 self.wallet_balances_table.setModel(self.mm2_bal_model)
                 logger.info("MM2 Balance Updated")
@@ -1251,7 +1251,7 @@ class Ui(QTabWidget):
                         self.mm2_balanceTable_data = table_data
                 else:
                     logger.info("MM2 balance table data unchanged, not updating...")
-                
+                '''
 
     def select_wallet_from_table(self):
         selected_row = self.wallet_balances_table.currentRow()

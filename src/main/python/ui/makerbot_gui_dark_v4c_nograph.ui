@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>5</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7817,6 +7817,12 @@ color: rgb(46, 52, 54);</string>
                   <property name="selectionBehavior">
                    <enum>QAbstractItemView::SelectRows</enum>
                   </property>
+                  <attribute name="verticalHeaderVisible">
+                   <bool>false</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderHighlightSections">
+                   <bool>false</bool>
+                  </attribute>
                  </widget>
                 </item>
                </layout>
@@ -7960,7 +7966,7 @@ color: rgb(46, 52, 54);</string>
                  </spacer>
                 </item>
                 <item row="0" column="0">
-                 <widget class="QTableWidget" name="wallet_balances_table">
+                 <widget class="QTableView" name="wallet_balances_table">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
                     <horstretch>0</horstretch>
@@ -7982,20 +7988,29 @@ color: rgb(46, 52, 54);</string>
                   <property name="editTriggers">
                    <set>QAbstractItemView::NoEditTriggers</set>
                   </property>
+                  <property name="showDropIndicator" stdset="0">
+                   <bool>false</bool>
+                  </property>
+                  <property name="dragDropOverwriteMode">
+                   <bool>false</bool>
+                  </property>
                   <property name="selectionBehavior">
                    <enum>QAbstractItemView::SelectRows</enum>
                   </property>
-                  <attribute name="horizontalHeaderDefaultSectionSize">
-                   <number>100</number>
-                  </attribute>
-                  <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                   <bool>false</bool>
-                  </attribute>
-                  <attribute name="horizontalHeaderStretchLastSection">
-                   <bool>true</bool>
+                  <attribute name="horizontalHeaderMinimumSectionSize">
+                   <number>50</number>
                   </attribute>
                   <attribute name="verticalHeaderVisible">
                    <bool>false</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderCascadingSectionResizes">
+                   <bool>false</bool>
+                  </attribute>
+                  <attribute name="verticalHeaderDefaultSectionSize">
+                   <number>30</number>
+                  </attribute>
+                  <attribute name="verticalHeaderMinimumSectionSize">
+                   <number>20</number>
                   </attribute>
                  </widget>
                 </item>
@@ -9778,6 +9793,15 @@ background-color: rgb(85, 87, 83);</string>
             <property name="sortingEnabled">
              <bool>true</bool>
             </property>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderHighlightSections">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>20</number>
+            </attribute>
            </widget>
           </item>
          </layout>
