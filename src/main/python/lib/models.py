@@ -69,11 +69,9 @@ class bn_TableModel(QtCore.QAbstractTableModel):
             if orientation == Qt.Horizontal:
                 return str(self._headers[section])
 
-class mm2_TableModel(QtCore.QAbstractTableModel):
-    update_sum_vals = pyqtSignal(float,float,float)
-    update_mm2_wallet  = pyqtSignal(str)
+class mm2_balance_TableModel(QtCore.QAbstractTableModel):
     def __init__(self, jsondata=None):
-        super(mm2_TableModel, self).__init__()
+        super(mm2_balance_TableModel, self).__init__()
         self._jsondata = jsondata or {}
         self._headers = []
         self._data = []
@@ -120,10 +118,47 @@ class mm2_TableModel(QtCore.QAbstractTableModel):
             if orientation == Qt.Horizontal:
                 return str(self._headers[section])
 
+    update_sum_vals = pyqtSignal(float,float,float)
     def update_sum_val_labels(self):
         self.update_sum_vals.emit(self._btc_sum, self._kmd_sum, self._usd_sum)
 
+    update_mm2_wallet  = pyqtSignal(str)
     def update_wallet(self, selectedIndexes):
         self._coin = self._data[selectedIndexes.row()][0]
         self.update_mm2_wallet.emit(self._coin)
 
+
+
+class mm2_tx_TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, jsondata):
+        super(mm2_tx_TableModel, self).__init__()
+        self._jsondata = jsondata
+        self._headers = []
+        self._data = []
+        if len(self._jsondata) > 0:
+            self._headers = list(self._jsondata[0].keys())
+            for item in self._jsondata:
+                self._data.append(list(item.values()))
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            return str(value)
+        if role == Qt.ForegroundRole and self._data[index.row()][1] == 0:
+            return QtGui.QColor('gray')
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter
+
+    def rowCount(self, index):
+        return len(self._data)
+
+    def columnCount(self, index):
+        if len(self._data) > 0:
+            return len(self._data[0])
+        return 0
+    
+    def headerData(self, section, orientation, role):
+        # section is the index of the column/row.
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._headers[section])

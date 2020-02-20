@@ -24,6 +24,7 @@ import platform
 import subprocess
 import decimal
 import logging
+from operator import itemgetter 
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 home = expanduser("~")
@@ -440,9 +441,6 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
-            self.wallet_recipient.setText('')
-            self.wallet_amount.setValue(0)
-            self.wallet_recipient.setFocus()
             if self.wallet_combo.currentIndex() != -1:
                 selected = self.combo_selected(self.wallet_combo)
             else:
@@ -1188,11 +1186,15 @@ class Ui(QTabWidget):
     ## WALLET TAB
 
     def update_mm2_wallet_labels(self):
+        self.wallet_recipient.setText('')
+        self.wallet_amount.setValue(0)
+        self.wallet_recipient.setFocus()
         index = self.wallet_combo.currentIndex()
         if index != -1:
             wallet_labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_btc_value, self.wallet_usd_value, self.wallet_kmd_value]
             clear_labels(wallet_labels)
             coin = self.wallet_combo.itemText(index)
+            self.wallet_amount.setSuffix(" "+coin)
             label_data = requests.get('http://127.0.0.1:8000/labels/mm2_wallet/'+coin).json()
             logger.info(label_data)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
@@ -1217,6 +1219,7 @@ class Ui(QTabWidget):
                 self.wallet_usd_value.setText("")
                 self.wallet_btc_value.setText("")
                 self.wallet_kmd_value.setText("")
+            self.update_mm2_tx_table(coin)
 
     def show_mm2_qr_popup(self):
         coin = self.combo_selected(self.wallet_combo)
@@ -1233,19 +1236,28 @@ class Ui(QTabWidget):
         r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
         if r.status_code == 200:
             if 'table_data' in r.json():
-                table_data = r.json()['table_data']
-                self.mm2_bal_model = mm2_TableModel(r.json()['table_data'])
-                self.proxyModel = QSortFilterProxyModel()
-                self.proxyModel.setSourceModel(self.mm2_bal_model)
-                self.wallet_balances_table.setModel(self.proxyModel)
-                self.wallet_balances_table.setSortingEnabled(True)
-                self.wallet_balances_table.clicked.connect(self.mm2_bal_model.update_wallet)    
-                self.mm2_bal_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
-                self.mm2_bal_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
-
-                self.mm2_bal_model.update_sum_val_labels()
+                table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
+                self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
+                #self.proxyModel = QSortFilterProxyModel()
+                #self.proxyModel.setSourceModel(self.mm2_bal_tbl_model)
+                self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
+                #self.wallet_balances_table.setSortingEnabled(True)
+                self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
+                self.mm2_bal_tbl_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
+                self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
+                self.mm2_bal_tbl_model.update_sum_val_labels()
+                self.wallet_balances_table.resizeColumnsToContents()
                 logger.info("MM2 Balance Updated")
 
+    def update_mm2_tx_table(self, coin):
+        r = requests.get("http://127.0.0.1:8000/table/mm2_tx_history/"+coin)
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                table_data = sorted(r.json()['table_data'], key=itemgetter('Time'), reverse=True) 
+                self.mm2_tx_tbl_model = mm2_tx_TableModel(table_data)
+                self.mm2_tx_table.setModel(self.mm2_tx_tbl_model)
+                self.mm2_tx_table.resizeColumnsToContents()
+                logger.info("MM2 tx table updated")
 
     def select_wallet_from_table(self, coin):
         update_combo(self.wallet_combo,self.active_coins,coin)

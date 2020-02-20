@@ -197,6 +197,7 @@ def populate_table(r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
 def update_combo(combo,options,selected):
     combo.clear()
     options.sort()
+    print(options)
     combo.addItems(options)
     if selected in options:
         for i in range(combo.count()):
@@ -255,7 +256,11 @@ def get_base_rel_from_combos(base_combo, rel_combo, active_coins, api='mm2'):
             active_coins_selection.remove(rel)
             base = update_combo(base_combo,active_coins_selection,base)
     elif api == "Binance":
+        #print("binance_api.exch_info: "+str(binance_api.exch_info))
+        #print(binance_api.base_asset_info.keys())
+        #print("active_coins: "+str(active_coins))
         base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(active_coins))
+        #print("base_coins_selection: "+str(base_coins_selection))
         if len(base_coins_selection) > 0:                
             base = update_combo(base_combo,base_coins_selection,base)
             rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']

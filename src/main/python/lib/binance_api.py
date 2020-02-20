@@ -316,6 +316,7 @@ def get_exchange_info():
     base_asset_info = {}
     quoteAssets = []
     for item in resp['symbols']:
+        print(item)
         symbol = item['symbol']
         status = item['status']
         baseAsset = item['baseAsset']
@@ -382,11 +383,13 @@ def get_exchange_info():
 
 
 exch_info = get_exchange_info()
+print(exch_info)
 binance_pairs = exch_info[0]
 base_asset_info = exch_info[1]
 quoteAssets = exch_info[2]
 binance_pair_info = exch_info[3]
 supported_binance_pairs = exch_info[4]
+
 
 def get_binance_balances(key, secret):
     binance_balances = {}
