@@ -24,6 +24,7 @@ import platform
 import subprocess
 import decimal
 import logging
+import logging.handlers
 from operator import itemgetter 
 #from PyQt5.QtWebEngineWidgets import QWebEngineView
 
@@ -50,15 +51,6 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler()
 logger.addHandler(handler)
 handler.setFormatter(formatter)
-
-# File logging
-if not os.path.exists(config_path+"/debug"):
-    os.makedirs(config_path+"/debug")
-debug_log = config_path+'/debug/debug_'+str(int(time.time()))+'.log'
-fh = logging.FileHandler(debug_log)
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(formatter)
-logger.addHandler(fh)
 
 os.environ['MM_CONF_PATH'] = config_path+"MM2.json"
 
@@ -416,6 +408,7 @@ class Ui(QTabWidget):
             QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
         else:
+            logger.info("MM2 orderbook tab")
             self.update_mm2_orderbook_table()
             self.update_mm2_orders_table()
             self.update_mm2_orderbook_labels()
@@ -479,6 +472,8 @@ class Ui(QTabWidget):
         self.update_console_logs()
 
     def update_console_logs(self):
+        api_debug_log = config_path+'debug/'+self.username+'_debug_api.log'
+        gui_debug_log = config_path+'debug/'+self.username+'_debug_gui.log'
         if self.username != '':
             mm2_output = open(config_path+self.username+"_mm2_output.log",'r')
             with mm2_output as f:
@@ -486,14 +481,14 @@ class Ui(QTabWidget):
                 self.scrollbar = self.mm2_console_logs.verticalScrollBar()
                 self.mm2_console_logs.setPlainText(log_text)
                 self.scrollbar.setValue(self.scrollbar.maximum())
-            api_output = open(config_path+self.username+"_bot_api_output.log",'r')
+            api_output = open(api_debug_log,'r')
             with api_output as f:
                 log_text = f.read()
                 self.scrollbar = self.api_console_logs.verticalScrollBar()
                 self.api_console_logs.setPlainText(log_text)
                 self.scrollbar.setValue(self.scrollbar.maximum())
-            app_output = open(debug_log, 'r')
-            with app_output as f:
+            gui_output = open(gui_debug_log, 'r')
+            with gui_output as f:
                 log_text = f.read()
                 self.scrollbar = self.app_console_logs.verticalScrollBar()
                 self.app_console_logs.setPlainText(log_text)
@@ -509,6 +504,7 @@ class Ui(QTabWidget):
             self.decrypt_creds()
             if self.authenticated:   
                 self.launch_bins()
+                self.start_logging_gui()
             elif self.username in settings.value('users'):
                 QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
             else:
@@ -518,7 +514,18 @@ class Ui(QTabWidget):
                     self.authenticated = True
                     self.setCurrentWidget(self.findChild(QWidget, 'tab_config'))
                 elif resp == QMessageBox.No:
-                    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)        
+                    QMessageBox.information(self, 'Login failed!', 'Incorrect username or password...', QMessageBox.Ok, QMessageBox.Ok)  
+
+    def start_logging_gui(self):
+        # File logging
+        if not os.path.exists(config_path+"/debug"):
+            os.makedirs(config_path+"/debug")
+        gui_debug_log = config_path+'/debug/'+self.username+'_debug_gui.log'
+        fh = logging.handlers.RotatingFileHandler(gui_debug_log, mode='a', maxBytes=500000, backupCount=5, encoding=None, delay=False)
+        #fh = logging.FileHandler(debug_log)
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
 
     def logout(self):
         logger.info("Logging out...")
@@ -537,11 +544,14 @@ class Ui(QTabWidget):
                        self.import_swaps_input, self.swap_recover_uuid]
         for text_input in text_inputs:
             text_input.setText('')
-        tables = [self.orderbook_table, self.mm2_orders_table, self.binance_balances_table, self.binance_orders_table, 
+        tables = [self.mm2_orderbook_table, self.mm2_orders_table, self.binance_balances_table, self.binance_orders_table, 
                   self.wallet_balances_table, self.strategies_table, self.strat_summary_table, self.mm2_trades_table,
                   self.strategy_trades_table]
         for table in tables:
-            table.clearContents()
+            try:
+                table.clearContents()
+            except:
+                pass
         labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_usd_value, self.wallet_btc_value, 
                   self.orderbook_buy_balance_lbl, self.orderbook_buy_locked_lbl, self.orderbook_sell_balance_lbl,
                   self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
@@ -673,17 +683,6 @@ class Ui(QTabWidget):
 
     ## MARKETMAKER TAB FUNCTIONS
 
-    def update_mm2_orderbook_table(self):
-        baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
-        base = baserel[0]
-        rel = baserel[1]
-        # refresh tables
-        if base != '' and rel != '':
-            populate_table('', self.orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
-
-    def update_mm2_orders_table(self):
-        populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
-            
     def update_mm2_orderbook_labels(self):
         baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
         base = baserel[0]
@@ -717,15 +716,15 @@ class Ui(QTabWidget):
     # Order form button slots
     def mm2_orderbook_get_price(self):
         logger.info('get_price_from_orderbook')        
-        selected_row = self.orderbook_table.currentRow()
-        if selected_row != -1 and self.orderbook_table.item(selected_row,1) is not None:
-            if self.orderbook_table.item(selected_row,3).text() != '':
-                buy_coin = self.orderbook_table.item(selected_row,0).text()
-                sell_coin = self.orderbook_table.item(selected_row,1).text()
-                volume = self.orderbook_table.item(selected_row,2).text()
-                price = self.orderbook_table.item(selected_row,3).text()
-                value = self.orderbook_table.item(selected_row,4).text()
-                sell_amount = self.orderbook_table.item(selected_row,5).text()
+        selected_row = self.mm2_orderbook_table.currentRow()
+        if selected_row != -1 and self.mm2_orderbook_table.item(selected_row,1) is not None:
+            if self.mm2_orderbook_table.item(selected_row,3).text() != '':
+                buy_coin = self.mm2_orderbook_table.item(selected_row,0).text()
+                sell_coin = self.mm2_orderbook_table.item(selected_row,1).text()
+                volume = self.mm2_orderbook_table.item(selected_row,2).text()
+                price = self.mm2_orderbook_table.item(selected_row,3).text()
+                value = self.mm2_orderbook_table.item(selected_row,4).text()
+                sell_amount = self.mm2_orderbook_table.item(selected_row,5).text()
                 try:
                     available_balance = float(self.balances_data['mm2'][sell_coin]['available'])
                 except:
@@ -834,7 +833,7 @@ class Ui(QTabWidget):
         base = self.combo_selected(self.orderbook_buy_combo)
         vol = self.orderbook_buy_amount_spinbox.value()
         price = self.orderbook_price_spinbox.value()
-        msg = rpclib.process_mm2_buy(mm2_ip, mm2_pass, base, rel, vol, price)
+        msg = rpclib.process_mm2_buy(self.creds[0], self.creds[1], base, rel, vol, price)
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_binance_orderbook(self):
@@ -996,17 +995,6 @@ class Ui(QTabWidget):
         mm2_qr = qr_popup("Binance "+coin+" Address QR Code", addr_txt)
         mm2_qr.show()
 
-    def update_binance_balance_table(self):
-        if self.authenticated_binance:
-            r = requests.get("http://127.0.0.1:8000/table/binance_balances")
-            if r.status_code == 200:
-                if 'table_data' in r.json():
-                    self.bn_model = bn_TableModel(r.json()['table_data'])
-                    self.binance_balances_table.setModel(self.bn_model)
-                    logger.info("binance_balances_table changed")
-                #populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
-        else:
-            self.binance_balances_msg_lbl.setText('Invalid API key!')
 
     def update_binance_depth_table(self):
         base = self.combo_selected(self.binance_base_combo)
@@ -1186,17 +1174,19 @@ class Ui(QTabWidget):
     ## WALLET TAB
 
     def update_mm2_wallet_labels(self):
-        self.wallet_recipient.setText('')
-        self.wallet_amount.setValue(0)
-        self.wallet_recipient.setFocus()
         index = self.wallet_combo.currentIndex()
         if index != -1:
+            coin = self.wallet_combo.itemText(index)
+            old_coin = self.wallet_balance.text().split(" ")
+            if len(old_coin) > 1:
+                if old_coin[1] != coin:
+                    self.wallet_recipient.setText('')
+                    self.wallet_amount.setValue(0)
+                    self.wallet_recipient.setFocus()
             wallet_labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_btc_value, self.wallet_usd_value, self.wallet_kmd_value]
             clear_labels(wallet_labels)
-            coin = self.wallet_combo.itemText(index)
             self.wallet_amount.setSuffix(" "+coin)
             label_data = requests.get('http://127.0.0.1:8000/labels/mm2_wallet/'+coin).json()
-            logger.info(label_data)
             self.wallet_coin_img.setText("<html><head/><body><p><img src=\":/300/img/300/"+coin.lower()+".png\"/></p></body></html>")
             if label_data['address'] != '':
                 if coinslib.coin_explorers[coin]['addr_explorer'] != '':
@@ -1210,12 +1200,14 @@ class Ui(QTabWidget):
             try:
                 self.wallet_balance.setText(str(round(label_data['total'],8))+" "+coin)
                 self.wallet_locked_by_swaps.setText("locked by swaps: "+str(round(label_data['locked'],8))+" "+coin)
+            except Exception as e:
+                self.wallet_balance.setText("")
+                self.wallet_locked_by_swaps.setText("")
+            try:
                 self.wallet_usd_value.setText("$"+str(round(label_data['usd_val'],2))+" USD")
                 self.wallet_btc_value.setText(str(round(label_data['btc_val'],8))+" BTC")
                 self.wallet_kmd_value.setText(str(round(label_data['kmd_val'],4))+" KMD")
             except:
-                self.wallet_balance.setText("")
-                self.wallet_locked_by_swaps.setText("")
                 self.wallet_usd_value.setText("")
                 self.wallet_btc_value.setText("")
                 self.wallet_kmd_value.setText("")
@@ -1232,54 +1224,27 @@ class Ui(QTabWidget):
         self.wallet_kmd_total.setText("Total KMD Value: "+str(round(sum_kmd,4)))
         self.wallet_usd_total.setText("Total USD Value: $"+str(round(sum_usd,4)))
 
-    def update_mm2_balance_table(self):
-        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
-        if r.status_code == 200:
-            if 'table_data' in r.json():
-                table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
-                self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
-                #self.proxyModel = QSortFilterProxyModel()
-                #self.proxyModel.setSourceModel(self.mm2_bal_tbl_model)
-                self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
-                #self.wallet_balances_table.setSortingEnabled(True)
-                self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
-                self.mm2_bal_tbl_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
-                self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
-                self.mm2_bal_tbl_model.update_sum_val_labels()
-                self.wallet_balances_table.resizeColumnsToContents()
-                logger.info("MM2 Balance Updated")
-
-    def update_mm2_tx_table(self, coin):
-        r = requests.get("http://127.0.0.1:8000/table/mm2_tx_history/"+coin)
-        if r.status_code == 200:
-            if 'table_data' in r.json():
-                table_data = sorted(r.json()['table_data'], key=itemgetter('Time'), reverse=True) 
-                self.mm2_tx_tbl_model = mm2_tx_TableModel(table_data)
-                self.mm2_tx_table.setModel(self.mm2_tx_tbl_model)
-                self.mm2_tx_table.resizeColumnsToContents()
-                logger.info("MM2 tx table updated")
-
     def select_wallet_from_table(self, coin):
         update_combo(self.wallet_combo,self.active_coins,coin)
         self.show_mm2_wallet_tab()
 
     def set_max_withdraw(self):
         coin = self.combo_selected(self.wallet_combo)
-        balance = self.balances_data["mm2"][coin]["available"]
-        logger.info("send max "+balance)
-        self.wallet_amount.setValue(float(balance))
+        if coin in self.balances_data["mm2"]:
+            balance = self.balances_data["mm2"][coin]["available"]
+            self.wallet_amount.setValue(float(balance))
 
     def set_self_withdraw(self):
         coin = self.combo_selected(self.wallet_combo)
-        addr_txt = self.balances_data["mm2"][coin]["address"]
-        logger.info("self send to "+addr_txt)
-        self.wallet_recipient.setText(addr_txt)
+        if coin in self.balances_data["mm2"]:
+            addr_txt = self.balances_data["mm2"][coin]["address"]
+            self.wallet_recipient.setText(addr_txt)
 
     # process withdrawl from wallet tab
     def send_funds(self):
         coin = self.combo_selected(self.wallet_combo)
         recipient_addr = self.wallet_recipient.text()
-        amount = self.wallet_amount.text()
+        amount = self.wallet_amount.value()
         confirm = QMessageBox.question(self, 'Confirm send?', "Confirm sending "+str(amount)+" "+coin+" to "+recipient_addr+"?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if confirm == QMessageBox.Yes:
             msg = ''
@@ -1287,7 +1252,7 @@ class Ui(QTabWidget):
                 logger.info("withdrawing max "+coin)
                 resp = rpclib.withdraw_max(self.creds[0], self.creds[1], coin, recipient_addr).json()
             else:
-                logger.info("withdrawing "+amount+" "+coin)
+                logger.info("withdrawing "+str(amount)+" "+coin)
                 resp = rpclib.withdraw(self.creds[0], self.creds[1], coin, recipient_addr, amount).json()
             msg = self.process_tx(resp, coin, recipient_addr)
             QMessageBox.information(self, 'Wallet transaction', msg, QMessageBox.Ok, QMessageBox.Ok)
@@ -1539,16 +1504,6 @@ class Ui(QTabWidget):
         resp = rpclib.recover_stuck_swap(self.creds[0], self.creds[1], uuid).json()
         QMessageBox.information(self, 'Recover Stuck Swap', str(resp), QMessageBox.Ok, QMessageBox.Ok)
 
-    def update_prices_table(self):
-        r = requests.get("http://127.0.0.1:8000/table/prices")
-        if r.status_code == 200:
-            if 'table_data' in r.json():
-                self.prices_model = prices_TableModel(r.json()['table_data'])
-                self.prices_table.setModel(self.prices_model)
-                logger.info("prices_table Updated")
-
-        #populate_table('', self.prices_table, self.prices_table_msg, "", "", "table/prices")
-
     def update_mm2_trade_history_table(self):
         if self.mm2_hide_failed_checkbox.isChecked():
             populate_table('', self.mm2_trades_table, self.mm2_trades_msg_lbl, "", "2|Failed|EXCLUDE","table/mm2_history")
@@ -1608,6 +1563,87 @@ class Ui(QTabWidget):
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
             self.show_login_tab()
+
+    ## Modelled Table Views ##
+
+    def update_binance_balance_table(self):
+        if self.authenticated_binance:
+            r = requests.get("http://127.0.0.1:8000/table/binance_balances")
+            if r.status_code == 200:
+                if 'table_data' in r.json():
+                    self.bnBal_tableModel = bn_balance_TableModel(r.json()['table_data'])
+                    self.binance_balances_table.setModel(self.bnBal_tableModel)
+                    logger.info("binance_balances_table changed")
+                #populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
+        else:
+            self.binance_balances_msg_lbl.setText('Invalid API key!')
+
+    def update_mm2_balance_table(self):
+        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
+                self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
+                #self.proxyModel = QSortFilterProxyModel()
+                #self.proxyModel.setSourceModel(self.mm2_bal_tbl_model)
+                self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
+                #self.wallet_balances_table.setSortingEnabled(True)
+                self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
+                self.mm2_bal_tbl_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
+                self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
+                self.mm2_bal_tbl_model.update_sum_val_labels()
+                self.wallet_balances_table.resizeColumnsToContents()
+                logger.info("MM2 Balance Updated")
+
+    def update_mm2_tx_table(self, coin):
+        r = requests.get("http://127.0.0.1:8000/table/mm2_tx_history/"+coin)
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                table_data = sorted(r.json()['table_data'], key=itemgetter('Time'), reverse=True) 
+                self.mm2_tx_tbl_model = mm2_tx_TableModel(table_data)
+                self.mm2_tx_table.setModel(self.mm2_tx_tbl_model)
+                self.mm2_tx_table.resizeColumnsToContents()
+                self.mm2_tx_table.doubleClicked.connect(self.mm2_tx_tbl_model.openExplorer)
+                logger.info("MM2 tx table updated")
+
+    def update_prices_table(self):
+        r = requests.get("http://127.0.0.1:8000/table/prices")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                self.prices_model = prices_TableModel(r.json()['table_data'])
+                self.prices_table.setModel(self.prices_model)
+                self.prices_table.resizeColumnsToContents()
+                logger.info("prices_table Updated")
+
+    def update_mm2_orderbook_table(self):
+        baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
+        base = baserel[0]
+        rel = baserel[1]
+        logger.info("baserel: "+str(baserel))
+        # refresh tables
+        if base != '' and rel != '':
+            r = requests.get("http://127.0.0.1:8000/table/mm2_orderbook/"+rel+"/"+base)
+            if r.status_code == 200:
+                logger.info("mm2_orderbook API: "+str(r.json()))
+                if 'table_data' in r.json():
+                    self.mm2_orderbook_table_model = mm2_orderbook_TableModel(r.json()['table_data'])
+                    self.mm2_orderbook_table.setModel(self.mm2_orderbook_table_model)
+                    self.mm2_orderbook_table.resizeColumnsToContents()
+                    logger.info("mm2_orders_model Updated")
+            else:
+                logger.error("mm2_orderbook API: "+str(r.status_code))
+            #populate_table('', self.mm2_orderbook_table, self.orderbook_msg_lbl, "Click a row to buy "+rel+" from the Antara Marketmaker orderbook", "", "table/mm2_orderbook/"+rel+"/"+base)
+
+    def update_mm2_orders_table(self):
+        r = requests.get("http://127.0.0.1:8000/table/mm2_open_orders")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                self.mm2_orders_model = mm2_orders_TableModel(r.json()['table_data'])
+                self.mm2_orders_table.setModel(self.mm2_orders_model)
+                logger.info("mm2_orders_table Updated")
+
+        #populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
+            
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()
