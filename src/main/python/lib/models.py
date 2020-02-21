@@ -217,6 +217,36 @@ class mm2_orderbook_TableModel(QtCore.QAbstractTableModel):
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
                 return str(self._headers[section])
+## MM2 Orderbook
+class binance_orders_TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, jsondata):
+        super(binance_orders_TableModel, self).__init__()
+        self._data, self._headers = tablize(jsondata)
+
+    def data(self, index, role):
+        if role == Qt.DisplayRole:
+            value = self._data[index.row()][index.column()]
+            return str(value)
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter
+        if role == Qt.ForegroundRole:
+            if self._data[index.row()][1] == 'BUY':
+                return pallete.lt_green
+            if self._data[index.row()][1] == 'SELL':
+                return pallete.lt_red
+
+    def rowCount(self, index):
+        return len(self._data)
+
+    def columnCount(self, index):
+        if len(self._data) > 0:
+            return len(self._data[0])
+        return 0
+    
+    def headerData(self, section, orientation, role):
+        if role == Qt.DisplayRole:
+            if orientation == Qt.Horizontal:
+                return str(self._headers[section])
 
 
 ## Helper functions

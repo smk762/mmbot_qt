@@ -986,8 +986,6 @@ class Ui(QTabWidget):
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
 
-    def update_binance_orders_table(self):
-        request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")
 
     def show_qr_popup(self):
         coin = self.binance_addr_coin_lbl.text().split()[1]
@@ -1640,10 +1638,20 @@ class Ui(QTabWidget):
             if 'table_data' in r.json():
                 self.mm2_orders_model = mm2_orders_TableModel(r.json()['table_data'])
                 self.mm2_orders_table.setModel(self.mm2_orders_model)
+                self.mm2_orders_table.resizeColumnsToContents()
                 logger.info("mm2_orders_table Updated")
 
         #populate_table('', self.mm2_orders_table, self.mm2_orders_msg_lbl, "Highlight a row to select for cancelling order", "", "table/mm2_open_orders")
-            
+
+    def update_binance_orders_table(self):
+        r = requests.get("http://127.0.0.1:8000/table/binance_open_orders")
+        if r.status_code == 200:
+            if 'table_data' in r.json():
+                self.binance_orders_model = binance_orders_TableModel(r.json()['table_data'])
+                self.binance_orders_table.setModel(self.binance_orders_model)
+                self.binance_orders_table.resizeColumnsToContents()
+                logger.info("mm2_orders_table Updated")
+        #request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")            
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()
