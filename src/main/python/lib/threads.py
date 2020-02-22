@@ -34,25 +34,6 @@ class cachedata_thread(QThread):
                 logger.info(e)
             time.sleep(5)
 
-# request and cache external balance and pricing data in thread
-class consoleLogs_thread(QThread):
-    update_logs = pyqtSignal()
-    def __init__(self):
-        QThread.__init__(self)
-
-    def __del__(self):
-        self.wait()
-
-    def run(self):
-        while True:
-            try:
-                self.update_logs.emit()
-            except Exception as e:
-                pass
-                logger.info('console_log error')
-                logger.info(e)
-            time.sleep(1)
-
 # Process mm2 coin activation
 class activation_thread(QThread):
     activate = pyqtSignal(str)

@@ -8,7 +8,6 @@ from . import binance_api
 import random
 
 logger = logging.getLogger(__name__)
-formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s', datefmt='%d-%b-%y %H:%M:%S')
 
 old_data = {}
 
@@ -278,3 +277,7 @@ def async_populate_ask_depth_table(resp):
         table_data = resp.json()['table_data']
         self.ask_tbl_model = bn_ask_TableModel(table_data)
         self.binance_depth_table_ask.setModel(self.ask_tbl_model)
+
+
+def combo_selected(combo):
+    return combo.itemText(combo.currentIndex())

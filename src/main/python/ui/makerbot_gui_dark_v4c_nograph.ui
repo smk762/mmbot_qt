@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>2</number>
+   <number>8</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -9743,7 +9743,7 @@ background-color: rgb(85, 87, 83);</string>
              </font>
             </property>
             <property name="text">
-             <string>Prices data still loading...</string>
+             <string/>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -11510,6 +11510,18 @@ background-color: rgb(85, 87, 83);</string>
           <string>Antara Bot API Console Logs</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_106">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QFrame" name="frame_14">
             <property name="sizePolicy">
@@ -11528,6 +11540,18 @@ background-color: rgb(85, 87, 83);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_46">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QPlainTextEdit" name="api_console_logs">
                <property name="sizePolicy">
@@ -11587,6 +11611,18 @@ background-color: rgb(12, 12, 12);</string>
           <string>Antara Makerbot Console Logs</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_97">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QFrame" name="frame_10">
             <property name="sizePolicy">
@@ -11605,6 +11641,18 @@ background-color: rgb(12, 12, 12);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_35">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QPlainTextEdit" name="app_console_logs">
                <property name="sizePolicy">
@@ -11696,6 +11744,18 @@ background-color: rgb(12, 12, 12);</string>
           <string>Marketmaker Console Logs</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_107">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <widget class="QFrame" name="frame_13">
             <property name="sizePolicy">
@@ -11714,6 +11774,18 @@ background-color: rgb(12, 12, 12);</string>
              <enum>QFrame::Raised</enum>
             </property>
             <layout class="QGridLayout" name="gridLayout_94">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item row="0" column="0">
               <widget class="QPlainTextEdit" name="mm2_console_logs">
                <property name="sizePolicy">
