@@ -73,15 +73,13 @@ class mm2_balance_TableModel(QtCore.QAbstractTableModel):
             self._headers = list(self._jsondata[0].keys())
             for item in self._jsondata:
                 val_row = list(item.values())
-                if val_row[0] != 'TOTAL':
-                    self._data.append(val_row)
-                else:
-                    if val_row[2] != '-':
-                        self._btc_sum += val_row[2]
-                    if val_row[3] != '-':
-                        self._kmd_sum += val_row[3]
-                    if val_row[4] != '-':
-                        self._usd_sum += val_row[4]
+                self._data.append(val_row)
+                if val_row[2] != '-':
+                    self._btc_sum += val_row[2]
+                if val_row[3] != '-':
+                    self._kmd_sum += val_row[3]
+                if val_row[4] != '-':
+                    self._usd_sum += val_row[4]
 
     def data(self, index, role):
         if role == Qt.DisplayRole:

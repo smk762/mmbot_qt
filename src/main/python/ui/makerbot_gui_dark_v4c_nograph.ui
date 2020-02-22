@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>8</number>
+   <number>3</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -7703,6 +7703,9 @@ color: rgb(46, 52, 54);</string>
              <property name="bottomMargin">
               <number>0</number>
              </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
              <item row="1" column="0">
               <widget class="QFrame" name="frame_48">
                <property name="sizePolicy">
@@ -7710,6 +7713,9 @@ color: rgb(46, 52, 54);</string>
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(96, 124, 255);</string>
                </property>
                <property name="frameShape">
                 <enum>QFrame::StyledPanel</enum>
@@ -7722,41 +7728,41 @@ color: rgb(46, 52, 54);</string>
                  <widget class="QLabel" name="wallet_btc_total">
                   <property name="font">
                    <font>
-                    <pointsize>14</pointsize>
+                    <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Total BTC Value: 0.00</string>
+                   <string>0 BTC</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item row="1" column="2">
                  <widget class="QLabel" name="wallet_usd_total">
                   <property name="font">
                    <font>
-                    <pointsize>14</pointsize>
+                    <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Total USD Value $0.00</string>
+                   <string>$0 USD</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
+                <item row="1" column="1">
                  <widget class="QLabel" name="wallet_kmd_total">
                   <property name="font">
                    <font>
-                    <pointsize>14</pointsize>
+                    <pointsize>12</pointsize>
                    </font>
                   </property>
                   <property name="text">
-                   <string>Total KMD Value: 0.00</string>
+                   <string>0 KMD</string>
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>

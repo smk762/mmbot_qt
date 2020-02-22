@@ -1137,9 +1137,9 @@ class Ui(QTabWidget):
         mm2_qr.show()
 
     def update_mm2_balance_sum_labels(self, sum_btc, sum_kmd, sum_usd):
-        self.wallet_btc_total.setText("Total BTC Value: "+str(round(sum_btc,8)))
-        self.wallet_kmd_total.setText("Total KMD Value: "+str(round(sum_kmd,4)))
-        self.wallet_usd_total.setText("Total USD Value: $"+str(round(sum_usd,4)))
+        self.wallet_btc_total.setText(str(round(sum_btc,8))+" BTC")
+        self.wallet_kmd_total.setText(str(round(sum_kmd,4))+" KMD")
+        self.wallet_usd_total.setText("$"+str(round(sum_usd,4))+" USD")
 
     def select_wallet_from_table(self, coin):
         update_combo(self.wallet_combo,self.active_coins,coin)
