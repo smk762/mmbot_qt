@@ -193,7 +193,9 @@ def populate_table(r, table, msg_lbl='', msg='', row_filter='', endpoint=''):
         logger.info(r.text)
 
 # Selection menu operations
-def update_combo(combo,options,selected):
+def update_combo(combo, options, selected):
+    source=combo.sender().objectName()
+    #logger.info("update combo sender:"+str(source))
     combo.clear()
     options.sort()
     print(options)
@@ -202,6 +204,10 @@ def update_combo(combo,options,selected):
         for i in range(combo.count()):
             if combo.itemText(i) == selected:
                 combo.setCurrentIndex(i)
+    elif 'KMD' in options:
+            for i in range(combo.count()):
+                if combo.itemText(i) == 'KMD':
+                    combo.setCurrentIndex(i)
     else:
         combo.setCurrentIndex(0)
         selected = combo.itemText(combo.currentIndex())
@@ -251,16 +257,16 @@ def get_base_rel_from_combos(base_combo, rel_combo, active_coins, api='mm2'):
     if api == 'mm2':
         active_coins_selection = active_coins
         if len(active_coins_selection) > 0:
+            if rel == '':
+                rel = 'KMD'
             rel = update_combo(rel_combo,active_coins_selection,rel)
             active_coins_selection.remove(rel)
             base = update_combo(base_combo,active_coins_selection,base)
     elif api == "Binance":
-        #print("binance_api.exch_info: "+str(binance_api.exch_info))
-        #print(binance_api.base_asset_info.keys())
-        #print("active_coins: "+str(active_coins))
-        base_coins_selection = list(set(list(binance_api.base_asset_info.keys())) & set(active_coins))
-        #print("base_coins_selection: "+str(base_coins_selection))
-        if len(base_coins_selection) > 0:                
+        base_coins_selection = list(binance_api.base_asset_info.keys())
+        if base == '':
+            base = 'KMD'
+        if len(base_coins_selection) > 0:
             base = update_combo(base_combo,base_coins_selection,base)
             rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']
             rel = update_combo(rel_combo,rel_coins_selection,rel)

@@ -59,6 +59,12 @@ class bn_balance_TableModel(QtCore.QAbstractTableModel):
             if orientation == Qt.Horizontal:
                 return str(self._headers[section])
 
+    update_bn_wallet_signal = pyqtSignal(str)
+    update_bn_base_combo_signal = pyqtSignal(str)
+    def row_selected(self, selectedIndexes):
+        self._coin = self._data[selectedIndexes.row()][0]
+        self.update_bn_wallet_signal.emit(self._coin)
+
 ## Marketmaker Wallet Balances
 class mm2_balance_TableModel(QtCore.QAbstractTableModel):
     def __init__(self, jsondata=None):
@@ -116,10 +122,10 @@ class mm2_balance_TableModel(QtCore.QAbstractTableModel):
     def update_sum_val_labels(self):
         self.update_sum_vals.emit(self._btc_sum, self._kmd_sum, self._usd_sum)
 
-    update_mm2_wallet  = pyqtSignal(str)
+    update_mm2_wallet_signal = pyqtSignal(str)
     def update_wallet(self, selectedIndexes):
         self._coin = self._data[selectedIndexes.row()][0]
-        self.update_mm2_wallet.emit(self._coin)
+        self.update_mm2_wallet_signal.emit(self._coin)
 
 ## Marketmaker Wallet Trasactions
 class mm2_tx_TableModel(QtCore.QAbstractTableModel):
@@ -215,6 +221,11 @@ class mm2_orderbook_TableModel(QtCore.QAbstractTableModel):
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
                 return str(self._headers[section])
+
+    update_mm2_order_inputs_signal  = pyqtSignal(list)
+    def update_order_inputs(self, selectedIndexes):
+        self.update_mm2_order_inputs_signal.emit(self._data[selectedIndexes.row()])
+
 ## MM2 Orderbook
 class binance_orders_TableModel(QtCore.QAbstractTableModel):
     def __init__(self, jsondata):

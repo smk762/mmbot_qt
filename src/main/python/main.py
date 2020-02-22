@@ -663,11 +663,11 @@ class Ui(QTabWidget):
         selected_row = self.mm2_orderbook_table.currentRow()
         if selected_row != -1 and self.mm2_orderbook_table.item(selected_row,1) is not None:
             if self.mm2_orderbook_table.item(selected_row,3).text() != '':
-                buy_coin = self.mm2_orderbook_table.item(selected_row,0).text()
+                #buy_coin = self.mm2_orderbook_table.item(selected_row,0).text()
                 sell_coin = self.mm2_orderbook_table.item(selected_row,1).text()
-                volume = self.mm2_orderbook_table.item(selected_row,2).text()
+                #volume = self.mm2_orderbook_table.item(selected_row,2).text()
                 price = self.mm2_orderbook_table.item(selected_row,3).text()
-                value = self.mm2_orderbook_table.item(selected_row,4).text()
+                #value = self.mm2_orderbook_table.item(selected_row,4).text()
                 sell_amount = self.mm2_orderbook_table.item(selected_row,5).text()
                 try:
                     available_balance = float(self.balances_data['mm2'][sell_coin]['available'])
@@ -678,6 +678,9 @@ class Ui(QTabWidget):
                 # set price and buy amount inputs from row selection
                 self.orderbook_price_spinbox.setValue(float(price))
                 self.orderbook_sell_amount_spinbox.setValue(float(sell_amount))
+
+    def select_mm2_orderbook_row(self, row_list):
+        logger.info("MM2 Orderbook row selected: "+str(row_list))
 
     def mm2_orderbook_combo_box_switch(self):
         logger.info('combo_box_switch')
@@ -735,11 +738,9 @@ class Ui(QTabWidget):
         self.mm2_orderbook_sell_pct(val)
 
     # Dynamic order form price spinbox slots
-    def update_mm2_orderbook_amounts(self, source=''):
-        if source == '':
+    def update_mm2_orderbook_amounts(self, sent_by=''):
+        if sent_by == '':
             sent_by = self.sender().objectName()
-        else:
-            sent_by = source
         logger.info("update mm2 values amounts (source: "+sent_by+")")
         orderbook_price_val = self.orderbook_price_spinbox.value()
         orderbook_sell_amount_val = self.orderbook_sell_amount_spinbox.value()
@@ -781,16 +782,19 @@ class Ui(QTabWidget):
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_binance_orderbook(self):
-        tickers = coinslib.binance_coins
-        # wallet combobox
-        update_combo(self.binance_asset_comboBox,tickers,tickers[0])
+        tickers = list(binance_api.base_asset_info.keys())
         # trade comboboxes
         baserel = get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, self.active_coins[:], "Binance")
         base = baserel[0]
         rel = baserel[1]
-        assetinfo = binance_api.base_asset_info[base]
-        self.binance_base_amount_spinbox.setSingleStep(float(assetinfo['stepSize']))
-        self.binance_base_amount_spinbox.setRange(float(assetinfo['minQty']), float(assetinfo['maxQty']))
+        try:
+            assetinfo = binance_api.base_asset_info[base]
+            self.binance_base_amount_spinbox.setSingleStep(float(assetinfo['stepSize']))
+            self.binance_base_amount_spinbox.setRange(float(assetinfo['minQty']), float(assetinfo['maxQty']))
+        except Exception as e:
+            logger.warning("Binance set range and step failed")
+            logger.warning("assetinfo: "+str(assetinfo))
+
         self.binance_price_spinbox.setValue(0)
         balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
         self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
@@ -819,7 +823,7 @@ class Ui(QTabWidget):
                 balance = "loading balance..."
             self.binance_base_balance_lbl.setText(balance)
             self.binance_base_locked_lbl.setText(locked_text)
-        self.get_binance_addr()
+        self.get_binance_addr(base)
         self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
         self.binance_base_amount_lbl.setText("Amount ("+base+")")
         self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
@@ -902,25 +906,21 @@ class Ui(QTabWidget):
    
     ## Binance Tab
     def binance_combo_box_change(self):
+        source = self.sender().objectName()
+        print("binance_combobox_change source: "+str(source))
         self.binance_price_spinbox.setValue(0)
         self.binance_base_amount_spinbox.setValue(0)
         self.binance_quote_amount_spinbox.setValue(0)
         self.show_binance_trading_tab()
 
-    def update_binance_wallet(self):
-        selected_row = self.binance_balances_table.currentRow()
-        if selected_row != -1 and self.binance_balances_table.item(selected_row,0) is not None:
-            coin = self.binance_balances_table.item(selected_row,0).text()
-            update_combo(self.binance_asset_comboBox,coinslib.binance_coins,coin)
-            self.get_binance_addr()
 
-    def get_binance_addr(self):
+    def get_binance_addr(self, coin):
         if not self.authenticated_binance:
             self.binance_qr_code_link.hide()
             self.binance_addr_lbl.setText("Invalid API key")
             self.binance_addr_coin_lbl.setText("")
+            self.binance_qr_code_link.hide()
         else:
-            coin = combo_selected(self.binance_asset_comboBox)
             # start in other thread
             self.thread_addr_request = addr_request_thread(self.creds[5], self.creds[6], coin)
             self.thread_addr_request.resp.connect(self.update_binance_addr)
@@ -1034,7 +1034,7 @@ class Ui(QTabWidget):
         self.update_binance_orders_table()
 
     def binance_withdraw(self):
-        coin = combo_selected(self.binance_asset_comboBox) 
+        coin = combo_selected(self.binance_base_combo) 
         addr = self.binance_withdraw_addr_lineEdit.text()
         amount = self.binance_withdraw_amount_spinbox.value()
         msg = ''
@@ -1485,10 +1485,12 @@ class Ui(QTabWidget):
     ## Modelled Table Views ##
 
     def update_binance_balance_table(self):
+        table = self.binance_balances_table
         if self.authenticated_binance:
             r = requests.get("http://127.0.0.1:8000/table/binance_balances")
             if r.status_code == 200:
                 if 'table_data' in r.json():
+                    # Sort funded and unfunded coins alphabetically
                     balance_items = []
                     non_balance_items = []
                     for item in r.json()['table_data']:
@@ -1499,11 +1501,25 @@ class Ui(QTabWidget):
                     balance_data = sorted(balance_items, key=itemgetter('Coin'))
                     non_balance_data = sorted(non_balance_items, key=itemgetter('Coin'))
                     table_data = balance_data+non_balance_data
-                    self.bnBal_tableModel = bn_balance_TableModel(table_data)
-                    self.binance_balances_table.setModel(self.bnBal_tableModel)
+                    # Activate table model
+                    model = bn_balance_TableModel(table_data)
+                    table.setModel(model)
+                    table.clicked.connect(model.row_selected)    
+                    model.update_bn_wallet_signal.connect(self.update_binance_wallet)
                     logger.info("binance_balances_table changed")
+                    self.binance_balances_msg_lbl.hide()
         else:
             self.binance_balances_msg_lbl.setText('Invalid API key!')
+            self.binance_balances_msg_lbl.show()
+    
+    def update_binance_wallet(self, coin):
+        bn_base_coins = list(binance_api.base_asset_info.keys())
+        if coin not in bn_base_coins:
+            coin = 'KMD'
+        update_combo(self.binance_base_combo,bn_base_coins,coin)
+        update_combo(self.binance_rel_combo, binance_api.base_asset_info[coin]['quote_assets'], coin)
+        self.get_binance_addr(coin)
+        self.update_binance_orderbook()
 
     def update_mm2_balance_table(self):
         r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
@@ -1513,7 +1529,7 @@ class Ui(QTabWidget):
                 self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
                 self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
                 self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
-                self.mm2_bal_tbl_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
+                self.mm2_bal_tbl_model.update_mm2_wallet_signal.connect(self.select_wallet_from_table)       
                 self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
                 self.mm2_bal_tbl_model.update_sum_val_labels()
                 self.wallet_balances_table.resizeColumnsToContents()
@@ -1541,19 +1557,17 @@ class Ui(QTabWidget):
 
     def update_mm2_orderbook_table(self):
         baserel = get_base_rel_from_combos(self.orderbook_sell_combo, self.orderbook_buy_combo, self.active_coins[:], 'mm2')
-        base = baserel[0]
-        rel = baserel[1]
-        logger.info("baserel: "+str(baserel))
-        # refresh tables
-        if base != '' and rel != '':
-            r = requests.get("http://127.0.0.1:8000/table/mm2_orderbook/"+rel+"/"+base)
+        if baserel[0] != '' and baserel[1] != '':
+            r = requests.get("http://127.0.0.1:8000/table/mm2_orderbook/"+baserel[1]+"/"+baserel[0])
             if r.status_code == 200:
                 logger.info("mm2_orderbook API: "+str(r.json()))
                 if 'table_data' in r.json():
                     self.mm2_orderbook_table_model = mm2_orderbook_TableModel(r.json()['table_data'])
                     self.mm2_orderbook_table.setModel(self.mm2_orderbook_table_model)
                     self.mm2_orderbook_table.resizeColumnsToContents()
-                    logger.info("mm2_orders_model Updated")
+                    self.mm2_orderbook_table.clicked.connect(self.mm2_orderbook_table_model.update_order_inputs)    
+                    self.mm2_orderbook_table_model.update_mm2_order_inputs_signal.connect(self.select_mm2_orderbook_row) 
+                    logger.info("mm2_orderbook API: "+str(r.json()['table_data']))
             else:
                 logger.error("mm2_orderbook API: "+str(r.status_code))
 

@@ -47,7 +47,7 @@
    <enum>QTabWidget::Rounded</enum>
   </property>
   <property name="currentIndex">
-   <number>3</number>
+   <number>2</number>
   </property>
   <widget class="QWidget" name="tab_activate">
    <attribute name="title">
@@ -5277,7 +5277,7 @@ color: rgb(46, 52, 54);</string>
                       <enum>Qt::ElideMiddle</enum>
                      </property>
                      <property name="sortingEnabled">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
                       <bool>false</bool>
@@ -5760,6 +5760,21 @@ color: rgb(46, 52, 54);</string>
              <string>Binance API Orderbook</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_86">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>6</number>
+             </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
              <item row="0" column="0" rowspan="2">
               <widget class="QFrame" name="frame_22">
                <property name="minimumSize">
@@ -5775,6 +5790,21 @@ color: rgb(46, 52, 54);</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_61">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <property name="horizontalSpacing">
+                 <number>0</number>
+                </property>
                 <item row="0" column="1">
                  <widget class="QFrame" name="frame_32">
                   <property name="sizePolicy">
@@ -6604,6 +6634,18 @@ color: rgb(46, 52, 54);</string>
                 <enum>QFrame::Raised</enum>
                </property>
                <layout class="QGridLayout" name="gridLayout_75">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
                 <item row="0" column="0">
                  <widget class="QFrame" name="frame_46">
                   <property name="frameShape">
@@ -6875,6 +6917,9 @@ color: rgb(46, 52, 54);</string>
              <string>Binance Open Orders</string>
             </property>
             <layout class="QGridLayout" name="gridLayout_57">
+             <property name="topMargin">
+              <number>9</number>
+             </property>
              <item row="0" column="1">
               <widget class="QFrame" name="frame_38">
                <property name="sizePolicy">
@@ -7204,192 +7249,6 @@ color: rgb(46, 52, 54);</string>
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
-                <item row="5" column="0">
-                 <widget class="QFrame" name="frame_35">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="styleSheet">
-                   <string/>
-                  </property>
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Raised</enum>
-                  </property>
-                  <layout class="QGridLayout" name="gridLayout_41">
-                   <property name="bottomMargin">
-                    <number>9</number>
-                   </property>
-                   <item row="1" column="0">
-                    <widget class="QLabel" name="label_10">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>11</pointsize>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>To address:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="1" column="1" colspan="3">
-                    <widget class="QLineEdit" name="binance_withdraw_addr_lineEdit">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>9</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="0">
-                    <widget class="QLabel" name="label_11">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>11</pointsize>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Amount:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="1" colspan="2">
-                    <widget class="QDoubleSpinBox" name="binance_withdraw_amount_spinbox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>11</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="decimals">
-                      <number>6</number>
-                     </property>
-                     <property name="maximum">
-                      <double>99999999999.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.001000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="2" column="3">
-                    <widget class="QPushButton" name="binance_withdraw_btn">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>11</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                     <property name="text">
-                      <string>withdraw</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="label_9">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>11</pointsize>
-                      </font>
-                     </property>
-                     <property name="text">
-                      <string>Coin:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="1" colspan="3">
-                    <widget class="QComboBox" name="binance_asset_comboBox">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
-                     </property>
-                     <property name="maximumSize">
-                      <size>
-                       <width>16777215</width>
-                       <height>35</height>
-                      </size>
-                     </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>12</pointsize>
-                      </font>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
                 <item row="4" column="0">
                  <widget class="QFrame" name="frame_67">
                   <property name="sizePolicy">
@@ -7421,6 +7280,49 @@ color: rgb(46, 52, 54);</string>
                     <number>0</number>
                    </property>
                    <item row="0" column="1">
+                    <widget class="QLabel" name="binance_addr_lbl">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>10</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="textInteractionFlags">
+                      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <spacer name="horizontalSpacer_27">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Minimum</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item row="0" column="2">
                     <widget class="QPushButton" name="binance_qr_code_link">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -7458,32 +7360,21 @@ color: rgb(46, 52, 54);</string>
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QLabel" name="binance_addr_lbl">
-                     <property name="sizePolicy">
-                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                   <item row="0" column="3">
+                    <spacer name="horizontalSpacer_31">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
                      </property>
-                     <property name="font">
-                      <font>
-                       <pointsize>10</pointsize>
-                      </font>
+                     <property name="sizeType">
+                      <enum>QSizePolicy::Minimum</enum>
                      </property>
-                     <property name="styleSheet">
-                      <string notr="true"/>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
                      </property>
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="textInteractionFlags">
-                      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                     </property>
-                    </widget>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>
@@ -7529,6 +7420,153 @@ color: rgb(46, 52, 54);</string>
                   <property name="alignment">
                    <set>Qt::AlignCenter</set>
                   </property>
+                 </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QFrame" name="frame_35">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="styleSheet">
+                   <string/>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QGridLayout" name="gridLayout_41">
+                   <property name="bottomMargin">
+                    <number>9</number>
+                   </property>
+                   <item row="0" column="0">
+                    <widget class="QLabel" name="label_10">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Send to</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="1" colspan="3">
+                    <widget class="QLineEdit" name="binance_withdraw_addr_lineEdit">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>35</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>9</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="0">
+                    <widget class="QLabel" name="label_11">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="text">
+                      <string>Amount</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="1" colspan="2">
+                    <widget class="QDoubleSpinBox" name="binance_withdraw_amount_spinbox">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>35</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="alignment">
+                      <set>Qt::AlignCenter</set>
+                     </property>
+                     <property name="decimals">
+                      <number>6</number>
+                     </property>
+                     <property name="maximum">
+                      <double>99999999999.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.001000000000000</double>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="1" column="3">
+                    <widget class="QPushButton" name="binance_withdraw_btn">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>35</height>
+                      </size>
+                     </property>
+                     <property name="font">
+                      <font>
+                       <pointsize>11</pointsize>
+                      </font>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true"/>
+                     </property>
+                     <property name="text">
+                      <string>WITHDRAW</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
                  </widget>
                 </item>
                 <item row="0" column="0">
@@ -11935,8 +11973,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>show_mm2_wallet_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1550</x>
-     <y>805</y>
+     <x>1598</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
      <x>660</x>
@@ -11951,7 +11989,7 @@ background-color: rgb(12, 12, 12);</string>
    <slot>show_activation_tab()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1438</x>
+     <x>1433</x>
      <y>91</y>
     </hint>
     <hint type="destinationlabel">
@@ -12031,8 +12069,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>activate_coins()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>897</x>
-     <y>696</y>
+     <x>898</x>
+     <y>687</y>
     </hint>
     <hint type="destinationlabel">
      <x>978</x>
@@ -12063,7 +12101,7 @@ background-color: rgb(12, 12, 12);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>876</x>
+     <x>871</x>
      <y>102</y>
     </hint>
     <hint type="destinationlabel">
@@ -12079,7 +12117,7 @@ background-color: rgb(12, 12, 12);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1066</x>
+     <x>1061</x>
      <y>102</y>
     </hint>
     <hint type="destinationlabel">
@@ -12095,24 +12133,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>select_all_api()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1264</x>
+     <x>1259</x>
      <y>102</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>996</x>
-     <y>429</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>binance_asset_comboBox</sender>
-   <signal>activated(int)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>update_binance_addr()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1638</x>
-     <y>956</y>
     </hint>
     <hint type="destinationlabel">
      <x>996</x>
@@ -12207,8 +12229,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>show_qr_popup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1653</x>
-     <y>913</y>
+     <x>1623</x>
+     <y>922</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12223,8 +12245,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>send_funds()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1550</x>
-     <y>854</y>
+     <x>1598</x>
+     <y>766</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12255,8 +12277,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>show_mm2_qr_popup()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1219</x>
-     <y>598</y>
+     <x>1460</x>
+     <y>684</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12463,7 +12485,7 @@ background-color: rgb(12, 12, 12);</string>
    <slot>mm2_cancel_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1589</x>
+     <x>1095</x>
      <y>784</y>
     </hint>
     <hint type="destinationlabel">
@@ -12479,40 +12501,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>mm2_cancel_all_orders()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1675</x>
+     <x>1181</x>
      <y>784</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>binance_rel_combo</sender>
-   <signal>activated(QString)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>binance_combo_box_change()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>814</x>
-     <y>133</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>binance_base_combo</sender>
-   <signal>activated(QString)</signal>
-   <receiver>MainTabs</receiver>
-   <slot>binance_combo_box_change()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>654</x>
-     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12687,7 +12677,7 @@ background-color: rgb(12, 12, 12);</string>
    <slot>mm2_view_order()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1489</x>
+     <x>995</x>
      <y>784</y>
     </hint>
     <hint type="destinationlabel">
@@ -12767,8 +12757,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>logout()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1037</x>
-     <y>696</y>
+     <x>1038</x>
+     <y>687</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>
@@ -12783,8 +12773,8 @@ background-color: rgb(12, 12, 12);</string>
    <slot>set_max_withdraw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1424</x>
-     <y>854</y>
+     <x>1596</x>
+     <y>725</y>
     </hint>
     <hint type="destinationlabel">
      <x>908</x>
@@ -12799,8 +12789,40 @@ background-color: rgb(12, 12, 12);</string>
    <slot>set_self_withdraw()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1424</x>
-     <y>805</y>
+     <x>1529</x>
+     <y>725</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>908</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_rel_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_combo_box_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>779</x>
+     <y>133</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>908</x>
+     <y>539</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>binance_base_combo</sender>
+   <signal>activated(int)</signal>
+   <receiver>MainTabs</receiver>
+   <slot>binance_combo_box_change()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>637</x>
+     <y>133</y>
     </hint>
     <hint type="destinationlabel">
      <x>908</x>
@@ -12868,7 +12890,6 @@ background-color: rgb(12, 12, 12);</string>
   <slot>mm2_orderbook_sell_amount_changed()</slot>
   <slot>mm2_orderbook_combo_box_change()</slot>
   <slot>update_mm2_trade_history_table()</slot>
-  <slot>binance_combo_box_switch()</slot>
   <slot>binance_combo_box_change()</slot>
   <slot>binance_ask_price_update()</slot>
   <slot>binance_bid_price_update()</slot>
