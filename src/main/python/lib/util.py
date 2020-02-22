@@ -266,3 +266,15 @@ def get_base_rel_from_combos(base_combo, rel_combo, active_coins, api='mm2'):
             rel_coins_selection = binance_api.base_asset_info[base]['quote_assets']
             rel = update_combo(rel_combo,rel_coins_selection,rel)
     return base, rel
+
+def async_populate_bid_depth_table(resp):
+    if resp.status_code == 200:
+        table_data = resp.json()['table_data']
+        self.bid_tbl_model = bn_bid_TableModel(table_data)
+        self.binance_depth_table_bid.setModel(self.bid_tbl_model)
+
+def async_populate_ask_depth_table(resp):
+    if resp.status_code == 200:
+        table_data = resp.json()['table_data']
+        self.ask_tbl_model = bn_ask_TableModel(table_data)
+        self.binance_depth_table_ask.setModel(self.ask_tbl_model)

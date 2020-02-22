@@ -6654,7 +6654,7 @@ color: rgb(46, 52, 54);</string>
                     </spacer>
                    </item>
                    <item row="1" column="1">
-                    <widget class="QTableWidget" name="binance_depth_table_bid">
+                    <widget class="QTableView" name="binance_depth_table_bid">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -6663,8 +6663,8 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>350</width>
-                       <height>0</height>
+                       <width>360</width>
+                       <height>420</height>
                       </size>
                      </property>
                      <property name="font">
@@ -6711,76 +6711,15 @@ color: rgb(46, 52, 54);</string>
                      <property name="sortingEnabled">
                       <bool>true</bool>
                      </property>
-                     <property name="rowCount">
-                      <number>20</number>
-                     </property>
-                     <property name="columnCount">
-                      <number>4</number>
-                     </property>
-                     <attribute name="horizontalHeaderCascadingSectionResizes">
-                      <bool>true</bool>
-                     </attribute>
-                     <attribute name="horizontalHeaderDefaultSectionSize">
-                      <number>86</number>
-                     </attribute>
                      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                      <bool>true</bool>
-                     </attribute>
-                     <attribute name="horizontalHeaderStretchLastSection">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </attribute>
                      <attribute name="verticalHeaderVisible">
                       <bool>false</bool>
                      </attribute>
-                     <attribute name="verticalHeaderDefaultSectionSize">
-                      <number>25</number>
-                     </attribute>
                      <attribute name="verticalHeaderHighlightSections">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </attribute>
-                     <attribute name="verticalHeaderMinimumSectionSize">
-                      <number>25</number>
-                     </attribute>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <column>
-                      <property name="text">
-                       <string>Sell Coin</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Buy Coin</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Volume</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Sell Price</string>
-                      </property>
-                     </column>
                     </widget>
                    </item>
                   </layout>
@@ -6822,8 +6761,21 @@ color: rgb(46, 52, 54);</string>
                      </property>
                     </widget>
                    </item>
+                   <item row="1" column="1">
+                    <spacer name="horizontalSpacer_23">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>149</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
                    <item row="1" column="0">
-                    <widget class="QTableWidget" name="binance_depth_table_ask">
+                    <widget class="QTableView" name="binance_depth_table_ask">
                      <property name="sizePolicy">
                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
                        <horstretch>0</horstretch>
@@ -6832,8 +6784,8 @@ color: rgb(46, 52, 54);</string>
                      </property>
                      <property name="minimumSize">
                       <size>
-                       <width>350</width>
-                       <height>0</height>
+                       <width>360</width>
+                       <height>420</height>
                       </size>
                      </property>
                      <property name="font">
@@ -6880,90 +6832,16 @@ color: rgb(46, 52, 54);</string>
                      <property name="sortingEnabled">
                       <bool>true</bool>
                      </property>
-                     <property name="rowCount">
-                      <number>20</number>
-                     </property>
-                     <property name="columnCount">
-                      <number>4</number>
-                     </property>
-                     <attribute name="horizontalHeaderCascadingSectionResizes">
-                      <bool>true</bool>
-                     </attribute>
-                     <attribute name="horizontalHeaderDefaultSectionSize">
-                      <number>86</number>
-                     </attribute>
                      <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
-                      <bool>true</bool>
-                     </attribute>
-                     <attribute name="horizontalHeaderStretchLastSection">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </attribute>
                      <attribute name="verticalHeaderVisible">
                       <bool>false</bool>
                      </attribute>
-                     <attribute name="verticalHeaderDefaultSectionSize">
-                      <number>25</number>
-                     </attribute>
                      <attribute name="verticalHeaderHighlightSections">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </attribute>
-                     <attribute name="verticalHeaderMinimumSectionSize">
-                      <number>25</number>
-                     </attribute>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <row/>
-                     <column>
-                      <property name="text">
-                       <string>Sell Coin</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Buy Coin</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Volume</string>
-                      </property>
-                     </column>
-                     <column>
-                      <property name="text">
-                       <string>Sell Price</string>
-                      </property>
-                     </column>
                     </widget>
-                   </item>
-                   <item row="1" column="1">
-                    <spacer name="horizontalSpacer_23">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>149</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
                    </item>
                   </layout>
                  </widget>
@@ -12525,38 +12403,6 @@ background-color: rgb(12, 12, 12);</string>
     <hint type="sourcelabel">
      <x>1675</x>
      <y>784</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>binance_depth_table_ask</sender>
-   <signal>itemSelectionChanged()</signal>
-   <receiver>MainTabs</receiver>
-   <slot>binance_ask_price_update()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>940</x>
-     <y>606</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>539</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>binance_depth_table_bid</sender>
-   <signal>itemSelectionChanged()</signal>
-   <receiver>MainTabs</receiver>
-   <slot>binance_bid_price_update()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>554</x>
-     <y>606</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>

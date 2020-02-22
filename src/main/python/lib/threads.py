@@ -105,9 +105,28 @@ class addr_request_thread(QThread):
         r = binance_api.get_deposit_addr(self.creds_5, self.creds_6, self.coin)
         self.resp.emit(r, self.coin)
 
-
 def request_table_data(endpoint, table, msg_lbl='', msg='', row_filter=''):
     # start in other thread
     table_request_thread = api_request_thread(endpoint, table, msg_lbl, msg, row_filter)
     table_request_thread.update_data.connect(populate_table)
     table_request_thread.start()
+
+class api_data_thread(QThread):
+    update_data = pyqtSignal(object, object)
+    def __init__(self, endpoint, table):
+        QThread.__init__(self)
+        self.endpoint = endpoint
+        self.table = table
+
+    def __del__(self):
+        self.wait()
+
+    def run(self):
+        url = "http://127.0.0.1:8000/"+self.endpoint
+        resp = requests.get(url)
+        self.update_data.emit(self.table, resp)
+
+def async_request_api_data(endpoint, table, func):
+    data_request_thread = api_data_thread(endpoint, table)
+    data_request_thread.update_data.connect(func)
+    data_request_thread.start()

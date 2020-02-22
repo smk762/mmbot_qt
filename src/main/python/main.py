@@ -252,12 +252,17 @@ class Ui(QTabWidget):
         self.balances_data["Binance"].update(balances_dict["Binance"])
         self.update_mm2_balance_table()
         self.update_mm2_wallet_labels()
+        QApplication.processEvents()
         self.update_binance_balance_table()
+        QApplication.processEvents()
         self.update_prices_table()
+        QApplication.processEvents()
         self.update_mm2_trade_history_table()
         self.update_strategy_history_table()
+        QApplication.processEvents()
         self.update_strategies_table()
         self.view_strat_summary()
+        QApplication.processEvents()
         self.update_mm2_orders_table()
 
         # TODO: Add gui update functions as req here.
@@ -840,15 +845,53 @@ class Ui(QTabWidget):
         tickers = coinslib.binance_coins
         # wallet combobox
         update_combo(self.binance_asset_comboBox,tickers,tickers[0])
-        # trade combobox
+        # trade comboboxes
         baserel = get_base_rel_from_combos(self.binance_base_combo, self.binance_rel_combo, self.active_coins[:], "Binance")
         base = baserel[0]
         rel = baserel[1]
         assetinfo = binance_api.base_asset_info[base]
         self.binance_base_amount_spinbox.setSingleStep(float(assetinfo['stepSize']))
         self.binance_base_amount_spinbox.setRange(float(assetinfo['minQty']), float(assetinfo['maxQty']))
-        self.update_binance_labels(base, rel)
-        self.update_binance_depth_table()
+        self.binance_price_spinbox.setValue(0)
+        balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
+        self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
+        self.binance_base_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
+        if not self.authenticated_binance:
+            self.binance_quote_balance_lbl.setText('Balance: Invalid API key!')
+            self.binance_quote_locked_lbl.setText('Locked: Invalid API key!')
+            self.binance_base_balance_lbl.setText('Balance: Invalid API key!')
+            self.binance_base_locked_lbl.setText('Locked: Invalid API key!')    
+        else:
+            # Quote coin icon and balances
+            if rel in balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(balances_data["Binance"][rel]['locked']),8))
+                balance = "Balance: "+str(round(float(balances_data["Binance"][rel]['total']),8))
+            else:
+                locked_text = ""
+                balance = "loading balance..."
+            self.binance_quote_balance_lbl.setText(balance)
+            self.binance_quote_locked_lbl.setText(locked_text)
+            # Base coin icon and balances
+            if base in balances_data["Binance"]:
+                locked_text = "Locked: "+str(round(float(balances_data["Binance"][base]['locked']),8))
+                balance = "Balance: "+str(round(float(balances_data["Binance"][base]['total']),8))
+            else:
+                locked_text = ""
+                balance = "loading balance..."
+            self.binance_base_balance_lbl.setText(balance)
+            self.binance_base_locked_lbl.setText(locked_text)
+        self.get_binance_addr()
+        self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
+        self.binance_base_amount_lbl.setText("Amount ("+base+")")
+        self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
+        self.binance_sell_btn.setText("Sell "+base)
+        self.binance_buy_btn.setText("Buy "+base)
+        logger.info("Get Binance bid depth")
+        QApplication.processEvents()
+        async_request_api_data("table/get_binance_depth/"+base+rel+"/bids", self.binance_depth_table_bid, self.async_populate_binance_orderbook_tbl)
+        logger.info("Get Binance ask depth")
+        QApplication.processEvents()
+        async_request_api_data("table/get_binance_depth/"+base+rel+"/asks", self.binance_depth_table_ask, self.async_populate_binance_orderbook_tbl)
 
     def mm2_view_order(self):
         cancel = True
@@ -927,36 +970,6 @@ class Ui(QTabWidget):
         self.binance_quote_amount_spinbox.setValue(0)
         self.show_binance_trading_tab()
 
-    def update_binance_labels(self, base, rel):
-        balances_data = requests.get('http://127.0.0.1:8000/all_balances').json()
-        self.binance_quote_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+rel.lower()+".png\"/></p></body></html>")
-        self.binance_base_icon.setText("<html><head/><body><p><img src=\":/64/img/64/"+base.lower()+".png\"/></p></body></html>")
-        if not self.authenticated_binance:
-            self.binance_quote_balance_lbl.setText('Balance: Invalid API key!')
-            self.binance_quote_locked_lbl.setText('Locked: Invalid API key!')
-            self.binance_base_balance_lbl.setText('Balance: Invalid API key!')
-            self.binance_base_locked_lbl.setText('Locked: Invalid API key!')    
-        else:
-            # Quote coin icon and balances
-            if rel in balances_data["Binance"]:
-                locked_text = "Locked: "+str(round(float(balances_data["Binance"][rel]['locked']),8))
-                balance = "Balance: "+str(round(float(balances_data["Binance"][rel]['total']),8))
-            else:
-                locked_text = ""
-                balance = "loading balance..."
-            self.binance_quote_balance_lbl.setText(balance)
-            self.binance_quote_locked_lbl.setText(locked_text)
-            # Base coin icon and balances
-            if base in balances_data["Binance"]:
-                locked_text = "Locked: "+str(round(float(balances_data["Binance"][base]['locked']),8))
-                balance = "Balance: "+str(round(float(balances_data["Binance"][base]['total']),8))
-            else:
-                locked_text = ""
-                balance = "loading balance..."
-            self.binance_base_balance_lbl.setText(balance)
-            self.binance_base_locked_lbl.setText(locked_text)
-        self.get_binance_addr()
-
     def update_binance_wallet(self):
         selected_row = self.binance_balances_table.currentRow()
         if selected_row != -1 and self.binance_balances_table.item(selected_row,0) is not None:
@@ -986,38 +999,12 @@ class Ui(QTabWidget):
         self.binance_addr_lbl.setText(addr_text)
         self.binance_addr_coin_lbl.setText("Binance "+str(coin)+" Address")
 
-
     def show_qr_popup(self):
         coin = self.binance_addr_coin_lbl.text().split()[1]
         addr_txt = self.binance_addr_lbl.text()
         mm2_qr = qr_popup("Binance "+coin+" Address QR Code", addr_txt)
         mm2_qr.show()
 
-
-    def update_binance_depth_table(self):
-        base = self.combo_selected(self.binance_base_combo)
-        rel = self.combo_selected(self.binance_rel_combo)
-        self.binance_price_spinbox.setValue(0)
-        self.binance_price_lbl.setText("Price ("+rel+" per "+base+")")
-        self.binance_base_amount_lbl.setText("Amount ("+base+")")
-        self.binance_quote_amount_lbl.setText("Amount ("+rel+")")
-        self.binance_sell_btn.setText("Sell "+base)
-        self.binance_buy_btn.setText("Buy "+base)
-        # populate binance depth table
-        QApplication.processEvents()
-        logger.info("Get Binance bid depth")
-        request_table_data("table/get_binance_depth/"+base+rel+"/bids",
-                            self.binance_depth_table_bid,
-                            "",
-                            "",
-                            "3|Bid|INCLUDE")
-        logger.info("Get Binance ask depth")
-        request_table_data("table/get_binance_depth/"+base+rel+"/asks",
-                            self.binance_depth_table_ask,
-                            "",
-                            "",
-                            "3|Ask|INCLUDE")
-        # update button text
 
     def update_binance_price_val(self):
         # sets trade price to selected/clicked row on depth tables
@@ -1520,6 +1507,7 @@ class Ui(QTabWidget):
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
         if self.authenticated:
+            QApplication.processEvents()
             logger.info("authenticated")
             self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
             self.stacked_login.setCurrentIndex(1)
@@ -1569,7 +1557,17 @@ class Ui(QTabWidget):
             r = requests.get("http://127.0.0.1:8000/table/binance_balances")
             if r.status_code == 200:
                 if 'table_data' in r.json():
-                    self.bnBal_tableModel = bn_balance_TableModel(r.json()['table_data'])
+                    balance_items = []
+                    non_balance_items = []
+                    for item in r.json()['table_data']:
+                        if float(item['Balance']) > 0:
+                            balance_items.append(item)
+                        else:
+                            non_balance_items.append(item)
+                    balance_data = sorted(balance_items, key=itemgetter('Coin'))
+                    non_balance_data = sorted(non_balance_items, key=itemgetter('Coin'))
+                    table_data = balance_data+non_balance_data
+                    self.bnBal_tableModel = bn_balance_TableModel(table_data)
                     self.binance_balances_table.setModel(self.bnBal_tableModel)
                     logger.info("binance_balances_table changed")
                 #populate_table('', self.binance_balances_table, self.binance_balances_msg_lbl, "", "","table/binance_balances")
@@ -1582,10 +1580,7 @@ class Ui(QTabWidget):
             if 'table_data' in r.json():
                 table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
                 self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
-                #self.proxyModel = QSortFilterProxyModel()
-                #self.proxyModel.setSourceModel(self.mm2_bal_tbl_model)
                 self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
-                #self.wallet_balances_table.setSortingEnabled(True)
                 self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
                 self.mm2_bal_tbl_model.update_mm2_wallet.connect(self.select_wallet_from_table)       
                 self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
@@ -1652,6 +1647,16 @@ class Ui(QTabWidget):
                 self.binance_orders_table.resizeColumnsToContents()
                 logger.info("mm2_orders_table Updated")
         #request_table_data("table/binance_open_orders", self.binance_orders_table, self.binance_orders_msg_lbl, "")            
+
+    def async_populate_binance_orderbook_tbl(self, table, resp):
+        if resp.status_code == 200:
+            if 'table_data' in resp.json():
+                self.model = binance_orderbook_TableModel(resp.json()['table_data'])
+                table.setModel(self.model)
+                table.resizeColumnsToContents()
+                logger.info("async table updated: "+str(resp.json()['table_data']))
+        QApplication.processEvents()
+
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()
