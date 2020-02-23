@@ -484,8 +484,8 @@ QGroupBox::title
     subcontrol-position: top center;
     padding-top:4px;
     padding-bottom:4px;
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 825px;
+    padding-right: 825px;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 

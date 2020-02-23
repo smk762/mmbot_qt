@@ -478,7 +478,10 @@ class Ui(QTabWidget):
         logger.info("Logging out...")
         threads = [self.datacache_thread, self.activate_thread]
         for thread in threads:
-            thread.terminate()
+            try:
+                thread.terminate()
+            except:
+                pass
         kill_api()
         kill_mm2()
         self.authenticated = False
