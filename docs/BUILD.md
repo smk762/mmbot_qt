@@ -6,7 +6,7 @@ Assumes Python 3 already installed.
 Clone repo
 ```
 sudo apt update 
-sudo apt-get install python3-venv
+sudo apt-get install python3-venv libcurl4-gnutls-dev
 cd
 git clone https://github.com/smk762/mmbot_qt
 cd mmbot_qt
