@@ -243,26 +243,44 @@ class Ui(QTabWidget):
                 "checkbox":self.checkBox_thc, 
                 "label":self.thc_label, 
             },
-        }               
+        }
+        self.logout_timeout = False
         self.show_login_tab()
                 
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     # TODO: update this to only act on visible tab
     def update_cachedata(self, prices_dict, balances_dict):
-        logger.info("Updating cache data from API")
-        self.balances_data['mm2'].update(balances_dict['mm2'])
-        self.balances_data["Binance"].update(balances_dict["Binance"])
-        self.update_mm2_balance_table()
-        self.update_mm2_wallet_labels()
-        self.update_binance_balance_table()
-        self.update_prices_table()
-        self.update_mm2_trade_history_table()
-        self.update_strategy_history_table()
-        self.update_strategies_table()
-        self.view_strat_summary()
-        self.update_mm2_orders_table()
-        self.update_console_logs()
-        # TODO: Add gui update functions as req here.
+        if self.logout_timeout:
+            logger.info("No activity logout in "+str(int(self.logout_timeout - time.time()))+" sec")
+            if self.logout_timeout < time.time():
+
+                pending = 0
+                if self.mm2_trades_table.rowCount() != 0:
+                    for i in range(self.mm2_trades_table.rowCount()):
+                        if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
+                            pending += 1
+                if pending == 0:
+                    logger.info("Logging out, no activity in last 5 min...")
+                    self.logout()
+                    QMessageBox.information(self, 'Logout', "Automatically logged out after 5 minutes of inactivity.", QMessageBox.Ok, QMessageBox.Ok)
+                else:
+                    logger.info("Not auto logging out, order in progress...")
+                    self.update_mm2_trade_history_table()                
+            else:
+                logger.info("Updating cache data from API")
+                self.balances_data['mm2'].update(balances_dict['mm2'])
+                self.balances_data["Binance"].update(balances_dict["Binance"])
+                self.update_mm2_balance_table()
+                self.update_mm2_wallet_labels()
+                self.update_binance_balance_table()
+                self.update_prices_table()
+                self.update_mm2_trade_history_table()
+                self.update_strategy_history_table()
+                self.update_strategies_table()
+                self.view_strat_summary()
+                self.update_mm2_orders_table()
+                self.update_console_logs()
+                # TODO: Add gui update functions as req here.
 
     def start_loop_threads(self):
         # start data caching loop in other thread
@@ -362,8 +380,8 @@ class Ui(QTabWidget):
     def show_mm2_orderbook_tab(self):
         if len(self.active_coins) < 2:
             msg = 'Please activate at least two coins. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             logger.info("MM2 orderbook tab")
             self.update_mm2_orderbook_table()
@@ -373,8 +391,8 @@ class Ui(QTabWidget):
     def show_binance_trading_tab(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             self.update_binance_orderbook()
             if not self.authenticated_binance:
@@ -388,8 +406,8 @@ class Ui(QTabWidget):
     def show_mm2_wallet_tab(self):
         if len(self.active_coins) < 1:
             msg = 'Please activate at least one coin. '
-            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
             self.setCurrentWidget(self.findChild(QWidget, 'tab_activate'))
+            QMessageBox.information(self, 'Error', msg, QMessageBox.Ok, QMessageBox.Ok)
         else:
             if self.wallet_combo.currentIndex() != -1:
                 selected = combo_selected(self.wallet_combo)
@@ -486,6 +504,7 @@ class Ui(QTabWidget):
         kill_mm2()
         self.authenticated = False
         self.authenticated_binance = False
+        self.logout_timeout = False
         self.username = ''
         self.password = ''
         self.creds = ['','','','','','','','','','']
@@ -494,13 +513,19 @@ class Ui(QTabWidget):
         for text_input in text_inputs:
             text_input.setText('')
         tables = [self.mm2_orderbook_table, self.mm2_orders_table, self.binance_balances_table, self.binance_orders_table, 
-                  self.wallet_balances_table, self.strategies_table, self.strat_summary_table, self.mm2_trades_table,
-                  self.strategy_trades_table]
+                  self.wallet_balances_table, self.mm2_tx_table, self.strategies_table, self.strat_summary_table,
+                  self.mm2_trades_table, self.strategy_trades_table]
         for table in tables:
             try:
                 table.clearContents()
-            except:
+            except Exception as e:
+                print(e)
                 pass
+            try:
+                table.clearSpans()
+            except Exception as e:
+                print(e)
+                pass                
         labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_usd_value, self.wallet_btc_value, 
                   self.orderbook_buy_balance_lbl, self.orderbook_buy_locked_lbl, self.orderbook_sell_balance_lbl,
                   self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
@@ -684,6 +709,15 @@ class Ui(QTabWidget):
 
     def select_mm2_orderbook_row(self, row_list):
         logger.info("MM2 Orderbook row selected: "+str(row_list))
+        self.orderbook_price_spinbox.setValue(float(row_list[3]))
+        max_buy_amount = float(row_list[2])
+        max_sell_amount = float(row_list[5])
+        available_sell_amount = float(self.balances_data['mm2'][row_list[1]]['available'])
+        if available_sell_amount < max_sell_amount:
+            max_sell_amount = available_sell_amount
+            max_buy_amount = available_sell_amount/float(row_list[3])
+        self.orderbook_buy_amount_spinbox.setValue(max_buy_amount)
+        self.orderbook_sell_amount_spinbox.setValue(max_sell_amount)
 
     def mm2_orderbook_combo_box_switch(self):
         logger.info('combo_box_switch')
@@ -1442,6 +1476,7 @@ class Ui(QTabWidget):
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
         if self.authenticated:
+            self.logout_timeout = time.time()+30
             QApplication.processEvents()
             logger.info("authenticated")
             self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
@@ -1481,9 +1516,9 @@ class Ui(QTabWidget):
             logger.info('show_activation_tab - login')
             self.stacked_login.setCurrentIndex(0)
             index = self.currentIndex()
+            self.show_login_tab()
             if index != 0:
                 QMessageBox.information(self, 'Unauthorised access!', 'You must be logged in to access this tab', QMessageBox.Ok, QMessageBox.Ok)
-            self.show_login_tab()
 
     ## Modelled Table Views ##
 
@@ -1525,18 +1560,18 @@ class Ui(QTabWidget):
         self.update_binance_orderbook()
 
     def update_mm2_balance_table(self):
-        r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
-        if r.status_code == 200:
-            if 'table_data' in r.json():
-                table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
-                self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
-                self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
-                self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
-                self.mm2_bal_tbl_model.update_mm2_wallet_signal.connect(self.select_wallet_from_table)       
-                self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
-                self.mm2_bal_tbl_model.update_sum_val_labels()
-                self.wallet_balances_table.resizeColumnsToContents()
-                logger.info("MM2 Balance Updated")
+            r = requests.get("http://127.0.0.1:8000/table/mm2_balances")
+            if r.status_code == 200:
+                if 'table_data' in r.json():
+                    table_data = sorted(r.json()['table_data'], key=itemgetter('Coin')) 
+                    self.mm2_bal_tbl_model = mm2_balance_TableModel(table_data)
+                    self.wallet_balances_table.setModel(self.mm2_bal_tbl_model)
+                    self.wallet_balances_table.clicked.connect(self.mm2_bal_tbl_model.update_wallet)    
+                    self.mm2_bal_tbl_model.update_mm2_wallet_signal.connect(self.select_wallet_from_table)       
+                    self.mm2_bal_tbl_model.update_sum_vals.connect(self.update_mm2_balance_sum_labels)   
+                    self.mm2_bal_tbl_model.update_sum_val_labels()
+                    self.wallet_balances_table.resizeColumnsToContents()
+                    logger.info("MM2 Balance Updated")
 
     def update_mm2_tx_table(self, coin):
         r = requests.get("http://127.0.0.1:8000/table/mm2_tx_history/"+coin)
@@ -1568,7 +1603,7 @@ class Ui(QTabWidget):
                     self.mm2_orderbook_table_model = mm2_orderbook_TableModel(r.json()['table_data'])
                     self.mm2_orderbook_table.setModel(self.mm2_orderbook_table_model)
                     self.mm2_orderbook_table.resizeColumnsToContents()
-                    self.mm2_orderbook_table.clicked.connect(self.mm2_orderbook_table_model.update_order_inputs)    
+                    self.mm2_orderbook_table.clicked.connect(self.mm2_orderbook_table_model.select_order_row)    
                     self.mm2_orderbook_table_model.update_mm2_order_inputs_signal.connect(self.select_mm2_orderbook_row) 
                     logger.info("mm2_orderbook API: "+str(r.json()['table_data']))
             else:

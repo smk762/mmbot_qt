@@ -223,8 +223,11 @@ class mm2_orderbook_TableModel(QtCore.QAbstractTableModel):
                 return str(self._headers[section])
 
     update_mm2_order_inputs_signal  = pyqtSignal(list)
-    def update_order_inputs(self, selectedIndexes):
-        self.update_mm2_order_inputs_signal.emit(self._data[selectedIndexes.row()])
+    def select_order_row(self, selectedIndexes):
+        try:
+            self.update_mm2_order_inputs_signal.emit(self._data[selectedIndexes.row()])
+        except Exception as e:
+            print(e)
 
 ## MM2 Orderbook
 class binance_orders_TableModel(QtCore.QAbstractTableModel):
