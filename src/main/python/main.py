@@ -266,12 +266,17 @@ class Ui(QTabWidget):
                         if self.mm2_trades_table.item(i,2) is not None:
                             if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
                                 pending += 1
+                if self.strategies_table.rowCount() != 0:
+                    for i in range(self.strategies_table.rowCount()):
+                        if self.strategies_table.item(i,2) is not None:
+                            if self.strategies_table.item(i,10).text() == 'active':
+                                pending += 1
                 if pending == 0:
                     logger.info("Logging out, no activity in last "+str(self.creds[10])+" min...")
                     self.logout()
                     QMessageBox.information(self, 'Logout', "Automatically logged out after 5 minutes of inactivity.", QMessageBox.Ok, QMessageBox.Ok)
                 else:
-                    logger.info("Not auto logging out, order in progress...")
+                    logger.info("Not auto logging out, order or strategy in progress...")
                     self.update_mm2_trade_history_table()                
             else:
                 logger.info("Updating cache data from API")
@@ -823,7 +828,10 @@ class Ui(QTabWidget):
         base = combo_selected(self.orderbook_buy_combo)
         vol = self.orderbook_buy_amount_spinbox.value()
         price = self.orderbook_price_spinbox.value()
-        msg = rpclib.process_mm2_buy(self.creds[0], self.creds[1], base, rel, vol, price)
+        if base == 'VOTE2020' or rel == 'VOTE2020':
+            msg = "Trading VOTE2020 is against Notray Election rules! Choose a different coin..."
+        else:
+            msg = rpclib.process_mm2_buy(self.creds[0], self.creds[1], base, rel, vol, price)
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
 
     def update_binance_orderbook(self):
@@ -1260,14 +1268,15 @@ class Ui(QTabWidget):
         self.strat_cex_list.clear()
         prices_data = requests.get('http://127.0.0.1:8000/all_prices').json()
         for coin in self.active_coins:
-            if len(prices_data['average'][coin]['btc_sources']) > 0:
-                if 'mm2_orderbook' not in prices_data['average'][coin]['btc_sources']:
-                    buy_list_item = QListWidgetItem(coin)
-                    buy_list_item.setTextAlignment(Qt.AlignHCenter)
-                    self.strat_buy_list.addItem(buy_list_item)
-                    sell_list_item = QListWidgetItem(coin)
-                    sell_list_item.setTextAlignment(Qt.AlignHCenter)
-                    self.strat_sell_list.addItem(sell_list_item)
+            if coin != 'VOTE2020':
+                if len(prices_data['average'][coin]['btc_sources']) > 0:
+                    if 'mm2_orderbook' not in prices_data['average'][coin]['btc_sources']:
+                        buy_list_item = QListWidgetItem(coin)
+                        buy_list_item.setTextAlignment(Qt.AlignHCenter)
+                        self.strat_buy_list.addItem(buy_list_item)
+                        sell_list_item = QListWidgetItem(coin)
+                        sell_list_item.setTextAlignment(Qt.AlignHCenter)
+                        self.strat_sell_list.addItem(sell_list_item)
         cex_list = requests.get('http://127.0.0.1:8000/cex/list').json()['cex_list']
         list_item = QListWidgetItem("None")
         list_item.setTextAlignment(Qt.AlignHCenter)
