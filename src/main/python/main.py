@@ -243,6 +243,10 @@ class Ui(QTabWidget):
                 "checkbox":self.checkBox_thc, 
                 "label":self.thc_label, 
             },
+            "VOTE2020":{ 
+                "checkbox":self.checkBox_vote2020, 
+                "label":self.vote2020_label, 
+            },
         }
         self.logout_timeout = False
         self.show_login_tab()
@@ -263,7 +267,7 @@ class Ui(QTabWidget):
                             if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
                                 pending += 1
                 if pending == 0:
-                    logger.info("Logging out, no activity in last 5 min...")
+                    logger.info("Logging out, no activity in last "+str(self.creds[10])+" min...")
                     self.logout()
                     QMessageBox.information(self, 'Logout', "Automatically logged out after 5 minutes of inactivity.", QMessageBox.Ok, QMessageBox.Ok)
                 else:
@@ -1240,6 +1244,8 @@ class Ui(QTabWidget):
                     msg = "Sent! <br /><a style='color:white !important' href='"+txid_link+"'>"+txid_str+"</a>"
                 else:
                     msg = "Sent! <br />TXID: ["+txid_str+"]"
+            else:
+                msg = "ERROR! <br />RESP: ["+str(resp)+"]"
             self.wallet_recipient.setText("")
             self.wallet_amount.setValue(0)
         else:

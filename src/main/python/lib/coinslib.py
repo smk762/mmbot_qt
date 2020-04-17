@@ -338,6 +338,15 @@ coin_activation = {
       'contract':'0x8500AFc0bc5214728082163326C2FF0C73f4a871',
       'type':'erc20'
    },
+   'VOTE2020':{
+      'activate_with':'electrum',
+      'electrum':[
+         {'url':'electrum1.cipig.net:10002'},
+         {'url':'electrum2.cipig.net:10002'},
+         {'url':'electrum3.cipig.net:10002'}
+      ],
+      'type':'smartchain'
+   },
    'VRSC':{
       'activate_with':'electrum',
       'electrum':[
@@ -601,6 +610,12 @@ coin_api_codes = {
       'paprika_id':'vrsc-verus-coin',
       'name':'Verus Coin'
    },
+   'VOTE2020':{
+      'coingecko_id':'',
+      'binance_id':'',
+      'paprika_id':'',
+      'name':'Vote 2020'
+   },
    'ZEC':{
       'coingecko_id':'zcash',
       'binance_id':'ZEC',
@@ -760,6 +775,10 @@ coin_explorers = {
    'TUSD':{
       'tx_explorer':'https://etherscan.io/tx',
       'addr_explorer':'https://etherscan.io/address'
+   },
+   'VOTE2020':{
+      'tx_explorer':'https://vote2020.explorer.dexstats.info/tx',
+      'addr_explorer':'https://vote2020.explorer.dexstats.info/address'
    },
    'VRSC':{
       'tx_explorer':'https://vrsc.explorer.dexstats.info/tx',
@@ -946,6 +965,11 @@ coin_graph = {
       'symbol':'BITREX:TUSDUSD'
    },
    'VRSC':{
+      'url':'',
+      'title':'',
+      'symbol':''
+   },
+   'VOTE2020':{
       'url':'',
       'title':'',
       'symbol':''
