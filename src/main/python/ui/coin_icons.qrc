@@ -1,10 +1,6 @@
 <RCC>
   <qresource prefix="ui">
     <file>img/other/spinner.gif</file>
-    <file>makerbot_gui_dark_v4c_nograph.ui</file>
-    <file>makerbot_gui_dark_v4c.ui</file>
-    <file>makerbot_gui_dark_v4b.ui</file>
-    <file>makerbot_gui_dark_v4a.ui</file>
     <file>img/other/switch-arrow3.png</file>
     <file>img/other/switch-arrow2.png</file>
     <file>img/other/switch-arrow.png</file>
@@ -14,16 +10,13 @@
     <file>img/other/arrow-right.png</file>
     <file>img/other/arrow-left.png</file>
     <file>img/other/arrow-down.png</file>
-    <file>makerbot_gui_dark_v3a.ui</file>
-    <file>makerbot_gui_dark_v3.ui</file>
     <file>img/other/switch-arrow.png</file>
     <file>img/other/arrow-up.png</file>
     <file>img/other/arrow-right.png</file>
     <file>img/other/arrow-down.png</file>
     <file>img/other/arrow-left.png</file>
     <file>img/other/checkbox.png</file>
-    <file>makerbot_gui_dark.ui</file>
-    <file>makerbot_gui2.ui</file>
+    <file>makerbot_gui_dark_v5.ui</file>
   </qresource>
   <qresource prefix="html">
     <file>btc_graph.html</file>

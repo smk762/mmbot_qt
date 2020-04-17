@@ -35,7 +35,7 @@ def decrypt_creds(username, password, config_path):
     except Exception as e:
         logger.info("get_credentials failed")
         logger.info(e)
-        creds = ['','','','','','','','','','']
+        creds = ['','','','','','','','','','','']
     return authenticated, creds
 
 def get_creds(mm2_json_file):
@@ -88,6 +88,10 @@ def get_creds(mm2_json_file):
                     countertrade_timeout = mm2json['countertrade_timeout']
                 else:
                     countertrade_timeout = 30
+                if 'login_timeout' in mm2json:
+                    login_timeout = mm2json['login_timeout']
+                else:
+                    login_timeout = 10
                 rpc_url = "http://"+rpc_ip+":7783"
                 MM2_json_exists = True
             except Exception as e:
@@ -104,6 +108,7 @@ def get_creds(mm2_json_file):
                 margin = 0
                 bot_mode = ''
                 countertrade_timeout = 30
+                login_timeout = 10
     except Exception as e:
         print("MM2json didnt open")
         print(e)
@@ -118,8 +123,8 @@ def get_creds(mm2_json_file):
         margin = 0
         bot_mode = ''
         countertrade_timeout = 30
-        pass
-    return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin, bot_mode, countertrade_timeout
+        login_timeout = 10
+    return rpc_url, userpass, passphrase, netid, rpc_ip, bn_key, bn_secret, margin, bot_mode, countertrade_timeout, login_timeout
 
 def check_binance_auth(key, secret):
     binance_acct = binance_api.get_account_info(key, secret)

@@ -64,7 +64,7 @@ class Ui(QTabWidget):
     def __init__(self, ctx):
         super(Ui, self).__init__() 
         # Load the User interface from file
-        uifile = QFile(":/ui/makerbot_gui_dark_v4c_nograph.ui")
+        uifile = QFile(":/ui/makerbot_gui_dark_v5.ui")        
         uifile.open(QFile.ReadOnly)
         uic.loadUi(uifile, self) 
         self.ctx = ctx 
@@ -246,6 +246,8 @@ class Ui(QTabWidget):
         }
         self.logout_timeout = False
         self.show_login_tab()
+        self.datacache_thread = False
+        self.activate_thread = False
                 
     # once cachedata thred returns data, update balances, logs and tables as periodically.
     # TODO: update this to only act on visible tab
@@ -257,8 +259,9 @@ class Ui(QTabWidget):
                 pending = 0
                 if self.mm2_trades_table.rowCount() != 0:
                     for i in range(self.mm2_trades_table.rowCount()):
-                        if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
-                            pending += 1
+                        if self.mm2_trades_table.item(i,2) is not None:
+                            if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
+                                pending += 1
                 if pending == 0:
                     logger.info("Logging out, no activity in last 5 min...")
                     self.logout()
@@ -436,7 +439,8 @@ class Ui(QTabWidget):
             self.netid_input.setValue(self.creds[3])
             self.rpc_ip_text_input.setText(self.creds[4])
             self.binance_key_text_input.setText(self.creds[5])
-            self.binance_secret_text_input.setText(self.creds[6])
+            self.binance_secret_text_input.setText(self.creds[6])   
+            self.timeout_input.setValue(int(self.creds[10]))
             if self.creds[4] == '127.0.0.1':
                 self.checkbox_local_only.setChecked(True)
             else:
@@ -507,7 +511,7 @@ class Ui(QTabWidget):
         self.logout_timeout = False
         self.username = ''
         self.password = ''
-        self.creds = ['','','','','','','','','','']
+        self.creds = ['','','','','','','','','','','']
         text_inputs = [self.seed_text_input, self.rpcpass_text_input, self.binance_key_text_input, self.binance_secret_text_input,
                        self.import_swaps_input, self.swap_recover_uuid]
         for text_input in text_inputs:
@@ -1436,6 +1440,7 @@ class Ui(QTabWidget):
         data.update({"rpc_allow_ip":self.rpc_ip_text_input.text()})
         data.update({"bn_key":self.binance_key_text_input.text()})
         data.update({"bn_secret":self.binance_secret_text_input.text()})
+        data.update({"login_timeout":self.timeout_input.text()})
         data.update({"dbdir":config_path+"DB"})
         # encrypt and store the config / credentials
         enc_data = enc.encrypt_mm2_json(json.dumps(data), passwd)
@@ -1476,7 +1481,7 @@ class Ui(QTabWidget):
     # runs each time the tab is changed to populate the items on that tab
     def prepare_tab(self):
         if self.authenticated:
-            self.logout_timeout = time.time()+30
+            self.logout_timeout = time.time()+int(self.creds[10])*60
             QApplication.processEvents()
             logger.info("authenticated")
             self.active_coins = guilib.get_active_coins(self.creds[0], self.creds[1])
