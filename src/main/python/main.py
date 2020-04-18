@@ -249,35 +249,38 @@ class Ui(QTabWidget):
             },
         }
         self.logout_timeout = False
-        self.show_login_tab()
         self.datacache_thread = False
         self.activate_thread = False
-                
-    # once cachedata thred returns data, update balances, logs and tables as periodically.
+        self.show_login_tab()
+    
+    def timeout_creds(self):
+        pending = 0
+        if self.mm2_trades_table.rowCount() != 0:
+            for i in range(self.mm2_trades_table.rowCount()):
+                if self.mm2_trades_table.item(i,2) is not None:
+                    if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
+                        pending += 1
+        if self.strategies_table.rowCount() != 0:
+            for i in range(self.strategies_table.rowCount()):
+                if self.strategies_table.item(i,2) is not None:
+                    if self.strategies_table.item(i,10).text() == 'active':
+                        pending += 1
+        if pending == 0:
+            timeout_min = self.creds[10]
+            logger.info("Logging out, no activity in last "+str(timeout_min)+" min...")
+            self.logout()
+            QMessageBox.information(self, 'Logout', "Automatically logged out after "+str(timeout_min)+" minutes of inactivity.", QMessageBox.Ok, QMessageBox.Ok)
+        else:
+            logger.info("Not auto logging out, order or strategy in progress...")
+            self.update_mm2_trade_history_table()
+
+    # once cachedata thread returns data, update balances, logs and tables as periodically.
     # TODO: update this to only act on visible tab
     def update_cachedata(self, prices_dict, balances_dict):
         if self.logout_timeout:
             logger.info("No activity logout in "+str(int(self.logout_timeout - time.time()))+" sec")
             if self.logout_timeout < time.time():
-
-                pending = 0
-                if self.mm2_trades_table.rowCount() != 0:
-                    for i in range(self.mm2_trades_table.rowCount()):
-                        if self.mm2_trades_table.item(i,2) is not None:
-                            if self.mm2_trades_table.item(i,2).text() != 'Finished' and self.mm2_trades_table.item(i,2).text() != 'Failed':
-                                pending += 1
-                if self.strategies_table.rowCount() != 0:
-                    for i in range(self.strategies_table.rowCount()):
-                        if self.strategies_table.item(i,2) is not None:
-                            if self.strategies_table.item(i,10).text() == 'active':
-                                pending += 1
-                if pending == 0:
-                    logger.info("Logging out, no activity in last "+str(self.creds[10])+" min...")
-                    self.logout()
-                    QMessageBox.information(self, 'Logout', "Automatically logged out after 5 minutes of inactivity.", QMessageBox.Ok, QMessageBox.Ok)
-                else:
-                    logger.info("Not auto logging out, order or strategy in progress...")
-                    self.update_mm2_trade_history_table()                
+                self.timeout_creds()
             else:
                 logger.info("Updating cache data from API")
                 self.balances_data['mm2'].update(balances_dict['mm2'])
@@ -521,30 +524,6 @@ class Ui(QTabWidget):
         self.username = ''
         self.password = ''
         self.creds = ['','','','','','','','','','','']
-        text_inputs = [self.seed_text_input, self.rpcpass_text_input, self.binance_key_text_input, self.binance_secret_text_input,
-                       self.import_swaps_input, self.swap_recover_uuid]
-        for text_input in text_inputs:
-            text_input.setText('')
-        tables = [self.mm2_orderbook_table, self.mm2_orders_table, self.binance_balances_table, self.binance_orders_table, 
-                  self.wallet_balances_table, self.mm2_tx_table, self.strategies_table, self.strat_summary_table,
-                  self.mm2_trades_table, self.strategy_trades_table]
-        for table in tables:
-            try:
-                table.clearContents()
-            except Exception as e:
-                print(e)
-                pass
-            try:
-                table.clearSpans()
-            except Exception as e:
-                print(e)
-                pass                
-        labels = [self.wallet_balance, self.wallet_locked_by_swaps, self.wallet_usd_value, self.wallet_btc_value, 
-                  self.orderbook_buy_balance_lbl, self.orderbook_buy_locked_lbl, self.orderbook_sell_balance_lbl,
-                  self.orderbook_sell_locked_lbl, self.binance_base_balance_lbl, self.binance_base_locked_lbl,
-                  self.binance_quote_balance_lbl, self.binance_quote_locked_lbl, self.binance_addr_coin_lbl,
-                  self.wallet_btc_total, self.wallet_usd_total] 
-        clear_labels(labels)
         time.sleep(0.2)
         self.show_login_tab()
 
@@ -829,7 +808,7 @@ class Ui(QTabWidget):
         vol = self.orderbook_buy_amount_spinbox.value()
         price = self.orderbook_price_spinbox.value()
         if base == 'VOTE2020' or rel == 'VOTE2020':
-            msg = "Trading VOTE2020 is against Notray Election rules! Choose a different coin..."
+            msg = "Trading VOTE2020 is against Notary Election rules! Choose a different coin..."
         else:
             msg = rpclib.process_mm2_buy(self.creds[0], self.creds[1], base, rel, vol, price)
         QMessageBox.information(self, 'Buy From Orderbook', str(msg), QMessageBox.Ok, QMessageBox.Ok)
@@ -965,7 +944,6 @@ class Ui(QTabWidget):
         self.binance_base_amount_spinbox.setValue(0)
         self.binance_quote_amount_spinbox.setValue(0)
         self.show_binance_trading_tab()
-
 
     def get_binance_addr(self, coin):
         if not self.authenticated_binance:
@@ -1195,6 +1173,7 @@ class Ui(QTabWidget):
         self.wallet_usd_total.setText("$"+str(round(sum_usd,4))+" USD")
 
     def select_wallet_from_table(self, coin):
+        self.wallet_combo = coinComboBox(self.active_coins,coin)
         update_combo(self.wallet_combo,self.active_coins,coin)
         self.show_mm2_wallet_tab()
 

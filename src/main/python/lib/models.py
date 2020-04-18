@@ -194,7 +194,10 @@ class mm2_orders_TableModel(QtCore.QAbstractTableModel):
     def headerData(self, section, orientation, role):
         if role == Qt.DisplayRole:
             if orientation == Qt.Horizontal:
-                return str(self._headers[section])
+                try:
+                    return str(self._headers[section])
+                except:
+                    return ''
 
 ## MM2 Orderbook
 class mm2_orderbook_TableModel(QtCore.QAbstractTableModel):

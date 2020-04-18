@@ -36,7 +36,6 @@ def find_in_table(table, text):
                     return i,j
     return -1, -1
 
-
 ## File operations
 def saveFileDialog(self):
     filename = ''
@@ -63,7 +62,6 @@ def export_table(self, table, headers_list):
     if filename != '':
         with open(filename, 'w') as f:
             f.write(table_csv)
-
 
 def get_time_str():
     return str(datetime.datetime.fromtimestamp(int(time.time())))
@@ -213,6 +211,9 @@ def update_combo(combo, options, selected):
         selected = combo.itemText(combo.currentIndex())
     return selected
 
+def combo_selected(combo):
+    return combo.itemText(combo.currentIndex())
+    
 def adjust_cols(table, data):
     max_col_str = {}
     if len(data) > 0:
@@ -284,6 +285,3 @@ def async_populate_ask_depth_table(resp):
         self.ask_tbl_model = bn_ask_TableModel(table_data)
         self.binance_depth_table_ask.setModel(self.ask_tbl_model)
 
-
-def combo_selected(combo):
-    return combo.itemText(combo.currentIndex())
