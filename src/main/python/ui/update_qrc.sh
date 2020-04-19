@@ -1,2 +1,2 @@
 #!/bin/bash
-pyrcc5 coin_icons.qrc -o coin_icons.py
+pyrcc5 "coin_icons.qrc" -o "resources.py"
