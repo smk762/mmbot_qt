@@ -22,7 +22,7 @@ jobs:
         python-version: 3.6.10
     - name: Install dependencies
       run: |
-        sudo apt install python3-pycurl
+        sudo apt install python3-pycurl libcurl4-openssl-dev libssl-dev
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Lint with flake8
