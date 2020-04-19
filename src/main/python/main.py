@@ -1173,7 +1173,7 @@ class Ui(QTabWidget):
         self.wallet_usd_total.setText("$"+str(round(sum_usd,4))+" USD")
 
     def select_wallet_from_table(self, coin):
-        self.wallet_combo = coinComboBox(self.active_coins,coin)
+        # self.wallet_combo = coinComboBox(self.active_coins,coin)
         update_combo(self.wallet_combo,self.active_coins,coin)
         self.show_mm2_wallet_tab()
 
