@@ -31,7 +31,7 @@ class mm2_balances_table(QTableWidget):
             self.setItem(row,col,cell)
             col += 1
 
-class mm2_wallet(coin, add_graph=False)
+class mm2_wallet(coin, add_graph=False):
     self.wallet_recipient.setText('')
     self.wallet_amount.setValue(0)
     self.wallet_recipient.setFocus()
