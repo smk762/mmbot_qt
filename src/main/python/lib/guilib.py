@@ -69,7 +69,7 @@ def validate_ip(ip):
 def get_unfinished_swaps(node_ip, user_pass):
     unfinished_swaps = []
     unfinished_swap_uuids = []
-    recent_swaps = my_recent_swaps(node_ip, user_pass, 50).json()
+    recent_swaps = rpclib.my_recent_swaps(node_ip, user_pass, 50).json()
     for swap in recent_swaps['result']['swaps']:
         swap_events = []
         for event in swap['events']:
