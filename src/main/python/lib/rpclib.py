@@ -7,6 +7,8 @@ import requests
 import subprocess
 from os.path import expanduser
 from . import coinslib, rpclib, binance_api
+import logging
+logger = logging.getLogger(__name__)
 
 cwd = os.getcwd()
 script_path = sys.path[0]
@@ -156,13 +158,13 @@ def my_swap_status(node_ip, user_pass, swap_uuid):
     return r
 
 def my_tx_history(node_ip, user_pass, coin, limit=10, from_id=''):
-    if from_id != '':
-        method_params.update({"from_id":from_id})
     params = {'userpass': user_pass,
               'method': 'my_tx_history',
               "coin": coin,
               "limit": limit
                 }
+    if from_id != '':
+        params.update({"from_id":from_id})
     r = requests.post(node_ip,json=params)
     return r
 
