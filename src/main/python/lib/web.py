@@ -22,7 +22,7 @@ class Web(QWebEngineView):
         settings.setAttribute(QWebEngineSettings.JavascriptEnabled, False)
 '''
 
-            '''
+'''
             tv_url = coinslib.coin_graph[selected]['url']
             tv_symbol = coinslib.coin_graph[selected]['symbol']
             tv_title = coinslib.coin_graph[selected]['title']
