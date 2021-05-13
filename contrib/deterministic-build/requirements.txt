@@ -25,6 +25,6 @@ pyqtgraph==0.10.0
 python-dateutil==2.6.1
 fastapi==0.44.1
 uvicorn==0.10.8
-pydantic==1.2
+pydantic==1.6.2
 python-multipart==0.0.5
 pypiwin32
